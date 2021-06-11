@@ -1,0 +1,27 @@
+<form col="6">
+    <label name="name"/>
+    <field name="name"/>
+    <label name="method"/>
+    <field name="method"/>
+    <group id="checkboxes" colspan="2" col="-1">
+        <label name="template"/>
+        <field name="template"/>
+        <label name="has_header"/>
+        <field name="has_header"/>
+        <label name="use_header"/>
+        <field name="use_header"/>
+    </group>
+    <label name="data_source"/>
+    <field name="data_source"/>
+    <group id="data" colspan="3" col="1">
+        <field name="binary_data"/>
+        <field name="url_data"/>
+    </group>
+    <group id="buttons" col="-1">
+        <button name="detect"/>
+        <button name="import_"/>
+    </group>
+    <separator name="text_data" colspan="6"/>
+    <field name="text_data" colspan="6" height="200"/>
+    <field name="columns" colspan="6" height="500"/>
+</form>

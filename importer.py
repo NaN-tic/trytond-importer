@@ -1,0 +1,778 @@
+import re
+import csv
+import json
+import yaml
+import urllib.request
+import decimal
+from decimal import Decimal
+import openpyxl
+import textdistance
+import datetime
+from io import StringIO, BytesIO
+from trytond.model import ModelSQL, ModelView, fields
+from trytond.wizard import Wizard, StateView, StateAction, Button
+from trytond.pool import Pool
+from trytond.pyson import PYSONEncoder, Eval, Bool
+from trytond.transaction import Transaction
+from trytond.exceptions import UserError, UserWarning
+from trytond.i18n import gettext
+from trytond.config import config
+from trytond.rpc import RPC
+
+distance_threshold = config.getfloat('importer', 'distance_threshold',
+    default=0.6)
+
+data_sources = [
+    ('binary', 'File'),
+    ('text', 'Copy & Paste'),
+    ('url', 'URL'),
+    ]
+
+def grouped_slice(records, count=None):
+    'grouped_slice implementation that works with iterators'
+    if count is None:
+        count = Transaction().database.IN_MAX
+
+    chunk = []
+    counter = 0
+    for record in records:
+        chunk.append(record)
+        counter += 1
+        if counter % count == 0:
+            yield chunk
+            chunk = []
+    if chunk:
+        yield chunk
+
+
+class Data:
+    def __init__(self, data_source, binary_data, text_data, url_data):
+        self.data_source = data_source
+        self.binary_data = binary_data
+        self.text_data = text_data
+        self.url_data = url_data
+
+    def get_data_file(self):
+        if self.data_source == 'binary' and self.binary_data:
+            return BytesIO(self.binary_data)
+        elif self.data_source == 'text' and self.text_data:
+            return StringIO(self.text_data)
+        elif self.data_source == 'url' and self.url_data:
+            url = self.url_data
+            if ('docs.google.com' in url and not 'export' in url):
+                # Expected URL:
+                # https://docs.google.com/spreadsheets/d/19DjZIGvNj1-Z4e4Q4SGqlrnKSAQyMz0JDhhgs2Xbf8w/edit#gid=0
+                # New URL:
+                # https://docs.google.com/spreadsheets/d/19DjZIGvNj1-Z4e4Q4SGqlrnKSAQyMz0JDhhgs2Xbf8w/export?format=xlsx&id=19DjZIGvNj1-Z4e4Q4SGqlrnKSAQyMz0JDhhgs2Xbf8w&gid=0
+                main, _, extra = url.rpartition('/')
+                url = main + '/export?format=xlsx&gid=0'
+                if '#' in extra:
+                    url += '&' + extra.split('#')[-1]
+            with urllib.request.urlopen(url) as f:
+                data = f.read()
+            return BytesIO(data)
+        else:
+            raise UserError()
+
+    def get_data(self):
+        'Return a list of lists'
+
+        # Process XLSX files
+        try:
+            book = openpyxl.load_workbook(filename=self.get_data_file(),
+                data_only=True)
+        except:
+            book = None
+        if book:
+            sheet = book.active
+            rows = []
+            for row in sheet.iter_rows():
+                rows.append([x.value for x in row])
+            return {
+                'type': 'xlsx',
+                'has_header': False,
+                'header_reliable': False,
+                'rows': rows,
+                }
+
+        # Process JSON and YAML files
+        try:
+            content = json.load(self.get_data_file())
+            type = 'json'
+        except:
+            try:
+                content = yaml.safe_load(self.get_data_file())
+                type = 'yaml'
+            except:
+                content = None
+        if isinstance(content, list):
+            if all(isinstance(x, list) for x in content):
+                return {
+                    'type': type,
+                    'has_header': False,
+                    'header_reliable': True,
+                   'rows': content,
+                    }
+            if all(isinstance(x, dict) for x in content):
+                # TODO: We're considering that all records have all the keys
+                rows = []
+                rows.append([x for x in sorted(content[0].keys())])
+                for item in content:
+                    row = []
+                    for key in sorted(item.keys()):
+                        row.append(item[key])
+                    rows.append(row)
+                return {
+                    'type': type,
+                    'has_header': True,
+                    'header_reliable': True,
+                    'rows': rows,
+                    }
+
+        # Process CSV files
+        try:
+            data = self.get_data_file()
+            rows = []
+            sniffer = csv.Sniffer()
+            chunk = data.read(1024)
+            dialect = sniffer.sniff(chunk)
+            has_header = sniffer.has_header(chunk)
+            data.seek(0)
+            reader = csv.reader(data, dialect)
+            for row in reader:
+                rows.append(row)
+            return {
+                'type': 'csv',
+                'has_header': has_header,
+                'header_reliable': False,
+                'rows': rows,
+                }
+        except:
+            pass
+
+        return {
+            'type': 'none',
+            'has_header': False,
+            'header_reliable': False,
+            'rows': [],
+            }
+
+class Importer(ModelSQL, ModelView):
+    'Importer'
+    __name__ = 'importer'
+    name = fields.Char('Name', required=True)
+    method = fields.Selection('get_methods', 'Format', required=True)
+    model = fields.Function(fields.Many2One('ir.model', 'Model'),
+        'on_change_with_model')
+    template = fields.Boolean('Template', help="Check to indicate that this "
+        "importer is a template and thus should appear in the import wizard.")
+    has_header = fields.Boolean('Has Header?')
+    use_header = fields.Boolean('Use Header?', states={
+            'invisible': ~Eval('has_header'),
+            }, depends=['has_header'])
+    data_source = fields.Selection([(None, ''),] + data_sources, 'Data Source')
+    binary_data = fields.Binary('Data', states={
+            'invisible': Eval('data_source') != 'binary',
+            })
+    text_data = fields.Text('Data', states={
+            'invisible': Eval('data_source') != 'text',
+            })
+    url_data = fields.Char('Data URL', states={
+            'invisible': Eval('data_source') != 'url',
+            })
+    columns = fields.One2Many('importer.column', 'importer', 'Column')
+
+    @classmethod
+    def __setup__(cls):
+        super().__setup__()
+        cls._buttons.update({
+                'sync_columns': {},
+                'detect': {
+                    'icon': 'importer-detect',
+                    'invisible': ~Bool(Eval('data_source')),
+                    },
+                'import_': {
+                    'icon': 'importer-upload',
+                    'invisible': ~Bool(Eval('data_source')),
+                    },
+                })
+
+    @classmethod
+    def create(cls, vlist):
+        importers = super().create(vlist)
+        cls.sync_columns(importers)
+        return importers
+
+    @classmethod
+    def write(cls, *args):
+        pool = Pool()
+        Warning = pool.get('res.user.warning')
+
+        actions = iter(args)
+        for importers, values in zip(actions, actions):
+            for importer in importers:
+                if 'method' in values and values['method'] != importer.method:
+                    key = 'importer_change_method'
+                    if Warning.check(key):
+                        raise UserWarning(key,
+                            gettext('importer.change_method_warning',
+                                name=importer.name))
+
+        super().write(*args)
+        cls.sync_columns(sum(args[::2], []))
+
+    @classmethod
+    @ModelView.button
+    def sync_columns(cls, importers):
+        pool = Pool()
+        Column = pool.get('importer.column')
+
+        to_delete = []
+        to_save = []
+        for importer in importers:
+            if not importer.model:
+                continue
+            needed = set()
+            for field in importer.model.fields:
+                needed.add(field)
+
+            for column in importer.columns:
+                if column.field in needed:
+                    needed.remove(column.field)
+                else:
+                    to_delete.append(column)
+
+            for field in needed:
+                if field.name == 'id':
+                    continue
+                column = Column()
+                column.importer = importer
+                column.field = field
+                to_save.append(column)
+
+        Column.delete(to_delete)
+        Column.save(to_save)
+
+    @classmethod
+    @ModelView.button
+    def detect(cls, importers):
+        pool = Pool()
+        Column = pool.get('importer.column')
+
+        columns = []
+        for importer in importers:
+            item = importer.get_data()
+            rows = item['rows']
+            has_header = item['has_header']
+            header_reliable = item['header_reliable']
+
+            use_header = has_header
+            if has_header or not header_reliable:
+                use_header = importer.detect_header(rows[0])
+                columns += importer.columns
+
+            importer.has_header = use_header
+            importer.use_header = use_header
+
+        cls.save(importers)
+        Column.save(columns)
+
+    def detect_header(self, row):
+        pool = Pool()
+        Lang = pool.get('ir.lang')
+        Field = pool.get('ir.model.field')
+
+        field_ids = []
+        strings = {}
+        for column in self.columns:
+            field_ids.append(column.field.id)
+            strings[column.field] = [column.field.name,
+                column.field.field_description]
+
+        langs = Lang.search([
+                ('translatable', '=', True),
+                ('id', '!=', Transaction().context.get('lang', -1)),
+                ])
+        for lang in langs:
+            with Transaction().set_context(language=lang.code):
+                for field in Field.browse(field_ids):
+                    strings[field].append(field.field_description)
+
+
+        use_header = False
+        lev = textdistance.Levenshtein()
+        for column in self.columns:
+            row_minimum = (9, None)
+            for header in row:
+                header_minimum = 9
+                for string in strings[column.field]:
+                    value = lev.normalized_distance(header.lower(),
+                        string.lower())
+                    header_minimum = min(header_minimum, value)
+                if header_minimum < row_minimum[0]:
+                    row_minimum = (header_minimum, header)
+            if row_minimum[0] < distance_threshold:
+                column.name = row_minimum[1]
+                use_header = True
+            else:
+                column.name = None
+
+        return use_header
+
+    @classmethod
+    def get_methods(cls):
+        return [(k, v['string']) for k, v in cls._get_methods().items()]
+
+    @classmethod
+    def _get_methods(cls):
+        return {}
+
+    @property
+    def chunked(self):
+        info = self._get_methods()
+        return info[self.method]['chunked']
+
+    @fields.depends('method')
+    def on_change_with_model(self, name=None):
+        pool = Pool()
+        Model = pool.get('ir.model')
+        item = self._get_methods().get(self.method)
+        if not item:
+            return
+        models = Model.search([('model', '=', item['model'])], limit=1)
+        if models:
+            return models[0].id
+
+    @classmethod
+    @ModelView.button_action('importer.act_import_wizard')
+    def import_(cls, importers):
+        pass
+        #new_records = []
+        #for importer in importers:
+            #new_records += importer.import_data()
+
+    def import_data(self, data=None):
+        # Records will be an iterator
+        method = getattr(self, 'import_' + self.method)
+        new_records = []
+        if self.chunked:
+            for records in grouped_slice(self.get_records(data=data)):
+                new_records += method(records)
+        else:
+            new_records += method(self.get_records(data=data))
+        return new_records
+
+    def get_data_file(self):
+        if self.data_source == 'binary' and self.binary_data:
+            return BytesIO(self.binary_data)
+        elif self.data_source == 'text' and self.text_data:
+            return StringIO(self.text_data)
+        elif self.data_source == 'url' and self.url_data:
+            url = self.url_data
+            if ('docs.google.com' in url and not 'export' in url):
+                # Expected URL:
+                # https://docs.google.com/spreadsheets/d/jZIGvNj2-Z4e4Q4SGqlrnKSAQyMz0JDhhgs2Xbf8w/edit#gid=0
+                # New URL:
+                # https://docs.google.com/spreadsheets/d/jZIGvNj2-Z4e4Q4SGqlrnKSAQyMz0JDhhgs2Xbf8w/export?format=xlsx&gid=0
+                main, _, extra = url.rpartition('/')
+                url = main + '/export?format=xlsx&gid=0'
+                if '#' in extra:
+                    url += '&' + extra.split('#')[-1]
+            with urllib.request.urlopen(url) as f:
+                data = f.read()
+            return BytesIO(data)
+        else:
+            raise UserError()
+
+    def get_data(self, get_data_file=None):
+        'Return a list of lists'
+
+        if not get_data_file:
+            get_data_file = self.get_data_file
+        # Process XLSX files
+        try:
+            book = openpyxl.load_workbook(filename=get_data_file(),
+                data_only=True)
+        except:
+            book = None
+        if book:
+            sheet = book.active
+            rows = []
+            for row in sheet.iter_rows():
+                rows.append([x.value for x in row])
+            return {
+                'type': 'xlsx',
+                'has_header': False,
+                'header_reliable': False,
+                'rows': rows,
+                }
+
+        # Process JSON and YAML files
+        try:
+            content = json.load(get_data_file())
+            type = 'json'
+        except:
+            try:
+                content = yaml.safe_load(get_data_file())
+                type = 'yaml'
+            except:
+                content = None
+        if isinstance(content, list):
+            if all(isinstance(x, list) for x in content):
+                return {
+                    'type': type,
+                    'has_header': False,
+                    'header_reliable': True,
+                   'rows': content,
+                    }
+            if all(isinstance(x, dict) for x in content):
+                # TODO: We're considering that all records have all the keys
+                rows = []
+                rows.append([x for x in sorted(content[0].keys())])
+                for item in content:
+                    row = []
+                    for key in sorted(item.keys()):
+                        row.append(item[key])
+                    rows.append(row)
+                return {
+                    'type': type,
+                    'has_header': True,
+                    'header_reliable': True,
+                    'rows': rows,
+                    }
+
+        # Process CSV files
+        try:
+            data = get_data_file()
+            rows = []
+            sniffer = csv.Sniffer()
+            chunk = data.read(1024)
+            dialect = sniffer.sniff(chunk)
+            has_header = sniffer.has_header(chunk)
+            data.seek(0)
+            reader = csv.reader(data, dialect)
+            for row in reader:
+                rows.append(row)
+            return {
+                'type': 'csv',
+                'has_header': has_header,
+                'header_reliable': False,
+                'rows': rows,
+                }
+        except:
+            pass
+
+        return {
+            'type': 'none',
+            'has_header': False,
+            'header_reliable': False,
+            'rows': [],
+            }
+
+    def get_records(self, raise_errors=True, data=None):
+        '''
+        data is a dictionary with the structure returned by get_data()
+        '''
+        pool = Pool()
+        methods = self._get_methods()
+        Model = pool.get(methods[self.method]['model'])
+
+        if data is None:
+            data = Data(self.data_source, self.binary_data, self.text_data,
+                self.url_data)
+            data = self.get_data()
+
+        rows = data['rows']
+        if not rows:
+            return []
+        indexes = self.get_field_indexes(rows)
+        if self.has_header:
+            rows = rows[1:]
+
+        for row in rows:
+            record = Model()
+            # Loop on columns so we ensure we set a value for all fields
+            # hence importer methods can rely on the field to exist even if it
+            # is None
+            for column in self.columns:
+                index = indexes.get(column.field.name)
+                if index is None:
+                    value = None
+                else:
+                    try:
+                        value = column.cast_value(row[index])
+                    except IndexError:
+                        if raise_errors:
+                            raise UserError(gettext('importer.invalid_index',
+                                    column=column.rec_name,
+                                    importer=self.rec_name))
+                        else:
+                            value = None
+                setattr(record, column.field.name, value)
+            yield record
+
+    def get_field_indexes(self, rows):
+        indexes = {}
+        if self.use_header:
+            header = rows[0]
+            hi = {}
+            for pos in range(len(header)):
+                hi[header[pos]] = pos
+
+            for column in self.columns:
+                index = hi.get(column.name)
+                if index is None:
+                    continue
+                indexes[column.field.name] = index
+        else:
+            indexes = {}
+            for column in self.columns:
+                if not column.name:
+                    continue
+                try:
+                    index = int(column.name) - 1
+                except ValueError:
+                    # Convert column name to index
+                    index = 0
+                    for letter in column.name.upper():
+                        index *= 26
+                        index += ord(letter) - ord('A') + 1
+                    index -= 1
+                indexes[column.field.name] = index
+        return indexes
+
+
+class ImporterColumn(ModelSQL, ModelView):
+    'Importer Column'
+    __name__ = 'importer.column'
+
+    importer = fields.Many2One('importer', 'Importation', required=True,
+        ondelete='CASCADE')
+    model = fields.Function(fields.Many2One('ir.model', 'Model'),
+        'on_change_with_model')
+    field = fields.Many2One('ir.model.field', 'Field', ondelete='CASCADE',
+        required=True, readonly=True,
+        domain=[('model', '=', Eval('model'))], depends=['model'])
+    name = fields.Char('Column Name')
+    format = fields.Selection('_get_formats', 'Format')
+    examples = fields.Function(fields.Char('Examples'),
+        'get_examples')
+
+    @fields.depends('importer', '_parent_importer.model')
+    def on_change_with_model(self, name=None):
+        if self.importer and self.importer.model:
+            return self.importer.model.id
+
+    @classmethod
+    def __setup__(cls):
+          super().__setup__()
+          cls._order.insert(0, ('field.field_description', 'ASC'))
+          cls.__rpc__.update(
+              autocomplete_name=RPC(instantiate=0),
+              )
+
+
+    @classmethod
+    def _get_formats(cls):
+        return [
+            (None, ''),
+            ('keep-spaces', 'Keep Spaces'),
+            ('date-%d/%m/%Y', '%d/%m/%Y'),
+            ('date-%Y-%m-%d', '%Y-%m-%d'),
+            ('decimal-,', 'Decimal (,)'),
+            ('decimal-.', 'Decimal (.)'),
+            ("decimal-'", "Decimal (')"),
+            ]
+
+    @fields.depends('importer', '_parent_importer.has_header')
+    def autocomplete_name(self):
+        if not self.importer:
+            return
+        if not self.importer.has_header or not self.importer.use_header:
+            return
+        rows = self.importer.get_data()['rows']
+        if rows:
+            return sorted([x for x in rows[0] if x])
+        return []
+
+    @classmethod
+    def get_examples(self, columns, name): 
+        pool = Pool()
+        Lang = pool.get('ir.lang')
+
+        language = Transaction().context.get('language') or 'en'
+        language, = Lang.search([('code', '=', language)])
+
+        def value_to_str(value):
+            if isinstance(value, str):
+                return value
+            if isinstance(value, datetime.date):
+                return language.strftime(value)
+            return str(value)
+
+        importers = {}
+        for column in columns:
+            if column.importer in importers:
+                continue
+            records = []
+            for record in column.importer.get_records(raise_errors=False):
+                records.append(record)
+                if len(records) >= 3:
+                    break
+            importers[column.importer] = records
+
+        res = {}
+        for column in columns:
+            records = importers[column.importer]
+            values = [getattr(x, column.field.name) for x in records]
+            if all([x is None for x in values]):
+                res[column.id] = None
+            else:
+                res[column.id] = ' | '.join([value_to_str(x) for x in values])
+        return res
+
+    def cast_value(self, value):
+        if value is None:
+            return value
+        ttype = self.field.ttype
+        if ttype in ('char', 'text'):
+            if isinstance(value, str):
+                if self.format and self.format == 'keep-spaces':
+                    return value
+                return value.strip()
+            else:
+                return str(value)
+        elif ttype in ('integer', 'float', 'numeric'):
+            if isinstance(value, str):
+                if self.format and self.format.startswith('decimal-'):
+                    decimal_symbol = self.format[len('decimal-'):]
+                    for symbol in " ,.'":
+                        if symbol == decimal_symbol:
+                            continue
+                        value = value.replace(symbol, '')
+                    value = value.replace(decimal_symbol, '.')
+            try:
+                if ttype == 'float':
+                    return float(value)
+                elif ttype == 'integer':
+                    return int(value)
+                elif ttype == 'numeric':
+                    if isinstance(value, float):
+                        return Decimal('%.10f' % value)
+                    return Decimal(value)
+            except (ValueError, decimal.InvalidOperation):
+                # TODO: Raise Error
+                return None
+        elif ttype == 'date':
+            if isinstance(value, str):
+                value = value.strip()
+                if self.format and self.format.startswith('date-'):
+                    format = self.format[len('date-'):]
+                else:
+                    format = '%Y-%m-%d'
+                try:
+                    return datetime.datetime.strptime(value, format)
+                except ValueError:
+                    # TODO: Raise Error
+                    return None
+        elif ttype == 'boolean':
+            value = value.strip()
+            if value.lower() in ('false', 'off', '0', ''):
+                return False
+            else:
+                return True
+        return value
+
+    @classmethod
+    def validate(cls, columns):
+        for column in columns:
+            column.check_name()
+
+    def check_name(self):
+        if not self.name or self.importer.use_header:
+            return
+        try:
+            int(self.name)
+        except ValueError:
+            if not re.fullmatch('[A-Z]+', self.name):
+                raise UserError(gettext('importer.invalid_column_name',
+                        name=self.name, column=self.rec_name,
+                        importer=self.importer))
+
+
+class ImportAsk(ModelView):
+    'Import Ask'
+    __name__ = 'importer.import.ask'
+    importer = fields.Many2One('importer', 'Importer', required=True, domain=[
+            ('template', '=', True),
+            ])
+    data_source = fields.Selection(data_sources, 'Data Source', required=True)
+    binary_data = fields.Binary('Data', states={
+            'invisible': Eval('data_source') != 'binary',
+            })
+    text_data = fields.Text('Data', states={
+            'invisible': Eval('data_source') != 'text',
+            })
+    url_data = fields.Char('Data URL', states={
+            'invisible': Eval('data_source') != 'url',
+            })
+
+
+class AskAndImport(Wizard):
+    'Import'
+    __name__ = 'importer.ask_and_import'
+    start_state = 'ask'
+    ask = StateView('importer.import.ask', 'importer.import_ask_view_form', [
+            Button('Cancel', 'end', 'tryton-cancel'),
+            Button('Import', 'import_', 'importer-upload', default=True),
+            ])
+    import_ = StateAction('importer.act_import_open')
+
+    def do_import_(self, action):
+        data = Data(self.ask.data_source, self.ask.binary_data,
+            self.ask.text_data, self.ask.url_data)
+        records = self.ask.importer.import_data(data.get_data())
+
+        # TODO: One tab for each model
+        models = {}
+        for record in records:
+            models.setdefault(record.__name__, []).append(record)
+
+        for model, records in models.items():
+            action['res_model'] = model
+            action['pyson_domain'] = PYSONEncoder().encode(
+                [('id', 'in', [x.id for x in records])],
+                )
+        return action, {}
+
+    def transition_import_(self):
+        return 'end'
+
+
+class Import(Wizard):
+    'Import'
+    __name__ = 'importer.import'
+    start_state = 'import_'
+    import_ = StateAction('importer.act_import_open')
+
+    def do_import_(self, action):
+        pool = Pool()
+        Importer = pool.get('importer')
+
+        # TODO: Support importing several importers at once
+        importer = Importer(Transaction().context.get('active_id'))
+        records = importer.import_data()
+
+        models = {}
+        for record in records:
+            models.setdefault(record.__name__, []).append(record)
+
+        for model, records in models.items():
+            action['res_model'] = model
+            action['pyson_domain'] = PYSONEncoder().encode(
+                [('id', 'in', [x.id for x in records])],
+                )
+        return action, {}
+
+    def transition_import_(self):
+        return 'end'

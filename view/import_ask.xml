@@ -1,0 +1,11 @@
+<form>
+    <label name="importer"/>
+    <field name="importer" colspan="3" widget="selection"/>
+    <label name="data_source"/>
+    <field name="data_source"/>
+    <group id="data" col="1" colspan="2">
+        <field name="binary_data"/>
+        <field name="url_data"/>
+    </group>
+    <field name="text_data" colspan="4" height="300"/>
+</form>
