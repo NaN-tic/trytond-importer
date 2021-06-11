@@ -581,7 +581,8 @@ class ImporterColumn(ModelSQL, ModelView):
             ("decimal-'", "Decimal (')"),
             ]
 
-    @fields.depends('importer', '_parent_importer.has_header')
+    @fields.depends('importer', '_parent_importer.has_header',
+        '_parent_importer.use_header')
     def autocomplete_name(self):
         if not self.importer:
             return
