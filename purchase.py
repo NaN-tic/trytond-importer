@@ -33,7 +33,7 @@ class Importer(metaclass=PoolMeta):
         return methods
 
     @classmethod
-    def import_purchase__header(cls, record):
+    def import_purchase_header(cls, record):
         return (record.reference, record.date, record.party_name)
 
     @classmethod
