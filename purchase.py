@@ -53,8 +53,8 @@ class Importer(metaclass=PoolMeta):
             header = cls.import_purchase_header(record)
             if any(header) and header != previous_header:
                 previous_header = header
-                values = Purchase.default_get(                                  
-                    list(Purchase._fields.keys()), with_rec_name=False)        
+                values = Purchase.default_get(
+                    list(Purchase._fields.keys()), with_rec_name=False)
                 purchase = Purchase(**values)
                 purchases_to_save.append(purchase)
 
@@ -78,7 +78,7 @@ class Importer(metaclass=PoolMeta):
                             product=record.product_code))
 
                 values = Line.default_get(
-                    list(Line._fields.keys()), with_rec_name=False)        
+                    list(Line._fields.keys()), with_rec_name=False)
                 line = Line(**values)
                 line.purchase = purchase
                 line.product = products[0]
