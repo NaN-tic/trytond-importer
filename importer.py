@@ -347,9 +347,6 @@ class Importer(ModelSQL, ModelView):
     @ModelView.button_action('importer.act_import_wizard')
     def import_(cls, importers):
         pass
-        #new_records = []
-        #for importer in importers:
-            #new_records += importer.import_data()
 
     def import_data(self, data=None):
         # Records will be an iterator
@@ -596,7 +593,7 @@ class ImporterColumn(ModelSQL, ModelView):
         return []
 
     @classmethod
-    def get_examples(self, columns, name): 
+    def get_examples(self, columns, name):
         pool = Pool()
         Lang = pool.get('ir.lang')
 

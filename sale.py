@@ -57,8 +57,8 @@ class Importer(metaclass=PoolMeta):
             header = cls.import_sale_header(record)
             if any(header) and header != previous_header:
                 previous_header = header
-                values = Sale.default_get(                                  
-                    list(Sale._fields.keys()), with_rec_name=False)        
+                values = Sale.default_get(
+                    list(Sale._fields.keys()), with_rec_name=False)
                 sale = Sale(**values)
                 sales_to_save.append(sale)
 
@@ -90,7 +90,7 @@ class Importer(metaclass=PoolMeta):
                     if addresses:
                         sale.shipment_address = addresses[0]
 
-                
+
             if record.product_code:
                 products = Product.search([
                         ('code', '=', record.product_code),
@@ -101,7 +101,7 @@ class Importer(metaclass=PoolMeta):
                             product=record.product_code))
 
                 values = Line.default_get(
-                    list(Line._fields.keys()), with_rec_name=False)        
+                    list(Line._fields.keys()), with_rec_name=False)
                 line = Line(**values)
                 line.sale = sale
                 line.product = products[0]
