@@ -1,7 +1,9 @@
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from decimal import Decimal
-import logging
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
+
 
 class ImporterAccountMove(ModelView):
     'Importer AccountMove'
@@ -16,7 +18,6 @@ class ImporterAccountMove(ModelView):
     credit = fields.Float('Credit')
     description = fields.Char('Description')
 
-logger = logging.getLogger(__name__)
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -53,6 +54,7 @@ class Importer(metaclass=PoolMeta):
         accounts = dict((x.code, x) for x in Account.search([]))
         clients = cls.get_party_dict()
         journals = dict((x.code, x) for x in Journal.search([]))
+        periods = {}
 
         moves_to_save = []
         previous_header = None
@@ -60,36 +62,46 @@ class Importer(metaclass=PoolMeta):
             header = cls.import_account_move_header(record)
             account = accounts.get(record.account_code, None)
             if not account:
-                logger.info("Account: %s not found " % record.account_code)
-                continue
+                raise UserError(gettext('importer.account_not_found',
+                        account=record.account_code))
+
             if header and header != previous_header:
                 previous_header = header
                 values = Move.default_get(list(Move._fields.keys()),
                     with_rec_name=False)
 
-                period, = Period.search([
-                    ('start_date', '<=', record.effective_date),
-                    ('end_date', '>=', record.effective_date)])
+                date = record.effective_date
+                period = periods.get(date)
+                if not period:
+                    period = Period.search([
+                            ('start_date', '<=', date),
+                            ('end_date', '>=', date),
+                            ('type', '=', 'standard'),
+                            ], limit=1)
+                    if not period:
+                        raise UserError(gettext('importer.no_period_for_date',
+                                date=date.strftime('%Y-%m-%d')))
+                    period = period[0]
+                    periods[date] = period[0]
                 move = Move(**values)
-                move.date = record.effective_date
+                move.number = record.number
+                move.date = date
                 move.period = period
                 move.journal = journals.get(record.journal_code)
                 move.lines = []
                 moves_to_save.append(move)
-                move.number = record.number
 
             party = clients.get(record.party_code)
+            if account.party_required and not party:
+                raise UserError(gettext('importer.party_required_for_account',
+                        account=record.account_code, move=move.number))
+
             line = Line()
             line.account = account
             line.description = record.description
             line.debit = Decimal("%.2f" % (record.debit or 0))
             line.credit = Decimal("%.2f" % (record.credit or 0))
             line.party = party
-            if line.account.party_required and not line.party:
-                logger.info("Account: %s configured as party required, but"
-                    "party not passed on line on record %s-%s" % (
-                        line.account.code, record.account_code,
-                        record.party_code))
 
             move.lines += (line, )
         Move.save(moves_to_save)
