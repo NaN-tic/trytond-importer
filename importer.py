@@ -76,7 +76,6 @@ class Data:
 
     def get_data(self):
         'Return a list of lists'
-
         # Process XLSX files
         try:
             book = openpyxl.load_workbook(filename=self.get_data_file(),
@@ -487,6 +486,8 @@ class Importer(ModelSQL, ModelView):
             rows = rows[1:]
 
         for row in rows:
+            if not any(row):
+                continue
             record = Model()
             # Loop on columns so we ensure we set a value for all fields
             # hence importer methods can rely on the field to exist even if it
