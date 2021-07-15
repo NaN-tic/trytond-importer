@@ -104,10 +104,13 @@ class Importer(metaclass=PoolMeta):
         accounts_to_save = []
         party_to_save = []
         for record in records:
+            if record.account_code is None:
+                continue
             header = cls.import_account_move_header(record)
             account = accounts.get(record.account_code, None)
             if not account:
                 if create_account:
+
                     account = cls.create_account(record.account_code,
                         record.account_code, chart)
                 if not account:
@@ -135,7 +138,7 @@ class Importer(metaclass=PoolMeta):
                     period = period[0]
                     periods[date] = period
                 move = Move(**values)
-                move.number = record.post_number
+                move.post_number = record.number
                 move.date = date
                 move.period = period
                 move.journal = journals.get(record.journal_code)
