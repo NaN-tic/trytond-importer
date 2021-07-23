@@ -14,7 +14,9 @@ class ImporterAccountMove(ModelView):
     journal_code = fields.Char('Journal Code')
     effective_date = fields.Date('Effecive Date')
     account_code = fields.Char('Account Code')
+    account_name = fields.Char('Account Name')
     party_code = fields.Char('Party Code')
+    party_name = fields.Char('Party Name')
     debit = fields.Float('Debit')
     credit = fields.Float('Credit')
     description = fields.Char('Description')
@@ -110,9 +112,8 @@ class Importer(metaclass=PoolMeta):
             account = accounts.get(record.account_code, None)
             if not account:
                 if create_account:
-
                     account = cls.create_account(record.account_code,
-                        record.account_code, chart)
+                        record.account_name, chart)
                 if not account:
                     raise UserError(gettext('importer.account_not_found',
                         account=record.account_code))
@@ -138,8 +139,8 @@ class Importer(metaclass=PoolMeta):
                     period = period[0]
                     periods[date] = period
                 move = Move(**values)
-                move.post_number = record.number
                 move.date = date
+                move.post_number = record.number
                 move.period = period
                 move.journal = journals.get(record.journal_code)
                 move.lines = []
@@ -151,7 +152,7 @@ class Importer(metaclass=PoolMeta):
                     raise UserError(gettext(
                         'importer.party_required_for_account',
                         account=record.account_code, move=move.number))
-                party = _create_party(record.party_code, record.description)
+                party = _create_party(record.party_code, record.party_name)
                 clients[party.code] = party
                 party_to_save.append(party)
 
@@ -189,6 +190,8 @@ class Importer(metaclass=PoolMeta):
         similar_account = self.get_similar_account(code, chart, digits)
         account = self.similar_account(similar_account, {'code': code,
             'name': name})
+        account.code =code
+        account.name = name
         chart[code] = account
         return account
 
