@@ -8,6 +8,7 @@ from decimal import Decimal
 import openpyxl
 import textdistance
 import datetime
+import charset_normalizer
 from io import StringIO, BytesIO
 from trytond.model import ModelSQL, ModelView, fields
 from trytond.wizard import Wizard, StateView, StateAction, Button
@@ -52,8 +53,17 @@ class Data:
         self.text_data = text_data
         self.url_data = url_data
 
-    def get_data_file(self):
+    @staticmethod
+    def to_str(d):
+        return charset_normalizer.from_bytes(d).best().output().decode('utf-8')
+
+    def get_data_file(self, force_text=False):
+        'force_text makes the method always return a StringIO.'
+        'Required by csv reader, which only supports text files.'
+
         if self.data_source == 'binary' and self.binary_data:
+            if force_text:
+                return StringIO(self.to_str(self.binary_data))
             return BytesIO(self.binary_data)
         elif self.data_source == 'text' and self.text_data:
             return StringIO(self.text_data)
@@ -70,9 +80,14 @@ class Data:
                     url += '&' + extra.split('#')[-1]
             with urllib.request.urlopen(url) as f:
                 data = f.read()
+            if force_text:
+                return StringIO(self.to_str(data))
             return BytesIO(data)
-        else:
-            raise UserError()
+
+        # If no data source or data specified return empty content
+        if force_text:
+            return StringIO(str())
+        return BytesIO(bytes())
 
     def get_data(self):
         'Return a list of lists'
@@ -130,7 +145,7 @@ class Data:
 
         # Process CSV files
         try:
-            data = self.get_data_file()
+            data = self.get_data_file(force_text=True)
             rows = []
             sniffer = csv.Sniffer()
             chunk = data.read(1024)
@@ -260,13 +275,15 @@ class Importer(ModelSQL, ModelView):
 
         columns = []
         for importer in importers:
-            item = importer.get_data()
+            data = Data(importer.data_source, importer.binary_data,
+                importer.text_data, importer.url_data)
+            item = data.get_data()
             rows = item['rows']
             has_header = item['has_header']
             header_reliable = item['header_reliable']
 
             use_header = has_header
-            if has_header or not header_reliable:
+            if rows and (has_header or not header_reliable):
                 use_header = importer.detect_header(rows[0])
                 columns += importer.columns
 
@@ -358,113 +375,6 @@ class Importer(ModelSQL, ModelView):
             new_records += method(self.get_records(data=data))
         return new_records
 
-    def get_data_file(self):
-        if self.data_source == 'binary' and self.binary_data:
-            return BytesIO(self.binary_data)
-        elif self.data_source == 'text' and self.text_data:
-            return StringIO(self.text_data)
-        elif self.data_source == 'url' and self.url_data:
-            url = self.url_data
-            if ('docs.google.com' in url and not 'export' in url):
-                # Expected URL:
-                # https://docs.google.com/spreadsheets/d/jZIGvNj2-Z4e4Q4SGqlrnKSAQyMz0JDhhgs2Xbf8w/edit#gid=0
-                # New URL:
-                # https://docs.google.com/spreadsheets/d/jZIGvNj2-Z4e4Q4SGqlrnKSAQyMz0JDhhgs2Xbf8w/export?format=xlsx&gid=0
-                main, _, extra = url.rpartition('/')
-                url = main + '/export?format=xlsx&gid=0'
-                if '#' in extra:
-                    url += '&' + extra.split('#')[-1]
-            with urllib.request.urlopen(url) as f:
-                data = f.read()
-            return BytesIO(data)
-        else:
-            raise UserError()
-
-    def get_data(self, get_data_file=None):
-        'Return a list of lists'
-
-        if not get_data_file:
-            get_data_file = self.get_data_file
-        # Process XLSX files
-        try:
-            book = openpyxl.load_workbook(filename=get_data_file(),
-                data_only=True)
-        except:
-            book = None
-        if book:
-            sheet = book.active
-            rows = []
-            for row in sheet.iter_rows():
-                rows.append([x.value for x in row])
-            return {
-                'type': 'xlsx',
-                'has_header': False,
-                'header_reliable': False,
-                'rows': rows,
-                }
-
-        # Process JSON and YAML files
-        try:
-            content = json.load(get_data_file())
-            type = 'json'
-        except:
-            try:
-                content = yaml.safe_load(get_data_file())
-                type = 'yaml'
-            except:
-                content = None
-        if isinstance(content, list):
-            if all(isinstance(x, list) for x in content):
-                return {
-                    'type': type,
-                    'has_header': False,
-                    'header_reliable': True,
-                   'rows': content,
-                    }
-            if all(isinstance(x, dict) for x in content):
-                # TODO: We're considering that all records have all the keys
-                rows = []
-                rows.append([x for x in sorted(content[0].keys())])
-                for item in content:
-                    row = []
-                    for key in sorted(item.keys()):
-                        row.append(item[key])
-                    rows.append(row)
-                return {
-                    'type': type,
-                    'has_header': True,
-                    'header_reliable': True,
-                    'rows': rows,
-                    }
-
-        # Process CSV files
-        try:
-            data = get_data_file()
-            rows = []
-            sniffer = csv.Sniffer()
-            chunk = data.read(1024)
-            dialect = sniffer.sniff(chunk)
-            has_header = sniffer.has_header(chunk)
-            data.seek(0)
-            reader = csv.reader(data, dialect)
-            for row in reader:
-                rows.append(row)
-            return {
-                'type': 'csv',
-                'has_header': has_header,
-                'header_reliable': False,
-                'rows': rows,
-                }
-        except:
-            pass
-
-        return {
-            'type': 'none',
-            'has_header': False,
-            'header_reliable': False,
-            'rows': [],
-            }
-
     def get_records(self, raise_errors=True, data=None):
         '''
         data is a dictionary with the structure returned by get_data()
@@ -476,7 +386,7 @@ class Importer(ModelSQL, ModelView):
         if data is None:
             data = Data(self.data_source, self.binary_data, self.text_data,
                 self.url_data)
-            data = self.get_data()
+            data = data.get_data()
 
         rows = data['rows']
         if not rows:
@@ -583,13 +493,27 @@ class ImporterColumn(ModelSQL, ModelView):
             ]
 
     @fields.depends('importer', '_parent_importer.has_header',
-        '_parent_importer.use_header')
+        '_parent_importer.use_header', '_parent_importer.id',
+        '_parent_importer.data_source', '_parent_importer.binary_data',
+        '_parent_importer.text_data', '_parent_importer.url_data')
     def autocomplete_name(self):
+        pool = Pool()
+        Importer = pool.get('importer')
+
         if not self.importer:
             return
         if not self.importer.has_header or not self.importer.use_header:
             return
-        rows = self.importer.get_data()['rows']
+        if self.importer.id >= 0 and isinstance(self.importer.binary_data, int):
+            # The client will send the size of the binary field instead of its
+            # content if it does not have it loaded.
+            importer = Importer(self.importer.id)
+            binary_data = importer.binary_data
+        else:
+            binary_data = self.importer.binary_data
+        data = Data(self.importer.data_source, binary_data,
+            self.importer.text_data, self.importer.url_data)
+        rows = data.get_data()['rows']
         if rows:
             return sorted([x for x in rows[0] if x])
         return []
