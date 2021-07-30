@@ -9,7 +9,7 @@
         <record model="ir.message" id="single_party_error">
             <field name="text">There must be one and only one party with "%(party)s".</field>
         </record>
-        <record model="ir.message" id="single_product_errro">
+        <record model="ir.message" id="single_product_error">
             <field name="text">There must be one and only one product with "%(product)s".</field>
         </record>
         <record model="ir.message" id="change_method_warning">
