@@ -6,6 +6,9 @@
         <record model="ir.message" id="invalid_column_name">
             <field name="text">Name "%(name)s" is not valid for column "%(column)s" in importer "%(importer)s".</field>
         </record>
+	<record model="ir.message" id="no_records_imported">
+            <field name="text">No records where imported using importer "%(importer)s".</field>
+	</record>
         <record model="ir.message" id="single_party_error">
             <field name="text">There must be one and only one party with "%(party)s".</field>
         </record>
