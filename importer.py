@@ -731,6 +731,9 @@ class AskAndImport(Wizard):
         data = Data(self.ask.data_source, self.ask.binary_data,
             self.ask.text_data, self.ask.url_data)
         records = self.ask.importer.import_data(data.get_data())
+        if not records:
+            raise UserError(gettext('importer.no_records_imported',
+                importer=self.ask.importer.rec_name))
 
         # TODO: One tab for each model
         models = {}
@@ -761,6 +764,9 @@ class Import(Wizard):
         # TODO: Support importing several importers at once
         importer = Importer(Transaction().context.get('active_id'))
         records = importer.import_data()
+        if not records:
+            raise UserError(gettext('importer.no_records_imported',
+                importer=importer.rec_name))
 
         models = {}
         for record in records:
