@@ -43,16 +43,15 @@ class Importer(metaclass=PoolMeta):
             if record.number:
                 numbers.append(record.number)
 
-        numbers = [x.number for x in records if x.number]
         products = dict((x.code, x) for x in
             Product.search([('code', 'in', product_codes)]))
-        lots = dict((x.number, x) for x in Lot.search([
+        lots = dict(((x.product.code, x.number), x) for x in Lot.search([
                     ('number', 'in', numbers),
                     ]))
 
         to_save = []
         for record in records:
-            lot = lots.get(record.number)
+            lot = lots.get((record.product_code, record.number))
             if not lot:
                 lot = Lot()
                 lot.number = record.number
@@ -63,7 +62,7 @@ class Importer(metaclass=PoolMeta):
             if record.expiration_date:
                 lot.expiration_date = record.expiration_date
             if record.date:
-                lot.date = record.date
+                lot.lot_date = record.date
             if record.shelf_life_expiration_date:
                 lot.shelf_life_expiration_date = (
                     record.shelf_life_expiration_date)
