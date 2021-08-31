@@ -55,7 +55,7 @@ class Importer(metaclass=PoolMeta):
             addresses = []
             address = Address()
             address.street = record.street
-            address.zip = record.postal_code
+            address.postal_code = record.postal_code
             address.city = record.city
             # TODO: Country and subdivision
             addresses.append(address)
