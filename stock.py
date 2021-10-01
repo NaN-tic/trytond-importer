@@ -20,6 +20,7 @@ class ImporterLocation(ModelView):
     __name__ = 'importer.location'
     name = fields.Char('Name')
     parent = fields.Char('Parent')
+    code = fields.Char('Code')
 
 
 class Importer(metaclass=PoolMeta):
@@ -59,6 +60,8 @@ class Importer(metaclass=PoolMeta):
             if not location:
                 location = Location()
                 location.name = record.name
+            if record.code is not None:
+                location.code = record.code
 
             to_save[record.name] = location
             updated_locations.append(location)
