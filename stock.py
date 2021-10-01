@@ -13,6 +13,7 @@ class ImporterStockMove(ModelView):
     product_code = fields.Char('Product Code')
     quantity = fields.Float('Quantity')
     cost_price = fields.Numeric('Cost Price')
+    unit_price = fields.Numeric('Unit Price')
 
 
 class ImporterLocation(ModelView):
@@ -100,6 +101,7 @@ class Importer(metaclass=PoolMeta):
             move.product = product
             move.quantity = record.quantity
             move.cost_price = record.cost_price
+            move.unit_price = record.unit_price
             move.uom = product.default_uom
             to_save.append(move)
         Move.save(to_save)
