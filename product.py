@@ -53,7 +53,7 @@ class Importer(metaclass=PoolMeta):
             product = Product()
             product.code = record.code
             product.cost_price = record.cost_price or Decimal(0)
-            
+
             template.products = [product]
 
         Template.save(to_save)
