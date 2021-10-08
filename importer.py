@@ -404,6 +404,7 @@ class Importer(ModelSQL, ModelView):
         for column in self.columns:
             row_minimum = (9, None)
             for header in row:
+                header = str(header)
                 header_minimum = 9
                 for string in strings[column.field]:
                     value = lev.normalized_distance(header.lower(),

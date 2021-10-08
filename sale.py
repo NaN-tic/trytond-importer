@@ -17,6 +17,7 @@ class ImporterSale(ModelView):
     product_code = fields.Char('Product Code')
     quantity = fields.Float('Product Quantity')
     unit_price = fields.Numeric('Unit Price')
+    currency = fields.Char('Currency')
 
 
 class Importer(metaclass=PoolMeta):
@@ -47,8 +48,12 @@ class Importer(metaclass=PoolMeta):
         Party = pool.get('party.party')
         Product = pool.get('product.product')
         Address = pool.get('party.address')
+        Currency = pool.get('currency.currency')
 
         exp = Decimal(str(10.0 ** -Line.unit_price.digits[1]))
+
+        currencies = {x.name: x for x in Currency.search([])}
+        currencies.update({x.symbol: x for x in Currency.search([])})
 
         sales_to_save = []
         lines_to_save = []
@@ -64,6 +69,9 @@ class Importer(metaclass=PoolMeta):
 
                 sale.reference = record.reference
                 sale.sale_date = record.date
+
+                if record.currency and record.currency in currencies.keys():
+                    sale.currency = currencies.get(record.currency)
 
                 if record.party_name:
                     parties = Party.search([('name', '=', record.party_name)])

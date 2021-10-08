@@ -205,8 +205,7 @@ class Importer(metaclass=PoolMeta):
                 product.wine_likely_alcohol_content = record.alcohol_content
             template.products += (product,)
             products[record.code+(record.variant_code or '')] = product
-
-            #TODO codi aranzel
+            template.products = [product]
 
         ProductCategory.save(categories.values())
         Template.save(to_save)

@@ -1,17 +1,25 @@
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
-from trytond.exceptions import UserError
-from trytond.i18n import gettext
 
 
-class ImporterLot(ModelView):
-    'Importer Lot'
-    __name__ = 'importer.lot'
+class ImporterStockMove(ModelView):
+    'Importer Stock Move'
+    __name__ = 'importer.stock.move'
+
+    from_location = fields.Char('From Location')
+    to_location = fields.Char('To Location')
     product_code = fields.Char('Product Code')
-    number = fields.Char('Number')
-    date = fields.Date('Date')
-    expiration_date = fields.Date('Expiry Date')
-    shelf_life_expiration_date = fields.Date('Shelf Life Expiration Date')
+    quantity = fields.Float('Quantity')
+    cost_price = fields.Numeric('Cost Price')
+    unit_price = fields.Numeric('Unit Price')
+
+
+class ImporterLocation(ModelView):
+    'Importer Location'
+    __name__ = 'importer.location'
+    name = fields.Char('Name')
+    parent = fields.Char('Parent')
+    code = fields.Char('Code')
 
 
 class Importer(metaclass=PoolMeta):
@@ -21,52 +29,78 @@ class Importer(metaclass=PoolMeta):
     def _get_methods(cls):
         methods = super()._get_methods()
         methods.update({
-                'lot': {
-                    'string': 'Lot',
-                    'model': 'importer.lot',
+                'location': {
+                    'string': 'Location',
+                    'model': 'importer.location',
                     'chunked': True,
                     },
+                'stock_move': {
+                    'string': 'Stock Move',
+                    'model': 'importer.stock.move',
+                    'chunked': True,
+                    }
                 })
         return methods
 
     @classmethod
-    def import_lot(cls, records):
+    def import_location(cls, records):
         pool = Pool()
-        Product = pool.get('product.product')
-        Lot = pool.get('stock.lot')
+        Location = pool.get('stock.location')
 
-        numbers = []
-        product_codes = []
+        locations = {x.name: x for x in Location.search([])}
+
+        to_save = {}
+        updated_locations = []
         for record in records:
-            if record.product_code:
-                product_codes.append(record.product_code)
-            if record.number:
-                numbers.append(record.number)
+            if not record.name:
+                continue
 
-        products = dict((x.code, x) for x in
-            Product.search([('code', 'in', product_codes)]))
-        lots = dict(((x.product.code, x.number), x) for x in Lot.search([
-                    ('number', 'in', numbers),
-                    ]))
+            location = locations.get(record.name)
+            if not location:
+                location = Location()
+                location.name = record.name
+            if record.code is not None:
+                location.code = record.code
+
+            to_save[record.name] = location
+            updated_locations.append(location)
+            if record.parent is not None:
+                if record.parent in to_save:
+                    Location.save(to_save.values())
+                    locations.update(to_save)
+                    to_save = {}
+
+                location.parent = locations.get(record.parent)
+        Location.save(to_save.values())
+        return updated_locations
+
+    @classmethod
+    def import_stock_move(cls, records):
+        pool = Pool()
+        Move = pool.get('stock.move')
+        Location = pool.get('stock.location')
+        Product = pool.get('product.product')
+
+        locations = {x.name: x for x in Location.search([])}
+        products = {x.code: x for x in Product.search([])}
 
         to_save = []
         for record in records:
-            lot = lots.get((record.product_code, record.number))
-            if not lot:
-                lot = Lot()
-                lot.number = record.number
-                lot.product = products.get(record.product_code)
-                if not lot.product:
-                    raise UserError(gettext('importer.single_product_error',
-                            product=record.product_code))
-            if record.expiration_date:
-                lot.expiration_date = record.expiration_date
-            if record.date:
-                lot.lot_date = record.date
-            if record.shelf_life_expiration_date:
-                lot.shelf_life_expiration_date = (
-                    record.shelf_life_expiration_date)
-            to_save.append(lot)
+            move = Move()
+            from_location = locations.get(record.from_location)
+            to_location = locations.get(record.to_location)
+            product = products.get(record.product_code)
 
-        Lot.save(to_save)
+            if (not from_location or not to_location or not product
+                    or not record.quantity):
+                continue
+            move.from_location = from_location
+            move.to_location = to_location
+            move.product = product
+            move.quantity = record.quantity
+            move.cost_price = record.cost_price
+            move.unit_price = record.unit_price
+            move.uom = product.default_uom
+            to_save.append(move)
+        Move.save(to_save)
         return to_save
