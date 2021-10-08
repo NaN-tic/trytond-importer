@@ -89,6 +89,17 @@
             <field name="group" ref="group_importer"/>
         </record>
 
+        <record model="ir.model.button" id="importer_check_connection_button">
+            <field name="name">check_connection</field>
+            <field name="string">Check Connection</field>
+            <field name="model" search="[('model', '=', 'importer')]"/>
+        </record>
+
+        <record model="ir.model.button-res.group" id="importer_check_connection_button_group_importer">
+            <field name="button" ref="importer_check_connection_button"/>
+            <field name="group" ref="group_importer"/>
+        </record>
+
         <record model="ir.ui.view" id="importer_column_view_form">
             <field name="model">importer.column</field>
             <field name="type">form</field>
