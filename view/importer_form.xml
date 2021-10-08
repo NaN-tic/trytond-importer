@@ -13,13 +13,31 @@
     </group>
     <label name="data_source"/>
     <field name="data_source"/>
+    <label name="sql_source"/>
+    <field name="sql_source"/>
+    <group id="sql" colspan="6" col="6">
+      <label name="server"/>
+      <field name="server"/>
+      <label name="database"/>
+      <field name="database"/>
+      <label name="schema"/>
+      <field name="schema"/>
+      <label name="user"/>
+      <field name="user"/>
+      <label name="password"/>
+      <field name="password" widget="password"/>
+    </group>
+
+
     <group id="data" colspan="3" col="1">
         <field name="binary_data"/>
         <field name="url_data"/>
+        <field name="sql_data"/>
     </group>
-    <group id="buttons" col="-1">
+    <group id="buttons" col="-1" colspan="3">
         <button name="detect"/>
         <button name="import_"/>
+        <button name="check_connection"/>
     </group>
     <separator name="text_data" colspan="6"/>
     <field name="text_data" colspan="6" height="200"/>

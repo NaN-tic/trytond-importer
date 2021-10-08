@@ -1,0 +1,660 @@
+#
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "field:importer,binary_data:"
+msgid "Data"
+msgstr "Dades"
+
+msgctxt "field:importer,columns:"
+msgid "Column"
+msgstr "Columna"
+
+msgctxt "field:importer,data_source:"
+msgid "Data Source"
+msgstr "Font de dades"
+
+msgctxt "field:importer,database:"
+msgid "Database"
+msgstr "Base de dades"
+
+msgctxt "field:importer,has_header:"
+msgid "Has Header?"
+msgstr "Te capçalera?"
+
+msgctxt "field:importer,method:"
+msgid "Format"
+msgstr "Format"
+
+msgctxt "field:importer,model:"
+msgid "Model"
+msgstr "Model"
+
+msgctxt "field:importer,name:"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "field:importer,password:"
+msgid "Password"
+msgstr "Contrasenya"
+
+msgctxt "field:importer,schema:"
+msgid "schema"
+msgstr "Esquema"
+
+msgctxt "field:importer,server:"
+msgid "Server"
+msgstr "Servidor"
+
+msgctxt "field:importer,sql_data:"
+msgid "SQL Queries"
+msgstr "Consulta SQL"
+
+msgctxt "field:importer,sql_source:"
+msgid "SQL Source"
+msgstr "Consulta SQL"
+
+msgctxt "field:importer,template:"
+msgid "Template"
+msgstr "Plantilla"
+
+msgctxt "field:importer,text_data:"
+msgid "Data"
+msgstr "Dades"
+
+msgctxt "field:importer,url_data:"
+msgid "Data URL"
+msgstr "Url de dades"
+
+msgctxt "field:importer,use_header:"
+msgid "Use Header?"
+msgstr "Te capçalera"
+
+msgctxt "field:importer,user:"
+msgid "User"
+msgstr "Usuari"
+
+msgctxt "field:importer.account.move,account_code:"
+msgid "Account Code"
+msgstr "Codi compte"
+
+msgctxt "field:importer.account.move,account_name:"
+msgid "Account Name"
+msgstr "Nom compte"
+
+msgctxt "field:importer.account.move,credit:"
+msgid "Credit"
+msgstr "Haver"
+
+msgctxt "field:importer.account.move,debit:"
+msgid "Debit"
+msgstr "Deure"
+
+msgctxt "field:importer.account.move,description:"
+msgid "Description"
+msgstr "Descripció"
+
+msgctxt "field:importer.account.move,effective_date:"
+msgid "Effecive Date"
+msgstr "Data efectiva"
+
+msgctxt "field:importer.account.move,journal_code:"
+msgid "Journal Code"
+msgstr "Codi de diari"
+
+msgctxt "field:importer.account.move,number:"
+msgid "Move Number"
+msgstr "Número d'asentament"
+
+msgctxt "field:importer.account.move,party_code:"
+msgid "Party Code"
+msgstr "Codi Tercer"
+
+msgctxt "field:importer.account.move,party_name:"
+msgid "Party Name"
+msgstr "Nom del tercer"
+
+msgctxt "field:importer.column,examples:"
+msgid "Examples"
+msgstr "Exemples"
+
+msgctxt "field:importer.column,field:"
+msgid "Field"
+msgstr "Camp"
+
+msgctxt "field:importer.column,format:"
+msgid "Format"
+msgstr "Format"
+
+msgctxt "field:importer.column,importer:"
+msgid "Importation"
+msgstr "Importació"
+
+msgctxt "field:importer.column,model:"
+msgid "Model"
+msgstr "Model"
+
+msgctxt "field:importer.column,name:"
+msgid "Column Name"
+msgstr "Nom columna"
+
+msgctxt "field:importer.import.ask,binary_data:"
+msgid "Data"
+msgstr "Dades"
+
+msgctxt "field:importer.import.ask,data_source:"
+msgid "Data Source"
+msgstr "Font de dades"
+
+msgctxt "field:importer.import.ask,importer:"
+msgid "Importer"
+msgstr "Importador"
+
+msgctxt "field:importer.import.ask,text_data:"
+msgid "Data"
+msgstr "Dades"
+
+msgctxt "field:importer.import.ask,url_data:"
+msgid "Data URL"
+msgstr "Url de dades"
+
+msgctxt "field:importer.lot,date:"
+msgid "Date"
+msgstr "Data"
+
+msgctxt "field:importer.lot,expiration_date:"
+msgid "Expiry Date"
+msgstr "Data de caducitat"
+
+msgctxt "field:importer.lot,number:"
+msgid "Number"
+msgstr "Número"
+
+msgctxt "field:importer.lot,product_code:"
+msgid "Product Code"
+msgstr "Codi producte"
+
+msgctxt "field:importer.lot,shelf_life_expiration_date:"
+msgid "Shelf Life Expiration Date"
+msgstr "Shipment Address Name"
+
+msgctxt "field:importer.parcel,crop:"
+msgid "Crop"
+msgstr "Collita"
+
+msgctxt "field:importer.parcel,plant_number:"
+msgid "Plant Number"
+msgstr "Número plantes"
+
+msgctxt "field:importer.parcel,plantation_code:"
+msgid "Plantation Code"
+msgstr "Codi plantació"
+
+msgctxt "field:importer.parcel,species:"
+msgid "Species"
+msgstr "Espècie"
+
+msgctxt "field:importer.parcel,surface:"
+msgid "Surface"
+msgstr "Superfície"
+
+msgctxt "field:importer.parcel,variety:"
+msgid "Variety"
+msgstr "Varietat"
+
+msgctxt "field:importer.party,bank_account:"
+msgid "Bank Account"
+msgstr "Comptes bancaris"
+
+msgctxt "field:importer.party,categories:"
+msgid "Categories"
+msgstr "Categories"
+
+msgctxt "field:importer.party,city:"
+msgid "City"
+msgstr "Ciutat"
+
+msgctxt "field:importer.party,code:"
+msgid "Code"
+msgstr "Codi"
+
+msgctxt "field:importer.party,country:"
+msgid "Country"
+msgstr "País"
+
+msgctxt "field:importer.party,customer_payment_days:"
+msgid "Customer Payment days"
+msgstr "Dies de pagament del client"
+
+msgctxt "field:importer.party,customer_payment_term:"
+msgid "Customer Payment Term"
+msgstr "Termini de pagament del client"
+
+msgctxt "field:importer.party,customer_payment_type:"
+msgid "Customer Payment Type"
+msgstr "Tipus de pagament del client"
+
+msgctxt "field:importer.party,email:"
+msgid "E-Mail"
+msgstr "Correu electrònic"
+
+msgctxt "field:importer.party,fax:"
+msgid "Fax"
+msgstr "Fax"
+
+msgctxt "field:importer.party,language:"
+msgid "Language"
+msgstr "Idioma"
+
+msgctxt "field:importer.party,name:"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "field:importer.party,phone:"
+msgid "Phone"
+msgstr "Telèfon"
+
+msgctxt "field:importer.party,postal_code:"
+msgid "Postal Code"
+msgstr "Codi Postal"
+
+msgctxt "field:importer.party,street:"
+msgid "Street"
+msgstr "Carrer"
+
+msgctxt "field:importer.party,subdivision:"
+msgid "Subdivision"
+msgstr "Subdivisió"
+
+msgctxt "field:importer.party,supplier_payment_days:"
+msgid "Supplier Payment days"
+msgstr "Dies de pagament del proveïdor"
+
+msgctxt "field:importer.party,supplier_payment_term:"
+msgid "Supplier Payment Term"
+msgstr "Termini de pagament del proveïdor"
+
+msgctxt "field:importer.party,supplier_payment_type:"
+msgid "Supplier Payment Type"
+msgstr "Tipus de pagament del proveïdor"
+
+msgctxt "field:importer.party,trade_name:"
+msgid "Trade Name"
+msgstr "Nom comercial"
+
+msgctxt "field:importer.party,vat:"
+msgid "Vat"
+msgstr "Vat"
+
+msgctxt "field:importer.party,website:"
+msgid "Website"
+msgstr "Lloc Web"
+
+msgctxt "field:importer.plantation,parcel_sigpac:"
+msgid "Parcel Sigpac"
+msgstr "Parcel·la Sigpac"
+
+msgctxt "field:importer.plantation,party:"
+msgid "Party"
+msgstr "Tercers"
+
+msgctxt "field:importer.plantation,plantation_code:"
+msgid "Plantation Code"
+msgstr "Codi plantació"
+
+msgctxt "field:importer.plantation,polygon_sigpac:"
+msgid "Polygon Sigpac"
+msgstr "Poligon Sigpac"
+
+msgctxt "field:importer.plantation,province_sigpac:"
+msgid "Province Sigpac"
+msgstr "Província"
+
+msgctxt "field:importer.plantation,zone_sigpac:"
+msgid "Zone Sigpac"
+msgstr "Zona Sigpac"
+
+msgctxt "field:importer.product,account_category:"
+msgid "Account Category"
+msgstr "Categoria comptable"
+
+msgctxt "field:importer.product,alcohol_content:"
+msgid "Alcohol Content"
+msgstr "Grau d'alcohol"
+
+msgctxt "field:importer.product,aranzel:"
+msgid "Aranzel"
+msgstr "Arancel"
+
+msgctxt "field:importer.product,categories:"
+msgid "Categories"
+msgstr "Categories"
+
+msgctxt "field:importer.product,code:"
+msgid "Code"
+msgstr "Codi"
+
+msgctxt "field:importer.product,cost_price:"
+msgid "Cost Price"
+msgstr "Preu de cost"
+
+msgctxt "field:importer.product,cost_price_method:"
+msgid "Cost Price Method"
+msgstr "Mètode de cost"
+
+msgctxt "field:importer.product,description:"
+msgid "Description"
+msgstr "Descripció"
+
+msgctxt "field:importer.product,name:"
+msgid "Name"
+msgstr "Nom"
+
+msgctxt "field:importer.product,purchasable:"
+msgid "Purchasable"
+msgstr "Comprable"
+
+msgctxt "field:importer.product,salable:"
+msgid "Salable"
+msgstr "Vendible"
+
+msgctxt "field:importer.product,sale_price:"
+msgid "Sale Price"
+msgstr "Preu de venda"
+
+msgctxt "field:importer.product,supplier:"
+msgid "Supplier"
+msgstr "Proveïdor"
+
+msgctxt "field:importer.product,supplier_code:"
+msgid "Supplier Code"
+msgstr "Codi de proveïdor"
+
+msgctxt "field:importer.product,type_:"
+msgid "Type"
+msgstr "Tipus"
+
+msgctxt "field:importer.product,uom:"
+msgid "UoM"
+msgstr "Unitat de mesura"
+
+msgctxt "field:importer.product,variant_code:"
+msgid "Variant Code"
+msgstr "Codi variant"
+
+msgctxt "field:importer.product,volume:"
+msgid "Volume (m3)"
+msgstr "Volum (m3)"
+
+msgctxt "field:importer.product,weight:"
+msgid "Weight (kg)"
+msgstr "Pes (kg)"
+
+msgctxt "field:importer.product_codes,code:"
+msgid "Code"
+msgstr "Codi"
+
+msgctxt "field:importer.product_codes,template_code:"
+msgid "Template Code"
+msgstr "Codi plantilla"
+
+msgctxt "field:importer.product_codes,type_:"
+msgid "type"
+msgstr "Tipus"
+
+msgctxt "field:importer.product_codes,variant_code:"
+msgid "Variant Code"
+msgstr "Codi variant"
+
+msgctxt "field:importer.purchase,date:"
+msgid "Date"
+msgstr "Data"
+
+msgctxt "field:importer.purchase,party_name:"
+msgid "Party Name"
+msgstr "Nom del tercer"
+
+msgctxt "field:importer.purchase,product_code:"
+msgid "Product Code"
+msgstr "Codi producte"
+
+msgctxt "field:importer.purchase,quantity:"
+msgid "Product Quantity"
+msgstr "Quantitat producte"
+
+msgctxt "field:importer.purchase,reference:"
+msgid "Reference"
+msgstr "Referència"
+
+msgctxt "field:importer.purchase,unit_price:"
+msgid "Unit Price"
+msgstr "Preu unitat"
+
+msgctxt "field:importer.sale,date:"
+msgid "Date"
+msgstr "Data"
+
+msgctxt "field:importer.sale,party_name:"
+msgid "Party Name"
+msgstr "Nom del tercer"
+
+msgctxt "field:importer.sale,product_code:"
+msgid "Product Code"
+msgstr "Codi producte"
+
+msgctxt "field:importer.sale,quantity:"
+msgid "Product Quantity"
+msgstr "Quantitat producte"
+
+msgctxt "field:importer.sale,reference:"
+msgid "Reference"
+msgstr "Referència"
+
+msgctxt "field:importer.sale,shipment_address:"
+msgid "Shipment Address Name"
+msgstr "Nom de l'adreça d'enviament"
+
+msgctxt "field:importer.sale,shipment_party_name:"
+msgid "Shipment Party Name"
+msgstr "Nom de la part d'enviament"
+
+msgctxt "field:importer.sale,unit_price:"
+msgid "Unit Price"
+msgstr "Preu unitat"
+
+msgctxt "help:importer,template:"
+msgid ""
+"Check to indicate that this importer is a template and thus should appear in"
+" the import wizard."
+msgstr ""
+"Marqueu per indicar que aquest importador és una plantilla i, per tant, "
+"hauria d'aparèixer a l'assistent d'importació."
+
+msgctxt "model:importer,name:"
+msgid "Importer"
+msgstr "Importador"
+
+msgctxt "model:importer.account.move,name:"
+msgid "Importer AccountMove"
+msgstr "Importador Asentaments"
+
+msgctxt "model:importer.column,name:"
+msgid "Importer Column"
+msgstr "Importador Columna"
+
+msgctxt "model:importer.import.ask,name:"
+msgid "Import Ask"
+msgstr ""
+
+msgctxt "model:importer.lot,name:"
+msgid "Importer Lot"
+msgstr "Importador Lot"
+
+msgctxt "model:importer.parcel,name:"
+msgid "Importer Parcel"
+msgstr "Importador Parceles"
+
+msgctxt "model:importer.party,name:"
+msgid "Importer Party"
+msgstr "Importador Tercer"
+
+msgctxt "model:importer.plantation,name:"
+msgid "Importer Plantation"
+msgstr "Importador Plantació"
+
+msgctxt "model:importer.product,name:"
+msgid "Importer Product"
+msgstr "Importador Productes"
+
+msgctxt "model:importer.product_codes,name:"
+msgid "Importer Product"
+msgstr "Importador Productes"
+
+msgctxt "model:importer.purchase,name:"
+msgid "Importer Purchase"
+msgstr "Importador Compres"
+
+msgctxt "model:importer.sale,name:"
+msgid "Importer Sale"
+msgstr "Importador Vendes"
+
+msgctxt "model:ir.action,name:act_ask_and_import_wizard"
+msgid "Import"
+msgstr "Importacions"
+
+msgctxt "model:ir.action,name:act_import_open"
+msgid "Imported Records"
+msgstr "Registres importats"
+
+msgctxt "model:ir.action,name:act_import_wizard"
+msgid "Import"
+msgstr "Importacions"
+
+msgctxt "model:ir.action,name:act_importer"
+msgid "Importers"
+msgstr "Importadors"
+
+msgctxt "model:ir.message,text:account_not_found"
+msgid "Account %(account)s not found."
+msgstr "No s'ha trobat el compte %(account)s."
+
+msgctxt "model:ir.message,text:change_method_warning"
+msgid ""
+"Changing the format on importer \"%(name)s\" may cause your settings to be "
+"lost. Are you sure to proceed?"
+msgstr ""
+"Si canvieu el format de l'importador \"%(name)s\", es pot perdre la vostra "
+"configuració. Esteu segur de continuar?"
+
+msgctxt "model:ir.message,text:invalid_column_name"
+msgid ""
+"Name \"%(name)s\" is not valid for column \"%(column)s\" in importer "
+"\"%(importer)s\"."
+msgstr ""
+"El nom \"%(name)s\" no és vàlid per a la columna \"% (column) s\" de "
+"l'importador \"%(importer)s\"."
+
+msgctxt "model:ir.message,text:invalid_index"
+msgid ""
+"Column \"%(column)s\" does not exist importing data with importer "
+"\"%(importer)s\"."
+msgstr ""
+"La columna \"%(column)s\" no existeix important dades amb l'importador "
+"\"%(importer)s\"."
+
+msgctxt "model:ir.message,text:no_period_for_date"
+msgid "No period for date \"%(date)s\"."
+msgstr "No hi ha període per a la data \"%(date)s\"."
+
+msgctxt "model:ir.message,text:no_records_imported"
+msgid "No records where imported using importer \"%(importer)s\"."
+msgstr ""
+"No s'ha registrat cap importació mitjançant l'importador \"%(importer)s\"."
+
+msgctxt "model:ir.message,text:party_required_for_account"
+msgid ""
+"Account \"%(account)s\" requires a party but no party was supplied in move "
+"\"%(move)s\"."
+msgstr ""
+"El compte \"%(account)s\" requereix un grup, però no s'ha proporcionat cap "
+"partit en el moviment \"%(move)s\"."
+
+msgctxt "model:ir.message,text:single_party_error"
+msgid "There must be one and only one party with \"%(party)s\"."
+msgstr "Hi ha d'haver un únic partit amb \"%(party)s\"."
+
+msgctxt "model:ir.message,text:single_product_error"
+msgid "There must be one and only one product with \"%(product)s\"."
+msgstr "Hi ha d'haver un i un sol producte amb \"%(product)s\"."
+
+msgctxt "model:ir.model.button,string:importer_check_connection_button"
+msgid "Check Connection"
+msgstr "Comprovar connexió"
+
+msgctxt "model:ir.model.button,string:importer_detect_button"
+msgid "Detect"
+msgstr "Detectar"
+
+msgctxt "model:ir.model.button,string:importer_import_button"
+msgid "Import"
+msgstr "Importacions"
+
+msgctxt "model:ir.model.button,string:importer_sync_columns_button"
+msgid "Sync Columns"
+msgstr "Sincronitzar columnes"
+
+msgctxt "model:ir.ui.menu,name:menu_import_wizard"
+msgid "Import"
+msgstr "Importacions"
+
+msgctxt "model:ir.ui.menu,name:menu_importer"
+msgid "Importer"
+msgstr "Importador"
+
+msgctxt "model:ir.ui.menu,name:menu_importers"
+msgid "Importers"
+msgstr "Importadors"
+
+msgctxt "model:res.group,name:group_importer"
+msgid "Importer"
+msgstr "Importador"
+
+msgctxt "selection:importer,data_source:"
+msgid "Copy & Paste"
+msgstr "Copiar i enganxar"
+
+msgctxt "selection:importer,data_source:"
+msgid "File"
+msgstr "Fitxer"
+
+msgctxt "selection:importer,data_source:"
+msgid "SQL"
+msgstr "SQL"
+
+msgctxt "selection:importer,data_source:"
+msgid "URL"
+msgstr "URL"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "Copy & Paste"
+msgstr "Copiar i enganxar"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "File"
+msgstr "Fitxer"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "SQL"
+msgstr "SQL"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "URL"
+msgstr "URL"
+
+msgctxt "wizard_button:importer.ask_and_import,ask,end:"
+msgid "Cancel"
+msgstr "Cancel·lat"
+
+msgctxt "wizard_button:importer.ask_and_import,ask,import_:"
+msgid "Import"
+msgstr "Importacions"

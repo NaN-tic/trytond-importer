@@ -9,6 +9,7 @@ from . import sale
 from . import purchase
 from . import stock
 from . import account
+from . import crop
 
 
 def register():
@@ -29,6 +30,7 @@ def register():
     Pool.register(
         product.Importer,
         product.ImporterProduct,
+        product.ImporterProductCodes,
         depends=['product'],
         module='importer', type_='model')
     Pool.register(
@@ -50,4 +52,10 @@ def register():
         account.Importer,
         account.ImporterAccountMove,
         depends=['account'],
+        module='importer', type_='model')
+    Pool.register(
+        crop.Importer,
+        crop.ImporterParcel,
+        crop.ImporterPlantation,
+        depends=['agronomics'],
         module='importer', type_='model')

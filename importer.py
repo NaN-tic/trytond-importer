@@ -20,6 +20,7 @@ from trytond.i18n import gettext
 from trytond.config import config
 from trytond.rpc import RPC
 
+
 distance_threshold = config.getfloat('importer', 'distance_threshold',
     default=0.6)
 
@@ -27,6 +28,7 @@ data_sources = [
     ('binary', 'File'),
     ('text', 'Copy & Paste'),
     ('url', 'URL'),
+    ('sql', 'SQL'),
     ]
 
 def grouped_slice(records, count=None):
@@ -47,11 +49,14 @@ def grouped_slice(records, count=None):
 
 
 class Data:
-    def __init__(self, data_source, binary_data, text_data, url_data):
+    def __init__(self, data_source, binary_data, text_data, url_data, conn=None,
+            sql=None):
         self.data_source = data_source
         self.binary_data = binary_data
         self.text_data = text_data
         self.url_data = url_data
+        self.connection = conn
+        self.sql = sql
 
     @staticmethod
     def to_str(d):
@@ -164,12 +169,32 @@ class Data:
         except:
             pass
 
+        if self.connection:
+            try:
+                cursor = self.connection.cursor()
+                cursor.execute(self.sql)
+                rows = [[item[0] for item in cursor.description]]
+                rows += cursor.fetchall()
+                return {
+                    'type': 'sql',
+                    'has_header': True,
+                    'header_reliable': True,
+                    'rows': rows,
+                    }
+            except Exception as inst:
+                print(inst.args)
+                print(inst)
+
+
         return {
             'type': 'none',
             'has_header': False,
             'header_reliable': False,
             'rows': [],
-            }
+           }
+
+
+
 
 class Importer(ModelSQL, ModelView):
     'Importer'
@@ -184,10 +209,37 @@ class Importer(ModelSQL, ModelView):
     use_header = fields.Boolean('Use Header?', states={
             'invisible': ~Eval('has_header'),
             }, depends=['has_header'])
-    data_source = fields.Selection([(None, ''),] + data_sources, 'Data Source')
+    data_source = fields.Selection([(None, ''), ] + data_sources, 'Data Source')
+    sql_source = fields.Selection([(None, ''), ], 'SQL Source', states={
+        'invisible': ~Eval('data_source').in_(['sql']),
+        'required': Eval('data_source').in_(['sql']),
+        }, depends=['data_source'])
+    server = fields.Char('Server', states={
+        'invisible': ~Eval('data_source').in_(['sql']),
+        'required': Eval('data_source').in_(['sql']),
+        }, depends=['data_source'])
+    user = fields.Char('User', states={
+        'invisible': ~Eval('data_source').in_(['sql']),
+        'required': Eval('data_source').in_(['sql']),
+        })
+    password = fields.Char('Password', states={
+        'invisible': ~Eval('data_source').in_(['sql']),
+        'required': Eval('data_source').in_(['sql']),
+        })
+    database = fields.Char('Database', states={
+        'invisible': ~Eval('data_source').in_(['sql']),
+        'required': Eval('data_source').in_(['sql']),
+        })
+    schema = fields.Char('schema', states={
+        'invisible': ~Eval('data_source').in_(['sql']),
+        })
     binary_data = fields.Binary('Data', states={
             'invisible': Eval('data_source') != 'binary',
             })
+    sql_data = fields.Selection([], "SQL Queries", states={
+        'invisible': ~Eval('data_source').in_(['sql']),
+        'required': Eval('data_source').in_(['sql']),
+        })
     text_data = fields.Text('Data', states={
             'invisible': Eval('data_source') != 'text',
             })
@@ -195,6 +247,7 @@ class Importer(ModelSQL, ModelView):
             'invisible': Eval('data_source') != 'url',
             })
     columns = fields.One2Many('importer.column', 'importer', 'Column')
+
 
     @classmethod
     def __setup__(cls):
@@ -209,7 +262,12 @@ class Importer(ModelSQL, ModelView):
                     'icon': 'importer-upload',
                     'invisible': ~Bool(Eval('data_source')),
                     },
-                })
+                'check_connection': {
+                    'icon': 'importer-upload',
+                    'invisible': ~Bool(Eval('data_source').in_(['sql'])),
+                    },
+            })
+
 
     @classmethod
     def create(cls, vlist):
@@ -234,6 +292,31 @@ class Importer(ModelSQL, ModelView):
 
         super().write(*args)
         cls.sync_columns(sum(args[::2], []))
+
+
+    @classmethod
+    @ModelView.button
+    def check_connection(cls, importers):
+        for importer in importers:
+            if importer.data_source != 'sql':
+                continue
+            method = getattr(importer, "check_connection_%s" %
+                importer.sql_source)
+            method()
+
+    def get_connection(self):
+        if self.data_source != 'sql':
+            return
+        method = getattr(self, "get_connection_%s" % self.sql_source)
+        return method()
+
+    def get_sql(self):
+        if self.data_source != 'sql':
+            return
+        with open(self.get_url_file()) as sql_file:
+            sql = sql_file.read()
+            sql = sql.format(schema=self.schema)
+            return sql
 
     @classmethod
     @ModelView.button
@@ -275,13 +358,14 @@ class Importer(ModelSQL, ModelView):
 
         columns = []
         for importer in importers:
+            conn = importer.get_connection()
+            sql = importer.get_sql()
             data = Data(importer.data_source, importer.binary_data,
-                importer.text_data, importer.url_data)
+                importer.text_data, importer.url_data, conn, sql)
             item = data.get_data()
             rows = item['rows']
             has_header = item['has_header']
             header_reliable = item['header_reliable']
-
             use_header = has_header
             if rows and (has_header or not header_reliable):
                 use_header = importer.detect_header(rows[0])
@@ -384,8 +468,10 @@ class Importer(ModelSQL, ModelView):
         Model = pool.get(methods[self.method]['model'])
 
         if data is None:
+            conn = self.get_connection()
+            sql = self.get_sql()
             data = Data(self.data_source, self.binary_data, self.text_data,
-                self.url_data)
+                self.url_data, conn, sql)
             data = data.get_data()
 
         rows = data['rows']
@@ -511,8 +597,10 @@ class ImporterColumn(ModelSQL, ModelView):
             binary_data = importer.binary_data
         else:
             binary_data = self.importer.binary_data
+        conn = self.importer.get_connection()
+        sql = self.importer.get_sql()
         data = Data(self.importer.data_source, binary_data,
-            self.importer.text_data, self.importer.url_data)
+            self.importer.text_data, self.importer.url_data, conn, sql)
         rows = data.get_data()['rows']
         if rows:
             return sorted([x for x in rows[0] if x])
@@ -652,8 +740,10 @@ class AskAndImport(Wizard):
     import_ = StateAction('importer.act_import_open')
 
     def do_import_(self, action):
+        conn = self.ask.importer.get_connection()
+        sql = self.ask.importer.get_sql()
         data = Data(self.ask.data_source, self.ask.binary_data,
-            self.ask.text_data, self.ask.url_data)
+            self.ask.text_data, self.ask.url_data, conn, sql)
         records = self.ask.importer.import_data(data.get_data())
         if not records:
             raise UserError(gettext('importer.no_records_imported',
