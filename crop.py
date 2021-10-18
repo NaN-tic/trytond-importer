@@ -53,19 +53,26 @@ class Importer(metaclass=PoolMeta):
         Enclosure = pool.get('agronomics.enclosure')
 
         parties = dict((x.code, x) for x in Party.search([]))
+        plantations = {}
         to_save = []
         for record in records:
-            plantation = Plantation()
-            plantation.code = record.plantation_code
-            plantation.party = parties.get(record.party)
+            if not record.plantation_code:
+                continue
+            plantation = plantations.get(record.plantation_code)
+            if not plantation:
+                plantation = Plantation()
+                plantation.code = record.plantation_code
+                plantation.party = parties.get(record.party)
+                plantation.enclosures = []
+                plantations[record.plantation_code] = plantation
+                to_save.append(plantation)
             if record.province_sigpac:
                 enclosure = Enclosure()
                 enclosure.province_sigpac = record.province_sigpac
                 enclosure.polygon_sigpac = record.polygon_sigpac
                 enclosure.parcel_sigpac = record.parcel_sigpac
                 enclosure.zone_sigpac = record.zone_sigpac
-                plantation.enclosures = [enclosure]
-            to_save.append(plantation)
+                plantation.enclosures += (enclosure,)
         Plantation.save(to_save)
         return to_save
 
