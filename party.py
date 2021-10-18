@@ -24,7 +24,7 @@ class ImporterParty(ModelView):
     customer_payment_type = fields.Char('Customer Payment Type')
     supplier_payment_term = fields.Char('Supplier Payment Term')
     supplier_payment_type = fields.Char('Supplier Payment Type')
-    bank_account = fields.Char('Bank Account')
+    bank_account = fields.Char('Iban')
     customer_payment_days = fields.Char('Customer Payment days')
     supplier_payment_days = fields.Char('Supplier Payment days')
     vat = fields.Char('Vat')
@@ -57,6 +57,14 @@ class Importer(metaclass=PoolMeta):
         Subdivision = pool.get('country.subdivision')
         PartyIdentifier = pool.get('party.identifier')
 
+        try:
+            Bank = pool.get('bank')
+            BankAccount = pool.get('bank.account')
+            AccountNumber = pool.get('bank.account.number')
+            banks = dict((x.bank_code.zfill(4), x) for x in Bank.search([]))
+        except:
+            pass
+
         import_account_fields = True
         try:
             PaymentTerm = pool.get('account.invoice.payment_term')
@@ -72,12 +80,16 @@ class Importer(metaclass=PoolMeta):
         categories = dict([(x.name, x) for x in PartyCategory.search([])])
         countries = dict([(x.code, x) for x in Country.search([])])
         subdivisions = dict([(x.name, x) for x in Subdivision.search([])])
+        parties = dict([(x.code, x) for x in Party.search([])])
         vats = {}
         to_save = []
         for record in records:
+            if record.code in parties:
+                print("party duplicated:", record.code, record.name)
             party = Party()
             to_save.append(party)
 
+            parties[record.code] = party
             party.name = record.name
             party.code = record.code
             if hasattr(party, 'trade_name'):
@@ -165,11 +177,11 @@ class Importer(metaclass=PoolMeta):
                         party.supplier_payment_type = payment_type
 
             if (record.customer_payment_days and
-                    hasattr(party, 'customer_paryment_days')):
+                    'customer_payment_days' in party._fields):
                 party.customer_payment_days = record.customer_payment_days
 
             if (record.supplier_payment_days and
-                    hasattr(party, 'supplier_paryment_days')):
+                    'supplier_paryment_days' in party._fields):
                 party.supplier_payment_days = record.supplier_payment_days
 
             if record.vat:
@@ -200,6 +212,26 @@ class Importer(metaclass=PoolMeta):
                         categories[cat] = category
 
                 party.categories = cats
+
+            if record.bank_account and 'bank_accounts' in party._fields:
+                party.bank_accounts = []
+                for iban in record.bank_account.split(' '):
+                    if len(iban) < 8:
+                        continue
+                    bank_code = iban[4:8]
+                    bank = banks.get(bank_code)
+                    if not bank:
+                        print("Bank not finded for account:", iban)
+                        continue
+                    bank_account = BankAccount()
+                    bank_account.bank = bank
+                    account_number = AccountNumber()
+                    account_number.account = bank_account
+                    account_number.type = 'iban'
+                    account_number.number = iban
+
+                    bank_account.numbers = [account_number]
+                    party.bank_accounts += (bank_account,)
 
         PartyCategory.save(categories.values())
         Party.save(to_save)

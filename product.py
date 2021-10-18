@@ -26,6 +26,7 @@ class ImporterProduct(ModelView):
     purchasable = fields.Boolean('Purchasable')
     salable = fields.Boolean('Salable')
     alcohol_content = fields.Char('Alcohol Content')
+    brand = fields.Char('Brand')
 
 class ImporterProductCodes(ModelView):
     'Importer Product'
@@ -108,6 +109,12 @@ class Importer(metaclass=PoolMeta):
         except:
             pass
 
+        try:
+            Brand = pool.get('product.brand')
+            brands = dict((x.name, x) for x in Brand.search([]))
+        except:
+            pass
+
         categories = dict((x.name, x) for x in ProductCategory.search([]))
         uoms = {}
         for uom in Uom.search([]):
@@ -157,7 +164,7 @@ class Importer(metaclass=PoolMeta):
 
                 if 'volume' in template._fields and record.volume:
                     template.volume = record.volume
-                    template.volume_uom = uoms.get('m³')
+                    template.volume_uom = uoms.get('cm³')
 
                 if 'tariff_codes' in template._fields and record.aranzel:
                     custom = customs.get(record.aranzel)
@@ -182,7 +189,7 @@ class Importer(metaclass=PoolMeta):
                             categories[cat] = category
                     template.categories = cats
 
-                if 'product_suppliers' in template._fields :
+                if 'product_suppliers' in template._fields:
                     template.purchase_uom = uom
                     template.purchasable = True
 
@@ -195,6 +202,15 @@ class Importer(metaclass=PoolMeta):
 
                 template.products = []
                 templates[record.code] = template
+
+                if 'brand' in template._fields and record.brand:
+                    brand = brands.get(record.brand)
+                    if not brand:
+                        brand = Brand()
+                        brand.name = record.brand
+                        brands[record.brand] = brand
+                        template.brand = brand
+
             else:
                 template = templates.get(record.code)
 
