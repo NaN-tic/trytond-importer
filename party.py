@@ -28,7 +28,8 @@ class ImporterParty(ModelView):
     customer_payment_days = fields.Char('Customer Payment days')
     supplier_payment_days = fields.Char('Supplier Payment days')
     vat = fields.Char('Vat')
-
+    party_relation = fields.Char('Party Relation')
+    type_of_relation = fields.Char('Type of relation')
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -76,13 +77,23 @@ class Importer(metaclass=PoolMeta):
         except:
             import_account_fields = False
 
+
+        try:
+            Relation = pool.get('party.relation')
+            RelationType = pool.get('party.relation.type')
+            relations = dict((x.name, x) for x in RelationType.search([]))
+        except:
+            pass
+
         languages = dict([(x.code, x) for x in Lang.search([])])
         categories = dict([(x.name, x) for x in PartyCategory.search([])])
         countries = dict([(x.code, x) for x in Country.search([])])
         subdivisions = dict([(x.name, x) for x in Subdivision.search([])])
         parties = dict([(x.code, x) for x in Party.search([])])
+
         vats = {}
         to_save = []
+        relations_to_save = {}
         for record in records:
             if record.code in parties:
                 print("party duplicated:", record.code, record.name)
@@ -229,10 +240,24 @@ class Importer(metaclass=PoolMeta):
                     account_number.account = bank_account
                     account_number.type = 'iban'
                     account_number.number = iban
-
                     bank_account.numbers = [account_number]
                     party.bank_accounts += (bank_account,)
 
+            if 'relations' in party._fields and record.party_relation:
+                related = parties.get(record.party_relation)
+                if related:
+                    type_relation = relations.get(record.type_of_relation)
+                    party_relation = Relation()
+                    party_relation.to = related
+                    party_relation.type = type_relation
+                    relations_to_save[party.code] = party_relation
+
         PartyCategory.save(categories.values())
         Party.save(to_save)
+        new_parties = dict((x.code, x) for x in to_save)
+        rel_save = []
+        for code, relation in relations_to_save.items():
+            relation.from_ = new_parties.get(code)
+            rel_save.append(relation)
+        Relation.save(rel_save)
         return to_save
