@@ -236,7 +236,7 @@ class Importer(ModelSQL, ModelView):
     binary_data = fields.Binary('Data', states={
             'invisible': Eval('data_source') != 'binary',
             })
-    sql_data = fields.Selection([], "SQL Queries", states={
+    sql_data = fields.Selection([(None, '')], "SQL Queries", states={
         'invisible': ~Eval('data_source').in_(['sql']),
         'required': Eval('data_source').in_(['sql']),
         })
