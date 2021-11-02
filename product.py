@@ -164,7 +164,7 @@ class Importer(metaclass=PoolMeta):
 
                 if 'volume' in template._fields and record.volume:
                     template.volume = record.volume
-                    template.volume_uom = uoms.get('cm³')
+                    template.volume_uom = uoms.get('l')
 
                 if 'tariff_codes' in template._fields and record.aranzel:
                     custom = customs.get(record.aranzel)
