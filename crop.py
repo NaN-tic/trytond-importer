@@ -106,6 +106,8 @@ class Importer(metaclass=PoolMeta):
                 crop.name = record.crop
                 crop.start_date = date(day=1, month=1, year=int(record.crop))
                 crop.end_date = date(day=31, month=12, year=int(record.crop))
+                crop.save()
+                crops[record.crop]=crop
             parcel.crop = crop
             variety = varieties.get(record.variety)
             if not variety:
@@ -113,13 +115,17 @@ class Importer(metaclass=PoolMeta):
                 variety.name = record.variety
                 variety.rank = 'variety'
                 variety.selectable = True
+                variety.save()
+                varieties[record.variety]=variety
             parcel.variety = variety
             specie = species.get(record.species)
             if not specie:
                 specie = Taxon()
-                specie.name = record.specie
+                specie.name = record.species
                 specie.rank = 'species'
                 specie.selectable = True
+                specie.save()
+                species[record.species]=specie
             parcel.species = specie
             to_save.append(parcel)
         Parcel.save(to_save)

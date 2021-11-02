@@ -103,8 +103,8 @@ class Importer(metaclass=PoolMeta):
             parties[record.code] = party
             party.name = record.name
             party.code = record.code
-            if hasattr(party, 'trade_name'):
-                party.trade_name = record.comercial_name
+            if 'trade_name' in party._fields:
+                party.trade_name = record.trade_name
 
             addresses = []
             address = Address()
@@ -156,6 +156,8 @@ class Importer(metaclass=PoolMeta):
                     payment_term = PaymentTerm(
                         name=record.customer_payment_term)
                     payment_term.lines = [PaymentTermLine(type='remainder')]
+                    payment_term.save()
+                    payment_terms[record.customer_payment_term] = payment_term
 
                 if payment_term:
                     party.customer_payment_term = payment_term
@@ -165,27 +167,40 @@ class Importer(metaclass=PoolMeta):
                     payment_term = PaymentTerm(
                         name=record.supplier_payment_term)
                     payment_term.lines = [PaymentTermLine(type='remainder')]
+                    payment_term.save()
+                    payment_terms[record.supplier_payment_term] = payment_term
 
                 if payment_term:
                     party.supplier_payment_term = payment_term
 
-                payment_type = payment_types.get(record.customer_payment_type)
-                if (record.customer_payment_type and not payment_type):
-                    payment_type = PaymentType(name=record.customer_payment_type)
-                    payment_type.kind = 'receivable'
-                    payment_type.account_bank = 'none'
+                customer_payment_type = payment_types.get(
+                        (record.customer_payment_type, 'receivable'))
+                if (record.customer_payment_type and
+                        not customer_payment_type):
+                    customer_payment_type = PaymentType(
+                        name=record.customer_payment_type)
+                    customer_payment_type.kind = 'receivable'
+                    customer_payment_type.account_bank = 'none'
+                    customer_payment_type.save()
+                    payment_types[(record.customer_payment_type, 
+                        'receivable')]=customer_payment_type
 
-                    if payment_type and record.customer_payment_type:
-                        party.customer_payment_type = payment_type
+                if customer_payment_type and record.customer_payment_type:
+                    party.customer_payment_type = customer_payment_type
 
-                payment_type = payment_types.get(record.supplier_payment_type)
-                if (record.supplier_payment_type and not payment_type):
-                    payment_type = PaymentType(name=record.supplier_payment_type)
-                    payment_type.kind = 'payable'
-                    payment_type.account_bank = 'none'
-
-                    if payment_type and record.supplier_payment_type:
-                        party.supplier_payment_type = payment_type
+                supplier_payment_type = payment_types.get(
+                        (record.supplier_payment_type, 'payable'))
+                if (record.supplier_payment_type 
+                        and not supplier_payment_type):
+                    supplier_payment_type = PaymentType(
+                            name=record.supplier_payment_type)
+                    supplier_payment_type.kind = 'payable'
+                    supplier_payment_type.account_bank = 'none'
+                    supplier_payment_type.save()
+                    payment_types[(record.supplier_payment_type, 
+                        'payable')] = supplier_payment_type
+                if supplier_payment_type and record.supplier_payment_type:
+                    party.supplier_payment_type = supplier_payment_type
 
             if (record.customer_payment_days and
                     'customer_payment_days' in party._fields):
