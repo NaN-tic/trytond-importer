@@ -116,7 +116,7 @@ class Importer(metaclass=PoolMeta):
                 line.on_change_product()
                 line.quantity = record.quantity
                 line.on_change_quantity()
-                if record.unit_price:
+                if record.unit_price is not None:
                     line.unit_price = record.unit_price.quantize(exp)
                 lines_to_save.append(line)
 
