@@ -73,11 +73,13 @@ class Importer(metaclass=PoolMeta):
                 continue
             identifier = Identifier()
             identifier.type = record.type_
-            code = record.template_code + record.variant_code
+            code = (record.template_code or '') + (record.variant_code or '')
             product = products.get(code)
             identifier.code = record.code
             if not product:
                 template = templates.get(record.template_code)
+                if not template:
+                    continue
                 product = template.products[0]
             identifier.product = product
             to_save.append(identifier)
@@ -191,7 +193,10 @@ class Importer(metaclass=PoolMeta):
 
                 if 'product_suppliers' in template._fields:
                     template.purchase_uom = uom
-                    template.purchasable = True
+                    template.purchasable = record.purchasable
+
+                if 'salable' in template._fields:
+                    template.salable = record.salable
 
                 if parties and record.supplier:
                     party = parties.get(record.supplier)

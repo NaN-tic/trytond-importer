@@ -182,7 +182,7 @@ class Importer(metaclass=PoolMeta):
                     customer_payment_type.kind = 'receivable'
                     customer_payment_type.account_bank = 'none'
                     customer_payment_type.save()
-                    payment_types[(record.customer_payment_type, 
+                    payment_types[(record.customer_payment_type,
                         'receivable')]=customer_payment_type
 
                 if customer_payment_type and record.customer_payment_type:
@@ -190,14 +190,14 @@ class Importer(metaclass=PoolMeta):
 
                 supplier_payment_type = payment_types.get(
                         (record.supplier_payment_type, 'payable'))
-                if (record.supplier_payment_type 
+                if (record.supplier_payment_type
                         and not supplier_payment_type):
                     supplier_payment_type = PaymentType(
                             name=record.supplier_payment_type)
                     supplier_payment_type.kind = 'payable'
                     supplier_payment_type.account_bank = 'none'
                     supplier_payment_type.save()
-                    payment_types[(record.supplier_payment_type, 
+                    payment_types[(record.supplier_payment_type,
                         'payable')] = supplier_payment_type
                 if supplier_payment_type and record.supplier_payment_type:
                     party.supplier_payment_type = supplier_payment_type
@@ -269,10 +269,11 @@ class Importer(metaclass=PoolMeta):
 
         PartyCategory.save(categories.values())
         Party.save(to_save)
-        new_parties = dict((x.code, x) for x in to_save)
-        rel_save = []
-        for code, relation in relations_to_save.items():
-            relation.from_ = new_parties.get(code)
-            rel_save.append(relation)
-        Relation.save(rel_save)
+        if 'relations' in party._fields:
+            new_parties = dict((x.code, x) for x in to_save)
+            rel_save = []
+            for code, relation in relations_to_save.items():
+                relation.from_ = new_parties.get(code)
+                rel_save.append(relation)
+            Relation.save(rel_save)
         return to_save
