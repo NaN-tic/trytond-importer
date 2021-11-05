@@ -192,11 +192,14 @@ class Importer(metaclass=PoolMeta):
                     template.categories = cats
 
                 if 'product_suppliers' in template._fields:
-                    template.purchase_uom = uom
                     template.purchasable = record.purchasable
+                    if record.purchasable:
+                        template.purchase_uom = uom
 
                 if 'salable' in template._fields:
                     template.salable = record.salable
+                    if record.salable:
+                        template.sale_uom = uom
 
                 if parties and record.supplier:
                     party = parties.get(record.supplier)
