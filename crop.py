@@ -13,6 +13,8 @@ class ImporterPlantation(ModelView):
     polygon_sigpac = fields.Numeric('Polygon Sigpac')
     parcel_sigpac = fields.Numeric('Parcel Sigpac')
     zone_sigpac = fields.Numeric('Zone Sigpac')
+    recinte_sigpac = fields.Numeric('Recinte Sigpac')
+
 
 class ImporterParcel(ModelView):
     'Importer Parcel'
@@ -72,6 +74,7 @@ class Importer(metaclass=PoolMeta):
                 enclosure.polygon_sigpac = record.polygon_sigpac
                 enclosure.parcel_sigpac = record.parcel_sigpac
                 enclosure.zone_sigpac = record.zone_sigpac
+                enclosure.enclosure_sigpac = record.recinte_sigpac
                 plantation.enclosures += (enclosure,)
         Plantation.save(to_save)
         return to_save
