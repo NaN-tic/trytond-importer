@@ -28,6 +28,7 @@ class ImporterProduct(ModelView):
     alcohol_content = fields.Char('Alcohol Content')
     brand = fields.Char('Brand')
 
+
 class ImporterProductCodes(ModelView):
     'Importer Product'
     __name__ = 'importer.product_codes'
@@ -87,7 +88,6 @@ class Importer(metaclass=PoolMeta):
         Identifier.save(to_save)
         return to_save
 
-
     @classmethod
     def import_product(cls, records):
         pool = Pool()
@@ -125,88 +125,93 @@ class Importer(metaclass=PoolMeta):
 
         products = dict((x.code, x) for x in Product.search([]))
         templates = dict((x.code, x) for x in Template.search([]))
+
         to_save = []
         for record in records:
-            if record.code in templates and record.variant_code in products:
-                continue
-
-            if record.code not in templates:
+            product = None
+            template = None
+            if record.code in templates:
+                template = templates.get(record.code)
+                if record.variant_code in products:
+                    product = products.get(record.variant_code)
+            else:
                 template = Template()
-                to_save.append(template)
+            to_save.append(template)
 
-                template.name = record.name
-                template.code = record.code
-                template.list_price = record.sale_price or Decimal(0)
-                uom = uoms.get(record.uom and record.uom.capitalize() or 'u')
-                if not uom:
-                    uom = Uom()
-                    uom.name = record.uom.capitalize()
-                    uom.symbol = record.uom.capitalize()
-                    uom.category = uoms.get('u').category
-                    uom.rate = 1
-                    uom.on_change_rate()
-                    uoms[uom.name] = uom
+            template.name = record.name
+            template.code = record.code
+            template.list_price = record.sale_price or Decimal(0)
+            uom = uoms.get(record.uom and record.uom.capitalize() or 'u')
+            if not uom:
+                uom = Uom()
+                uom.name = record.uom.capitalize()
+                uom.symbol = record.uom.capitalize()
+                uom.category = uoms.get('u').category
+                uom.rate = 1
+                uom.on_change_rate()
+                uoms[uom.name] = uom
 
-                template.default_uom = uom
-                template.cost_price_method = record.cost_price_method
+            template.default_uom = uom
+            template.cost_price_method = record.cost_price_method
 
-                if ('account_category' in template._fields and
-                        record.account_category):
-                    acc_category = categories.get(record.account_category)
-                    if not acc_category:
-                        acc_category = ProductCategory()
-                        acc_category.name = record.account_category
-                        categories[record.account_category] = acc_category
-                    acc_category.accounting = True
-                    template.account_category = acc_category
+            if ('account_category' in template._fields and
+                    record.account_category):
+                acc_category = categories.get(record.account_category)
+                if not acc_category:
+                    acc_category = ProductCategory()
+                    acc_category.name = record.account_category
+                    categories[record.account_category] = acc_category
+                acc_category.accounting = True
+                template.account_category = acc_category
 
-                if 'weight' in template._fields and record.weight:
-                    template.weight = record.weight
-                    template.weight_uom = uoms.get('kg')
+            if 'weight' in template._fields and record.weight:
+                template.weight = record.weight
+                template.weight_uom = uoms.get('kg')
 
-                if 'volume' in template._fields and record.volume:
-                    template.volume = record.volume
-                    template.volume_uom = uoms.get('l')
+            if 'volume' in template._fields and record.volume:
+                template.volume = record.volume
+                template.volume_uom = uoms.get('l')
 
-                if 'tariff_codes' in template._fields and record.aranzel:
-                    custom = customs.get(record.aranzel)
-                    if not customs:
-                        custom = TariffCode()
-                        custom.code = record.aranzel
-                        customs[record.aranzel] = customs
+            if 'tariff_codes' in template._fields and record.aranzel:
+                custom = customs.get(record.aranzel)
+                if not customs:
+                    custom = TariffCode()
+                    custom.code = record.aranzel
+                    customs[record.aranzel] = customs
 
-                    rel = TariffCodeRel()
-                    rel.tariff_code = custom
-                    template.tariff_codes = [rel]
+                rel = TariffCodeRel()
+                rel.tariff_code = custom
+                template.tariff_codes = [rel]
 
-                if record.categories:
-                    cats = []
-                    for cat in record.categories.split('|'):
-                        category = categories.get(cat)
-                        if not category and cat:
-                            category = ProductCategory()
-                            category.name = cat
-                        if category:
-                            cats += [category]
-                            categories[cat] = category
-                    template.categories = cats
+            # If product exist the categories are set all new, not updated.
+            if record.categories:
+                cats = []
+                for cat in record.categories.split('|'):
+                    category = categories.get(cat)
+                    if not category and cat:
+                        category = ProductCategory()
+                        category.name = cat
+                    if category:
+                        cats += [category]
+                        categories[cat] = category
+                template.categories = cats
 
-                if 'product_suppliers' in template._fields:
-                    template.purchasable = record.purchasable
-                    if record.purchasable:
-                        template.purchase_uom = uom
+            if 'product_suppliers' in template._fields:
+                template.purchasable = record.purchasable
+                if record.purchasable:
+                    template.purchase_uom = uom
 
-                if 'salable' in template._fields:
-                    template.salable = record.salable
-                    if record.salable:
-                        template.sale_uom = uom
+            if 'salable' in template._fields:
+                template.salable = record.salable
+                if record.salable:
+                    template.sale_uom = uom
 
-                if parties and record.supplier:
-                    party = parties.get(record.supplier)
-                    supplier = ProductSupplier()
-                    supplier.party = party
-                    supplier.code = record.supplier_code
-                    template.product_suppliers = [supplier]
+            if parties and record.supplier:
+                party = parties.get(record.supplier)
+                supplier = ProductSupplier()
+                supplier.party = party
+                supplier.code = record.supplier_code
+                template.product_suppliers = [supplier]
 
                 template.products = []
                 templates[record.code] = template
@@ -219,10 +224,8 @@ class Importer(metaclass=PoolMeta):
                         brands[record.brand] = brand
                         template.brand = brand
 
-            else:
-                template = templates.get(record.code)
-
-            product = Product()
+            if not product:
+                product = Product()
             product.suffix_code = record.variant_code or ''
             product.cost_price = record.cost_price or Decimal(0)
 
@@ -230,6 +233,8 @@ class Importer(metaclass=PoolMeta):
                 product.wine_likely_alcohol_content = record.alcohol_content
             template.products += (product,)
             products[record.code+(record.variant_code or '')] = product
+            if product not in template.products:
+                template.products = [product]
 
         ProductCategory.save(categories.values())
         Template.save(to_save)
