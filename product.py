@@ -41,20 +41,48 @@ class Importer(metaclass=PoolMeta):
             uoms[uom.name] = uom
             uoms[uom.symbol] = uom
 
-        to_save = []
+        # To search existen products use the product_product code, so if the
+        # unique variant is not installed, some products could be not update
+        # correctly.
+        record_codes = []
         for record in records:
-            template = Template()
-            to_save.append(template)
+            if record.code:
+                record_codes.append(record.code)
+        record_codes = Product.search([
+                ('code', 'in', record_codes)
+                ])
+        record_codes = {x.code: x for x in record_codes}
 
-            template.name = record.name
-            template.list_price = record.sale_price or Decimal(0)
-            template.default_uom = uoms.get(record.uom or 'u')
+        to_save = []
+        to_update = []
+        for record in records:
+            if record.code in record_codes:
+                product = record_codes[record.code]
+                if record.name:
+                    product.name = record.name
+                if record.sale_price:
+                    product.list_price = record.sale_price
+                if record.uom:
+                    product.default_uom = uoms.get(record.uom or 'u')
+                if record.cost_price:
+                    product.cost_price = record.cost_price
+                to_update.append(product)
+            else:
+                template = Template()
+                to_save.append(template)
 
-            product = Product()
-            product.code = record.code
-            product.cost_price = record.cost_price or Decimal(0)
+                template.name = record.name
+                template.list_price = record.sale_price or Decimal(0)
+                template.default_uom = uoms.get(record.uom or 'u')
 
-            template.products = [product]
+                product = Product()
+                product.code = record.code
+                product.cost_price = record.cost_price or Decimal(0)
 
-        Template.save(to_save)
-        return to_save
+                template.products = [product]
+
+        if to_save:
+            Template.save(to_save)
+        if to_update:
+            Product.save(to_update)
+        return to_save + to_update
