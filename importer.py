@@ -31,6 +31,7 @@ data_sources = [
     ('sql', 'SQL'),
     ]
 
+
 def grouped_slice(records, count=None):
     'grouped_slice implementation that works with iterators'
     if count is None:
@@ -49,8 +50,8 @@ def grouped_slice(records, count=None):
 
 
 class Data:
-    def __init__(self, data_source, binary_data, text_data, url_data, conn=None,
-            sql=None):
+    def __init__(self, data_source, binary_data, text_data, url_data,
+            conn=None, sql=None):
         self.data_source = data_source
         self.binary_data = binary_data
         self.text_data = text_data
@@ -74,7 +75,7 @@ class Data:
             return StringIO(self.text_data)
         elif self.data_source == 'url' and self.url_data:
             url = self.url_data
-            if ('docs.google.com' in url and not 'export' in url):
+            if ('docs.google.com' in url and 'export' not in url):
                 # Expected URL:
                 # https://docs.google.com/spreadsheets/d/19DjZIGvNj1-Z4e4Q4SGqlrnKSAQyMz0JDhhgs2Xbf8w/edit#gid=0
                 # New URL:
@@ -184,16 +185,12 @@ class Data:
             except Exception as inst:
                 print(inst.args)
                 print(inst)
-
-
         return {
             'type': 'none',
             'has_header': False,
             'header_reliable': False,
             'rows': [],
            }
-
-
 
 
 class Importer(ModelSQL, ModelView):
@@ -209,7 +206,8 @@ class Importer(ModelSQL, ModelView):
     use_header = fields.Boolean('Use Header?', states={
             'invisible': ~Eval('has_header'),
             }, depends=['has_header'])
-    data_source = fields.Selection([(None, ''), ] + data_sources, 'Data Source')
+    data_source = fields.Selection(
+        [(None, ''), ] + data_sources, 'Data Source')
     sql_source = fields.Selection([(None, ''), ], 'SQL Source', states={
         'invisible': ~Eval('data_source').in_(['sql']),
         'required': Eval('data_source').in_(['sql']),
@@ -248,7 +246,6 @@ class Importer(ModelSQL, ModelView):
             })
     columns = fields.One2Many('importer.column', 'importer', 'Column')
 
-
     @classmethod
     def __setup__(cls):
         super().__setup__()
@@ -267,7 +264,6 @@ class Importer(ModelSQL, ModelView):
                     'invisible': ~Bool(Eval('data_source').in_(['sql'])),
                     },
             })
-
 
     @classmethod
     def create(cls, vlist):
@@ -289,10 +285,8 @@ class Importer(ModelSQL, ModelView):
                         raise UserWarning(key,
                             gettext('importer.change_method_warning',
                                 name=importer.name))
-
         super().write(*args)
         cls.sync_columns(sum(args[::2], []))
-
 
     @classmethod
     @ModelView.button
@@ -346,7 +340,6 @@ class Importer(ModelSQL, ModelView):
                 column.importer = importer
                 column.field = field
                 to_save.append(column)
-
         Column.delete(to_delete)
         Column.save(to_save)
 
@@ -398,7 +391,6 @@ class Importer(ModelSQL, ModelView):
                 for field in Field.browse(field_ids):
                     strings[field].append(field.field_description)
 
-
         use_header = False
         lev = textdistance.Levenshtein()
         for column in self.columns:
@@ -417,7 +409,6 @@ class Importer(ModelSQL, ModelView):
                 use_header = True
             else:
                 column.name = None
-
         return use_header
 
     @classmethod
@@ -560,12 +551,11 @@ class ImporterColumn(ModelSQL, ModelView):
 
     @classmethod
     def __setup__(cls):
-          super().__setup__()
-          cls._order.insert(0, ('field.field_description', 'ASC'))
-          cls.__rpc__.update(
-              autocomplete_name=RPC(instantiate=0),
-              )
-
+        super().__setup__()
+        cls._order.insert(0, ('field.field_description', 'ASC'))
+        cls.__rpc__.update(
+            autocomplete_name=RPC(instantiate=0),
+            )
 
     @classmethod
     def _get_formats(cls):
@@ -591,7 +581,8 @@ class ImporterColumn(ModelSQL, ModelView):
             return
         if not self.importer.has_header or not self.importer.use_header:
             return
-        if self.importer.id >= 0 and isinstance(self.importer.binary_data, int):
+        if (self.importer.id >= 0 and
+                isinstance(self.importer.binary_data, int)):
             # The client will send the size of the binary field instead of its
             # content if it does not have it loaded.
             importer = Importer(self.importer.id)
