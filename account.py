@@ -22,6 +22,7 @@ class ImporterAccountMove(ModelView):
     description = fields.Char('Description')
 
 
+
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
 
@@ -75,6 +76,24 @@ class Importer(metaclass=PoolMeta):
         return cls._import_account_move(records, create_party=True,
             create_account=True)
 
+    @classmethod
+    def get_dict_accounts(cls):
+        pool = Pool()
+        Account = pool.get('account.account')
+        company = Transaction().context.get('company')
+        accounts = dict((x.code, x) for x in Account.search([
+            ('company', '=', company)
+        ]))
+        return accounts
+
+    @classmethod
+    def get_account_code(cls, account_code):
+        return account_code
+
+    @classmethod
+    def get_party_code(cls, party_code):
+        return party_code
+
     def _import_account_move(cls, records, create_party=False,
             create_account=False):
         pool = Pool()
@@ -83,23 +102,27 @@ class Importer(metaclass=PoolMeta):
         Move = pool.get('account.move')
         Line = pool.get('account.move.line')
         Period = pool.get('account.period')
-        Party = Pool().get('party.party')
-        PartyIdentifier = Pool().get('party.identifier')
+        Party = pool.get('party.party')
+        PartyIdentifier = pool.get('party.identifier')
+        AccountType = pool.get('account.account.type')
 
         def _create_party(code, name):
             party = Party(name=name, code=code)
             party.identifiers = [PartyIdentifier(code=code, type=None)]
             return party
 
-        accounts = dict((x.code, x) for x in Account.search([]))
+        accounts = cls.get_dict_accounts()
         clients = cls.get_party_dict()
         journals = dict((x.code, x) for x in Journal.search([]))
+
         periods = {}
 
         chart = {}
         if create_account:
             company = Transaction().context.get('company')
             chart = cls.get_chart_tree(company)
+            account_type, = AccountType.search([('company', '=', company)],
+                limit=1)
 
         moves_to_save = []
         previous_header = None
@@ -109,11 +132,19 @@ class Importer(metaclass=PoolMeta):
             if record.account_code is None:
                 continue
             header = cls.import_account_move_header(record)
-            account = accounts.get(record.account_code, None)
+            acc_code = cls.get_account_code(record.account_code)
+            account = accounts.get(acc_code, None)
             if not account:
                 if create_account:
                     account = cls.create_account(record.account_code,
                         record.account_name, chart)
+                    if not account:
+                        values = Account.default_get(
+                            list(Account._fields.keys()), with_rec_name=False)
+                        account = Account(**values)
+                        account.code = record.account_code
+                        account.name = record.account_name
+                        account.type = account_type
                 if not account:
                     raise UserError(gettext('importer.account_not_found',
                         account=record.account_code))
@@ -146,13 +177,14 @@ class Importer(metaclass=PoolMeta):
                 move.lines = []
                 moves_to_save.append(move)
 
-            party = clients.get(record.party_code)
+            party_code = cls.get_party_code(record.party_code)
+            party = clients.get(party_code)
             if account.party_required and not party:
                 if not create_party:
                     raise UserError(gettext(
                         'importer.party_required_for_account',
-                        account=record.account_code, move=move.number))
-                party = _create_party(record.party_code, record.party_name)
+                        account=record.account_code, move=record.number))
+                party = _create_party(party_code, record.party_name)
                 clients[party.code] = party
                 party_to_save.append(party)
 
@@ -161,8 +193,8 @@ class Importer(metaclass=PoolMeta):
             line.description = record.description
             line.debit = Decimal("%.2f" % (record.debit or 0))
             line.credit = Decimal("%.2f" % (record.credit or 0))
-            line.party = party
-
+            if account.party_required:
+                line.party = party
             move.lines += (line, )
 
         if party_to_save:
@@ -172,7 +204,7 @@ class Importer(metaclass=PoolMeta):
 
         offset = 100
         i = 0
-        while i < len(moves_to_save):
+        while i <= len(moves_to_save):
             m = moves_to_save[i:min(i+offset, len(moves_to_save))]
             i += offset
             Move.save(m)
@@ -188,9 +220,12 @@ class Importer(metaclass=PoolMeta):
             return
         digits = config.default_account_code_digits or 8
         similar_account = self.get_similar_account(code, chart, digits)
-        account = self.similar_account(similar_account, {'code': code,
-            'name': name})
-        account.code =code
+        if similar_account:
+           account = self.similar_account(similar_account, {'code': code,
+                'name': name})
+        else:
+            return
+        account.code = code
         account.name = name
         chart[code] = account
         return account
