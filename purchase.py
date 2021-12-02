@@ -3,7 +3,7 @@ from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
-
+from datetime import datetime
 
 class ImporterPurchase(ModelView):
     'Importer Purchase'
@@ -12,10 +12,15 @@ class ImporterPurchase(ModelView):
     reference = fields.Char('Reference')
     date = fields.Date('Date')
     party_name = fields.Char('Party Name')
+    party_code = fields.Char('Party Code')
     product_code = fields.Char('Product Code')
     quantity = fields.Float('Product Quantity')
     unit_price = fields.Numeric('Unit Price')
     currency = fields.Char('Currency')
+    invoice_method = fields.Char('Invoice Method')
+    purchase_number = fields.Char('Purchase Number')
+    discount = fields.Numeric('Discount')
+    state = fields.Char('state')
 
 
 class Importer(metaclass=PoolMeta):
@@ -51,6 +56,7 @@ class Importer(metaclass=PoolMeta):
         currencies = {x.name: x for x in Currency.search([])}
         currencies.update({x.symbol: x for x in Currency.search([])})
 
+        start = datetime.now()
         purchases_to_save = []
         lines_to_save = []
         previous_header = None
@@ -60,21 +66,45 @@ class Importer(metaclass=PoolMeta):
                 previous_header = header
                 values = Purchase.default_get(
                     list(Purchase._fields.keys()), with_rec_name=False)
-                purchase = Purchase(**values)
-                purchases_to_save.append(purchase)
+                if record.invoice_method:
+                    values['invoice_method'] = record.invoice_method
 
+                print(values)
+                purchases = []
+                if record.purchase_number:
+                    purchases = Purchase.search([
+                        ('number', '=', record.purchase_number)], limit=1)
+
+                purchase = Purchase(**values)
+                if not purchases:
+                    purchases_to_save.append(purchase)
                 purchase.reference = record.reference
                 purchase.purchase_date = record.date
 
+                if record.state:
+                    purchase.state = record.state
+                if record.purchase_number:
+                    purchase.number = record.purchase_number
                 if record.currency and record.currency in currencies.keys():
                     purchase.currency = currencies.get(record.currency)
 
-                parties = Party.search([('name', '=', record.party_name)])
+                party_domain=[]
+                parties = []
+                if record.party_name:
+                    party_domain.append(('name', '=', record.party_name))
+                if record.party_code:
+                    party_domain.append(('code', '=', record.party_code))
+                if party_domain and party_domain != []:
+                    parties = Party.search(party_domain)
+
                 if len(parties) != 1:
                     raise UserError(gettext('importer.single_party_error',
                             party=record.party_name))
+
                 purchase.party = parties[0]
                 purchase.on_change_party()
+                if record.invoice_method:
+                    purchase.invoice_method = record.invoice_method
 
             if record.product_code:
                 products = Product.search([
@@ -93,10 +123,39 @@ class Importer(metaclass=PoolMeta):
                 line.on_change_product()
                 line.quantity = record.quantity
                 line.on_change_quantity()
-                if record.unit_price is not None:
+                if ('gross_unit_price' in Line._fields
+                        and record.unit_price is not None):
+                    line.gross_unit_price = record.unit_price.quantize(exp)
+                    line.discount = record.discount
+                    line.update_prices()
+                elif record.unit_price is not None:
                     line.unit_price = record.unit_price.quantize(exp)
                 lines_to_save.append(line)
 
-        Purchase.save(purchases_to_save)
-        Line.save(lines_to_save)
+        offset = 100
+        i = 0
+        while i <= len(purchases_to_save):
+            print("Purchase:", len(purchases_to_save), datetime.now() - start)
+            m = purchases_to_save[i:min(i + offset, len(purchases_to_save))]
+            i += offset
+            Purchase.save(m)
+
+        i = 0
+        while i <= len(lines_to_save):
+            print("lines:", len(lines_to_save), datetime.now() - start)
+            m = lines_to_save[i:min(i + offset, len(lines_to_save))]
+            i += offset
+            Line.save(m)
+
+        purchases = [x for x in purchases_to_save if x.state != 'done']
+        print("quote:", len(purchases), datetime.now() - start)
+        if purchases:
+            Purchase.quote(purchases)
+        print("confirm:", len(purchases), datetime.now() - start)
+        if purchases:
+            Purchase.confirm(purchases)
+        print("process:", len(purchases), datetime.now() - start)
+        if purchases:
+            Purchase.process(purchases)
+        print("Purchase:", len(purchases), datetime.now() - start)
         return purchases_to_save
