@@ -4,7 +4,7 @@ from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.transaction import Transaction
-
+from datetime import datetime
 
 class ImporterInvoice(ModelView):
     'Importer Invoice'
@@ -64,93 +64,91 @@ class Importer(metaclass=PoolMeta):
         invoices_to_post = []
         lines_to_save = []
         moves_to_save = []
-        from datetime import datetime
         previous_header = None
         invoice = None
         start = datetime.now()
-        with Transaction().set_user(212):
-            for record in records:
-                start = datetime.now()
-                header = cls.import_invoice_header(record)
-                if any(header) and header != previous_header:
-                    previous_header = header
-                    values = Invoice.default_get(
-                        list(Invoice._fields.keys()), with_rec_name=False)
-                    if invoice:
-                        invoice.on_change_lines()
 
-                    invoice = Invoice.search([
-                        ('number', '=', record.invoice_number),
-                        ('journal.name', '=', record.journal)], limit=1)
+        for record in records:
+            header = cls.import_invoice_header(record)
+            if any(header) and header != previous_header:
+                previous_header = header
+                values = Invoice.default_get(
+                    list(Invoice._fields.keys()), with_rec_name=False)
+                if invoice:
+                    invoice.on_change_lines()
 
-                    if invoice:
-                        invoice = None
-                        continue
+                invoice = Invoice.search([
+                    ('number', '=', record.invoice_number),
+                    ('journal.name', '=', record.journal)], limit=1)
 
-                    invoice = Invoice(**values)
-                    invoices_to_save.append(invoice)
-
-                    invoice.reference = record.reference
-                    invoice.number = record.invoice_number
-                    invoice.invoice_date = record.invoice_date
-                    invoice.type = record.invoice_type
-
-                    if record.currency and record.currency in currencies.keys():
-                        invoice.currency = currencies.get(record.currency)
-
-                    if record.party_name:
-                        parties = Party.search([('name', '=', record.party_name)])
-                        if len(parties) != 1:
-                            raise UserError(gettext('importer.single_party_error',
-                                    party=record.party_name))
-                        invoice.party = parties[0]
-                    elif record.party_code:
-                        parties = Party.search(
-                            [('code', '=', record.party_code)])
-                        party = parties[0]
-
-                    invoice.party = party
-                    invoice.on_change_type()#
-                    invoice.on_change_party()
-                    invoice.account = invoice.on_change_with_account()
-                    invoice.journal = journals.get(record.journal)
-
-                    if record.account_move_number:
-                        moves = Move.search([('post_number', '=',
-                            record.account_move_number)], limit=1)
-                        if moves:
-                            move, = moves
-                            invoice.move = move
-                            invoices_to_post.append(invoice)
-
-                if not invoice:
+                if invoice:
+                    invoice = None
                     continue
 
-                if record.product_code:
-                    product = products.get(record.product_code)
-                    if not product:
-                        raise UserError(gettext('importer.single_product_error',
-                                product=record.product_code))
+                invoice = Invoice(**values)
+                invoices_to_save.append(invoice)
 
-                    values = Line.default_get(
-                        list(Line._fields.keys()), with_rec_name=False)
-                    line = Line(**values)
-                    line.invoice = invoice
-                    line.product = product
-                    line.on_change_product()
-                    line.account.company.party.name
-                    if 'gross_unit_price' in Line._fields:
-                        line.gross_unit_price = record.unit_price
-                        line.discount = record.discount
-                        line.update_prices()
-                    elif record.unit_price is not None:
-                        line.unit_price = record.unit_price
-                    line.quantity = record.quantity
-                    line.on_change_quantity()
-                    line.on_change_account()
-                    lines_to_save.append(line)
+                invoice.reference = record.reference
+                invoice.number = record.invoice_number
+                invoice.invoice_date = record.invoice_date
+                invoice.type = record.invoice_type
 
-        offset = 10
+                if record.currency and record.currency in currencies.keys():
+                    invoice.currency = currencies.get(record.currency)
+
+                if record.party_name:
+                    parties = Party.search([('name', '=', record.party_name)])
+                    if len(parties) != 1:
+                        raise UserError(gettext('importer.single_party_error',
+                                party=record.party_name))
+                    invoice.party = parties[0]
+                elif record.party_code:
+                    parties = Party.search(
+                        [('code', '=', record.party_code)])
+                    party = parties[0]
+
+                invoice.party = party
+                invoice.on_change_type()#
+                invoice.on_change_party()
+                invoice.account = invoice.on_change_with_account()
+                invoice.journal = journals.get(record.journal)
+
+                if record.account_move_number:
+                    moves = Move.search([('post_number', '=',
+                        record.account_move_number)], limit=1)
+                    if moves:
+                        move, = moves
+                        invoice.move = move
+                        invoices_to_post.append(invoice)
+
+            if not invoice:
+                continue
+
+            if record.product_code:
+                product = products.get(record.product_code)
+                if not product:
+                    raise UserError(gettext('importer.single_product_error',
+                            product=record.product_code))
+
+                values = Line.default_get(
+                    list(Line._fields.keys()), with_rec_name=False)
+                line = Line(**values)
+                line.invoice = invoice
+                line.product = product
+                line.on_change_product()
+                line.account.company.party.name
+                if 'gross_unit_price' in Line._fields:
+                    line.gross_unit_price = record.unit_price
+                    line.discount = record.discount
+                    line.update_prices()
+                elif record.unit_price is not None:
+                    line.unit_price = record.unit_price
+                line.quantity = record.quantity
+                line.on_change_quantity()
+                line.on_change_account()
+                lines_to_save.append(line)
+
+        offset = 500
         i = 0
         while i <= len(invoices_to_save):
             m = invoices_to_save[i:min(i+offset, len(lines_to_save))]
