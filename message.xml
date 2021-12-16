@@ -30,5 +30,11 @@
         <record model="ir.message" id="animal_not_found">
             <field name="text">Animal %(animal)s not found.</field>
         </record>
+        <record model="ir.message" id="farm_not_found">
+            <field name="text">Farm %(farm)s not found.</field>
+        </record>
+        <record model="ir.message" id="location_not_found">
+            <field name="text">Location %(location)s not found.</field>
+        </record>
     </data>
 </tryton>

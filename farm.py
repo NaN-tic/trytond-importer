@@ -56,8 +56,15 @@ class Importer(metaclass=PoolMeta):
         animals = {x.number: x for x in Animal.search([])}
         to_save = []
         for record in records:
-            if not record.animal or not record.to_location:
-                continue
+            if not record.animal or not animals.get(record.animal):
+                raise UserError(
+                    gettext('importer.animal_not_found', animal=record.animal))
+            if not record.farm or not locations.get(record.farm):
+                raise UserError(
+                    gettext('importer.farm_not_found', farm=record.farm))
+            if not record.to_location or not locations.get(record.to_location):
+                raise UserError(gettext(
+                    'importer.location_not_found', location=record.location))
             move = FarmMove()
             move.farm = locations.get(record.farm)
             move.animal = animals.get(record.animal)
@@ -91,6 +98,9 @@ class Importer(metaclass=PoolMeta):
             if not record.animal or not animals.get(record.animal):
                 raise UserError(
                     gettext('importer.animal_not_found', animal=record.animal))
+            if not record.farm or not locations.get(record.farm):
+                raise UserError(
+                    gettext('importer.farm_not_found', farm=record.farm))
             removal = FarmRemoval()
             removal.farm = locations.get(record.farm)
             removal.animal = animals.get(record.animal)
