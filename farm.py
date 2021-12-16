@@ -1,5 +1,7 @@
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
 
 
 class ImporterFarmMoveEvent(ModelView):
@@ -86,8 +88,9 @@ class Importer(metaclass=PoolMeta):
 
         to_save = []
         for record in records:
-            if not record.animal:
-                continue
+            if not record.animal or not animals.get(record.animal):
+                raise UserError(
+                    gettext('importer.animal_not_found', animal=record.animal))
             removal = FarmRemoval()
             removal.farm = locations.get(record.farm)
             removal.animal = animals.get(record.animal)
