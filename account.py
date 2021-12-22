@@ -4,6 +4,7 @@ from decimal import Decimal
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.transaction import Transaction
+from trytond.tools import grouped_slice
 
 
 class ImporterAccountMove(ModelView):
@@ -130,21 +131,24 @@ class Importer(metaclass=PoolMeta):
         party_to_save = []
         for record in records:
             if record.account_code is None:
+                print("Not account code:", record.account_code, record.number,
+                      record.description, record.credit, record.debit)
                 continue
             header = cls.import_account_move_header(record)
             acc_code = cls.get_account_code(record.account_code)
             account = accounts.get(acc_code, None)
             if not account:
                 if create_account:
-                    account = cls.create_account(record.account_code,
+                    account = cls.create_account(acc_code,
                         record.account_name, chart)
                     if not account:
                         values = Account.default_get(
                             list(Account._fields.keys()), with_rec_name=False)
                         account = Account(**values)
-                        account.code = record.account_code
+                        account.code = acc_code
                         account.name = record.account_name
                         account.type = account_type
+                        account.company = company
                 if not account:
                     raise UserError(gettext('importer.account_not_found',
                         account=record.account_code))
@@ -191,8 +195,20 @@ class Importer(metaclass=PoolMeta):
             line = Line()
             line.account = account
             line.description = record.description
-            line.debit = Decimal("%.2f" % (record.debit or 0))
-            line.credit = Decimal("%.2f" % (record.credit or 0))
+
+            debit = 0
+            credit = 0
+            if record.debit < 0:
+                credit = abs(record.debit or 0)
+            else:
+                debit = record.debit or 0
+            if record.credit < 0:
+                debit += abs(record.credit or 0)
+            else:
+                credit += record.credit or 0
+
+            line.debit = Decimal("%.2f" % (debit or 0))
+            line.credit = Decimal("%.2f" % (credit or 0))
             if account.party_required:
                 line.party = party
             move.lines += (line, )
@@ -202,12 +218,9 @@ class Importer(metaclass=PoolMeta):
         if accounts_to_save:
             Account.save(accounts_to_save)
 
-        offset = 100
-        i = 0
-        while i <= len(moves_to_save):
-            m = moves_to_save[i:min(i+offset, len(moves_to_save))]
-            i += offset
-            Move.save(m)
+        for to_save in grouped_slice(moves_to_save):
+            Move.save(to_save)
+
         return moves_to_save
 
     def create_account(self, code, name, chart):
@@ -228,7 +241,7 @@ class Importer(metaclass=PoolMeta):
         account.code = code
         account.name = name
         chart[code] = account
-        return account
+        return account  
 
     def get_similar_account(self, code, chart, digits=8):
         if len(code) < digits:

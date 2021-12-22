@@ -3,6 +3,7 @@ from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
+from trytond.tools import grouped_slice
 from datetime import datetime
 
 class ImporterPurchase(ModelView):
@@ -69,7 +70,6 @@ class Importer(metaclass=PoolMeta):
                 if record.invoice_method:
                     values['invoice_method'] = record.invoice_method
 
-                print(values)
                 purchases = []
                 if record.purchase_number:
                     purchases = Purchase.search([
@@ -132,20 +132,11 @@ class Importer(metaclass=PoolMeta):
                     line.unit_price = record.unit_price.quantize(exp)
                 lines_to_save.append(line)
 
-        offset = 100
-        i = 0
-        while i <= len(purchases_to_save):
-            print("Purchase:", len(purchases_to_save), datetime.now() - start)
-            m = purchases_to_save[i:min(i + offset, len(purchases_to_save))]
-            i += offset
-            Purchase.save(m)
+        for to_save in grouped_slice(purchases_to_save):
+            Purchase.save(to_save)
 
-        i = 0
-        while i <= len(lines_to_save):
-            print("lines:", len(lines_to_save), datetime.now() - start)
-            m = lines_to_save[i:min(i + offset, len(lines_to_save))]
-            i += offset
-            Line.save(m)
+        for to_save in grouped_slice(lines_to_save):
+            Line.save(to_save)
 
         purchases = [x for x in purchases_to_save if x.state != 'done']
         print("quote:", len(purchases), datetime.now() - start)

@@ -3,6 +3,7 @@ from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
+from trytond.tools import grouped_slice
 from datetime import datetime
 
 class ImporterSale(ModelView):
@@ -155,20 +156,11 @@ class Importer(metaclass=PoolMeta):
                     line.unit_price = record.unit_price.quantize(exp)
                 lines_to_save.append(line)
 
-        offset = 100
-        i = 0
-        while i <= len(sales_to_save):
-            print("Sales:", len(sales_to_save), datetime.now() - start)
-            m = sales_to_save[i:min(i + offset, len(sales_to_save))]
-            i += offset
-            Sale.save(m)
+        for to_save in grouped_slice(sales_to_save):
+            Sale.save(to_save)
 
-        i = 0
-        while i <= len(lines_to_save):
-            print("lines:", len(sales_to_save), datetime.now() - start)
-            m = lines_to_save[i:min(i + offset, len(lines_to_save))]
-            i += offset
-            Line.save(m)
+        for to_save in grouped_slice(lines_to_save):
+            Line.save(to_save)
 
         print("quote:", len(sales_to_save), datetime.now() - start)
         if sales_to_save:
