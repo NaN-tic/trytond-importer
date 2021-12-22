@@ -3,7 +3,7 @@ from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
-from trytond.transaction import Transaction
+from trytond.tools import grouped_slice
 from datetime import datetime
 
 class ImporterInvoice(ModelView):
@@ -59,7 +59,7 @@ class Importer(metaclass=PoolMeta):
         currencies.update({x.symbol: x for x in Currency.search([])})
         clients = cls.get_party_dict()
         products = dict((x.code, x) for x in Product.search([]))
-        journals = dict((x.name, x) for x in Journal.search([]))
+        journals = dict((x.code, x) for x in Journal.search([]))
         invoices_to_save = []
         invoices_to_post = []
         lines_to_save = []
@@ -67,6 +67,9 @@ class Importer(metaclass=PoolMeta):
         previous_header = None
         invoice = None
         start = datetime.now()
+        moves = dict((x.post_number, x) for x in Move.search([]))
+        invoices = dict(((x.number, x.journal.name), x) for x in
+            Invoice.search([]))
 
         for record in records:
             header = cls.import_invoice_header(record)
@@ -77,10 +80,7 @@ class Importer(metaclass=PoolMeta):
                 if invoice:
                     invoice.on_change_lines()
 
-                invoice = Invoice.search([
-                    ('number', '=', record.invoice_number),
-                    ('journal.name', '=', record.journal)], limit=1)
-
+                invoice = invoices.get((record.invoice_number, record.journal))
                 if invoice:
                     invoice = None
                     continue
@@ -114,10 +114,8 @@ class Importer(metaclass=PoolMeta):
                 invoice.journal = journals.get(record.journal)
 
                 if record.account_move_number:
-                    moves = Move.search([('post_number', '=',
-                        record.account_move_number)], limit=1)
-                    if moves:
-                        move, = moves
+                    move = moves.get(record.account_move_number)
+                    if move:
                         invoice.move = move
                         invoices_to_post.append(invoice)
 
@@ -148,19 +146,13 @@ class Importer(metaclass=PoolMeta):
                 line.on_change_account()
                 lines_to_save.append(line)
 
-        offset = 500
-        i = 0
-        while i <= len(invoices_to_save):
-            m = invoices_to_save[i:min(i+offset, len(lines_to_save))]
-            i += offset
-            Invoice.save(m)
+        for to_save in grouped_slice(invoices_to_save):
+            Invoice.save(to_save)
 
-        i = 0
-        while i <= len(lines_to_save):
-            m = lines_to_save[i:min(i+offset, len(lines_to_save))]
-            i += offset
-            Line.save(m)
+        for to_save in grouped_slice(lines_to_save):
+            Line.save(to_save)
 
+        print("Invoices:", len(invoices_to_save), datetime.now() - start)
         Invoice.post_batch(invoices_to_post)
         print("Invoices:" , len(invoices_to_save), datetime.now() - start)
         return invoices_to_save
