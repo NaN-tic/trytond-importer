@@ -123,8 +123,14 @@ class Importer(metaclass=PoolMeta):
             uoms[uom.name] = uom
             uoms[uom.symbol] = uom
 
-        products = dict((x.code, x) for x in Product.search([]))
-        templates = dict((x.code, x) for x in Template.search([]))
+        products = dict((x.code, x) for x in Product.search([
+                    ('code', '!=', None),
+                    ('code', '!=', ''),
+                    ]))
+        templates = dict((x.code, x) for x in Template.search([
+                    ('code', '!=', None),
+                    ('code', '!=', ''),
+                    ]))
 
         to_save = []
         for record in records:
