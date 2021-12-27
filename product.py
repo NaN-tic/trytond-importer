@@ -9,6 +9,7 @@ class ImporterProduct(ModelView):
 
     code = fields.Char('Code')
     variant_code = fields.Char('Variant Code')
+    variant_suffix_code = fields.Char('Suffix Variant Code')
     name = fields.Char('Name')
     description = fields.Char('Description')
     uom = fields.Char('UoM')
@@ -35,6 +36,7 @@ class ImporterProductCodes(ModelView):
 
     template_code = fields.Char('Template Code')
     variant_code = fields.Char('Variant Code')
+    variant_suffix_code = fields.Char('Variant Suffix Code')
     type_ = fields.Char('type')
     code = fields.Char('Code')
 
@@ -63,25 +65,28 @@ class Importer(metaclass=PoolMeta):
     def import_product_codes(cls, records):
         pool = Pool()
         Product = pool.get('product.product')
-        Template = pool.get('product.template')
         Identifier = pool.get('product.identifier')
 
-        products = dict((x.code, x) for x in Product.search([]))
-        templates = dict((x.code, x) for x in Template.search([]))
+        products = dict((x.code, x) for x in Product.search([
+                    ('code', '!=', None),
+                    ('code', '!=', ''),
+                    ]))
         to_save = []
         for record in records:
             if not record.code:
                 continue
             identifier = Identifier()
             identifier.type = record.type_
-            code = (record.template_code or '') + (record.variant_code or '')
-            product = products.get(code)
+            if record.variant_code:
+                code = record.variant_code
+            else
+                code = ((record.template_code or '')
+                    + (record.variant_suffix_code or ''))
             identifier.code = record.code
+            product = products.get(code)
             if not product:
-                template = templates.get(record.template_code)
-                if not template:
-                    continue
-                product = template.products[0]
+                # TODO: Raise an error
+                continue
             identifier.product = product
             to_save.append(identifier)
 
@@ -136,12 +141,23 @@ class Importer(metaclass=PoolMeta):
         for record in records:
             product = None
             template = None
-            if record.code in templates:
+            if record.variant_code:
+                code = record.variant_code
+            else
+                code = ((record.code or '')
+                    + (record.variant_suffix_code or ''))
+            product = products.get(code)
+            if product:
+                template = product.template
+            elif record.template_code in templates:
                 template = templates.get(record.code)
-                if record.variant_code in products:
-                    product = products.get(record.variant_code)
-            else:
+
+            if not template:
                 template = Template()
+                template.products = []
+            if not product:
+                product = Product()
+                template.products += (product,)
             to_save.append(template)
 
             template.name = record.name
@@ -219,7 +235,6 @@ class Importer(metaclass=PoolMeta):
                 supplier.code = record.supplier_code
                 template.product_suppliers = [supplier]
 
-                template.products = []
                 templates[record.code] = template
 
                 if 'brand' in template._fields and record.brand:
@@ -230,16 +245,12 @@ class Importer(metaclass=PoolMeta):
                         brands[record.brand] = brand
                         template.brand = brand
 
-            if not product:
-                product = Product()
-            product.suffix_code = record.variant_code or ''
-            product.cost_price = record.cost_price or Decimal(0)
+            product.suffix_code = record.variant_suffix_code
+            product.cost_price = record.cost_price
             if 'wine_likely_alcohol_content' in product._fields:
                 product.wine_likely_alcohol_content = record.alcohol_content
-            template.products += (product,)
-            products[record.code+(record.variant_code or '')] = product
-            if product not in template.products:
-                template.products = [product]
+
+            products[code] = product
 
         ProductCategory.save(categories.values())
         Template.save(to_save)
