@@ -79,7 +79,7 @@ class Importer(metaclass=PoolMeta):
             identifier.type = record.type_
             if record.variant_code:
                 code = record.variant_code
-            else
+            else:
                 code = ((record.template_code or '')
                     + (record.variant_suffix_code or ''))
             identifier.code = record.code
@@ -143,7 +143,7 @@ class Importer(metaclass=PoolMeta):
             template = None
             if record.variant_code:
                 code = record.variant_code
-            else
+            else:
                 code = ((record.code or '')
                     + (record.variant_suffix_code or ''))
             product = products.get(code)

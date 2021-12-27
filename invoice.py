@@ -1,4 +1,3 @@
-from decimal import Decimal
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
@@ -54,16 +53,13 @@ class Importer(metaclass=PoolMeta):
         Currency = pool.get('currency.currency')
         Move = pool.get('account.move')
 
-        exp = Decimal(str(10.0 ** -Line.unit_price.digits[1]))
         currencies = {x.name: x for x in Currency.search([])}
         currencies.update({x.symbol: x for x in Currency.search([])})
-        clients = cls.get_party_dict()
         products = dict((x.code, x) for x in Product.search([]))
         journals = dict((x.code, x) for x in Journal.search([]))
         invoices_to_save = []
         invoices_to_post = []
         lines_to_save = []
-        moves_to_save = []
         previous_header = None
         invoice = None
         start = datetime.now()
