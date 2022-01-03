@@ -9,7 +9,7 @@ class ImporterProduct(ModelView):
 
     code = fields.Char('Code')
     variant_code = fields.Char('Variant Code')
-    variant_suffix_code = fields.Char('Suffix Variant Code')
+    variant_suffix_code = fields.Char('Variant Suffix Code')
     name = fields.Char('Name')
     description = fields.Char('Description')
     uom = fields.Char('UoM')
