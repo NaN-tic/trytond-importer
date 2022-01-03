@@ -382,6 +382,10 @@ msgctxt "field:importer.product,variant_code:"
 msgid "Variant Code"
 msgstr "Codi variant"
 
+msgctxt "field:importer.product,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "Sufix Codi variant"
+
 msgctxt "field:importer.product,volume:"
 msgid "Volume (m3)"
 msgstr "Volum (m3)"
@@ -405,6 +409,10 @@ msgstr "Tipus"
 msgctxt "field:importer.product_codes,variant_code:"
 msgid "Variant Code"
 msgstr "Codi variant"
+
+msgctxt "field:importer.product_codes,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "Sufix Codi variant"
 
 msgctxt "field:importer.purchase,date:"
 msgid "Date"
