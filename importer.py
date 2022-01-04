@@ -6,6 +6,8 @@ import urllib.request
 import decimal
 from decimal import Decimal
 import openpyxl
+from openpyxl import Workbook
+from openpyxl.writer.excel import save_virtual_workbook
 import textdistance
 import datetime
 import charset_normalizer
@@ -19,6 +21,7 @@ from trytond.exceptions import UserError, UserWarning
 from trytond.i18n import gettext
 from trytond.config import config
 from trytond.rpc import RPC
+from trytond.report import Report
 
 distance_threshold = config.getfloat('importer', 'distance_threshold',
     default=0.6)
@@ -707,3 +710,25 @@ class Import(Wizard):
 
     def transition_import_(self):
         return 'end'
+
+
+class ExcelTemplate(Report):
+    'Excel Template'
+    __name__ = 'importer.excel.template'
+
+    @classmethod
+    def execute(cls, ids, data):
+        if not ids:
+            return
+        cls.check_access()
+        pool = Pool()
+        Importer  = pool.get('importer')
+        importer = Importer(ids[0])
+        wb = Workbook()
+        ws = wb.active
+        header = []
+        for column in importer.columns:
+            header.append(column.name)
+        header = tuple(header)
+        ws.append(header)
+        return ('xlsx', save_virtual_workbook(wb), False, importer.name)

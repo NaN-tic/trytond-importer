@@ -24,6 +24,9 @@ def register():
         importer.Import,
         module='importer', type_='wizard')
     Pool.register(
+        importer.ExcelTemplate,
+        module='importer', type_='report')
+    Pool.register(
         party.Importer,
         party.ImporterParty,
         depends=['party'],
