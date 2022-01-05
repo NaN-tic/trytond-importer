@@ -8,6 +8,8 @@ class ImporterStockMove(ModelView):
 
     from_location = fields.Char('From Location')
     to_location = fields.Char('To Location')
+    effective_date = fields.Date('Effective Date')
+    planned_date = fields.Date('Planned Date')
     product_code = fields.Char('Product Code')
     quantity = fields.Float('Quantity')
     cost_price = fields.Numeric('Cost Price')
@@ -101,6 +103,8 @@ class Importer(metaclass=PoolMeta):
             move.cost_price = record.cost_price
             move.unit_price = record.unit_price
             move.uom = product.default_uom
+            move.effective_date = record.effective_date
+            move.planned_date = record.planned_date
             to_save.append(move)
         Move.save(to_save)
         return to_save
