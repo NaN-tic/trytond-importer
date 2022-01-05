@@ -40,7 +40,12 @@ class Importer(metaclass=PoolMeta):
                     'string': 'Stock Move',
                     'model': 'importer.stock.move',
                     'chunked': True,
-                    }
+                    },
+                'stock_move_and_do': {
+                    'string': 'Stock Move (and Do)',
+                    'model': 'importer.stock.move',
+                    'chunked': True,
+                    },
                 })
         return methods
 
@@ -108,3 +113,12 @@ class Importer(metaclass=PoolMeta):
             to_save.append(move)
         Move.save(to_save)
         return to_save
+
+    @classmethod
+    def import_stock_move_and_do(cls, records):
+        pool = Pool()
+        Move = pool.get('stock.move')
+
+        moves = cls.import_stock_move(records)
+        Move.do(moves)
+        return moves
