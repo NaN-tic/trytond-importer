@@ -134,7 +134,7 @@ class Data:
                     'type': type,
                     'has_header': False,
                     'header_reliable': True,
-                   'rows': content,
+                    'rows': content,
                     }
             if all(isinstance(x, dict) for x in content):
                 # TODO: We're considering that all records have all the keys
