@@ -10,6 +10,7 @@ class ImporterFarmMoveEvent(ModelView):
 
     farm = fields.Char('Farm')
     animal = fields.Char('Animal')
+    timestamp = fields.DateTime('Date & Time')
     to_location = fields.Char('To Location')
     notes = fields.Char('Notes')
     weight = fields.Numeric('Weight')
@@ -21,6 +22,7 @@ class ImporterFarmRemovalEvent(ModelView):
 
     farm = fields.Char('Farm')
     animal = fields.Char('Animal')
+    timestamp = fields.DateTime('Date & Time')
     removal_reason = fields.Char('Reason')
     removal_type = fields.Char('Type')
 
@@ -69,6 +71,7 @@ class Importer(metaclass=PoolMeta):
             move.farm = locations.get(record.farm)
             move.animal = animals.get(record.animal)
             move.animal_type = move.animal.type
+            move.timestamp = record.timestamp
             move.specie = move.animal.specie
             move.unit_price = move.on_change_with_unit_price()
             move.from_location = move.animal.location
@@ -105,6 +108,7 @@ class Importer(metaclass=PoolMeta):
             removal.farm = locations.get(record.farm)
             removal.animal = animals.get(record.animal)
             removal.animal_type = removal.animal.type
+            removal.timestamp = record.timestamp
             removal.specie = removal.animal.specie
             removal.from_location = removal.animal.location
             removal.removal_type = removal_types.get(record.removal_type)
