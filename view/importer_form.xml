@@ -29,10 +29,12 @@
     </group>
 
 
-    <group id="data" colspan="3" col="1">
+    <group id="data" colspan="3" col="3">
         <field name="binary_data"/>
         <field name="url_data"/>
         <field name="sql_data"/>
+        <label name="where"/>
+        <field name="where"/>
     </group>
     <group id="buttons" col="-1" colspan="3">
         <button name="detect"/>

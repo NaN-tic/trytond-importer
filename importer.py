@@ -231,6 +231,9 @@ class Importer(ModelSQL, ModelView):
     schema = fields.Char('schema', states={
         'invisible': ~Eval('data_source').in_(['sql']),
         })
+    where = fields.Char('Where', states={
+        'invisible': ~Eval('data_source').in_(['sql']),
+        })
     binary_data = fields.Binary('Data', states={
             'invisible': Eval('data_source') != 'binary',
             })
@@ -309,7 +312,7 @@ class Importer(ModelSQL, ModelView):
             return
         with open(self.get_url_file()) as sql_file:
             sql = sql_file.read()
-            sql = sql.format(schema=self.schema)
+            sql = sql.format(schema=self.schema, domain=self.where)
             return sql
 
     @classmethod
@@ -787,3 +790,25 @@ class Import(Wizard):
 
     def transition_import_(self):
         return 'end'
+
+
+class ExcelTemplate(Report):
+    'Excel Template'
+    __name__ = 'importer.excel.template'
+
+    @classmethod
+    def execute(cls, ids, data):
+        if not ids:
+            return
+        cls.check_access()
+        pool = Pool()
+        Importer  = pool.get('importer')
+        importer = Importer(ids[0])
+        wb = Workbook()
+        ws = wb.active
+        header = []
+        for column in importer.columns:
+            header.append(column.name)
+        header = tuple(header)
+        ws.append(header)
+        return ('xlsx', save_virtual_workbook(wb), False, importer.name)
