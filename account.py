@@ -125,11 +125,14 @@ class Importer(metaclass=PoolMeta):
             account_type, = AccountType.search([('company', '=', company)],
                 limit=1)
 
+        moves = dict((x.post_number, x) for x in Move.search([]))
         moves_to_save = []
         previous_header = None
         accounts_to_save = []
         party_to_save = []
         for record in records:
+            if record.number in moves:
+                continue
             if record.account_code is None:
                 print("Not account code:", record.account_code, record.number,
                       record.description, record.credit, record.debit)
