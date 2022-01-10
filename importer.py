@@ -369,7 +369,7 @@ class Importer(ModelSQL, ModelView):
     def import_(cls, importers):
         pass
 
-    def import_data(self, data=None):
+    def data_to_records(self, data=None):
         # Records will be an iterator
         method = getattr(self, 'import_' + self.method)
         new_records = []
@@ -508,8 +508,8 @@ class ImporterColumn(ModelSQL, ModelView):
             return
         if not self.importer.has_header or not self.importer.use_header:
             return
-        if (self.importer.id >= 0 and
-                isinstance(self.importer.binary_data, int)):
+        if (self.importer.id >= 0 and isinstance(
+                    self.importer.binary_data, int)):
             # The client will send the size of the binary field instead of its
             # content if it does not have it loaded.
             importer = Importer(self.importer.id)
@@ -659,7 +659,7 @@ class AskAndImport(Wizard):
     def do_import_(self, action):
         data = Data(self.ask.data_source, self.ask.binary_data,
             self.ask.text_data, self.ask.url_data)
-        records = self.ask.importer.import_data(data.get_data())
+        records = self.ask.importer.data_to_records(data.get_data())
         if not records:
             raise UserError(gettext('importer.no_records_imported',
                 importer=self.ask.importer.rec_name))
@@ -692,7 +692,7 @@ class Import(Wizard):
 
         # TODO: Support importing several importers at once
         importer = Importer(Transaction().context.get('active_id'))
-        records = importer.import_data()
+        records = importer.data_to_records()
         if not records:
             raise UserError(gettext('importer.no_records_imported',
                 importer=importer.rec_name))
@@ -722,7 +722,7 @@ class ExcelTemplate(Report):
             return
         cls.check_access()
         pool = Pool()
-        Importer  = pool.get('importer')
+        Importer = pool.get('importer')
         importer = Importer(ids[0])
         wb = Workbook()
         ws = wb.active
