@@ -244,7 +244,7 @@ class Importer(metaclass=PoolMeta):
         account.code = code
         account.name = name
         chart[code] = account
-        return account  
+        return account
 
     def get_similar_account(self, code, chart, digits=8):
         if len(code) < digits:
