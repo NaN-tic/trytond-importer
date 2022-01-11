@@ -811,9 +811,7 @@ class ExcelTemplate(Report):
         ws = wb.active
         header = []
         for column in importer.columns:
-            field_names = column.field.rec_name.split()
-            field_names = field_names[:-1]
-            header.append(' '.join(field_names))
+            header.append(column.field.field_description)
         header = tuple(header)
         ws.append(header)
         return ('xlsx', save_virtual_workbook(wb), False, importer.name)
