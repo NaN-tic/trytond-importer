@@ -164,11 +164,16 @@ class Importer(metaclass=PoolMeta):
                 template.products += (product,)
             to_save.append(template)
 
-            template.name = record.name
-            template.code = record.template_code
-            template.list_price = record.sale_price or Decimal(0)
-            uom = uoms.get(record.uom and record.uom.capitalize() or 'u')
-            if not uom:
+            if record.name:
+                template.name = record.name
+            if record.template_code:
+                template.code = record.template_code
+            if record.sale_price:
+                template.list_price = record.sale_price or Decimal(0)
+            uom = None
+            if record.uom:
+                uom = uoms.get(record.uom and record.uom.capitalize() or 'u')
+            if record.uom and not uom:
                 uom = Uom()
                 uom.name = record.uom.capitalize()
                 uom.symbol = record.uom.capitalize()
@@ -177,14 +182,15 @@ class Importer(metaclass=PoolMeta):
                 uom.on_change_rate()
                 uoms[uom.name] = uom
 
-            template.default_uom = uom
+            if uom:
+                template.default_uom = uom
+            if record.cost_price_method:
+                cost_price_method = record.cost_price_method
+                for cpm in cost_price_methods:
+                    if cpm[1] == record.cost_price_method:
+                        cost_price_method = cpm[0]
 
-            cost_price_method = record.cost_price_method
-            for cpm in cost_price_methods:
-                if cpm[1] == record.cost_price_method:
-                    cost_price_method = cpm[0]
-
-            template.cost_price_method = cost_price_method
+                template.cost_price_method = record.cost_price_method
 
             if ('account_category' in template._fields and
                     record.account_category):
@@ -228,15 +234,13 @@ class Importer(metaclass=PoolMeta):
                         categories[cat] = category
                 template.categories = cats
 
-            if 'product_suppliers' in template._fields:
+            if 'product_suppliers' in template._fields and record.purchasable:
                 template.purchasable = record.purchasable
-                if record.purchasable:
-                    template.purchase_uom = uom
+                template.purchase_uom = uom
 
-            if 'salable' in template._fields:
+            if 'salable' in template._fields and record.salable:
                 template.salable = record.salable
-                if record.salable:
-                    template.sale_uom = uom
+                template.sale_uom = uom
 
             if parties and record.supplier:
                 party = parties.get(record.supplier)
@@ -255,12 +259,17 @@ class Importer(metaclass=PoolMeta):
                         brands[record.brand] = brand
                         template.brand = brand
 
-            product.suffix_code = record.variant_suffix_code
-            product.cost_price = record.cost_price
-            product.description = record.description
-            if 'wine_likely_alcohol_content' in product._fields:
+            if record.variant_suffix_code:
+                product.suffix_code = record.variant_suffix_code
+            if record.cost_price:
+                product.cost_price = record.cost_price
+            if record.description:
+                product.description = record.description
+            if ('wine_likely_alcohol_content' in product._fields and
+                    record.alcohol_content):
                 product.wine_likely_alcohol_content = record.alcohol_content
 
+            product.save()
             products[code] = product
 
         ProductCategory.save(categories.values())
