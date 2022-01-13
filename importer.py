@@ -19,6 +19,7 @@ from trytond.exceptions import UserError, UserWarning
 from trytond.i18n import gettext
 from trytond.config import config
 from trytond.rpc import RPC
+from trytond.report import Report
 
 
 distance_threshold = config.getfloat('importer', 'distance_threshold',
