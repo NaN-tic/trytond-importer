@@ -7,7 +7,7 @@ class ImporterProduct(ModelView):
     'Importer Product'
     __name__ = 'importer.product'
 
-    code = fields.Char('Code')
+    template_code = fields.Char('Template Code')
     variant_code = fields.Char('Variant Code')
     variant_suffix_code = fields.Char('Variant Suffix Code')
     name = fields.Char('Name')
@@ -101,6 +101,8 @@ class Importer(metaclass=PoolMeta):
         ProductCategory = pool.get('product.category')
         Template = pool.get('product.template')
         Uom = pool.get('product.uom')
+        ProductCostPriceMethod = pool.get('product.cost_price_method')
+
         try:
             ProductSupplier = pool.get('purchase.product_supplier')
             Party = pool.get('party.party')
@@ -137,6 +139,8 @@ class Importer(metaclass=PoolMeta):
                     ('code', '!=', ''),
                     ]))
 
+        cost_price_methods = ProductCostPriceMethod.get_cost_price_methods()
+
         to_save = []
         for record in records:
             product = None
@@ -144,13 +148,13 @@ class Importer(metaclass=PoolMeta):
             if record.variant_code:
                 code = record.variant_code
             else:
-                code = ((record.code or '')
+                code = ((record.template_code or '')
                     + (record.variant_suffix_code or ''))
             product = products.get(code)
             if product:
                 template = product.template
             elif record.template_code in templates:
-                template = templates.get(record.code)
+                template = templates.get(record.template_code)
 
             if not template:
                 template = Template()
@@ -161,7 +165,7 @@ class Importer(metaclass=PoolMeta):
             to_save.append(template)
 
             template.name = record.name
-            template.code = record.code
+            template.code = record.template_code
             template.list_price = record.sale_price or Decimal(0)
             uom = uoms.get(record.uom and record.uom.capitalize() or 'u')
             if not uom:
@@ -174,7 +178,13 @@ class Importer(metaclass=PoolMeta):
                 uoms[uom.name] = uom
 
             template.default_uom = uom
-            template.cost_price_method = record.cost_price_method
+
+            cost_price_method = record.cost_price_method
+            for cpm in cost_price_methods:
+                if cpm[1] == record.cost_price_method:
+                    cost_price_method = cpm[0]
+
+            template.cost_price_method = cost_price_method
 
             if ('account_category' in template._fields and
                     record.account_category):
@@ -235,7 +245,7 @@ class Importer(metaclass=PoolMeta):
                 supplier.code = record.supplier_code
                 template.product_suppliers = [supplier]
 
-                templates[record.code] = template
+                templates[record.template_code] = template
 
                 if 'brand' in template._fields and record.brand:
                     brand = brands.get(record.brand)
@@ -247,6 +257,7 @@ class Importer(metaclass=PoolMeta):
 
             product.suffix_code = record.variant_suffix_code
             product.cost_price = record.cost_price
+            product.description = record.description
             if 'wine_likely_alcohol_content' in product._fields:
                 product.wine_likely_alcohol_content = record.alcohol_content
 
