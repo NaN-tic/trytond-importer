@@ -330,9 +330,9 @@ msgctxt "field:importer.product,categories:"
 msgid "Categories"
 msgstr "Categories"
 
-msgctxt "field:importer.product,code:"
-msgid "Code"
-msgstr "Codi"
+msgctxt "field:importer.product,template_code:"
+msgid "Template Code"
+msgstr "Codi plantilla"
 
 msgctxt "field:importer.product,cost_price:"
 msgid "Cost Price"
