@@ -3,6 +3,7 @@ from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.tools import grouped_slice
+from trytond.transaction import Transaction
 from datetime import datetime
 
 class ImporterInvoice(ModelView):
@@ -55,7 +56,8 @@ class Importer(metaclass=PoolMeta):
 
         currencies = {x.name: x for x in Currency.search([])}
         currencies.update({x.symbol: x for x in Currency.search([])})
-        products = dict((x.code, x) for x in Product.search([]))
+        with Transaction().set_context(active_test=False):
+            products = dict((x.code, x) for x in Product.search([]))
         journals = dict((x.code, x) for x in Journal.search([]))
         invoices_to_save = []
         invoices_to_post = []
@@ -93,18 +95,23 @@ class Importer(metaclass=PoolMeta):
                     invoice.currency = currencies.get(record.currency)
 
                 if record.party_name:
-                    parties = Party.search([('name', '=', record.party_name)])
+                    with Transaction().set_context(active_test=False):
+                        parties = Party.search([('name', '=', record.party_name)])
                     if len(parties) != 1:
                         raise UserError(gettext('importer.single_party_error',
                                 party=record.party_name))
                     invoice.party = parties[0]
                 elif record.party_code:
-                    parties = Party.search(
-                        [('code', '=', record.party_code)])
+                    with Transaction().set_context(active_test=False):
+                        parties = Party.search(
+                            [('code', '=', record.party_code)])
+                    if len(parties) != 1:
+                        raise UserError(gettext('importer.single_party_error',
+                                party=record.party_code))
                     party = parties[0]
 
                 invoice.party = party
-                invoice.on_change_type()#
+                invoice.on_change_type()
                 invoice.on_change_party()
                 invoice.account = invoice.on_change_with_account()
                 invoice.journal = journals.get(record.journal)
