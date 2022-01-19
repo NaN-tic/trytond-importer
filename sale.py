@@ -4,6 +4,7 @@ from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.tools import grouped_slice
+from trytond.transaction import Transaction
 from datetime import datetime
 
 class ImporterSale(ModelView):
@@ -99,10 +100,11 @@ class Importer(metaclass=PoolMeta):
                 if record.party_code:
                     party_domain.append(('code', '=', record.party_code))
                 if party_domain and party_domain != []:
-                    parties = Party.search(party_domain)
+                    with Transaction().set_context(active_test=False):
+                        parties = Party.search(party_domain)
                     if len(parties) != 1:
                         raise UserError(gettext('importer.single_party_error',
-                                party=record.party_name))
+                                party=record.party_code))
                     sale.party = parties[0]
                     sale.on_change_party()
                 else:
@@ -131,7 +133,8 @@ class Importer(metaclass=PoolMeta):
                 continue
 
             if record.product_code:
-                products = Product.search([
+                with Transaction().set_context(active_test=False):
+                    products = Product.search([
                         ('code', '=', record.product_code),
                         ('salable', '=', True),
                         ])

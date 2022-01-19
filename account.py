@@ -62,7 +62,8 @@ class Importer(metaclass=PoolMeta):
     @classmethod
     def get_party_dict(cls):
         Party = Pool().get('party.party')
-        return dict((x.code, x) for x in Party.search([]))
+        with Transaction().set_context(active_test=False):
+            return dict((x.code, x) for x in Party.search([]))
 
     def import_account_move(cls, records):
         return cls._import_account_move(records)
@@ -191,6 +192,7 @@ class Importer(metaclass=PoolMeta):
                     raise UserError(gettext(
                         'importer.party_required_for_account',
                         account=record.account_code, move=record.number))
+                print("party_code:", party_code)
                 party = _create_party(party_code, record.party_name)
                 clients[party.code] = party
                 party_to_save.append(party)
