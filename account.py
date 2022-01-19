@@ -126,7 +126,8 @@ class Importer(metaclass=PoolMeta):
             account_type, = AccountType.search([('company', '=', company)],
                 limit=1)
 
-        moves = dict((x.post_number, x) for x in Move.search([]))
+        moves = dict((x.post_number, x) for x in Move.search([('company', 
+            '=', company)]))
         moves_to_save = []
         previous_header = None
         accounts_to_save = []
@@ -153,9 +154,10 @@ class Importer(metaclass=PoolMeta):
                         account.name = record.account_name
                         account.type = account_type
                         account.company = company
-                if not account:
+                if not account or account is None:
                     raise UserError(gettext('importer.account_not_found',
                         account=record.account_code))
+                account.company = company
                 accounts_to_save.append(account)
                 accounts[account.code] = account
 
@@ -171,6 +173,7 @@ class Importer(metaclass=PoolMeta):
                             ('start_date', '<=', date),
                             ('end_date', '>=', date),
                             ('type', '=', 'standard'),
+                            ('company', '=', company),
                             ], limit=1)
                     if not period:
                         raise UserError(gettext('importer.no_period_for_date',
