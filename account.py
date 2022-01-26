@@ -5,6 +5,7 @@ from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.transaction import Transaction
 from trytond.tools import grouped_slice
+from itertools import islice
 
 
 class ImporterAccountMove(ModelView):
@@ -126,14 +127,15 @@ class Importer(metaclass=PoolMeta):
             account_type, = AccountType.search([('company', '=', company)],
                 limit=1)
 
-        moves = dict((x.post_number, x) for x in Move.search([('company', 
-            '=', company)]))
+        moves = dict(((x.post_number, x.date), x)
+            for x in Move.search([('company', '=', company)]))
         moves_to_save = []
         previous_header = None
         accounts_to_save = []
         party_to_save = []
         for record in records:
-            if record.number in moves:
+            mdate = record.effective_date and record.effective_date.date()
+            if (record.number, mdate) in moves:
                 continue
             if record.account_code is None:
                 print("Not account code:", record.account_code, record.number,
@@ -183,6 +185,7 @@ class Importer(metaclass=PoolMeta):
                 move = Move(**values)
                 move.date = date
                 move.post_number = record.number
+                move.number = record.number
                 move.period = period
                 move.journal = journals.get(record.journal_code)
                 move.lines = []
@@ -227,9 +230,9 @@ class Importer(metaclass=PoolMeta):
             Account.save(accounts_to_save)
 
         for to_save in grouped_slice(moves_to_save):
-            Move.save(to_save)
-
+            Move.save(list(to_save))
         return moves_to_save
+
 
     def create_account(self, code, name, chart):
         Configurator = Pool().get('account.configuration')
