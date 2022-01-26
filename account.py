@@ -134,7 +134,7 @@ class Importer(metaclass=PoolMeta):
         accounts_to_save = []
         party_to_save = []
         for record in records:
-            mdate = record.effective_date and record.effective_date.date()
+            mdate = record.effective_date
             if (record.number, mdate) in moves:
                 continue
             if record.account_code is None:
