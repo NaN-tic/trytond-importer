@@ -163,7 +163,6 @@ class Importer(metaclass=PoolMeta):
             if not product:
                 product = Product()
                 template.products += (product,)
-                print(template.products)
             else:
                 products_to_save.append(product)
             to_save.append(template)
