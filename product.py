@@ -142,6 +142,7 @@ class Importer(metaclass=PoolMeta):
         cost_price_methods = ProductCostPriceMethod.get_cost_price_methods()
 
         to_save = []
+        products_to_save = []
         for record in records:
             product = None
             template = None
@@ -162,6 +163,9 @@ class Importer(metaclass=PoolMeta):
             if not product:
                 product = Product()
                 template.products += (product,)
+                print(template.products)
+            else:
+                products_to_save.append(product)
             to_save.append(template)
 
             if record.name:
@@ -263,9 +267,9 @@ class Importer(metaclass=PoolMeta):
                     record.alcohol_content):
                 product.wine_likely_alcohol_content = record.alcohol_content
 
-            product.save()
             products[code] = product
 
         ProductCategory.save(categories.values())
         Template.save(to_save)
+        Product.save(products_to_save)
         return to_save
