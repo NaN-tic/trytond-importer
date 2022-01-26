@@ -173,14 +173,8 @@ class Importer(metaclass=PoolMeta):
             uom = None
             if record.uom:
                 uom = uoms.get(record.uom and record.uom.capitalize() or 'u')
-            if record.uom and not uom:
-                uom = Uom()
-                uom.name = record.uom.capitalize()
-                uom.symbol = record.uom.capitalize()
-                uom.category = uoms.get('u').category
-                uom.rate = 1
-                uom.on_change_rate()
-                uoms[uom.name] = uom
+            else:
+                uom = uoms.get('u')
 
             if uom:
                 template.default_uom = uom

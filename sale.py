@@ -150,6 +150,9 @@ class Importer(metaclass=PoolMeta):
                 line.on_change_product()
                 line.quantity = record.quantity
                 line.on_change_quantity()
+                if ('product_package') in Line._fields:
+                    line.product_package = None
+                    line.package_quantity = None
                 if ('gross_unit_price' in Line._fields
                             and record.unit_price is not None):
                     line.gross_unit_price = record.unit_price.quantize(exp)
@@ -160,10 +163,10 @@ class Importer(metaclass=PoolMeta):
                 lines_to_save.append(line)
 
         for to_save in grouped_slice(sales_to_save):
-            Sale.save(to_save)
+            Sale.save(list(to_save))
 
         for to_save in grouped_slice(lines_to_save):
-            Line.save(to_save)
+            Line.save(list(to_save))
 
         print("quote:", len(sales_to_save), datetime.now() - start)
         if sales_to_save:

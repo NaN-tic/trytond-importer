@@ -136,10 +136,10 @@ class Importer(metaclass=PoolMeta):
                 lines_to_save.append(line)
 
         for to_save in grouped_slice(purchases_to_save):
-            Purchase.save(to_save)
+            Purchase.save(list(to_save))
 
         for to_save in grouped_slice(lines_to_save):
-            Line.save(to_save)
+            Line.save(list(to_save))
 
         purchases = [x for x in purchases_to_save if x.state != 'done']
         print("quote:", len(purchases), datetime.now() - start)
