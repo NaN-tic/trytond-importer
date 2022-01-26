@@ -190,7 +190,7 @@ class Importer(metaclass=PoolMeta):
                     if cpm[1] == record.cost_price_method:
                         cost_price_method = cpm[0]
 
-                template.cost_price_method = record.cost_price_method
+                template.cost_price_method = cost_price_method
 
             if ('account_category' in template._fields and
                     record.account_category):
