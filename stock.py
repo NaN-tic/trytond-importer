@@ -88,8 +88,13 @@ class Importer(metaclass=PoolMeta):
         Location = pool.get('stock.location')
         Product = pool.get('product.product')
 
-        locations = {x.name: x for x in Location.search([])}
-        products = {x.code: x for x in Product.search([])}
+        location_names = ([x.from_location for x in records] +
+            [x.to_location for x in records])
+        locations = {x.name: x for x in Location.search([
+            ('name', 'in', location_names)])}
+
+        codes = [x.product_code for x in records]
+        products = {x.code: x for x in Product.search([('code', 'in', codes)])}
 
         to_save = []
         for record in records:
