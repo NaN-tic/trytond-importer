@@ -38,6 +38,11 @@ class Importer(metaclass=PoolMeta):
                     'model': 'importer.sale',
                     'chunked': False,
                     },
+                'sale_force': {
+                    'string': 'Sale Create/Fix Party And Products',
+                    'model': 'importer.sale',
+                    'chunked': False,
+                    },
                 })
         return methods
 
@@ -47,7 +52,12 @@ class Importer(metaclass=PoolMeta):
             record.shipment_address)
 
     @classmethod
-    def import_sale(cls, records):
+    def import_sale_force(cls, records):
+        return cls.import_sale(records, force=True)
+
+
+    @classmethod
+    def import_sale(cls, records, force=False):
         pool = Pool()
         Sale = pool.get('sale.sale')
         Line = pool.get('sale.line')
@@ -61,6 +71,17 @@ class Importer(metaclass=PoolMeta):
 
         currencies = {x.name: x for x in Currency.search([])}
         currencies.update({x.symbol: x for x in Currency.search([])})
+
+        def create_party(name, code):
+            values = Party.default_get(
+                    list(Party._fields.keys()), with_rec_name=False)
+            party = Party(**values)
+            party.name = name or code
+            party.code = code
+            if 'customer' in party._fields:
+                party.customer = True
+            party.save()
+            return [party]
 
         sales_to_save = []
         lines_to_save = []
@@ -78,7 +99,6 @@ class Importer(metaclass=PoolMeta):
                     if sales:
                         sale = None
                         continue
-
 
                 sale = Sale(**values)
                 sale.party = None
@@ -102,10 +122,16 @@ class Importer(metaclass=PoolMeta):
                 if party_domain and party_domain != []:
                     with Transaction().set_context(active_test=False):
                         parties = Party.search(party_domain)
-                    if len(parties) != 1:
+                    if len(parties) != 1 and not force:
                         raise UserError(gettext('importer.single_party_error',
                                 party=record.party_code))
+                    elif not parties and force:
+                        parties = create_party(record.party_name,
+                            record.party_code)
+
                     sale.party = parties[0]
+                    if force and 'customer' in Party._fields:
+                        sale.party.customer = True
                     sale.on_change_party()
                 else:
                     sale = None
@@ -133,20 +159,24 @@ class Importer(metaclass=PoolMeta):
                 continue
 
             if record.product_code:
+                product_domain = [('code', '=', record.product_code)]
+                if not force:
+                    product_domain += [('salable', '=', 'True')]
                 with Transaction().set_context(active_test=False):
-                    products = Product.search([
-                        ('code', '=', record.product_code),
-                        ('salable', '=', True),
-                        ])
+                    products = Product.search(product_domain)
                 if len(products) != 1:
                     raise UserError(gettext('importer.single_product_error',
                             product=record.product_code))
+
+                product = products[0]
+                if force:
+                    product.salable = True
 
                 values = Line.default_get(
                     list(Line._fields.keys()), with_rec_name=False)
                 line = Line(**values)
                 line.sale = sale
-                line.product = products[0]
+                line.product = product
                 line.on_change_product()
                 line.quantity = record.quantity
                 line.on_change_quantity()
