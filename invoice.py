@@ -53,6 +53,7 @@ class Importer(metaclass=PoolMeta):
         Journal = pool.get('account.journal')
         Currency = pool.get('currency.currency')
         Move = pool.get('account.move')
+        Period = pool.get('account.period')
 
         currencies = {x.name: x for x in Currency.search([])}
         currencies.update({x.symbol: x for x in Currency.search([])})
@@ -65,9 +66,11 @@ class Importer(metaclass=PoolMeta):
         previous_header = None
         invoice = None
         start = datetime.now()
-        moves = dict((x.post_number, x) for x in Move.search([]))
+        company = Transaction().context.get('company')
+        moves = dict(((x.post_number, x.period), x)
+            for x in Move.search([('company', '=', company)]))
         invoices = dict(((x.number, x.journal.name), x) for x in
-            Invoice.search([]))
+            Invoice.search([('companty', '=', company)]))
 
         for record in records:
             header = cls.import_invoice_header(record)
@@ -117,7 +120,13 @@ class Importer(metaclass=PoolMeta):
                 invoice.journal = journals.get(record.journal)
 
                 if record.account_move_number:
-                    move = moves.get(record.account_move_number)
+                    period = Period.search([
+                            ('start_date', '<=', record.invoice_date),
+                            ('end_date', '>=', record.invoice_date),
+                            ('type', '=', 'standard'),
+                            ('company', '=', company),
+                            ], limit=1)
+                    move = moves.get(record.account_move_number, period)
                     if move:
                         invoice.move = move
                         invoices_to_post.append(invoice)
