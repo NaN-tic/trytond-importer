@@ -36,6 +36,11 @@ class Importer(metaclass=PoolMeta):
                     'model': 'importer.invoice',
                     'chunked': False,
                     },
+                'invoice_force': {
+                    'string': 'Invoice Create/Fix Party and Products',
+                    'model': 'importer.invoice',
+                    'chunked': False,
+                    },
                 })
         return methods
 
@@ -44,7 +49,11 @@ class Importer(metaclass=PoolMeta):
         return (record.invoice_number, record.journal)
 
     @classmethod
-    def import_invoice(cls, records):
+    def import_invoice_force(cls, records):
+        return cls.import_invoice(records, force=True)
+
+    @classmethod
+    def import_invoice(cls, records, force=False):
         pool = Pool()
         Invoice = pool.get('account.invoice')
         Line = pool.get('account.invoice.line')
@@ -70,7 +79,18 @@ class Importer(metaclass=PoolMeta):
         moves = dict(((x.post_number, x.period), x)
             for x in Move.search([('company', '=', company)]))
         invoices = dict(((x.number, x.journal.name), x) for x in
-            Invoice.search([('companty', '=', company)]))
+            Invoice.search([('company', '=', company)]))
+        
+        def create_party(name, code):
+            values = Party.default_get(
+                    list(Party._fields.keys()), with_rec_name=False)
+            party = Party(**values)
+            party.name = name or code
+            party.code = code
+            if 'customer' in party._fields:
+                party.customer = True
+            party.save()
+            return [party]
 
         for record in records:
             header = cls.import_invoice_header(record)
@@ -108,10 +128,18 @@ class Importer(metaclass=PoolMeta):
                     with Transaction().set_context(active_test=False):
                         parties = Party.search(
                             [('code', '=', record.party_code)])
-                    if len(parties) != 1:
+                    if len(parties) != 1 and not force:
                         raise UserError(gettext('importer.single_party_error',
                                 party=record.party_code))
+                    elif not parties and force:
+                        parties = create_party(record.party_name or
+                            record.party_code, record.party_code)
                     party = parties[0]
+
+                if (force and 'customer' in Party._fields and 
+                        not party.customer):
+                    party.customer = True
+                    party.save()
 
                 invoice.party = party
                 invoice.on_change_type()
@@ -126,8 +154,9 @@ class Importer(metaclass=PoolMeta):
                             ('type', '=', 'standard'),
                             ('company', '=', company),
                             ], limit=1)
-                    move = moves.get(record.account_move_number, period)
+                    move = moves.get((record.account_move_number, period[0]))
                     if move:
+                        print(move, invoice)
                         invoice.move = move
                         invoices_to_post.append(invoice)
 
@@ -144,6 +173,17 @@ class Importer(metaclass=PoolMeta):
                     list(Line._fields.keys()), with_rec_name=False)
                 line = Line(**values)
                 line.invoice = invoice
+                if (force and invoice.type == 'invoice_out'):
+                    if not product.salable:
+                        product.active = True
+                        product.salable = True
+                        product.save()
+                    if ('validated' in Template._fields and
+                            not product.template.validated):
+                        template = product.template
+                        template.active = True
+                        template.validated = True
+                        template.save()
                 line.product = product
                 line.on_change_product()
                 line.account.company.party.name

@@ -198,14 +198,14 @@ class Importer(metaclass=PoolMeta):
         for to_save in grouped_slice(lines_to_save):
             Line.save(list(to_save))
 
-        print("quote:", len(sales_to_save), datetime.now() - start)
-        if sales_to_save:
-            sale.quote(sales_to_save)
-        print("confirm:", len(sales_to_save), datetime.now() - start)
-        if sales_to_save:
-            Sale.confirm(sales_to_save)
-        print("process:", len(sales_to_save), datetime.now() - start)
-        if sales_to_save:
-            Sale.process(sales_to_save)
-        print("Sales:", len(sales_to_save), datetime.now() - start)
+        #  print("quote:", len(sales_to_save), datetime.now() - start)
+        #  if sales_to_save:
+        #      sale.quote(sales_to_save)
+        #  print("confirm:", len(sales_to_save), datetime.now() - start)
+        #  if sales_to_save:
+        #      Sale.confirm(sales_to_save)
+        #  print("process:", len(sales_to_save), datetime.now() - start)
+        #  if sales_to_save:
+        #      Sale.process(sales_to_save)
+        #  print("Sales:", len(sales_to_save), datetime.now() - start)
         return sales_to_save
