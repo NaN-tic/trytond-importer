@@ -63,6 +63,7 @@ class Importer(metaclass=PoolMeta):
         Line = pool.get('sale.line')
         Party = pool.get('party.party')
         Product = pool.get('product.product')
+        Template = pool.get('product.template')
         Address = pool.get('party.address')
         Currency = pool.get('currency.currency')
 
@@ -171,6 +172,12 @@ class Importer(metaclass=PoolMeta):
                 product = products[0]
                 if force:
                     product.salable = True
+                    product.save()
+                    if ('validated' in Template._fields and
+                            not product.template.validated):
+                        template = product.template
+                        template.validated = True
+                        template.save()
 
                 values = Line.default_get(
                     list(Line._fields.keys()), with_rec_name=False)
@@ -180,7 +187,7 @@ class Importer(metaclass=PoolMeta):
                 line.on_change_product()
                 line.quantity = record.quantity
                 line.on_change_quantity()
-                if ('product_package') in Line._fields:
+                if 'product_package' in Line._fields:
                     line.product_package = None
                     line.package_quantity = None
                 if ('gross_unit_price' in Line._fields
