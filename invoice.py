@@ -63,6 +63,7 @@ class Importer(metaclass=PoolMeta):
         Currency = pool.get('currency.currency')
         Move = pool.get('account.move')
         Period = pool.get('account.period')
+        Template = pool.get('product.template')
 
         currencies = {x.name: x for x in Currency.search([])}
         currencies.update({x.symbol: x for x in Currency.search([])})
@@ -173,7 +174,7 @@ class Importer(metaclass=PoolMeta):
                     list(Line._fields.keys()), with_rec_name=False)
                 line = Line(**values)
                 line.invoice = invoice
-                if (force and invoice.type == 'invoice_out'):
+                if (force and invoice.type == 'out'):
                     if not product.salable:
                         product.active = True
                         product.salable = True
@@ -186,6 +187,9 @@ class Importer(metaclass=PoolMeta):
                         template.save()
                 line.product = product
                 line.on_change_product()
+                if 'product_package' in Line._fields:
+                    line.product_package = None
+                    line.package_quantity = None
                 line.account.company.party.name
                 if 'gross_unit_price' in Line._fields:
                     line.gross_unit_price = record.unit_price
