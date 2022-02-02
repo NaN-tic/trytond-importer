@@ -33,14 +33,14 @@
         <field name="binary_data"/>
         <field name="url_data"/>
         <field name="sql_data"/>
-        <label name="where"/>
-        <field name="where"/>
     </group>
     <group id="buttons" col="-1" colspan="3">
         <button name="detect"/>
         <button name="import_"/>
         <button name="check_connection"/>
     </group>
+    <label name="where"/>
+    <field name="where" colspan="5"/>
     <separator name="text_data" colspan="6"/>
     <field name="text_data" colspan="6" height="200"/>
     <field name="columns" colspan="6" height="500"/>
