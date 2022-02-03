@@ -37,6 +37,11 @@ class Importer(metaclass=PoolMeta):
                     'model': 'importer.purchase',
                     'chunked': False,
                     },
+                'purchase_force': {
+                    'string': 'Purchase Force',
+                    'model': 'importer.purchase',
+                    'chunked': False,
+                    },
                 })
         return methods
 
@@ -46,6 +51,9 @@ class Importer(metaclass=PoolMeta):
 
     @classmethod
     def import_purchase(cls, records):
+        return cls.import_purchase(records, force=True)
+    @classmethod
+    def import_purchase(cls, records, force=False):
         pool = Pool()
         Purchase = pool.get('purchase.purchase')
         Line = pool.get('purchase.line')
@@ -112,7 +120,6 @@ class Importer(metaclass=PoolMeta):
                 with Transaction().set_context(active_test=False):
                     products = Product.search([
                         ('code', '=', record.product_code),
-                        ('purchasable', '=', True),
                         ])
                 if len(products) != 1:
                     raise UserError(gettext('importer.single_product_error',
@@ -121,8 +128,14 @@ class Importer(metaclass=PoolMeta):
                 values = Line.default_get(
                     list(Line._fields.keys()), with_rec_name=False)
                 line = Line(**values)
+                product = products[0]
+                template = product.template
+                if force and not template.purchasable:
+                    template.purchasable = True
+                    template.save()
+
                 line.purchase = purchase
-                line.product = products[0]
+                line.product = product
                 line.on_change_product()
                 line.quantity = record.quantity
                 line.on_change_quantity()
