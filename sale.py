@@ -170,14 +170,14 @@ class Importer(metaclass=PoolMeta):
                             product=record.product_code))
 
                 product = products[0]
-                if force:
-                    product.salable = True
-                    product.save()
-                    if ('validated' in Template._fields and
-                            not product.template.validated):
-                        template = product.template
-                        template.validated = True
-                        template.save()
+                template = product.template
+                if force and not template.salable:
+                    template.salable = True
+                    template.save()
+                if (force and 'validated' in Template._fields and
+                        not template.validated):
+                    template.validated = True
+                    template.save()
 
                 values = Line.default_get(
                     list(Line._fields.keys()), with_rec_name=False)
