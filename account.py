@@ -109,6 +109,7 @@ class Importer(metaclass=PoolMeta):
         PartyIdentifier = pool.get('party.identifier')
         AccountType = pool.get('account.account.type')
 
+        print("holaaaaaaaaaaaa")
         def _create_party(code, name):
             party = Party(name=name, code=code)
             party.identifiers = [PartyIdentifier(code=code, type=None)]

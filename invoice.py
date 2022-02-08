@@ -79,7 +79,7 @@ class Importer(metaclass=PoolMeta):
         company = Transaction().context.get('company')
         moves = dict(((x.post_number, x.period), x)
             for x in Move.search([('company', '=', company)]))
-        invoices = dict(((x.number, x.journal.name), x) for x in
+        invoices = dict(((x.number, x.journal.name, x.invoice_date), x) for x in
             Invoice.search([('company', '=', company)]))
         
         def create_party(name, code):
@@ -102,7 +102,8 @@ class Importer(metaclass=PoolMeta):
                 if invoice:
                     invoice.on_change_lines()
 
-                invoice = invoices.get((record.invoice_number, record.journal))
+                invoice = invoices.get((record.invoice_number, record.journal,
+                    record.invoice_date))
                 if invoice:
                     invoice = None
                     continue
