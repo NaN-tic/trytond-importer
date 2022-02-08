@@ -49,7 +49,8 @@ class Importer(metaclass=PoolMeta):
     @classmethod
     def import_sale_header(cls, record):
         return (record.sale_number, record.reference, record.date,
-            record.party_name, record.shipment_address)
+            record.party_code, record.party_name, record.shipment_party_name,
+            record.shipment_address, record.currency)
 
     @classmethod
     def import_sale_force(cls, records):
