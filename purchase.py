@@ -81,8 +81,10 @@ class Importer(metaclass=PoolMeta):
 
                 purchases = []
                 if record.purchase_number:
-                    purchases = Purchase.search([
-                        ('number', '=', record.purchase_number)], limit=1)
+                    domain = [('number', '=', record.purchase_number)]
+                    if record.date:
+                        domain += [('purchase_date', '=', record.date)]
+                    purchases = Purchase.search(domain, limit=1)
 
                 purchase = Purchase(**values)
                 if not purchases:

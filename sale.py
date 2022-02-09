@@ -96,8 +96,10 @@ class Importer(metaclass=PoolMeta):
                     list(Sale._fields.keys()), with_rec_name=False)
 
                 if record.sale_number:
-                    sales = Sale.search([('number', '=', record.sale_number)],
-                        limit=1)
+                    domain = [('number', '=', record.sale_number)]
+                    if record.sale_date:
+                        domain += [('sale_date', '=', record.sale_date)]
+                    sales = Sale.search(domain, limit=1)
                     if sales:
                         sale = None
                         continue
@@ -196,6 +198,8 @@ class Importer(metaclass=PoolMeta):
                     line.gross_unit_price = record.unit_price.quantize(exp)
                     line.discount = record.discount
                     line.update_prices()
+                if ('manual_delivery_date' in Line._fields) and record.sale_date:
+                    line.manual_delivery_date = record.sale_date
                 elif record.unit_price is not None:
                     line.unit_price = record.unit_price.quantize(exp)
                 lines_to_save.append(line)
