@@ -133,9 +133,11 @@ class Importer(metaclass=PoolMeta):
                         parties = create_party(record.party_name,
                             record.party_code)
 
-                    sale.party = parties[0]
-                    if force and 'customer' in Party._fields:
-                        sale.party.customer = True
+                    party = parties[0]
+                    sale.party = party
+                    if force and 'customer' in Party._fields and not party.customer:
+                        party.customer = True
+                        party.save()
                     sale.on_change_party()
                 else:
                     sale = None
