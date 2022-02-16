@@ -1,4 +1,5 @@
 from trytond.model import ModelView, fields
+from trytond.transaction import Transaction
 from trytond.pool import PoolMeta, Pool
 
 
@@ -97,7 +98,7 @@ class Importer(metaclass=PoolMeta):
         products = {x.code: x for x in Product.search([('code', 'in', codes)])}
 
         # Avoid warnings because of missing origin
-        with Transaction().set_context({'_skip_warnings': True})
+        with Transaction().set_context({'_skip_warnings': True}):
             to_save = []
             for record in records:
                 move = Move()
