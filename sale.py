@@ -5,7 +5,7 @@ from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.tools import grouped_slice
 from trytond.transaction import Transaction
-from datetime import datetime
+
 
 class ImporterSale(ModelView):
     'Importer Sale'
@@ -68,7 +68,6 @@ class Importer(metaclass=PoolMeta):
         Address = pool.get('party.address')
         Currency = pool.get('currency.currency')
 
-        start = datetime.now()
         exp = Decimal(str(10.0 ** -Line.unit_price.digits[1]))
 
         currencies = {x.name: x for x in Currency.search([])}
@@ -212,14 +211,4 @@ class Importer(metaclass=PoolMeta):
         for to_save in grouped_slice(lines_to_save):
             Line.save(list(to_save))
 
-        #  print("quote:", len(sales_to_save), datetime.now() - start)
-        #  if sales_to_save:
-        #      sale.quote(sales_to_save)
-        #  print("confirm:", len(sales_to_save), datetime.now() - start)
-        #  if sales_to_save:
-        #      Sale.confirm(sales_to_save)
-        #  print("process:", len(sales_to_save), datetime.now() - start)
-        #  if sales_to_save:
-        #      Sale.process(sales_to_save)
-        #  print("Sales:", len(sales_to_save), datetime.now() - start)
         return sales_to_save

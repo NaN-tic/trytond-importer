@@ -5,7 +5,6 @@ from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.transaction import Transaction
 from trytond.tools import grouped_slice
-from itertools import islice
 
 
 class ImporterAccountMove(ModelView):

@@ -69,8 +69,9 @@ class Importer(metaclass=PoolMeta):
         return (record.reference, record.date, record.party_name)
 
     @classmethod
-    def import_purchase(cls, records):
+    def import_purchase_force(cls, records):
         return cls.import_purchase(records, force=True)
+
     @classmethod
     def import_purchase(cls, records, force=False):
         pool = Pool()
