@@ -122,8 +122,8 @@ class Importer(metaclass=PoolMeta):
         periods = {}
 
         chart = {}
+        company = Transaction().context.get('company')
         if create_account:
-            company = Transaction().context.get('company')
             chart = cls.get_chart_tree(company)
             account_type, = AccountType.search([('company', '=', company)],
                 limit=1)
@@ -256,6 +256,7 @@ class Importer(metaclass=PoolMeta):
         return account
 
     def get_similar_account(self, code, chart, digits=8):
+        account = None
         if len(code) < digits:
             for digits in (4, 3, 2, 1):
                 code2 = code[:digits]

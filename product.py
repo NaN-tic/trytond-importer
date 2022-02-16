@@ -108,21 +108,20 @@ class Importer(metaclass=PoolMeta):
             Party = pool.get('party.party')
             parties = dict((x.code, x) for x in Party.search([]))
         except:
-            pass
+            parties = {}
 
-        customs = {}
         try:
             TariffCodeRel = pool.get('product-customs.tariff.code')
             TariffCode = pool.get('customs.tariff.code')
             customs = dict((x.code, x) for x in TariffCode.search([]))
         except:
-            pass
+            customs = {}
 
         try:
             Brand = pool.get('product.brand')
             brands = dict((x.name, x) for x in Brand.search([]))
         except:
-            pass
+            brands = {}
 
         categories = dict((x.name, x) for x in ProductCategory.search([]))
         uoms = {}

@@ -680,7 +680,7 @@ class ImporterColumn(ModelSQL, ModelView):
                 else:
                     format = '%Y-%m-%d'
                 try:
-                    return datetime.datetime.strptime(value, format)
+                    return datetime.datetime.strptime(value, format).date()
                 except ValueError:
                     # TODO: Raise Error
                     return None

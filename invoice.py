@@ -81,7 +81,7 @@ class Importer(metaclass=PoolMeta):
             for x in Move.search([('company', '=', company)]))
         invoices = dict(((x.number, x.journal.name, x.invoice_date), x) for x in
             Invoice.search([('company', '=', company)]))
-        
+
         def create_party(name, code):
             values = Party.default_get(
                     list(Party._fields.keys()), with_rec_name=False)
@@ -125,7 +125,7 @@ class Importer(metaclass=PoolMeta):
                     if len(parties) != 1:
                         raise UserError(gettext('importer.single_party_error',
                                 party=record.party_name))
-                    invoice.party = parties[0]
+                    party = parties[0]
                 elif record.party_code:
                     with Transaction().set_context(active_test=False):
                         parties = Party.search(
@@ -138,7 +138,7 @@ class Importer(metaclass=PoolMeta):
                             record.party_code, record.party_code)
                     party = parties[0]
 
-                if (force and 'customer' in Party._fields and 
+                if (force and 'customer' in Party._fields and
                         not party.customer):
                     party.customer = True
                     party.save()
