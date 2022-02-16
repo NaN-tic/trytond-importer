@@ -3,9 +3,6 @@
 # the full copyright notices and license terms.
 import unittest
 import json
-import datetime
-from xmlrpc.client import DateTime
-from trytond.tests.test_tryton import ModuleTestCase
 from trytond.tests.test_tryton import suite as test_suite
 from trytond.tests.test_tryton import ModuleTestCase, with_transaction
 from trytond.transaction import Transaction
