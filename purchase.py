@@ -24,6 +24,20 @@ class ImporterPurchase(ModelView):
     discount = fields.Numeric('Discount')
     state = fields.Char('state')
 
+class ImporterProductSupplier(ModelView):
+    'Importer Product Supplier'
+    __name__ = 'importer.product.supplier'
+
+    template_code = fields.Char('Template Code')
+    product_code = fields.Char('Product Code')
+    party_name = fields.Char('Party Name')
+    party_code = fields.Char('Party Code')
+    currency = fields.Char('Currency')
+    code = fields.Char('Code')
+    quantity = fields.Float('Product Quantity')
+    unit_price = fields.Numeric('Unit Price')
+    lead_time = fields.TimeDelta('Lead Time')
+
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -40,6 +54,11 @@ class Importer(metaclass=PoolMeta):
                 'purchase_force': {
                     'string': 'Purchase Force',
                     'model': 'importer.purchase',
+                    'chunked': False,
+                    },
+                'purchase_product_supplier': {
+                    'string': 'Purchase Product Supplier',
+                    'model': 'importer.product.supplier',
                     'chunked': False,
                     },
                 })
@@ -168,3 +187,118 @@ class Importer(metaclass=PoolMeta):
             Purchase.process(purchases)
         print("Purchase:", len(purchases), datetime.now() - start)
         return purchases_to_save
+
+    @classmethod
+    def import_purchase_product_supplier(cls, records):
+        pool = Pool()
+        Party = pool.get('party.party')
+        ProductSupplier = pool.get('purchase.product_supplier')
+        Price = pool.get('purchase.product_supplier.price')
+        Product = pool.get('product.product')
+        Currency = pool.get('currency.currency')
+        Template = pool.get('product.template')
+
+        currencies = {x.name: x for x in Currency.search([])}
+        currencies.update({x.symbol: x for x in Currency.search([])})
+
+        lines_to_delete = {}
+        lines_to_save = []
+        product_supplier_to_save = {}
+        for record in records:
+            party_domain=[]
+            parties = []
+            if record.party_code:
+                party_domain.append(('code', '=', record.party_code))
+            elif record.party_name:
+                party_domain.append(('name', '=', record.party_name))
+            if party_domain and party_domain != []:
+                with Transaction().set_context(active_test=False):
+                    parties = Party.search(party_domain)
+            if len(parties) != 1:
+                raise UserError(gettext('importer.single_party_error',
+                        party=(record.party_code or record.party_name)))
+            party, = parties
+
+            if record.product_code:
+                with Transaction().set_context(active_test=False):
+                    products = Product.search([
+                        ('code', '=', record.product_code),
+                        ])
+                if len(products) != 1:
+                    raise UserError(gettext('importer.single_product_error',
+                            product=record.product_code))
+                product, = products
+                template = product.template
+            elif record.template_code:
+                with Transaction().set_context(active_test=False):
+                    templates = Template.search([
+                        ('code', '=', record.template_code),
+                        ])
+                if len(templates) != 1:
+                    raise UserError(gettext('importer.single_product_error',
+                            product=record.template_code))
+                product = None
+                template, = templates
+            else:
+                raise UserError(gettext('importer.missing_template_product_code'))
+
+            key = (party.id, template.id, product.id)
+            if key in product_supplier_to_save:
+                product_supplier = product_supplier_to_save[key]
+            else:
+                product_suppliers = ProductSupplier.search([
+                    ('party', '=', party.id),
+                    ('template', '=', template.id),
+                    ('product', '=', product.id),
+                    ])
+                if len(product_suppliers) == 1:
+                    product_supplier, = product_suppliers
+                    lines_to_delete = {}
+                    lines_to_delete[product_supplier] = {}
+                    for price in product_supplier.prices:
+                        lines_to_delete[product_supplier][price.quantity] = price
+                else:
+                    values = ProductSupplier.default_get(
+                    list(ProductSupplier._fields.keys()), with_rec_name=False)
+                    product_supplier = ProductSupplier(**values)
+
+                    product_supplier.party = party
+                    product_supplier.template = template
+                    product_supplier.product = product
+                    if not template.purchasable:
+                        template.purchasable = True
+                        template.purchase_uom = template.default_uom
+                        template.save()
+            if record.code:
+                product_supplier.code = record.code
+            if record.currency and record.currency in currencies.keys():
+                product_supplier.currency = currencies.get(record.currency)
+            if record.lead_time:
+                product_supplier.lead_time = record.lead_time
+
+            if record.unit_price:
+                price = lines_to_delete.get(product_supplier, {}).get(record.quantity)
+                if price:
+                    del lines_to_delete[product_supplier][record.quantity]
+                else:
+                    values = Price.default_get(
+                        list(Price._fields.keys()), with_rec_name=False)
+                    price = Price(**values)
+                    if product_supplier.id is None:
+                        product_supplier.save()
+                    price.product_supplier = product_supplier
+                price.quantity = record.quantity
+                price.unit_price = record.unit_price
+                lines_to_save.append(price)
+
+            product_supplier_to_save[key] = product_supplier
+
+        to_save = list(product_supplier_to_save.values())
+        ProductSupplier.save(to_save)
+
+        Price.save(lines_to_save)
+        to_delete = []
+        for quantities in lines_to_delete.values():
+            to_delete += quantities.values()
+        Price.delete(to_delete)
+        return to_save
