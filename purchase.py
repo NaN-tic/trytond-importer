@@ -110,7 +110,10 @@ class Importer(metaclass=PoolMeta):
                 if not purchases:
                     purchases_to_save.append(purchase)
                 purchase.reference = record.reference
-                purchase.purchase_date = record.date
+                purchase_date = record.date
+                if isinstance(record.date, datetime):
+                    purchase_date = record.date.date()
+                purchase.purchase_date = purchase_date
 
                 if record.state:
                     purchase.state = record.state
@@ -161,6 +164,9 @@ class Importer(metaclass=PoolMeta):
                 line.on_change_product()
                 line.quantity = record.quantity
                 line.on_change_quantity()
+                if 'product_package' in Line._fields:
+                    line.product_package = None
+                    line.package_quantity = None
                 if ('gross_unit_price' in Line._fields
                         and record.unit_price is not None):
                     line.gross_unit_price = record.unit_price.quantize(exp)
