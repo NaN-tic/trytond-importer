@@ -101,9 +101,14 @@ class Importer(metaclass=PoolMeta):
                     list(Invoice._fields.keys()), with_rec_name=False)
                 if invoice:
                     invoice.on_change_lines()
+                    invoice.payment_type = invoice.on_change_with_payment_type()
+
+                invoice_date = record.invoice_date
+                if isinstance(record.invoice_date, datetime):
+                    invoice_date = record.invoice_date.date()
 
                 invoice = invoices.get((record.invoice_number, record.journal,
-                    record.invoice_date))
+                    invoice_date))
                 if invoice:
                     invoice = None
                     continue
@@ -113,7 +118,7 @@ class Importer(metaclass=PoolMeta):
 
                 invoice.reference = record.reference
                 invoice.number = record.invoice_number
-                invoice.invoice_date = record.invoice_date
+                invoice.invoice_date = invoice_date
                 invoice.type = record.invoice_type
 
                 if record.currency and record.currency in currencies.keys():
@@ -148,6 +153,9 @@ class Importer(metaclass=PoolMeta):
                 invoice.on_change_party()
                 invoice.account = invoice.on_change_with_account()
                 invoice.journal = journals.get(record.journal)
+                invoice.payment_type = None
+                invoice.payment_type = invoice.on_change_with_payment_type()
+                invoice.lines = []
 
                 if record.account_move_number:
                     period = Period.search([
@@ -158,7 +166,6 @@ class Importer(metaclass=PoolMeta):
                             ], limit=1)
                     move = moves.get((record.account_move_number, period[0]))
                     if move:
-                        print(move, invoice)
                         invoice.move = move
                         invoices_to_post.append(invoice)
 
@@ -201,13 +208,18 @@ class Importer(metaclass=PoolMeta):
                 line.quantity = record.quantity
                 line.on_change_quantity()
                 line.on_change_account()
+                line.amount = line.on_change_with_amount()
                 lines_to_save.append(line)
+                invoice.lines += (line,)
 
+        if invoice:
+            invoice.on_change_lines()
+            invoice.payment_type = invoice.on_change_with_payment_type()
         for to_save in grouped_slice(invoices_to_save):
             Invoice.save(list(to_save))
 
-        for to_save in grouped_slice(lines_to_save):
-            Line.save(list(to_save))
+        # for to_save in grouped_slice(lines_to_save):
+        #     Line.save(list(to_save))
 
         print("Invoices:", len(invoices_to_save), datetime.now() - start)
         Invoice.post_batch(invoices_to_post)
