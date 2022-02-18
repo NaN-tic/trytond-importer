@@ -6,6 +6,7 @@ from trytond.tools import grouped_slice
 from trytond.transaction import Transaction
 from datetime import datetime
 
+
 class ImporterInvoice(ModelView):
     'Importer Invoice'
     __name__ = 'importer.invoice'
@@ -23,6 +24,7 @@ class ImporterInvoice(ModelView):
     invoice_type = fields.Char('Invoice Type')
     journal = fields.Char('Journal')
     account_move_number = fields.Char('Account Move number')
+
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -79,8 +81,8 @@ class Importer(metaclass=PoolMeta):
         company = Transaction().context.get('company')
         moves = dict(((x.post_number, x.period), x)
             for x in Move.search([('company', '=', company)]))
-        invoices = dict(((x.number, x.journal.name, x.invoice_date), x) for x in
-            Invoice.search([('company', '=', company)]))
+        invoices = dict(((x.number, x.journal.name, x.invoice_date), x)
+                for x in Invoice.search([('company', '=', company)]))
 
         def create_party(name, code):
             values = Party.default_get(
@@ -101,7 +103,9 @@ class Importer(metaclass=PoolMeta):
                     list(Invoice._fields.keys()), with_rec_name=False)
                 if invoice:
                     invoice.on_change_lines()
-                    invoice.payment_type = invoice.on_change_with_payment_type()
+                if invoice and 'payment_type' in Invoice._fields:
+                    pay_type = invoice.on_change_with_payment_type()
+                    invoice.payment_type = pay_type
 
                 invoice_date = record.invoice_date
                 if isinstance(record.invoice_date, datetime):
@@ -126,7 +130,8 @@ class Importer(metaclass=PoolMeta):
 
                 if record.party_name:
                     with Transaction().set_context(active_test=False):
-                        parties = Party.search([('name', '=', record.party_name)])
+                        parties = Party.search(
+                            [('name', '=', record.party_name)])
                     if len(parties) != 1:
                         raise UserError(gettext('importer.single_party_error',
                                 party=record.party_name))
@@ -153,8 +158,10 @@ class Importer(metaclass=PoolMeta):
                 invoice.on_change_party()
                 invoice.account = invoice.on_change_with_account()
                 invoice.journal = journals.get(record.journal)
-                invoice.payment_type = None
-                invoice.payment_type = invoice.on_change_with_payment_type()
+                if 'payment_type' in Invoice._fields:
+                    invoice.payment_type = None
+                    pay_type = invoice.on_change_with_payment_type()
+                    invoice.payment_type = pay_type
                 invoice.lines = []
 
                 if record.account_move_number:
@@ -214,12 +221,10 @@ class Importer(metaclass=PoolMeta):
 
         if invoice:
             invoice.on_change_lines()
-            invoice.payment_type = invoice.on_change_with_payment_type()
+            if 'payment_type' in Invoice._fields:
+                invoice.payment_type = invoice.on_change_with_payment_type()
         for to_save in grouped_slice(invoices_to_save):
             Invoice.save(list(to_save))
-
-        # for to_save in grouped_slice(lines_to_save):
-        #     Line.save(list(to_save))
 
         print("Invoices:", len(invoices_to_save), datetime.now() - start)
         Invoice.post_batch(invoices_to_post)
