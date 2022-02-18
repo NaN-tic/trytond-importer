@@ -247,7 +247,8 @@ class Importer(metaclass=PoolMeta):
                 product = None
                 template, = templates
             else:
-                raise UserError(gettext('importer.missing_template_product_code'))
+                raise UserError(gettext(
+                    'importer.missing_template_product_code'))
 
             key = (party.id, template.id, product.id)
             if key in product_supplier_to_save:
@@ -263,7 +264,8 @@ class Importer(metaclass=PoolMeta):
                     lines_to_delete = {}
                     lines_to_delete[product_supplier] = {}
                     for price in product_supplier.prices:
-                        lines_to_delete[product_supplier][price.quantity] = price
+                        lines_to_delete[product_supplier][price.quantity] = (
+                            price)
                 else:
                     values = ProductSupplier.default_get(
                     list(ProductSupplier._fields.keys()), with_rec_name=False)
@@ -284,7 +286,8 @@ class Importer(metaclass=PoolMeta):
                 product_supplier.lead_time = record.lead_time
 
             if record.unit_price:
-                price = lines_to_delete.get(product_supplier, {}).get(record.quantity)
+                price = lines_to_delete.get(product_supplier, {}).get(
+                        record.quantity)
                 if price:
                     del lines_to_delete[product_supplier][record.quantity]
                 else:

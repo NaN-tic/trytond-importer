@@ -26,6 +26,7 @@ class ImporterSale(ModelView):
     sale_number = fields.Char('Sale Number')
     discount = fields.Numeric('Discount')
 
+
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
 
@@ -55,7 +56,6 @@ class Importer(metaclass=PoolMeta):
     @classmethod
     def import_sale_force(cls, records):
         return cls.import_sale(records, force=True)
-
 
     @classmethod
     def import_sale(cls, records, force=False):
@@ -117,7 +117,7 @@ class Importer(metaclass=PoolMeta):
                 if record.currency and record.currency in currencies.keys():
                     sale.currency = currencies.get(record.currency)
 
-                party_domain=[]
+                party_domain = []
                 if record.party_name:
                     party_domain.append(('name', '=', record.party_name))
                 if record.party_code:
@@ -134,7 +134,8 @@ class Importer(metaclass=PoolMeta):
 
                     party = parties[0]
                     sale.party = party
-                    if force and 'customer' in Party._fields and not party.customer:
+                    if (force and 'customer' in Party._fields
+                            and not party.customer):
                         party.customer = True
                         party.save()
                     sale.on_change_party()
@@ -178,8 +179,8 @@ class Importer(metaclass=PoolMeta):
                 if force and not template.salable:
                     template.salable = True
                     template.save()
-                if (force and 'validated' in Template._fields and
-                        not template.validated):
+                if (force and 'validated' in Template._fields
+                        and not template.validated):
                     template.validated = True
                     template.save()
 
@@ -195,7 +196,7 @@ class Importer(metaclass=PoolMeta):
                     line.product_package = None
                     line.package_quantity = None
                 if ('gross_unit_price' in Line._fields
-                            and record.unit_price is not None):
+                        and record.unit_price is not None):
                     line.gross_unit_price = record.unit_price.quantize(exp)
                     line.discount = record.discount
                     line.update_prices()

@@ -23,7 +23,6 @@ class ImporterAccountMove(ModelView):
     description = fields.Char('Description')
 
 
-
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
 
@@ -57,7 +56,6 @@ class Importer(metaclass=PoolMeta):
     @classmethod
     def import_account_move_header(cls, record):
         return (record.number, record.effective_date)
-
 
     @classmethod
     def get_party_dict(cls):
@@ -108,7 +106,6 @@ class Importer(metaclass=PoolMeta):
         PartyIdentifier = pool.get('party.identifier')
         AccountType = pool.get('account.account.type')
 
-        print("holaaaaaaaaaaaa")
         def _create_party(code, name):
             party = Party(name=name, code=code)
             party.identifiers = [PartyIdentifier(code=code, type=None)]
@@ -198,7 +195,6 @@ class Importer(metaclass=PoolMeta):
                     raise UserError(gettext(
                         'importer.party_required_for_account',
                         account=record.account_code, move=record.number))
-                print("party_code:", party_code)
                 party = _create_party(party_code, record.party_name)
                 clients[party.code] = party
                 party_to_save.append(party)
@@ -233,7 +229,6 @@ class Importer(metaclass=PoolMeta):
             Move.save(list(to_save))
         return moves_to_save
 
-
     def create_account(self, code, name, chart):
         Configurator = Pool().get('account.configuration')
         config = Configurator(1)
@@ -245,7 +240,7 @@ class Importer(metaclass=PoolMeta):
         digits = config.default_account_code_digits or 8
         similar_account = self.get_similar_account(code, chart, digits)
         if similar_account:
-           account = self.similar_account(similar_account, {'code': code,
+            account = self.similar_account(similar_account, {'code': code,
                 'name': name})
         else:
             return
