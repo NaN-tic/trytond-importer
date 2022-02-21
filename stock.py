@@ -92,29 +92,27 @@ class Importer(metaclass=PoolMeta):
         locations = {x.name: x for x in Location.search([])}
         products = {x.code: x for x in Product.search([])}
 
-        # Avoid warnings because of missing origin
-        with Transaction().set_context({'_skip_warnings': True}):
-            to_save = []
-            for record in records:
-                move = Move()
-                from_location = locations.get(record.from_location)
-                to_location = locations.get(record.to_location)
-                product = products.get(record.product_code)
+        to_save = []
+        for record in records:
+            move = Move()
+            from_location = locations.get(record.from_location)
+            to_location = locations.get(record.to_location)
+            product = products.get(record.product_code)
 
-                if (not from_location or not to_location or not product
-                        or not record.quantity):
-                    continue
-                move.from_location = from_location
-                move.to_location = to_location
-                move.product = product
-                move.quantity = record.quantity
-                move.cost_price = record.cost_price
-                move.unit_price = record.unit_price
-                move.uom = product.default_uom
-                move.effective_date = record.effective_date
-                move.planned_date = record.planned_date
-                to_save.append(move)
-            Move.save(to_save)
+            if (not from_location or not to_location or not product
+                    or not record.quantity):
+                continue
+            move.from_location = from_location
+            move.to_location = to_location
+            move.product = product
+            move.quantity = record.quantity
+            move.cost_price = record.cost_price
+            move.unit_price = record.unit_price
+            move.uom = product.default_uom
+            move.effective_date = record.effective_date
+            move.planned_date = record.planned_date
+            to_save.append(move)
+        Move.save(to_save)
         return to_save
 
     @classmethod
@@ -123,5 +121,7 @@ class Importer(metaclass=PoolMeta):
         Move = pool.get('stock.move')
 
         moves = cls.import_stock_move(records)
-        Move.do(moves)
+        # Avoid warnings because of missing origin
+        with Transaction().set_context({'_skip_warnings': True}):
+            Move.do(moves)
         return moves
