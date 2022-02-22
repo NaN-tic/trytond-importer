@@ -79,10 +79,6 @@ class Importer(metaclass=PoolMeta):
         invoice = None
         start = datetime.now()
         company = Transaction().context.get('company')
-        moves = dict(((x.post_number, x.period), x)
-            for x in Move.search([('company', '=', company)]))
-        invoices = dict(((x.number, x.journal.name, x.invoice_date), x)
-                for x in Invoice.search([('company', '=', company)]))
 
         def create_party(name, code):
             values = Party.default_get(
@@ -111,9 +107,11 @@ class Importer(metaclass=PoolMeta):
                 if isinstance(record.invoice_date, datetime):
                     invoice_date = record.invoice_date.date()
 
-                invoice = invoices.get((record.invoice_number, record.journal,
-                    invoice_date))
-                if invoice:
+                invoices = Invoice.search([('company', '=', company),
+                    ('number',  '=', record.invoice_number),
+                    ('journal.name', '=', record.journal),
+                    ('invoice_date', '=', invoice_date)])
+                if invoices:
                     invoice = None
                     continue
 
@@ -171,7 +169,12 @@ class Importer(metaclass=PoolMeta):
                             ('type', '=', 'standard'),
                             ('company', '=', company),
                             ], limit=1)
-                    move = moves.get((record.account_move_number, period[0]))
+                    moves = Move.search([
+                        ('period.fiscalyear', '=', period[0].fiscalyear.id),
+                        ('post_number', '=', record.account_move_number)])
+                    move = None
+                    if moves:
+                        move = moves[0]
                     if move:
                         invoice.move = move
                         invoices_to_post.append(invoice)
