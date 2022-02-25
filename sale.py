@@ -58,6 +58,14 @@ class Importer(metaclass=PoolMeta):
         return cls.import_sale(records, force=True)
 
     @classmethod
+    def _import_sale_hook(cls, record, sale):
+        pass
+
+    @classmethod
+    def _import_sale_line_hook(cls, record, sale_line):
+        pass
+
+    @classmethod
     def import_sale(cls, records, force=False):
         pool = Pool()
         Sale = pool.get('sale.sale')
@@ -160,6 +168,7 @@ class Importer(metaclass=PoolMeta):
                             ], limit=1)
                     if addresses:
                         sale.shipment_address = addresses[0]
+                cls._import_sale_hook(record, sale)
 
             if not sale or not sale.party:
                 continue
@@ -204,6 +213,7 @@ class Importer(metaclass=PoolMeta):
                     line.manual_delivery_date = record.date
                 elif record.unit_price is not None:
                     line.unit_price = record.unit_price.quantize(exp)
+                cls._import_sale_line_hook(record, line)
                 lines_to_save.append(line)
 
         for to_save in grouped_slice(sales_to_save):
