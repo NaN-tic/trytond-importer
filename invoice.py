@@ -121,6 +121,9 @@ class Importer(metaclass=PoolMeta):
                 invoice.reference = record.reference
                 invoice.number = record.invoice_number
                 invoice.invoice_date = invoice_date
+                if not record.invoice_type in ('in', 'out'):
+                    raise UserError(gettext('importer.msg_invalid_invoice_type',
+                            type=record.invoice_type))
                 invoice.type = record.invoice_type
 
                 if record.currency and record.currency in currencies.keys():

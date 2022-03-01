@@ -27,5 +27,8 @@
         <record model="ir.message" id="party_required_for_account">
             <field name="text">Account "%(account)s" requires a party but no party was supplied in move "%(move)s".</field>
         </record>
+        <record model="ir.message" id="msg_invalid_invoice_type">
+            <field name="text">Invoice type must be 'out' or 'in' but "%(type)s" was found.</field>
+        </record>
     </data>
 </tryton>
