@@ -1,3 +1,4 @@
+from decimal import Decimal
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
@@ -214,7 +215,7 @@ class Importer(metaclass=PoolMeta):
                 line.account.company.party.name
                 if 'gross_unit_price' in Line._fields:
                     line.gross_unit_price = record.unit_price
-                    line.discount = record.discount
+                    line.discount = record.discount or Decimal(0)
                     line.update_prices()
                 elif record.unit_price is not None:
                     line.unit_price = record.unit_price
