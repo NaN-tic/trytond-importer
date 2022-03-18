@@ -1,6 +1,8 @@
 from decimal import Decimal
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
 
 
 class ImporterProduct(ModelView):
@@ -138,6 +140,10 @@ class Importer(metaclass=PoolMeta):
                     ('code', '!=', ''),
                     ]))
 
+        template_default_values = Template.default_get(Template._fields.keys(),
+                with_rec_name=False)
+        product_default_values = Product.default_get(Product._fields.keys(),
+                with_rec_name=False)
         cost_price_methods = ProductCostPriceMethod.get_cost_price_methods()
 
         to_save = []
@@ -157,12 +163,15 @@ class Importer(metaclass=PoolMeta):
                 template = templates.get(record.template_code)
 
             if not template:
-                template = Template()
+                template = Template(**template_default_values)
                 template.products = []
             if not product:
-                product = Product()
+                product = Product(**product_default_values)
                 template.products += (product,)
             else:
+                if hasattr(template, 'unique_variant') and template.unique_variant:
+                    raise UserError(gettext('importer.msg_unique_variant',
+                            product=code))
                 products_to_save.append(product)
             to_save.append(template)
 
