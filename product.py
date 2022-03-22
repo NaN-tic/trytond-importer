@@ -159,17 +159,19 @@ class Importer(metaclass=PoolMeta):
             product = products.get(code)
             if product:
                 template = product.template
+                if (hasattr(template, 'unique_variant')
+                        and template.unique_variant):
+                    raise UserError(gettext('importer.msg_unique_variant',
+                            product=code))
             elif record.template_code in templates:
                 template = templates.get(record.template_code)
 
             if not template:
                 template = Template(**template_default_values)
                 template.products = []
+
             if not product:
                 product = Product(**product_default_values)
-                if hasattr(template, 'unique_variant') and template.unique_variant:
-                    raise UserError(gettext('importer.msg_unique_variant',
-                            product=code))
                 template.products += (product,)
             else:
                 products_to_save.append(product)
