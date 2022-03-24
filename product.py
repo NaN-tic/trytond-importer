@@ -159,10 +159,6 @@ class Importer(metaclass=PoolMeta):
             product = products.get(code)
             if product:
                 template = product.template
-                if (hasattr(template, 'unique_variant')
-                        and template.unique_variant):
-                    raise UserError(gettext('importer.msg_unique_variant',
-                            product=code))
             elif record.template_code in templates:
                 template = templates.get(record.template_code)
 
@@ -275,8 +271,6 @@ class Importer(metaclass=PoolMeta):
             if ('wine_likely_alcohol_content' in product._fields and
                     record.alcohol_content):
                 product.wine_likely_alcohol_content = record.alcohol_content
-
-            products[code] = product
 
         ProductCategory.save(categories.values())
         Template.save(to_save)

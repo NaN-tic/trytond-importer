@@ -30,8 +30,5 @@
         <record model="ir.message" id="msg_invalid_invoice_type">
             <field name="text">Invoice type must be 'out' or 'in' but "%(type)s" was found.</field>
         </record>
-        <record model="ir.message" id="msg_unique_variant">
-            <field name="text">Product "%(product)s" is unique variant.</field>
-        </record>
     </data>
 </tryton>
