@@ -209,9 +209,7 @@ class Importer(metaclass=PoolMeta):
                     line.gross_unit_price = record.unit_price.quantize(exp)
                     line.discount = record.discount
                     line.update_prices()
-                if ('manual_delivery_date' in Line._fields) and record.date:
-                    line.manual_delivery_date = record.date
-                elif record.unit_price is not None:
+                if record.unit_price is not None:
                     line.unit_price = record.unit_price.quantize(exp)
                 cls._import_sale_line_hook(record, line)
                 lines_to_save.append(line)
