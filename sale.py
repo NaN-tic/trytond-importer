@@ -163,10 +163,13 @@ class Importer(metaclass=PoolMeta):
                     sale.on_change_shipment_party()
 
                 if record.shipment_address:
-                    addresses = Address.search([
-                            ('rec_name', '=', record.shipment_address)
-                            ], limit=1)
-                    if addresses:
+                    values = record.shipment_address.split(',')
+                    filter_ = []
+                    for val in values:
+                        value = ('rec_name', 'ilike', '%{}%'.format(val.strip()))
+                        filter_.append(value)
+                    addresses = Address.search(filter_, limit=2)                    
+                    if addresses and len(addresses)==1:
                         sale.shipment_address = addresses[0]
                 cls._import_sale_hook(record, sale)
 
