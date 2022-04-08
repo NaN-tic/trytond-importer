@@ -5,7 +5,7 @@ from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.tools import grouped_slice
 from trytond.transaction import Transaction
-
+from datetime import datetime
 
 class ImporterSale(ModelView):
     'Importer Sale'
@@ -120,7 +120,10 @@ class Importer(metaclass=PoolMeta):
                 if record.sale_number:
                     sale.number = record.sale_number
                 sale.reference = record.reference
-                sale.sale_date = record.date
+                if isinstance(record.date, datetime):
+                    sale.sale_date = record.date.date()
+                else:
+                    sale.sale_date = record.date
 
                 if record.currency and record.currency in currencies.keys():
                     sale.currency = currencies.get(record.currency)
@@ -163,11 +166,15 @@ class Importer(metaclass=PoolMeta):
                     sale.on_change_shipment_party()
 
                 if record.shipment_address:
-                    addresses = Address.search([
-                            ('rec_name', '=', record.shipment_address)
-                            ], limit=1)
-                    if addresses:
-                        sale.shipment_address = addresses[0]
+                    values = record.shipment_address.split(',')
+                    filter_ = [('party', '=', party)]
+                    for val in values:
+                        value = ('rec_name', 'ilike', '%{}%'.format(val.strip()))
+                        filter_.append(value)
+                    addresses = Address.search(filter_, limit=2)                    
+                    if addresses and len(addresses)==1:
+                        sale.shipment_address = addresses[  0]                    
+                        
                 cls._import_sale_hook(record, sale)
 
             if not sale or not sale.party:
