@@ -11,6 +11,7 @@ from . import stock
 from . import account
 from . import lot
 from . import crop
+from . import farm
 from . import invoice
 
 def register():
@@ -60,6 +61,12 @@ def register():
         account.Importer,
         account.ImporterAccountMove,
         depends=['account'],
+        module='importer', type_='model')
+    Pool.register(
+        farm.Importer,
+        farm.ImporterFarmMoveEvent,
+        farm.ImporterFarmRemovalEvent,
+        depends=['farm'],
         module='importer', type_='model')
     Pool.register(
         crop.Importer,
