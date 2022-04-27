@@ -138,6 +138,10 @@ class Importer(metaclass=PoolMeta):
                     ('code', '!=', ''),
                     ]))
 
+        template_default_values = Template.default_get(Template._fields.keys(),
+                with_rec_name=False)
+        product_default_values = Product.default_get(Product._fields.keys(),
+                with_rec_name=False)
         cost_price_methods = ProductCostPriceMethod.get_cost_price_methods()
 
         to_save = []
@@ -157,10 +161,11 @@ class Importer(metaclass=PoolMeta):
                 template = templates.get(record.template_code)
 
             if not template:
-                template = Template()
+                template = Template(**template_default_values)
                 template.products = []
+
             if not product:
-                product = Product()
+                product = Product(**product_default_values)
                 template.products += (product,)
             else:
                 products_to_save.append(product)
@@ -264,8 +269,6 @@ class Importer(metaclass=PoolMeta):
             if ('wine_likely_alcohol_content' in product._fields and
                     record.alcohol_content):
                 product.wine_likely_alcohol_content = record.alcohol_content
-
-            products[code] = product
 
         ProductCategory.save(categories.values())
         Template.save(to_save)
