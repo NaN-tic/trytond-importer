@@ -1,0 +1,571 @@
+#
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "field:importer,binary_data:"
+msgid "Data"
+msgstr "Datos"
+
+msgctxt "field:importer,columns:"
+msgid "Column"
+msgstr "Columna"
+
+msgctxt "field:importer,data_source:"
+msgid "Data Source"
+msgstr "Fuente de datos"
+
+msgctxt "field:importer,has_header:"
+msgid "Has Header?"
+msgstr "Tiene encabezado?"
+
+msgctxt "field:importer,method:"
+msgid "Format"
+msgstr "Formato"
+
+msgctxt "field:importer,model:"
+msgid "Model"
+msgstr "Modelo"
+
+msgctxt "field:importer,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer,template:"
+msgid "Template"
+msgstr "Plantilla"
+
+msgctxt "field:importer,text_data:"
+msgid "Data"
+msgstr "Datos"
+
+msgctxt "field:importer,url_data:"
+msgid "Data URL"
+msgstr "URL datos"
+
+msgctxt "field:importer,use_header:"
+msgid "Use Header?"
+msgstr "¿Usar encabezado?"
+
+msgctxt "field:importer.account.move,account_code:"
+msgid "Account Code"
+msgstr "Código cuenta"
+
+msgctxt "field:importer.account.move,account_name:"
+msgid "Account Name"
+msgstr "Nombre de la cuenta"
+
+msgctxt "field:importer.account.move,credit:"
+msgid "Credit"
+msgstr "Haber"
+
+msgctxt "field:importer.account.move,debit:"
+msgid "Debit"
+msgstr "Debe"
+
+msgctxt "field:importer.account.move,description:"
+msgid "Description"
+msgstr "Descripción"
+
+msgctxt "field:importer.account.move,effective_date:"
+msgid "Effecive Date"
+msgstr "Fecha efectiva"
+
+msgctxt "field:importer.account.move,journal_code:"
+msgid "Journal Code"
+msgstr "Código diario"
+
+msgctxt "field:importer.account.move,number:"
+msgid "Move Number"
+msgstr "Número asiento"
+
+msgctxt "field:importer.account.move,party_code:"
+msgid "Party Code"
+msgstr "Código tercero"
+
+msgctxt "field:importer.account.move,party_name:"
+msgid "Party Name"
+msgstr "Nombre del tercero"
+
+msgctxt "field:importer.column,examples:"
+msgid "Examples"
+msgstr "Ejemplos"
+
+msgctxt "field:importer.column,field:"
+msgid "Field"
+msgstr "Campo"
+
+msgctxt "field:importer.column,format:"
+msgid "Format"
+msgstr "Formato"
+
+msgctxt "field:importer.column,importer:"
+msgid "Importation"
+msgstr "Importación"
+
+msgctxt "field:importer.column,model:"
+msgid "Model"
+msgstr "Modelo"
+
+msgctxt "field:importer.column,name:"
+msgid "Column Name"
+msgstr "Nombre columna"
+
+msgctxt "field:importer.farm.move.event,animal:"
+msgid "Animal"
+msgstr "Animal"
+
+msgctxt "field:importer.farm.move.event,farm:"
+msgid "Farm"
+msgstr "Granja"
+
+msgctxt "field:importer.farm.move.event,notes:"
+msgid "Notes"
+msgstr "Notas"
+
+msgctxt "field:importer.farm.move.event,timestamp:"
+msgid "Date & Time"
+msgstr "Fecha & Hora"
+
+msgctxt "field:importer.farm.move.event,to_location:"
+msgid "To Location"
+msgstr "A ubicación"
+
+msgctxt "field:importer.farm.move.event,weight:"
+msgid "Weight"
+msgstr "Peso"
+
+msgctxt "field:importer.farm.removal.event,animal:"
+msgid "Animal"
+msgstr "Animal"
+
+msgctxt "field:importer.farm.removal.event,farm:"
+msgid "Farm"
+msgstr "Granja"
+
+msgctxt "field:importer.farm.removal.event,removal_reason:"
+msgid "Reason"
+msgstr "Motivo"
+
+msgctxt "field:importer.farm.removal.event,removal_type:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:importer.farm.removal.event,timestamp:"
+msgid "Date & Time"
+msgstr "Fecha & Hora"
+
+msgctxt "field:importer.import.ask,binary_data:"
+msgid "Data"
+msgstr "Datos"
+
+msgctxt "field:importer.import.ask,data_source:"
+msgid "Data Source"
+msgstr "Fuente de datos"
+
+msgctxt "field:importer.import.ask,importer:"
+msgid "Importer"
+msgstr "Importador"
+
+msgctxt "field:importer.import.ask,text_data:"
+msgid "Data"
+msgstr "Datos"
+
+msgctxt "field:importer.import.ask,url_data:"
+msgid "Data URL"
+msgstr "URL datos"
+
+msgctxt "field:importer.location,code:"
+msgid "Code"
+msgstr "Código"
+
+msgctxt "field:importer.location,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.location,parent:"
+msgid "Parent"
+msgstr "Padre"
+
+msgctxt "field:importer.lot,date:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "field:importer.lot,expiration_date:"
+msgid "Expiry Date"
+msgstr "Fecha caducidad"
+
+msgctxt "field:importer.lot,number:"
+msgid "Number"
+msgstr "Número"
+
+msgctxt "field:importer.lot,product_code:"
+msgid "Product Code"
+msgstr "Código producto"
+
+msgctxt "field:importer.lot,shelf_life_expiration_date:"
+msgid "Shelf Life Expiration Date"
+msgstr "Fecha fin vida útil"
+
+msgctxt "field:importer.party,city:"
+msgid "City"
+msgstr "Ciudad"
+
+msgctxt "field:importer.party,code:"
+msgid "Code"
+msgstr "Código"
+
+msgctxt "field:importer.party,country:"
+msgid "Country"
+msgstr "País"
+
+msgctxt "field:importer.party,email:"
+msgid "E-Mail"
+msgstr "Correo electrónico"
+
+msgctxt "field:importer.party,language:"
+msgid "Language"
+msgstr "Idioma"
+
+msgctxt "field:importer.party,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.party,phone:"
+msgid "Phone"
+msgstr "Teléfono"
+
+msgctxt "field:importer.party,postal_code:"
+msgid "Postal Code"
+msgstr "Código postal"
+
+msgctxt "field:importer.party,street:"
+msgid "Street"
+msgstr "Calle"
+
+msgctxt "field:importer.party,subdivision:"
+msgid "Subdivision"
+msgstr "Subdivisión"
+
+msgctxt "field:importer.party,website:"
+msgid "Website"
+msgstr "Sitio Web"
+
+msgctxt "field:importer.product,code:"
+msgid "Code"
+msgstr "Código"
+
+msgctxt "field:importer.product,cost_price:"
+msgid "Cost Price"
+msgstr "Precio de coste"
+
+msgctxt "field:importer.product,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.product,sale_price:"
+msgid "Sale Price"
+msgstr "Precio de venta"
+
+msgctxt "field:importer.product,uom:"
+msgid "UoM"
+msgstr "UdM"
+
+msgctxt "field:importer.purchase,currency:"
+msgid "Currency"
+msgstr "Moneda"
+
+msgctxt "field:importer.purchase,date:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "field:importer.purchase,party_name:"
+msgid "Party Name"
+msgstr "Nombre del tercero"
+
+msgctxt "field:importer.purchase,product_code:"
+msgid "Product Code"
+msgstr "Código producto"
+
+msgctxt "field:importer.purchase,quantity:"
+msgid "Product Quantity"
+msgstr "Cantidad producto"
+
+msgctxt "field:importer.purchase,reference:"
+msgid "Reference"
+msgstr "Referencia"
+
+msgctxt "field:importer.purchase,unit_price:"
+msgid "Unit Price"
+msgstr "Precio unitario"
+
+msgctxt "field:importer.sale,currency:"
+msgid "Currency"
+msgstr "Moneda"
+
+msgctxt "field:importer.sale,date:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "field:importer.sale,party_name:"
+msgid "Party Name"
+msgstr "Nombre del tercero"
+
+msgctxt "field:importer.sale,product_code:"
+msgid "Product Code"
+msgstr "Código producto"
+
+msgctxt "field:importer.sale,quantity:"
+msgid "Product Quantity"
+msgstr "Cantidad producto"
+
+msgctxt "field:importer.sale,reference:"
+msgid "Reference"
+msgstr "Referencia"
+
+msgctxt "field:importer.sale,shipment_address:"
+msgid "Shipment Address Name"
+msgstr "Nombre dirección envío"
+
+msgctxt "field:importer.sale,shipment_party_name:"
+msgid "Shipment Party Name"
+msgstr "Nombre tercero envío"
+
+msgctxt "field:importer.sale,unit_price:"
+msgid "Unit Price"
+msgstr "Precio unitario"
+
+msgctxt "field:importer.stock.move,cost_price:"
+msgid "Cost Price"
+msgstr "Precio de coste"
+
+msgctxt "field:importer.stock.move,effective_date:"
+msgid "Effective Date"
+msgstr "Fecha efectiva"
+
+msgctxt "field:importer.stock.move,from_location:"
+msgid "From Location"
+msgstr "Desde ubicación"
+
+msgctxt "field:importer.stock.move,planned_date:"
+msgid "Planned Date"
+msgstr "Fecha estimada"
+
+msgctxt "field:importer.stock.move,product_code:"
+msgid "Product Code"
+msgstr "Código producto"
+
+msgctxt "field:importer.stock.move,quantity:"
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgctxt "field:importer.stock.move,to_location:"
+msgid "To Location"
+msgstr "A ubicación"
+
+msgctxt "field:importer.stock.move,unit_price:"
+msgid "Unit Price"
+msgstr "Precio unitario"
+
+msgctxt "help:importer,template:"
+msgid ""
+"Check to indicate that this importer is a template and thus should appear in"
+" the import wizard."
+msgstr ""
+"Marcar para indicar que el importador es una plantilla y se mostrará en el "
+"asistente del importador."
+
+msgctxt "model:importer,name:"
+msgid "Importer"
+msgstr "Importador"
+
+msgctxt "model:importer.account.move,name:"
+msgid "Importer AccountMove"
+msgstr "Importación asiento"
+
+msgctxt "model:importer.column,name:"
+msgid "Importer Column"
+msgstr "Columna importación"
+
+msgctxt "model:importer.farm.move.event,name:"
+msgid "Importer Event Move"
+msgstr "Importación Event Move"
+
+msgctxt "model:importer.farm.removal.event,name:"
+msgid "Importer Removal Event"
+msgstr "Importación Removal Event"
+
+msgctxt "model:importer.import.ask,name:"
+msgid "Import Ask"
+msgstr "Inicio importador"
+
+msgctxt "model:importer.location,name:"
+msgid "Importer Location"
+msgstr "Importación movimiento"
+
+msgctxt "model:importer.lot,name:"
+msgid "Importer Lot"
+msgstr "Importación lote"
+
+msgctxt "model:importer.party,name:"
+msgid "Importer Party"
+msgstr "Importación tercero"
+
+msgctxt "model:importer.product,name:"
+msgid "Importer Product"
+msgstr "Importación producto"
+
+msgctxt "model:importer.purchase,name:"
+msgid "Importer Purchase"
+msgstr "Importación compra"
+
+msgctxt "model:importer.sale,name:"
+msgid "Importer Sale"
+msgstr "Importación ventas"
+
+msgctxt "model:importer.stock.move,name:"
+msgid "Importer Stock Move"
+msgstr "Importación movimientos stock"
+
+msgctxt "model:ir.action,name:act_ask_and_import_wizard"
+msgid "Import"
+msgstr "Importar"
+
+msgctxt "model:ir.action,name:act_import_open"
+msgid "Imported Records"
+msgstr "Registros importados"
+
+msgctxt "model:ir.action,name:act_import_wizard"
+msgid "Import"
+msgstr "Importar"
+
+msgctxt "model:ir.action,name:act_importer"
+msgid "Importers"
+msgstr "Importadores"
+
+msgctxt "model:ir.action,name:report_excel_template"
+msgid "Excel Template"
+msgstr "Plantilla Excel"
+
+msgctxt "model:ir.message,text:account_not_found"
+msgid "Account %(account)s not found."
+msgstr "No se ha encontrado la cuenta %(account)s."
+
+msgctxt "model:ir.message,text:animal_not_found"
+msgid "Animal %(animal)s not found."
+msgstr "No se ha encontrado el animal %(animal)s"
+
+msgctxt "model:ir.message,text:change_method_warning"
+msgid ""
+"Changing the format on importer \"%(name)s\" may cause your settings to be "
+"lost. Are you sure to proceed?"
+msgstr ""
+"Cambiar el formato del importador \"%(name)s\" puede cambiar opciones de la "
+"configuración. ¿Está seguro de continuar?"
+
+msgctxt "model:ir.message,text:farm_not_found"
+msgid "Farm %(farm)s not found."
+msgstr "No se ha encontrado la granja %(farm)s."
+
+msgctxt "model:ir.message,text:invalid_column_name"
+msgid ""
+"Name \"%(name)s\" is not valid for column \"%(column)s\" in importer "
+"\"%(importer)s\"."
+msgstr ""
+"El nombre \"%(name)s\" no es válido para la columna \"%(column)s\" en el "
+"importador \"%(importer)s\"."
+
+msgctxt "model:ir.message,text:invalid_index"
+msgid ""
+"Column \"%(column)s\" does not exist importing data with importer "
+"\"%(importer)s\"."
+msgstr ""
+"La columna \"%(column)s\" no existe en la importación para el importador "
+"\"%(importer)s\"."
+
+msgctxt "model:ir.message,text:location_not_found"
+msgid "Location %(location)s not found."
+msgstr "No se ha encontrado la ubicación %(location)s."
+
+msgctxt "model:ir.message,text:no_period_for_date"
+msgid "No period for date \"%(date)s\"."
+msgstr "No se ha definido el período para las fechas \"%(date)s\"."
+
+msgctxt "model:ir.message,text:no_records_imported"
+msgid "No records where imported using importer \"%(importer)s\"."
+msgstr "No se han creado registros a partir de \"%(importer)s\"."
+
+msgctxt "model:ir.message,text:party_required_for_account"
+msgid ""
+"Account \"%(account)s\" requires a party but no party was supplied in move "
+"\"%(move)s\"."
+msgstr ""
+"La cuenta \"%(account)s\" requiere un tercero pero no se ha informado un "
+"tercero en el movimento \"%(move)s\"."
+
+msgctxt "model:ir.message,text:single_party_error"
+msgid "There must be one and only one party with \"%(party)s\"."
+msgstr "Sólo debe haber uno y sólo un tercero con \"%(party)s\"."
+
+msgctxt "model:ir.message,text:single_product_error"
+msgid "There must be one and only one product with \"%(product)s\"."
+msgstr "Sólo debe haber uno y sólo un producto con \"%(product)s\"."
+
+msgctxt "model:ir.model.button,string:importer_detect_button"
+msgid "Detect"
+msgstr "Detectar"
+
+msgctxt "model:ir.model.button,string:importer_import_button"
+msgid "Import"
+msgstr "Importar"
+
+msgctxt "model:ir.model.button,string:importer_sync_columns_button"
+msgid "Sync Columns"
+msgstr "Sinc columnas"
+
+msgctxt "model:ir.ui.menu,name:menu_import_wizard"
+msgid "Import"
+msgstr "Importar"
+
+msgctxt "model:ir.ui.menu,name:menu_importer"
+msgid "Importer"
+msgstr "Importador"
+
+msgctxt "model:ir.ui.menu,name:menu_importers"
+msgid "Importers"
+msgstr "Importadores"
+
+msgctxt "model:res.group,name:group_importer"
+msgid "Importer"
+msgstr "Importador"
+
+msgctxt "selection:importer,data_source:"
+msgid "Copy & Paste"
+msgstr "Copiar y pegar"
+
+msgctxt "selection:importer,data_source:"
+msgid "File"
+msgstr "Archivo"
+
+msgctxt "selection:importer,data_source:"
+msgid "URL"
+msgstr "URL"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "Copy & Paste"
+msgstr "Copiar y pegar"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "File"
+msgstr "Archivo"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "URL"
+msgstr "URL"
+
+msgctxt "wizard_button:importer.ask_and_import,ask,end:"
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgctxt "wizard_button:importer.ask_and_import,ask,import_:"
+msgid "Import"
+msgstr "Importar"
