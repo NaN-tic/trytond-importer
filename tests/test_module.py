@@ -1,9 +1,8 @@
-# This file is part importer module for Tryton.
-# The COPYRIGHT file at the top level of this repository contains
-# the full copyright notices and license terms.
-import unittest
+
+# This file is part of Tryton.  The COPYRIGHT file at the top level of
+# this repository contains the full copyright notices and license terms.
+
 import json
-from trytond.tests.test_tryton import suite as test_suite
 from trytond.tests.test_tryton import ModuleTestCase, with_transaction
 from trytond.transaction import Transaction
 from trytond.pool import Pool
@@ -12,6 +11,7 @@ from trytond.modules.company.tests import create_company
 from trytond.modules.account.tests import create_chart
 from trytond.modules.account.tests import get_fiscalyear
 from trytond.modules.account_invoice.tests import set_invoice_sequences
+
 
 class ImporterTestCase(ModuleTestCase):
     'Test Importer module'
@@ -212,8 +212,5 @@ class ImporterTestCase(ModuleTestCase):
         product_supplier, = ProductSupplier.search([])
         self.assertEqual(len(product_supplier.prices), 1)
 
-def suite():
-    suite = test_suite()
-    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(
-            ImporterTestCase))
-    return suite
+
+del ModuleTestCase
