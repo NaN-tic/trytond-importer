@@ -144,7 +144,7 @@ class Importer(metaclass=PoolMeta):
                 with_rec_name=False)
         cost_price_methods = ProductCostPriceMethod.get_cost_price_methods()
 
-        to_save = []
+        to_save = dict()
         products_to_save = []
         for record in records:
             product = None
@@ -155,6 +155,7 @@ class Importer(metaclass=PoolMeta):
                 code = ((record.template_code or '')
                     + (record.variant_suffix_code or ''))
             product = products.get(code)
+
             if product:
                 template = product.template
             elif record.template_code in templates:
@@ -169,7 +170,10 @@ class Importer(metaclass=PoolMeta):
                 template.products += (product,)
             else:
                 products_to_save.append(product)
-            to_save.append(template)
+
+            if record.template_code not in to_save:
+                to_save[record.template_code]=template
+
 
             if record.name:
                 template.name = record.name
@@ -185,6 +189,8 @@ class Importer(metaclass=PoolMeta):
 
             if uom:
                 template.default_uom = uom
+
+
             if record.cost_price_method:
                 cost_price_method = record.cost_price_method
                 for cpm in cost_price_methods:
@@ -250,7 +256,6 @@ class Importer(metaclass=PoolMeta):
                 supplier.code = record.supplier_code
                 template.product_suppliers = [supplier]
 
-                templates[record.template_code] = template
 
                 if 'brand' in template._fields and record.brand:
                     brand = brands.get(record.brand)
@@ -260,6 +265,7 @@ class Importer(metaclass=PoolMeta):
                         brands[record.brand] = brand
                         template.brand = brand
 
+            templates[record.template_code] = template
             if record.variant_suffix_code:
                 product.suffix_code = record.variant_suffix_code
             if record.cost_price:
@@ -271,6 +277,6 @@ class Importer(metaclass=PoolMeta):
                 product.wine_likely_alcohol_content = record.alcohol_content
 
         ProductCategory.save(categories.values())
-        Template.save(to_save)
+        Template.save(to_save.values())
         Product.save(products_to_save)
-        return to_save
+        return to_save.values()
