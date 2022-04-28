@@ -1,6 +1,5 @@
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
-from trytond.transaction import Transaction
 from stdnum import get_cc_module
 
 class ImporterParty(ModelView):
