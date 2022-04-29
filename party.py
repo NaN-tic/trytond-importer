@@ -207,7 +207,7 @@ class Importer(metaclass=PoolMeta):
                 party.customer_payment_days = record.customer_payment_days
 
             if (record.supplier_payment_days and
-                    'supplier_paryment_days' in party._fields):
+                    'supplier_payment_days' in party._fields):
                 party.supplier_payment_days = record.supplier_payment_days
 
             if record.vat:
