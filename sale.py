@@ -92,6 +92,7 @@ class Importer(metaclass=PoolMeta):
             party.save()
             return [party]
 
+        sale = None
         sales_to_save = []
         lines_to_save = []
         previous_header = None
