@@ -172,10 +172,10 @@ class Importer(metaclass=PoolMeta):
                     for val in values:
                         value = ('rec_name', 'ilike', '%{}%'.format(val.strip()))
                         filter_.append(value)
-                    addresses = Address.search(filter_, limit=2)                    
+                    addresses = Address.search(filter_, limit=2)
                     if addresses and len(addresses)==1:
-                        sale.shipment_address = addresses[  0]                    
-                        
+                        sale.shipment_address = addresses[0]
+
                 cls._import_sale_hook(record, sale)
 
             if not sale or not sale.party:
