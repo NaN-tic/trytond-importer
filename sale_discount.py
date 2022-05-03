@@ -23,7 +23,6 @@ class Importer(metaclass=PoolMeta):
 
         super()._import_sale_line_hook(record, line)
 
-        print(Line.gross_unit_price)
         if record.gross_unit_price is not None:
             exp = Decimal(str(10.0 ** -Line.gross_unit_price.digits[1]))
 
