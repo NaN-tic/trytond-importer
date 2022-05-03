@@ -477,6 +477,11 @@ class Importer(ModelSQL, ModelView):
         if self.has_header:
             rows = rows[1:]
 
+        # We want to make sure we set all fields, even if the Importer record
+        # has not been updated since the last change of the model
+        missing_fields = ({f.name for f in self.model.fields}
+            - {c.field.name for c in self.columns})
+
         for row in rows:
             if not any(row):
                 continue
@@ -499,6 +504,10 @@ class Importer(ModelSQL, ModelView):
                         else:
                             value = None
                 setattr(record, column.field.name, value)
+
+            for field in missing_fields:
+                setattr(record, field, None)
+
             yield record
 
     def get_field_indexes(self, rows):
