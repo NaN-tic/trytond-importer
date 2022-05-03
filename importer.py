@@ -110,7 +110,13 @@ class Data:
             sheet = book.active
             rows = []
             for row in sheet.iter_rows():
-                rows.append([x.value for x in row])
+                # Limit the number of columns to a maximum of 1024.
+                # We've found with some spreadsheets with many columns (most of
+                # them empty) that not limiting the number of columns causes
+                # openpyxl to load data incorrectly. Using 1600 instead of 1024
+                # fails too, so we set the limit to 1024 which is the maximum
+                # number of columns allowed by LibreOffice
+                rows.append([x.value for x in row[:1024]])
             return {
                 'type': 'xlsx',
                 'has_header': False,
