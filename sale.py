@@ -7,6 +7,7 @@ from trytond.tools import grouped_slice
 from trytond.transaction import Transaction
 from datetime import datetime
 
+
 class ImporterSale(ModelView):
     'Importer Sale'
     __name__ = 'importer.sale'
@@ -24,7 +25,6 @@ class ImporterSale(ModelView):
     shipment_method = fields.Char('Shipment Method')
     invoice_method = fields.Char('Invoice Method')
     sale_number = fields.Char('Sale Number')
-    discount = fields.Numeric('Discount')
 
 
 class Importer(metaclass=PoolMeta):
@@ -62,7 +62,7 @@ class Importer(metaclass=PoolMeta):
         pass
 
     @classmethod
-    def _import_sale_line_hook(cls, record, sale_line):
+    def _import_sale_line_hook(cls, record, line):
         pass
 
     @classmethod
@@ -212,11 +212,6 @@ class Importer(metaclass=PoolMeta):
                 if 'product_package' in Line._fields:
                     line.product_package = None
                     line.package_quantity = None
-                if ('gross_unit_price' in Line._fields
-                        and record.unit_price is not None):
-                    line.gross_unit_price = record.unit_price.quantize(exp)
-                    line.discount = record.discount
-                    line.update_prices()
                 if record.unit_price is not None:
                     line.unit_price = record.unit_price.quantize(exp)
                 cls._import_sale_line_hook(record, line)

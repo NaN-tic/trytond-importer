@@ -6,6 +6,7 @@ from . import importer
 from . import party
 from . import product
 from . import sale
+from . import sale_discount
 from . import purchase
 from . import stock
 from . import account
@@ -42,6 +43,11 @@ def register():
         sale.Importer,
         sale.ImporterSale,
         depends=['sale'],
+        module='importer', type_='model')
+    Pool.register(
+        sale_discount.Importer,
+        sale_discount.ImporterSale,
+        depends=['sale_discount'],
         module='importer', type_='model')
     Pool.register(
         purchase.Importer,
