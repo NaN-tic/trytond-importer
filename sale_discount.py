@@ -1,4 +1,5 @@
-from trytond.model import ModelView, fields
+from decimal import Decimal
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
 
 
