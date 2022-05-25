@@ -2,6 +2,7 @@ import re
 import csv
 import json
 import yaml
+import pytz
 import urllib.request
 import decimal
 from decimal import Decimal
@@ -547,6 +548,18 @@ class Importer(ModelSQL, ModelView):
                     index -= 1
                 indexes[column.field.name] = index
         return indexes
+
+    @classmethod
+    def datetime_to_utc(cls, datetime, timezone=None):
+        pool = Pool()
+        Company = pool.get('company.company')
+        company = Company(Transaction().context.get('company'))
+
+        if company.timezone:
+            timezone = pytz.timezone(company.timezone)
+            company_datetime = timezone.localize(datetime, is_dst=None)
+            datetime = company_datetime.astimezone(pytz.utc)
+        return datetime
 
 
 class ImporterColumn(ModelSQL, ModelView):
