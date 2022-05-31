@@ -66,15 +66,15 @@ class Importer(metaclass=PoolMeta):
                 purchase.reference = record.reference
                 purchase.purchase_date = record.date
 
-                if record.currency and record.currency in currencies.keys():
-                    purchase.currency = currencies.get(record.currency)
-
                 parties = Party.search([('name', '=', record.party_name)])
                 if len(parties) != 1:
                     raise UserError(gettext('importer.single_party_error',
                             party=record.party_name))
                 purchase.party = parties[0]
                 purchase.on_change_party()
+
+                if record.currency and record.currency in currencies.keys():
+                    purchase.currency = currencies.get(record.currency)
 
             if record.product_code:
                 products = Product.search([
