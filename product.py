@@ -182,6 +182,9 @@ class Importer(metaclass=PoolMeta):
                 uom = uoms.get(record.uom and record.uom.capitalize() or 'u')
             else:
                 uom = uoms.get('u')
+                # If we update a product, we dont need to change the uom
+                if hasattr(product, 'default_uom') and product.default_uom:
+                    uom = None
 
             if uom:
                 template.default_uom = uom
