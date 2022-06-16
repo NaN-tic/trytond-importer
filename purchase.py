@@ -119,8 +119,6 @@ class Importer(metaclass=PoolMeta):
                     purchase.state = record.state
                 if record.purchase_number:
                     purchase.number = record.purchase_number
-                if record.currency and record.currency in currencies.keys():
-                    purchase.currency = currencies.get(record.currency)
 
                 party_domain=[]
                 parties = []
@@ -138,6 +136,10 @@ class Importer(metaclass=PoolMeta):
 
                 purchase.party = parties[0]
                 purchase.on_change_party()
+
+                if record.currency and record.currency in currencies.keys():
+                    purchase.currency = currencies.get(record.currency)
+
                 if record.invoice_method:
                     purchase.invoice_method = record.invoice_method
 
