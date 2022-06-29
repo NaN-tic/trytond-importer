@@ -559,7 +559,7 @@ msgid ""
 "Name \"%(name)s\" is not valid for column \"%(column)s\" in importer "
 "\"%(importer)s\"."
 msgstr ""
-"El nom \"%(name)s\" no és vàlid per a la columna \"% (column) s\" de "
+"El nom \"%(name)s\" no és vàlid per a la columna \"%(column)s\" de "
 "l'importador \"%(importer)s\"."
 
 msgctxt "model:ir.message,text:invalid_index"
