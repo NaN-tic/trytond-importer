@@ -126,8 +126,8 @@ class Importer(metaclass=PoolMeta):
         categories = dict((x.name, x) for x in ProductCategory.search([]))
         uoms = {}
         for uom in Uom.search([]):
-            uoms[uom.name] = uom
-            uoms[uom.symbol] = uom
+            uoms[uom.name.lower()] = uom
+            uoms[uom.symbol.lower()] = uom
 
         products = dict((x.code, x) for x in Product.search([
                     ('code', '!=', None),
@@ -179,7 +179,7 @@ class Importer(metaclass=PoolMeta):
                 template.list_price = record.sale_price or Decimal(0)
             uom = None
             if record.uom:
-                uom = uoms.get(record.uom and record.uom.capitalize() or 'u')
+                uom = uoms.get(record.uom.lower() or 'u')
             else:
                 uom = uoms.get('u')
                 # If we update a product, we dont need to change the uom
