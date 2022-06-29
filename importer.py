@@ -713,7 +713,7 @@ class ImporterColumn(ModelSQL, ModelView):
                     # TODO: Raise Error
                     return None
         elif ttype == 'boolean':
-            value = value.strip()
+            value = str(value).strip()
             if value.lower() in ('false', 'off', '0', ''):
                 return False
             else:
