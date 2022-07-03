@@ -528,7 +528,7 @@ msgstr "Importador Vendes"
 
 msgctxt "model:ir.action,name:act_ask_and_import_wizard"
 msgid "Import"
-msgstr "Importacions"
+msgstr "Importar"
 
 msgctxt "model:ir.action,name:act_import_open"
 msgid "Imported Records"
@@ -536,7 +536,7 @@ msgstr "Registres importats"
 
 msgctxt "model:ir.action,name:act_import_wizard"
 msgid "Import"
-msgstr "Importacions"
+msgstr "Importar"
 
 msgctxt "model:ir.action,name:act_importer"
 msgid "Importers"
@@ -605,7 +605,7 @@ msgstr "Detectar"
 
 msgctxt "model:ir.model.button,string:importer_import_button"
 msgid "Import"
-msgstr "Importacions"
+msgstr "Importar"
 
 msgctxt "model:ir.model.button,string:importer_sync_columns_button"
 msgid "Sync Columns"
@@ -613,7 +613,7 @@ msgstr "Sincronitzar columnes"
 
 msgctxt "model:ir.ui.menu,name:menu_import_wizard"
 msgid "Import"
-msgstr "Importacions"
+msgstr "Importar"
 
 msgctxt "model:ir.ui.menu,name:menu_importer"
 msgid "Importer"
@@ -664,5 +664,5 @@ msgid "Cancel"
 msgstr "Cancel·lat"
 
 msgctxt "wizard_button:importer.ask_and_import,ask,import_:"
-msgid "Import"
+msgid "Importar"
 msgstr "Importacions"
