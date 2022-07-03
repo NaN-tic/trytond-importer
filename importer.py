@@ -796,15 +796,11 @@ class Import(Wizard):
     import_ = StateAction('importer.act_import_open')
 
     def do_import_(self, action):
-        pool = Pool()
-        Importer = pool.get('importer')
-
         # TODO: Support importing several importers at once
-        importer = Importer(Transaction().context.get('active_id'))
-        records = importer.data_to_records()
+        records = self.record.data_to_records()
         if not records:
             raise UserError(gettext('importer.no_records_imported',
-                importer=importer.rec_name))
+                importer=self.record.rec_name))
 
         models = {}
         for record in records:
