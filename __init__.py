@@ -4,6 +4,7 @@
 from trytond.pool import Pool
 from . import importer
 from . import party
+from . import price_list
 from . import product
 from . import sale
 from . import sale_discount
@@ -49,6 +50,11 @@ def register():
         product.ImporterProduct,
         product.ImporterProductCodes,
         depends=['product'],
+        module='importer', type_='model')
+    Pool.register(
+        price_list.Importer,
+        price_list.ImporterPriceList,
+        depends=['product_price_list'],
         module='importer', type_='model')
     Pool.register(
         sale.Importer,

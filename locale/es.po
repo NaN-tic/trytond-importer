@@ -894,11 +894,11 @@ msgstr ""
 
 msgctxt "model:ir.message,text:single_party_error"
 msgid "There must be one and only one party with \"%(party)s\"."
-msgstr "Debe haber una y solo un Tercero con \"%(party)s\"."
+msgstr "Debe haber un y solo un Tercero con \"%(party)s\"."
 
 msgctxt "model:ir.message,text:single_product_error"
 msgid "There must be one and only one product with \"%(product)s\"."
-msgstr " Debe haber un solo producto con \"%(product)s\"."
+msgstr "Debe haber un y solo un Producto con \"%(product)s\"."
 
 msgctxt "model:ir.model.button,string:importer_check_connection_button"
 msgid "Check Connection"

@@ -213,6 +213,26 @@ class ImporterTestCase(ModuleTestCase):
         product_supplier, = ProductSupplier.search([])
         self.assertEqual(len(product_supplier.prices), 1)
 
+    @with_transaction()
+    def test_product_price_list(self):
+        self.activate_module('product_price_list')
+
+        pool = Pool()
+        PriceList = pool.get('product.price_list')
+        Company = pool.get('company.company')
+
+        self.import_('price_list', [{
+                'name': "Price List",
+                'company_name': Company.search([])[0].rec_name,
+                'tax_included': True,
+                'category': None,
+                'product_code': '0001A',
+                'quantity': 100,
+                'formula': '5.12',
+                }])
+        self.assertEqual(len(PriceList.search([])), 1)
+
+
 def suite():
     suite = test_suite()
     suite.addTests(unittest.TestLoader().loadTestsFromTestCase(
