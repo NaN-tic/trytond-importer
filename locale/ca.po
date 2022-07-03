@@ -593,7 +593,7 @@ msgstr "Hi ha d'haver un únic partit amb \"%(party)s\"."
 
 msgctxt "model:ir.message,text:single_product_error"
 msgid "There must be one and only one product with \"%(product)s\"."
-msgstr "Hi ha d'haver un i un sol producte amb \"%(product)s\"."
+msgstr "Hi ha d'haver un i només un producte amb \"%(product)s\"."
 
 msgctxt "model:ir.model.button,string:importer_check_connection_button"
 msgid "Check Connection"
