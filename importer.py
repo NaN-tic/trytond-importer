@@ -550,16 +550,16 @@ class Importer(ModelSQL, ModelView):
         return indexes
 
     @classmethod
-    def datetime_to_utc(cls, datetime, timezone=None):
+    def datetime_to_utc(cls, datetime_, timezone=None):
         pool = Pool()
         Company = pool.get('company.company')
         company = Company(Transaction().context.get('company'))
 
-        if company.timezone:
+        if company.timezone and isinstance(datetime_, datetime.date):
             timezone = pytz.timezone(company.timezone)
-            company_datetime = timezone.localize(datetime, is_dst=None)
-            datetime = company_datetime.astimezone(pytz.utc)
-        return datetime
+            company_datetime = timezone.localize(datetime_, is_dst=None)
+            datetime_ = company_datetime.astimezone(pytz.utc)
+        return datetime_
 
 
 class ImporterColumn(ModelSQL, ModelView):
@@ -596,6 +596,8 @@ class ImporterColumn(ModelSQL, ModelView):
         return [
             (None, ''),
             ('keep-spaces', 'Keep Spaces'),
+            ('date-%d/%m/%Y %H:%M:%S', '%d/%m/%Y %H:%M:%S'),
+            ('date-%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M:%S'),
             ('date-%d/%m/%Y', '%d/%m/%Y'),
             ('date-%Y-%m-%d', '%Y-%m-%d'),
             ('decimal-,', 'Decimal (,)'),
@@ -709,6 +711,18 @@ class ImporterColumn(ModelSQL, ModelView):
                     format = '%Y-%m-%d'
                 try:
                     return datetime.datetime.strptime(value, format).date()
+                except ValueError:
+                    # TODO: Raise Error
+                    return None
+        elif ttype in ('datetime', 'timestamp'):
+            if isinstance(value, str):
+                value = value.strip()
+                if self.format and self.format.startswith('date-'):
+                    format = self.format[len('date-'):]
+                else:
+                    format = '%Y-%m-%d'
+                try:
+                    return datetime.datetime.strptime(value, format)
                 except ValueError:
                     # TODO: Raise Error
                     return None
