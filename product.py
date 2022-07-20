@@ -21,12 +21,9 @@ class ImporterProduct(ModelView):
     supplier_code = fields.Char('Supplier Code')
     categories = fields.Char('Categories')
     account_category = fields.Char('Account Category')
-    weight = fields.Numeric('Weight (kg)')
-    volume = fields.Numeric('Volume (m3)')
     aranzel = fields.Char('Aranzel')
     purchasable = fields.Boolean('Purchasable')
     salable = fields.Boolean('Salable')
-    alcohol_content = fields.Char('Alcohol Content')
     brand = fields.Char('Brand')
 
 
@@ -206,14 +203,6 @@ class Importer(metaclass=PoolMeta):
                 acc_category.accounting = True
                 template.account_category = acc_category
 
-            if 'weight' in template._fields and record.weight:
-                template.weight = record.weight
-                template.weight_uom = uoms.get('kg')
-
-            if 'volume' in template._fields and record.volume:
-                template.volume = record.volume
-                template.volume_uom = uoms.get('l')
-
             if 'tariff_codes' in template._fields and record.aranzel:
                 custom = customs.get(record.aranzel)
                 if not customs:
@@ -269,9 +258,6 @@ class Importer(metaclass=PoolMeta):
                 product.cost_price = record.cost_price
             if record.description:
                 product.description = record.description
-            if ('wine_likely_alcohol_content' in product._fields and
-                    record.alcohol_content):
-                product.wine_likely_alcohol_content = record.alcohol_content
 
         ProductCategory.save(categories.values())
         Template.save(to_save)
