@@ -3,9 +3,9 @@ from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 
 
-class ImporterProduct(ModelView):
-    'Importer Product'
-    __name__ = 'importer.product'
+class ImporterProductAgronomics(ModelView):
+    'Importer Product Agronomics'
+    __name__ = 'importer.product.agronomics'
 
     template_code = fields.Char('Template Code')
     variant_code = fields.Char('Variant Code')
@@ -21,21 +21,13 @@ class ImporterProduct(ModelView):
     supplier_code = fields.Char('Supplier Code')
     categories = fields.Char('Categories')
     account_category = fields.Char('Account Category')
+    weight = fields.Numeric('Weight (kg)')
+    volume = fields.Numeric('Volume (m3)')
     aranzel = fields.Char('Aranzel')
     purchasable = fields.Boolean('Purchasable')
     salable = fields.Boolean('Salable')
+    alcohol_content = fields.Char('Alcohol Content')
     brand = fields.Char('Brand')
-
-
-class ImporterProductCodes(ModelView):
-    'Importer Product'
-    __name__ = 'importer.product_codes'
-
-    template_code = fields.Char('Template Code')
-    variant_code = fields.Char('Variant Code')
-    variant_suffix_code = fields.Char('Variant Suffix Code')
-    type_ = fields.Char('type')
-    code = fields.Char('Code')
 
 
 class Importer(metaclass=PoolMeta):
@@ -45,53 +37,16 @@ class Importer(metaclass=PoolMeta):
     def _get_methods(cls):
         methods = super()._get_methods()
         methods.update({
-                'product': {
-                    'string': 'Product',
-                    'model': 'importer.product',
-                    'chunked': True,
-                    },
-                'product_codes': {
-                    'string': 'Product Codes',
-                    'model': 'importer.product_codes',
+                'product_agronomics': {
+                    'string': 'Product Agronomics',
+                    'model': 'importer.product.agronomics',
                     'chunked': True,
                     },
                 })
         return methods
 
     @classmethod
-    def import_product_codes(cls, records):
-        pool = Pool()
-        Product = pool.get('product.product')
-        Identifier = pool.get('product.identifier')
-
-        products = dict((x.code, x) for x in Product.search([
-                    ('code', '!=', None),
-                    ('code', '!=', ''),
-                    ]))
-        to_save = []
-        for record in records:
-            if not record.code:
-                continue
-            identifier = Identifier()
-            identifier.type = record.type_
-            if record.variant_code:
-                code = record.variant_code
-            else:
-                code = ((record.template_code or '')
-                    + (record.variant_suffix_code or ''))
-            identifier.code = record.code
-            product = products.get(code)
-            if not product:
-                # TODO: Raise an error
-                continue
-            identifier.product = product
-            to_save.append(identifier)
-
-        Identifier.save(to_save)
-        return to_save
-
-    @classmethod
-    def import_product(cls, records):
+    def import_product_agronomics(cls, records):
         pool = Pool()
         Product = pool.get('product.product')
         Template = pool.get('product.template')
@@ -203,6 +158,14 @@ class Importer(metaclass=PoolMeta):
                 acc_category.accounting = True
                 template.account_category = acc_category
 
+            if 'weight' in template._fields and record.weight:
+                template.weight = record.weight
+                template.weight_uom = uoms.get('kg')
+
+            if 'volume' in template._fields and record.volume:
+                template.volume = record.volume
+                template.volume_uom = uoms.get('l')
+
             if 'tariff_codes' in template._fields and record.aranzel:
                 custom = customs.get(record.aranzel)
                 if not customs:
@@ -258,6 +221,9 @@ class Importer(metaclass=PoolMeta):
                 product.cost_price = record.cost_price
             if record.description:
                 product.description = record.description
+            if ('wine_likely_alcohol_content' in product._fields and
+                    record.alcohol_content):
+                product.wine_likely_alcohol_content = record.alcohol_content
 
         ProductCategory.save(categories.values())
         Template.save(to_save)
