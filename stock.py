@@ -70,8 +70,6 @@ class Importer(metaclass=PoolMeta):
             if record.code is not None:
                 location.code = record.code
 
-            to_save[record.name] = location
-            updated_locations.append(location)
             if record.parent is not None:
                 if record.parent in to_save:
                     Location.save(to_save.values())
@@ -79,6 +77,9 @@ class Importer(metaclass=PoolMeta):
                     to_save = {}
 
                 location.parent = locations.get(record.parent)
+            to_save[record.name] = location
+            updated_locations.append(location)
+
         Location.save(to_save.values())
         return updated_locations
 
