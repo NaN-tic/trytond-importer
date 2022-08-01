@@ -7,6 +7,9 @@ import urllib.request
 import decimal
 from decimal import Decimal
 import openpyxl
+from openpyxl import Workbook
+from openpyxl.comments import Comment
+from openpyxl.writer.excel import save_virtual_workbook
 import textdistance
 import datetime
 import charset_normalizer
@@ -850,4 +853,8 @@ class ExcelTemplate(Report):
             header.append(column.field.field_description)
         header = tuple(header)
         ws.append(header)
+        for column, number in zip(importer.columns, range(1, len(header) + 1)):
+            c = column.field.help
+            if c:
+                ws.cell(row=1, column=number).comment = Comment(c, "Tryton")
         return ('xlsx', save_virtual_workbook(wb), False, importer.name)
