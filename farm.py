@@ -122,6 +122,18 @@ class ImporterFarmTransformationEvent(ModelView):
     to_location = fields.Char("To Location")
 
 
+class ImporterFarmReclassificationEvent(ModelView):
+    "Importer Farm reclassification Event"
+    __name__ = 'importer.farm.reclassification.event'
+
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    reclassification_product = fields.Char("Reclasification Product")
+    to_location = fields.Char("To Location")
+    weight = fields.Numeric("Weight")
+
+
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
 
@@ -177,6 +189,11 @@ class Importer(metaclass=PoolMeta):
                 'farm_transformation_event': {
                     'string': 'Farm Transformation Event',
                     'model': 'importer.farm.transformation.event',
+                    'chunked': True,
+                    },
+                'farm_reclassification_event': {
+                    'string': 'Farm Reclassification Event',
+                    'model': 'importer.farm.reclassification.event',
                     'chunked': True,
                     },
                 })
@@ -538,4 +555,46 @@ class Importer(metaclass=PoolMeta):
 
         FarmTransformationEvent.save(to_save)
         FarmTransformationEvent.validate_event(to_save)
+        return to_save
+
+    @classmethod
+    def import_farm_reclassification_event(cls, records):
+        pool = Pool()
+        FarmReclassificationEvent = pool.get('farm.reclassification.event')
+        Location = pool.get('stock.location')
+        FarmAnimal = pool.get('farm.animal')
+        Product = pool.get('product.product')
+
+        codes = [x.reclassification_product for x in records]
+        products = {x.code: x for x in Product.search([('code', 'in', codes)])}
+        locations = {x.code: x for x in Location.search([])}
+        animals = {x.number: x for x in FarmAnimal.search([])}
+
+        to_save = []
+        for record in records:
+            if (not record.farm or not record.animal or
+                    not record.reclassification_product or
+                    not record.to_location):
+                continue
+            reclassification_event = FarmReclassificationEvent()
+            reclassification_event.farm = locations.get(record.farm)
+            reclassification_event.animal = animals.get(record.animal)
+            if animals.get(record.animal):
+                reclassification_event.animal_type = animals.get(
+                    record.animal).type
+                reclassification_event.specie = animals.get(
+                    record.animal).specie
+            reclassification_event.reclassification_product = products.get(
+                record.reclassification_product)
+            reclassification_event.to_location = locations.get(
+                record.to_location)
+            if record.timestamp:
+                reclassification_event.timestamp = cls.datetime_to_utc(
+                        record.timestamp)
+            if record.weight:
+                reclassification_event.weight = record.weight
+            to_save.append(reclassification_event)
+
+        FarmReclassificationEvent.save(to_save)
+        FarmReclassificationEvent.validate_event(to_save)
         return to_save

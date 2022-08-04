@@ -84,6 +84,7 @@ def register():
         farm.ImporterFarmFarrowingEvent,
         farm.ImporterFarmWeaningEvent,
         farm.ImporterFarmTransformationEvent,
+        farm.ImporterFarmReclassificationEvent,
         depends=['farm'],
         module='importer', type_='model')
     Pool.register(
