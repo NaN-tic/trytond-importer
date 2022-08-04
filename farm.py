@@ -27,6 +27,101 @@ class ImporterFarmRemovalEvent(ModelView):
     removal_type = fields.Char('Type')
 
 
+class ImporterFarmAnimal(ModelView):
+    "Importer Farm Animal"
+    __name__ = 'importer.farm.animal'
+
+    animal_type = fields.Char("Animal Type")
+    sex = fields.Char("Sex")
+    breed = fields.Char("Breed")
+    initial_location = fields.Char("Initial Location")
+    arrival_date = fields.Date("Arrival Date")
+    origin = fields.Char("Origin")
+    number = fields.Char("Number")
+
+
+class ImporterFarmMedicationEvent(ModelView):
+    "Importer Farm Medication Event"
+    __name__ = 'importer.farm.medication.event'
+
+    #farm = fields.Char("Farm") #TODO: add farm?
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    feed_location = fields.Char("Feed Location")
+    feed_product = fields.Char("Feed Product")
+    feed_lot = fields.Char("Feed Lot")
+    feed_quantity = fields.Numeric("Feed Quantity")
+    end_date = fields.Date("End Date")
+
+
+class ImporterFarmInseminationEvent(ModelView):
+    "Importer Farm Insemination Event"
+    __name__ = 'importer.farm.insemination.event'
+
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    dose_bom = fields.Char("Dose BOM")
+
+
+class ImporterFarmPregnancyDiagnosisEvent(ModelView):
+    "Importer Farm Pregnancy Diagnosis Event"
+    __name__ = 'importer.farm.pregnancy_diagnosis.event'
+
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    result = fields.Char("Result")
+    notes = fields.Char("Notes")
+
+
+class ImporterFarmAbortEvent(ModelView):
+    "Importer Farm Abort Event"
+    __name__ = 'importer.farm.abort.event'
+
+    #reference
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    notes = fields.Char("Notes")
+
+
+class ImporterFarmFarrowingEvent(ModelView):
+    "Importer Farm Farrowing Event"
+    __name__ = 'importer.farm.farrowing.event'
+
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    live = fields.Integer("Live")
+    problem = fields.Char("Problem")
+
+
+class ImporterFarmWeaningEvent(ModelView):
+    "Importer Farm Weaning Event"
+    __name__ = 'importer.farm.weaning.event'
+
+    #reference
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    female_to_location = fields.Char("Female To Location")
+    weaned_to_location = fields.Char("Weaned To Location")
+    quantity = fields.Numeric("Quantity")
+
+
+class ImporterFarmTransformationEvent(ModelView):
+    "Importer Farm Transformation Event"
+    __name__ = 'importer.farm.transformation.event'
+
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    from_location = fields.Char("From Location")
+    to_animal_type = fields.Char("To Animal Type")
+    to_location = fields.Char("To Location")
+
+
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
 
@@ -43,7 +138,47 @@ class Importer(metaclass=PoolMeta):
                     'string': 'Farm Removal Event',
                     'model': 'importer.farm.removal.event',
                     'chunked': True,
-                    }
+                    },
+                'farm_animal': {
+                    'string': 'Farm Animal',
+                    'model': 'importer.farm.animal',
+                    'chunked': True,
+                    },
+                'farm_medication_event': {
+                    'string': 'Farm Medication Event',
+                    'model': 'importer.farm.medication.event',
+                    'chunked': True,
+                    },
+                'farm_insemination_event': {
+                    'string': 'Farm Insemination Event',
+                    'model': 'importer.farm.insemination.event',
+                    'chunked': True,
+                    },
+                'farm_pregnancy_diagnosis_event': {
+                    'string': 'Farm Pregnancy Diagnosis Event',
+                    'model': 'importer.farm.pregnancy_diagnosis.event',
+                    'chunked': True,
+                    },
+                'farm_abort_diagnosis_event': {
+                    'string': 'Farm Abort Diagnosis Event',
+                    'model': 'importer.farm.abort.event',
+                    'chunked': True,
+                    },
+                'farm_farrowing_event': {
+                    'string': 'Farm Farrowing Event',
+                    'model': 'importer.farm.farrowing.event',
+                    'chunked': True,
+                    },
+                'farm_weaning_event': {
+                    'string': 'Farm Weaning Event',
+                    'model': 'importer.farm.weaning.event',
+                    'chunked': True,
+                    },
+                'farm_transformation_event': {
+                    'string': 'Farm Transformation Event',
+                    'model': 'importer.farm.transformation.event',
+                    'chunked': True,
+                    },
                 })
         return methods
 
@@ -115,4 +250,292 @@ class Importer(metaclass=PoolMeta):
             removal.reason = removal_reasons.get(record.removal_reason)
             to_save.append(removal)
         FarmRemoval.save(to_save)
+        return to_save
+
+    @classmethod
+    def import_farm_animal(cls, records):
+        pool = Pool()
+        FarmAnimal = pool.get('farm.animal')
+        Breed = pool.get('farm.specie.breed')
+        Location = pool.get('stock.location')
+
+        breeds = {x.name: x for x in Breed.search([])}
+        locations = {x.code: x for x in Location.search([])}
+
+        to_save = []
+        for record in records:
+            if not record.animal_type or not record.breed:
+                continue
+            if record.animal_type:
+                animal = FarmAnimal()
+                if record.animal_type == 'individual' and not record.sex:
+                    continue
+                else:
+                    animal.sex = record.sex
+                animal.type = record.animal_type
+                if breeds.get(record.breed):
+                    animal.specie = breeds.get(record.breed).specie
+                animal.breed = breeds.get(record.breed)
+                if record.initial_location:
+                    animal.initial_location = locations.get(
+                        record.initial_location)
+                if record.arrival_date:
+                    animal.arrival_date = record.arrival_date
+                if record.origin:
+                    animal.origin = record.origin
+                if record.number:
+                    animal.number = record.number
+            to_save.append(animal)
+        FarmAnimal.save(to_save)
+        return to_save
+
+    @classmethod
+    def import_farm_medication_event(cls, records):
+        pool = Pool()
+        FarmMedicationEvent = pool.get('farm.medication.event')
+        FarmAnimal = pool.get('farm.animal')
+        Location = pool.get('stock.location')
+        Product = pool.get('product.product')
+        Lot = pool.get('stock.lot')
+
+        animals = {x.number: x for x in FarmAnimal.search([])}
+        locations = {x.code: x for x in Location.search([])}
+        lots = {x.number: x for x in Lot.search([])}
+
+        codes = [x.feed_product for x in records]
+        products = {x.code: x for x in Product.search([('code', 'in', codes)])}
+
+        to_save = []
+        for record in records:
+            if (not record.animal or not record.feed_location or
+                    not record.feed_quantity):
+                continue
+            medication_event = FarmMedicationEvent()
+            medication_event.animal = animals.get(record.animal)
+            if animals.get(record.animal):
+                medication_event.animal_type = animals.get(record.animal).type
+                medication_event.location = animals.get(record.animal).location
+                medication_event.specie = animals.get(record.animal).specie
+            medication_event.feed_location  = locations.get(
+                record.feed_location)
+            if record.timestamp:
+                medication_event.timestamp = cls.datetime_to_utc(
+                    record.timestamp)
+            if record.feed_product:
+                medication_event.feed_product = products.get(
+                    record.feed_product)
+                if products.get(record.feed_product):
+                    medication_event.uom = products.get(
+                    record.feed_product).default_uom.id
+            if record.feed_lot:
+                medication_event.feed_lot = lots.get(record.feed_lot)
+            if record.end_date:
+                medication_event.medication_end_date = record.end_date
+            medication_event.feed_quantity = record.feed_quantity
+
+            to_save.append(medication_event)
+        FarmMedicationEvent.save(to_save)
+        FarmMedicationEvent.validate_event(to_save)
+        return to_save
+
+    @classmethod
+    def import_farm_insemination_event(cls, records):
+        pool = Pool()
+        FarmInseminationEvent = pool.get('farm.insemination.event')
+        Location = pool.get('stock.location')
+        FarmAnimal = pool.get('farm.animal')
+        BOM = pool.get('production.bom')
+
+        locations = {x.code: x for x in Location.search([])}
+        animals = {x.number: x for x in FarmAnimal.search([])}
+        boms = {x.name: x for x in BOM.search([])}
+
+        to_save = []
+        for record in records:
+            if not record.farm or not record.animal:
+                continue
+            insemination_event = FarmInseminationEvent()
+            insemination_event.farm = locations.get(record.farm)
+            insemination_event.animal = animals.get(record.animal)
+            if animals.get(record.animal):
+                insemination_event.specie = animals.get(record.animal).specie
+            if record.timestamp:
+                insemination_event.timestamp = cls.datetime_to_utc(
+                    record.timestamp)
+            if record.dose_bom:
+                insemination_event.dose_bom = boms.get(record.dose_bom)
+            to_save.append(insemination_event)
+
+        FarmInseminationEvent.save(to_save)
+        FarmInseminationEvent.validate_event(to_save)
+        return to_save
+
+    @classmethod
+    def import_farm_pregnancy_diagnosis_event(cls, records):
+        pool = Pool()
+        PregnancyDiagnosisEvent = pool.get('farm.pregnancy_diagnosis.event')
+        Location = pool.get('stock.location')
+        FarmAnimal = pool.get('farm.animal')
+
+        locations = {x.code: x for x in Location.search([])}
+        animals = {x.number: x for x in FarmAnimal.search([])}
+
+        to_save = []
+        for record in records:
+            if not record.farm or not record.animal or not record.result:
+                continue
+            pregnancy_diagnosis_event = PregnancyDiagnosisEvent()
+            pregnancy_diagnosis_event.farm = locations.get(record.farm)
+            pregnancy_diagnosis_event.animal = animals.get(record.animal)
+            if animals.get(record.animal):
+                pregnancy_diagnosis_event.specie = animals.get(
+                    record.animal).specie
+            pregnancy_diagnosis_event.result = record.result
+            if record.timestamp:
+                pregnancy_diagnosis_event.timestamp = cls.datetime_to_utc(
+                    record.timestamp)
+            if record.notes:
+                pregnancy_diagnosis_event.notes = record.notes
+
+            to_save.append(pregnancy_diagnosis_event)
+        PregnancyDiagnosisEvent.save(to_save)
+        PregnancyDiagnosisEvent.validate_event(to_save)
+        return to_save
+
+    @classmethod
+    def import_farm_abort_diagnosis_event(cls, records):
+        pool = Pool()
+        FarmAbortEvent = pool.get('farm.abort.event')
+        Location = pool.get('stock.location')
+        FarmAnimal = pool.get('farm.animal')
+
+        locations = {x.code: x for x in Location.search([])}
+        animals = {x.number: x for x in FarmAnimal.search([])}
+
+        to_save = []
+        for record in records:
+            if not record.farm or not record.animal:
+                continue
+            abort_event = FarmAbortEvent()
+            abort_event.farm = locations.get(record.farm)
+            abort_event.animal = animals.get(record.animal)
+            if animals.get(record.animal):
+                abort_event.specie = animals.get(record.animal).specie
+            if record.timestamp:
+                abort_event.timestamp = cls.datetime_to_utc(
+                    record.timestamp)
+            if record.notes:
+                abort_event.notes = record.notes
+
+            to_save.append(abort_event)
+        FarmAbortEvent.save(to_save)
+        FarmAbortEvent.validate_event(to_save)
+        return to_save
+
+    @classmethod
+    def import_farm_farrowing_event(cls,records):
+        pool = Pool()
+        FarmFarrowingEvent = pool.get('farm.farrowing.event')
+        Location = pool.get('stock.location')
+        FarmAnimal = pool.get('farm.animal')
+        FarmFarrowingProblem = pool.get('farm.farrowing.problem')
+
+        locations = {x.code: x for x in Location.search([])}
+        animals = {x.number: x for x in FarmAnimal.search([])}
+        farrowing_problems = {
+            x.name: x for x in FarmFarrowingProblem.search([])}
+
+        to_save = []
+        for record in records:
+            if not record.farm or not record.animal:
+                continue
+            farrowing_event = FarmFarrowingEvent()
+            farrowing_event.farm = locations.get(record.farm)
+            farrowing_event.animal = animals.get(record.animal)
+            if animals.get(record.animal):
+                farrowing_event.specie = animals.get(record.animal).specie
+            if record.timestamp:
+                farrowing_event.timestamp = cls.datetime_to_utc(
+                    record.timestamp)
+            if record.live:
+                farrowing_event.live = record.live
+            if record.problem:
+                farrowing_event.problem = farrowing_problems.get(
+                    record.problem)
+            to_save.append(farrowing_event)
+        FarmFarrowingEvent.save(to_save)
+        FarmFarrowingEvent.validate_event(to_save)
+        return to_save
+
+    @classmethod
+    def import_farm_weaning_event(cls, records):
+        pool = Pool()
+        FarmWeaningEvent = pool.get('farm.weaning.event')
+        Location = pool.get('stock.location')
+        FarmAnimal = pool.get('farm.animal')
+
+        locations = {x.code: x for x in Location.search([])}
+        animals = {x.number: x for x in FarmAnimal.search([])}
+
+        to_save = []
+        for record in records:
+            if (not record.farm or not record.animal or
+                    not record.female_to_location or
+                    not record.weaned_to_location):
+                continue
+            weaning_event = FarmWeaningEvent()
+            weaning_event.farm = locations.get(record.farm)
+            weaning_event.animal = animals.get(record.animal)
+            if animals.get(record.animal):
+                weaning_event.specie = animals.get(record.animal).specie
+            weaning_event.female_to_location = locations.get(
+                record.female_to_location)
+            weaning_event.weaned_to_location = locations.get(
+                record.weaned_to_location)
+            if record.timestamp:
+                weaning_event.timestamp = cls.datetime_to_utc(
+                    record.timestamp)
+            if record.quantity:
+                weaning_event.quantity = record.quantity
+
+            to_save.append(weaning_event)
+        FarmWeaningEvent.save(to_save)
+        FarmWeaningEvent.validate_event(to_save)
+        return to_save
+
+    @classmethod
+    def import_farm_transformation_event(cls, records):
+        pool = Pool()
+        FarmTransformationEvent = pool.get('farm.transformation.event')
+        Location = pool.get('stock.location')
+        FarmAnimal = pool.get('farm.animal')
+
+        locations = {x.code: x for x in Location.search([])}
+        animals = {x.number: x for x in FarmAnimal.search([])}
+
+        to_save = []
+        for record in records:
+            if (not record.farm or not record.animal or
+                not record.from_location or not record.to_animal_type):
+                continue
+            transformation_event = FarmTransformationEvent()
+            transformation_event.farm = locations.get(record.farm)
+            transformation_event.animal = animals.get(record.animal)
+            if animals.get(record.animal):
+                transformation_event.animal_type = animals.get(
+                    record.animal).type
+                transformation_event.specie = animals.get(record.animal).specie
+            transformation_event.from_location = locations.get(
+                record.from_location)
+            transformation_event.to_animal_type = record.to_animal_type
+            if record.timestamp:
+                transformation_event.timestamp = cls.datetime_to_utc(
+                    record.timestamp)
+            if record.to_location:
+                transformation_event.to_location = locations.get(
+                    record.to_location)
+            to_save.append(transformation_event)
+
+        FarmTransformationEvent.save(to_save)
+        FarmTransformationEvent.validate_event(to_save)
         return to_save
