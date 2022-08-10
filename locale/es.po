@@ -560,7 +560,7 @@ msgid ""
 "\"%(importer)s\"."
 msgstr ""
 " La columna \"%(column)s\" no existe importando datos con el importador "
-"\"%(importader)s\"."
+"\"%(importer)s\"."
 
 msgctxt "model:ir.message,text:no_period_for_date"
 msgid "No period for date \"%(date)s\"."

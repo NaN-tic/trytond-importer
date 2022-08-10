@@ -79,6 +79,15 @@ def register():
         farm.Importer,
         farm.ImporterFarmMoveEvent,
         farm.ImporterFarmRemovalEvent,
+        farm.ImporterFarmAnimal,
+        farm.ImporterFarmMedicationEvent,
+        farm.ImporterFarmInseminationEvent,
+        farm.ImporterFarmPregnancyDiagnosisEvent,
+        farm.ImporterFarmAbortEvent,
+        farm.ImporterFarmFarrowingEvent,
+        farm.ImporterFarmWeaningEvent,
+        farm.ImporterFarmTransformationEvent,
+        farm.ImporterFarmReclassificationEvent,
         depends=['farm'],
         module='importer', type_='model')
     Pool.register(
