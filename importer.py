@@ -89,8 +89,19 @@ class Data:
                 url = main + '/export?format=xlsx&gid=0'
                 if '#' in extra:
                     url += '&' + extra.split('#')[-1]
-            with urllib.request.urlopen(url) as f:
-                data = f.read()
+                try:
+                    with urllib.request.urlopen(url) as f:
+                        data = f.read()
+                except:
+                    # In some cases we've found that adding gid and other
+                    # parameters does not work. In those cases, we try again
+                    # without them.
+                    url = main + '/export?format=xlsx'
+                    with urllib.request.urlopen(url) as f:
+                        data = f.read()
+            else:
+                with urllib.request.urlopen(url) as f:
+                    data = f.read()
             if force_text:
                 return StringIO(self.to_str(data))
             return BytesIO(data)
