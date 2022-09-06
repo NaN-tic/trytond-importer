@@ -14,6 +14,7 @@ from . import crop
 from . import lot
 from . import farm
 from . import invoice
+from . import order_point
 
 def register():
     Pool.register(
@@ -87,4 +88,9 @@ def register():
         invoice.Importer,
         invoice.ImporterInvoice,
         depends=['account_invoice'],
+        module='importer', type_='model')
+    Pool.register(
+        order_point.Importer,
+        order_point.ImporterOrderPoint,
+        depends=['stock_supply'],
         module='importer', type_='model')
