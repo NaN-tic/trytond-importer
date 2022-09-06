@@ -40,4 +40,12 @@
             <field name="text">Location %(location)s not found.</field>
         </record>
     </data>
+    <data depends="stock_supply">
+        <record model="ir.message" id="order_point_not_value">
+            <field name="text">Order point not fount a value for Warehouse:  %(warehouse)s or Product %(product)s .</field>
+        </record>
+        <record model="ir.message" id="order_point_type_not_supported">
+            <field name="text">Type %(type_)s not supported for orderpoint.</field>
+        </record>
+    </data>
 </tryton>
