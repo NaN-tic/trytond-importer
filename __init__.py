@@ -51,12 +51,14 @@ def register():
         depends=['sale_discount'],
         module='importer', type_='model')
     Pool.register(
+        party.ImporterPurchaseDepends,
         purchase.Importer,
         purchase.ImporterPurchase,
         purchase.ImporterProductSupplier,
         depends=['purchase'],
         module='importer', type_='model')
     Pool.register(
+        party.ImporterPartyStockDepends,
         stock.Importer,
         stock.ImporterLocation,
         stock.ImporterStockMove,
@@ -70,6 +72,7 @@ def register():
     Pool.register(
         account.Importer,
         account.ImporterAccountMove,
+        party.ImporterAccountDepends,
         depends=['account'],
         module='importer', type_='model')
     Pool.register(
@@ -87,10 +90,39 @@ def register():
     Pool.register(
         invoice.Importer,
         invoice.ImporterInvoice,
+        party.ImporterPartyInvoiceDepends,
         depends=['account_invoice'],
         module='importer', type_='model')
     Pool.register(
         order_point.Importer,
         order_point.ImporterOrderPoint,
         depends=['stock_supply'],
+        module='importer', type_='model')
+    Pool.register(
+        party.ImporterCustomerDepends,
+        depends=['party_customer'],
+        module='importer', type_='model')
+    Pool.register(
+        party.ImporterSupplierDepends,
+        depends=['party_supplier'],
+        module='importer', type_='model')
+    Pool.register(
+        party.ImporterCommissionDepends,
+        depends=['commission'],
+        module='importer', type_='model')
+    Pool.register(
+        party.ImporterIncotermDepends,
+        depends=['incoterm'],
+        module='importer', type_='model')
+    Pool.register(
+        party.ImporterIncotermPurchaseDepends,
+        depends=['purchase_incoterm'],
+        module='importer', type_='model')
+    Pool.register(
+        party.ImporterAEATSIIDepends,
+        depends=['aeat_sii'],
+        module='importer', type_='model')
+    Pool.register(
+        party.ImporterCompanyBankDepends,
+        depends=['company_bank'],
         module='importer', type_='model')
