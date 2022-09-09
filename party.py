@@ -76,13 +76,10 @@ class ImporterAccountDepends(metaclass=PoolMeta):
 
 class ImporterCompanyBankDepends(metaclass=PoolMeta):
     __name__ = 'importer.party'
-    default_payable_bank_account = fields.Char('Default payable Banck Account')
-    default_receivable_bank_account = fields.Char(
-        'Default receivable Banck Account')
     default_payable_company_bank_account = fields.Char(
         'Default payable company  Bank Account')
     default_receivable_company_bank_account = fields.Char(
-        'Default payable company Bank Account')
+        'Default receivable company Bank Account')
 
 class ImporterIncotermDepends(metaclass=PoolMeta):
     __name__ = 'importer.party'
