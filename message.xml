@@ -40,4 +40,30 @@
             <field name="text">Location %(location)s not found.</field>
         </record>
     </data>
+
+    <data depends="bank">
+        <record model="ir.message" id="wron_iban">
+            <field name="text">Wrong Iban %(iban)s.</field>
+        </record>
+
+        <record model="ir.message" id="bank_not_found">
+            <field name="text">Bank not found for iban: %(iban)s.</field>
+        </record>
+    </data>
+
+    <data depends="commission">
+        <record model="ir.message" id="agent_not_found">
+            <field name="text">Agent not found for Agent %(agent)s and plan %(plan)s.</field>
+        </record>
+    </data>
+
+    <data depends="stock_supply">
+        <record model="ir.message" id="order_point_not_value">
+            <field name="text">Order point not fount a value for Warehouse:  %(warehouse)s or Product %(product)s .</field>
+        </record>
+        <record model="ir.message" id="order_point_type_not_supported">
+            <field name="text">Type %(type_)s not supported for orderpoint.</field>
+        </record>
+    </data>
 </tryton>
+
