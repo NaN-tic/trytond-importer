@@ -1,6 +1,11 @@
+from datetime import timedelta
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
+from trytond.transaction import Transaction
 from stdnum import get_cc_module
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
+
 
 class ImporterParty(ModelView):
     'Importer Party'
@@ -30,6 +35,68 @@ class ImporterParty(ModelView):
     vat = fields.Char('Vat')
     party_relation = fields.Char('Party Relation')
     type_of_relation = fields.Char('Type of relation')
+
+
+class ImporterPartyInvoiceDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+
+    invoice_address = fields.Boolean('Invoice Address')
+
+class ImporterPartyStockDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+
+    delivery_address = fields.Boolean('Delivery Address')
+
+class ImporterCustomerDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+
+    customer = fields.Boolean('Customer')
+
+class ImporterSupplierDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+
+    supplier = fields.Boolean('Supplier')
+
+
+class ImporterPurchaseDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+
+    supplier_lead_time = fields.Integer('Supplier Lead Time (days)')
+
+class ImporterCommissionDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+
+    agent = fields.Char('Agent (code)')
+
+class ImporterAccountDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+
+    customer_tax_rule = fields.Char('Customer Tax Rule')
+    supplier_tax_rule = fields.Char('Supplier Tax Ruel')
+
+class ImporterCompanyBankDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+    default_payable_company_bank_account = fields.Char(
+        'Default payable company  Bank Account')
+    default_receivable_company_bank_account = fields.Char(
+        'Default receivable company Bank Account')
+
+class ImporterIncotermDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+
+    incoterm_name = fields.Char('Incoterm Name')
+    incoterm_place = fields.Char('Incoterm Place')
+
+class ImporterIncotermPurchaseDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+
+    incoterm_purchase_name = fields.Char('Incoterm Purchase Name')
+    incoterm_purchase_place = fields.Char('Incoterm Purchase Place')
+
+class ImporterAEATSIIDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+
+    sii_identifier_type = fields.Char('SII Identification Type')
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -63,6 +130,8 @@ class Importer(metaclass=PoolMeta):
             BankAccount = pool.get('bank.account')
             AccountNumber = pool.get('bank.account.number')
             banks = dict((x.bank_code.zfill(4), x) for x in Bank.search([]))
+            bank_accounts = dict((x.number_compact, x) for x in
+                    AccountNumber.search([]))
         except:
             pass
 
@@ -85,6 +154,30 @@ class Importer(metaclass=PoolMeta):
         except:
             pass
 
+        try:
+            TaxRule = pool.get('account.tax.rule')
+            tax_rules = dict([(x.name, x) for x in TaxRule.search([])])
+        except:
+            pass
+
+        try:
+            Agent = pool.get('commission.agent')
+            Plan = pool.get('commission.plan')
+            agents = dict([((x.party.code, x.plan.name), x)
+                    for x in Agent.search([])])
+            plans = dict([(x.name, x) for x in Plan.search([])])
+        except:
+            pass
+
+        try:
+            Incoterm = pool.get('incoterm')
+            incoterms = dict([(x.code, x) for x in Incoterm.search([])])
+        except:
+            pass
+
+
+        company = Transaction().context.get('company')
+
         languages = dict([(x.code, x) for x in Lang.search([])])
         categories = dict([(x.name, x) for x in PartyCategory.search([])])
         countries = dict([(x.code, x) for x in Country.search([])])
@@ -106,6 +199,17 @@ class Importer(metaclass=PoolMeta):
             if 'trade_name' in party._fields:
                 party.trade_name = record.trade_name
 
+            if hasattr(Party, 'supplier'):
+                party.supplier = record.supplier
+
+            if hasattr(Party, 'customer'):
+                party.customer = record.customer
+
+            if (hasattr(Party, 'supplier_lead_time') and
+                        record.supplier_lead_time):
+                party.supplier_lead_time = timedelta(
+                    days=record.supplier_lead_time)
+
             addresses = []
             address = Address()
             address.street = record.street
@@ -113,6 +217,10 @@ class Importer(metaclass=PoolMeta):
             address.city = record.city
             country = countries.get(record.country)
             address.country = country
+            if hasattr(Address, 'delivery'):
+                address.delivery = record.delivery_address
+            if hasattr(Address, 'invoice'):
+                address.invoice = record.invoice_address
             subdivision = record.subdivision and record.subdivision.capitalize()
             subdivision = subdivisions.get(subdivision)
             if (subdivision and country):
@@ -239,24 +347,87 @@ class Importer(metaclass=PoolMeta):
 
                 party.categories = cats
 
+            if hasattr(Party, 'customer_tax_rule'):
+                party.customer_tax_rule = tax_rules.get(
+                    record.customer_tax_rule)
+                party.supplier_tax_rule = tax_rules.get(
+                    record.supplier_tax_rule)
+
             if record.bank_account and 'bank_accounts' in party._fields:
+                Currency = pool.get('currency.currency')
+                currencies = dict([(x.code, x) for x in Currency.search([])])
                 party.bank_accounts = []
-                for iban in record.bank_account.split(' '):
+                for account in record.bank_account.split('|'):
+                    if (',') in account:
+                        iban, currency_code = account.split(',')
+                    else:
+                        iban = account
+                        currency_code = 'EUR'
+                    iban = iban.replace(" ", "")
+                    currency = currencies.get(currency_code)
                     if len(iban) < 8:
-                        continue
+                        raise UserError(gettext('importer.wron_iban',
+                            iban_= iban))
+
                     bank_code = iban[4:8]
                     bank = banks.get(bank_code)
                     if not bank:
-                        print("Bank not finded for account:", iban)
-                        continue
+                        raise UserError(gettext('importer.bank_not_found',
+                            iban=iban))
                     bank_account = BankAccount()
                     bank_account.bank = bank
+                    bank_account.currency = currency
                     account_number = AccountNumber()
                     account_number.account = bank_account
                     account_number.type = 'iban'
                     account_number.number = iban
+                    bank_accounts[iban]=account_number
                     bank_account.numbers = [account_number]
                     party.bank_accounts += (bank_account,)
+                party.payable_bank_account = party.bank_accounts[0]
+                party.receivable_bank_account = party.bank_accounts[0]
+
+            
+            if hasattr(Party, 'bank_accounts'):
+                company_pay_bank_acc = bank_accounts.get(
+                    record.default_payable_company_bank_account)
+                company_rec_bank_acc = bank_accounts.get(
+                    record.default_receivable_company_bank_account)
+                if company_pay_bank_acc:
+                    party.payable_company_bank_account = company_pay_bank_acc.account
+                if company_rec_bank_acc:
+                    party.receivable_company_bank_account = company_rec_bank_acc.account
+
+            if hasattr(Party, 'agents') and record.agent:
+                new_agents = []
+                CommisionAgentSelection = pool.get('commission.agent.selection')
+                for agent in record.agent.split('|'):
+                    agent, plan = agent.split(',')
+                    com_agen_sel = CommisionAgentSelection()
+                    key = (agent, plan)
+                    com_a = agents.get((key))
+                    if not com_a:
+                        raise UserError(gettext('importer.agent_not_found',
+                            agent=agent, plan=plan))
+                    com_agen_sel.agent = com_a
+                    com_agen_sel.company = company
+                    new_agents.append(com_agen_sel)
+                party.agents = new_agents
+
+
+            if hasattr(Party, 'sii_identifier_type'):
+                if record.sii_identifier_type != 'None':
+                    party.sii_identifier_type = record.sii_identifier_type
+
+            if hasattr(Party, 'incoterm'):
+                party.incoterm = incoterms.get(record.incoterm_name)
+                party.on_change_incoterm()
+                party.incoterm_place = record.incoterm_place
+            if hasattr(Party, 'purchase_incoterm'):
+                party.purchase_incoterm = incoterms.get(
+                    record.incoterm_purchase_name)
+                party.on_change_purchase_incoterm()
+                party.purchase_incoterm_place = record.incoterm_purchase_place
 
             if 'relations' in party._fields and record.party_relation:
                 related = parties.get(record.party_relation)
