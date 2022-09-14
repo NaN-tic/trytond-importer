@@ -107,6 +107,7 @@ def register():
         agronomics.Importer,
         agronomics.ImporterProductAgronomics,
         depends=['agronomics'],
+        module='importer', type_='model')
     Pool.register(
         order_point.Importer,
         order_point.ImporterOrderPoint,

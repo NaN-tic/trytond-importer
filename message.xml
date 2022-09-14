@@ -41,7 +41,7 @@
         </record>
     </data>
 
-    <data depens="bank">
+    <data depends="bank">
         <record model="ir.message" id="wron_iban">
             <field name="text">Wrong Iban %(iban)s.</field>
         </record>
@@ -51,7 +51,7 @@
         </record>
     </data>
 
-    <data depens="commission">
+    <data depends="commission">
         <record model="ir.message" id="agent_not_found">
             <field name="text">Agent not found for Agent %(agent)s and plan %(plan)s.</field>
         </record>
