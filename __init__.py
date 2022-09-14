@@ -15,6 +15,7 @@ from . import lot
 from . import farm
 from . import invoice
 from . import order_point
+from . import contacts
 
 def register():
     Pool.register(
@@ -32,6 +33,7 @@ def register():
     Pool.register(
         party.Importer,
         party.ImporterParty,
+        # contacts.ImporterContacts
         depends=['party'],
         module='importer', type_='model')
     Pool.register(
@@ -59,6 +61,8 @@ def register():
         module='importer', type_='model')
     Pool.register(
         party.ImporterPartyStockDepends,
+        # contacts.ImporterContactsStockView,
+        # contacts.ImporterContactsStock,
         stock.Importer,
         stock.ImporterLocation,
         stock.ImporterStockMove,
@@ -88,6 +92,8 @@ def register():
         depends=['agronomics'],
         module='importer', type_='model')
     Pool.register(
+        # contacts.ImporterContactsInvoiceView,
+        # contacts.ImporterContactsInvoice,
         invoice.Importer,
         invoice.ImporterInvoice,
         party.ImporterPartyInvoiceDepends,
@@ -125,4 +131,12 @@ def register():
     Pool.register(
         party.ImporterCompanyBankDepends,
         depends=['company_bank'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductProductionDepends,
+        depends=['production'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductProductMeasuresDepends,
+        depends=['product_measures'],
         module='importer', type_='model')

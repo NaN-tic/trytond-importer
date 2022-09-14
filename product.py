@@ -21,13 +21,35 @@ class ImporterProduct(ModelView):
     supplier_code = fields.Char('Supplier Code')
     categories = fields.Char('Categories')
     account_category = fields.Char('Account Category')
-    weight = fields.Numeric('Weight (kg)')
-    volume = fields.Numeric('Volume (m3)')
     aranzel = fields.Char('Aranzel')
     purchasable = fields.Boolean('Purchasable')
     salable = fields.Boolean('Salable')
     alcohol_content = fields.Char('Alcohol Content')
     brand = fields.Char('Brand')
+    consumable = fields.Boolean('Consumable')
+
+
+
+class ImporterProductProductionDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    producible = fields.Boolean('producible')
+    bom_name = fields.Char('BOM Name')
+
+
+class ImporterProductProductMeasuresDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    width = fields.Float('Width')
+    width_uom = fields.Char('Width Uom')
+    length = fields.Float('Length')
+    length_uom = fields.Char('Length Uom')
+    heigth = fields.Float('Height')
+    heigth_uom = fields.Char('Height Uom')
+    weight = fields.Float('Weight')
+    weight_uom = fields.Char('Weight Uom')
+    volume = fields.Float('Volume')
+    volume_uom = fields.Char('Volume Uom')
 
 
 class ImporterProductCodes(ModelView):
@@ -123,6 +145,13 @@ class Importer(metaclass=PoolMeta):
         except:
             brands = {}
 
+        try:
+            BOM = pool.get('production.bom')
+            ProductBOM = pool.get('product.product-production.bom')
+            boms = dict([(x.name, x) for x in BOM.search([])])
+        except:
+            pass
+
         categories = dict((x.name, x) for x in ProductCategory.search([]))
         uoms = {}
         for uom in Uom.search([]):
@@ -196,6 +225,15 @@ class Importer(metaclass=PoolMeta):
 
                 template.cost_price_method = cost_price_method
 
+            template.consumable = record.consumable
+
+            if hasattr(Template, 'producible'):
+                template.producible = record.producible
+                bom = boms.get(record.bom_name)
+                if bom:
+                    product.boms = [bom]
+
+
             if ('account_category' in template._fields and
                     record.account_category):
                 acc_category = categories.get(record.account_category)
@@ -206,13 +244,37 @@ class Importer(metaclass=PoolMeta):
                 acc_category.accounting = True
                 template.account_category = acc_category
 
-            if 'weight' in template._fields and record.weight:
-                template.weight = record.weight
-                template.weight_uom = uoms.get('kg')
+            measures = None
+            if hasattr(Template, 'weight'):
+                measures = template
+            if hasattr(Product, 'weight'):
+                measures = product
 
-            if 'volume' in template._fields and record.volume:
-                template.volume = record.volume
-                template.volume_uom = uoms.get('l')
+            if 'weight' in measures._fields and record.weight:
+                measures.weight = record.weight
+                measures.weight_uom = (uoms.get(record.uom_weight) or
+                    uoms.get('kg'))
+
+            if 'volume' in measures._fields and record.volume:
+                measures.volume = record.volume
+                measures.volume_uom = (uoms.get(record.uom_volume) or
+                    uoms.get('l'))
+
+            if 'width' in measures._fields and record.width:
+                measures.width = record.width
+                measures.width_uom = (uoms.get(record.uom_width) or
+                    uoms.get('m'))
+
+            if 'length' in measures._fields and record.length:
+                measures.length = record.length
+                measures.length_uom = (uoms.get(record.uom_length) or
+                    uoms.get('m'))
+
+            if 'height' in measures._fields and record.height:
+                measures.height = record.height
+                measures.height_uom = (uoms.get(record.uom_height) or
+                    uoms.get('m'))
+
 
             if 'tariff_codes' in template._fields and record.aranzel:
                 custom = customs.get(record.aranzel)
@@ -277,3 +339,4 @@ class Importer(metaclass=PoolMeta):
         Template.save(to_save)
         Product.save(products_to_save)
         return to_save
+
