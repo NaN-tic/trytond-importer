@@ -414,6 +414,10 @@ class Importer(metaclass=PoolMeta):
                 party.agents = new_agents
 
 
+            if hasattr(Party, 'sii_identifier_type'):
+                if record.sii_identifier_type != 'None':
+                    party.sii_identifier_type = record.sii_identifier_type
+
             if hasattr(Party, 'incoterm'):
                 party.incoterm = incoterms.get(record.incoterm_name)
                 party.on_change_incoterm()
