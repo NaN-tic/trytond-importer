@@ -130,7 +130,7 @@ class Importer(metaclass=PoolMeta):
             BankAccount = pool.get('bank.account')
             AccountNumber = pool.get('bank.account.number')
             banks = dict((x.bank_code.zfill(4), x) for x in Bank.search([]))
-            bank_accounts = dict((x.number, x) for x in
+            bank_accounts = dict((x.number_compact, x) for x in
                     AccountNumber.search([]))
         except:
             pass
@@ -387,11 +387,12 @@ class Importer(metaclass=PoolMeta):
                 party.payable_bank_account = party.bank_accounts[0]
                 party.receivable_bank_account = party.bank_accounts[0]
 
+            
+            if hasattr(Party, 'bank_accounts'):
                 company_pay_bank_acc = bank_accounts.get(
                     record.default_payable_company_bank_account)
                 company_rec_bank_acc = bank_accounts.get(
                     record.default_receivable_company_bank_account)
-
                 if company_pay_bank_acc:
                     party.payable_company_bank_account = company_pay_bank_acc.account
                 if company_rec_bank_acc:
