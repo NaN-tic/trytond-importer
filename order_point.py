@@ -41,7 +41,9 @@ class Importer(metaclass=PoolMeta):
 
         location_codes = [x.warehouse_location for x in records]
         locations = {x.code: x for x in Location.search([
-            ('code', 'in', location_codes)])}
+            ('code', 'in', location_codes),
+            ('type', '=', 'warehouse'),
+            ])}
 
         codes = [x.product_code for x in records]
         products = {x.code: x for x in Product.search([('code', 'in', codes)])}
