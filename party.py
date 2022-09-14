@@ -373,7 +373,7 @@ class Importer(metaclass=PoolMeta):
                     bank = banks.get(bank_code)
                     if not bank:
                         raise UserError(gettext('importer.bank_not_found',
-                            iban_= iban))
+                            iban=iban))
                     bank_account = BankAccount()
                     bank_account.bank = bank
                     bank_account.currency = currency
@@ -392,8 +392,10 @@ class Importer(metaclass=PoolMeta):
                 company_rec_bank_acc = bank_accounts.get(
                     record.default_receivable_company_bank_account)
 
-                party.payable_company_bank_account = company_pay_bank_acc.account
-                party.receivable_company_bank_account = company_rec_bank_acc.account
+                if company_pay_bank_acc:
+                    party.payable_company_bank_account = company_pay_bank_acc.account
+                if company_rec_bank_acc:
+                    party.receivable_company_bank_account = company_rec_bank_acc.account
 
             if hasattr(Party, 'agents') and record.agent:
                 new_agents = []
