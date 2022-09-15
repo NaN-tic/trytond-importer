@@ -16,6 +16,7 @@ from . import farm
 from . import invoice
 from . import agronomics
 from . import order_point
+from . import party_credit
 
 def register():
     Pool.register(
@@ -141,4 +142,9 @@ def register():
     Pool.register(
         party.ImporterCompanyBankDepends,
         depends=['company_bank'],
+        module='importer', type_='model')
+    Pool.register(
+        party_credit.ImporterPartyCredit,
+        party_credit.Importer,
+        depends=['account_insurance_credit_limit'],
         module='importer', type_='model')
