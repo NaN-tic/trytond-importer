@@ -33,6 +33,7 @@ def register():
     Pool.register(
         party.Importer,
         party.ImporterParty,
+        party.ImporterContactMechanism,
         depends=['party'],
         module='importer', type_='model')
     Pool.register(
