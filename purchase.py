@@ -185,16 +185,12 @@ class Importer(metaclass=PoolMeta):
             Line.save(list(to_save))
 
         purchases = [x for x in purchases_to_save if x.state != 'done']
-        print("quote:", len(purchases), datetime.now() - start)
         if purchases:
             Purchase.quote(purchases)
-        print("confirm:", len(purchases), datetime.now() - start)
         if purchases:
             Purchase.confirm(purchases)
-        print("process:", len(purchases), datetime.now() - start)
         if purchases:
             Purchase.process(purchases)
-        print("Purchase:", len(purchases), datetime.now() - start)
         return purchases_to_save
 
     @classmethod

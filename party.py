@@ -188,8 +188,6 @@ class Importer(metaclass=PoolMeta):
         to_save = []
         relations_to_save = {}
         for record in records:
-            if record.code in parties:
-                print("party duplicated:", record.code, record.name)
             party = Party()
             to_save.append(party)
 
@@ -387,7 +385,7 @@ class Importer(metaclass=PoolMeta):
                 party.payable_bank_account = party.bank_accounts[0]
                 party.receivable_bank_account = party.bank_accounts[0]
 
-            
+
             if hasattr(Party, 'bank_accounts'):
                 company_pay_bank_acc = bank_accounts.get(
                     record.default_payable_company_bank_account)

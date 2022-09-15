@@ -205,8 +205,7 @@ class Data:
                     'rows': rows,
                     }
             except Exception as inst:
-                print(inst.args)
-                print(inst)
+                pass
         return {
             'type': 'none',
             'has_header': False,
