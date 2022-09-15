@@ -114,6 +114,14 @@ def register():
         depends=['stock_supply'],
         module='importer', type_='model')
     Pool.register(
+        product.ImporterProductSupplierMinimumDepends,
+        depends=['stock_supply_minimum'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductSupplierMultipleDepends,
+        depends=['stock_supply_multiple'],
+        module='importer', type_='model')
+    Pool.register(
         party.ImporterCustomerDepends,
         depends=['party_customer'],
         module='importer', type_='model')
@@ -140,4 +148,16 @@ def register():
     Pool.register(
         party.ImporterCompanyBankDepends,
         depends=['company_bank'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductProductionDepends,
+        depends=['production'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductProductMeasuresDepends,
+        depends=['product_measures'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductPackagesDepends,
+        depends=['product_package'],
         module='importer', type_='model')

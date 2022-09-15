@@ -19,12 +19,55 @@ class ImporterProduct(ModelView):
     cost_price_method = fields.Char('Cost Price Method')
     supplier = fields.Char('Supplier')
     supplier_code = fields.Char('Supplier Code')
+    supplier_currency = fields.Char('Supplier Currency')
+    supplier_unit_price = fields.Numeric('Supplier Unit Price')
     categories = fields.Char('Categories')
     account_category = fields.Char('Account Category')
     aranzel = fields.Char('Aranzel')
+    consumable =  fields.Boolean('Consumable')
     purchasable = fields.Boolean('Purchasable')
     salable = fields.Boolean('Salable')
     brand = fields.Char('Brand')
+
+
+class ImporterProductProductionDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    producible = fields.Boolean('Producible')
+    bom_name = fields.Char('BOM Name')
+
+
+class ImporterProductProductMeasuresDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    width = fields.Float('Width')
+    width_uom = fields.Char('Width Uom')
+    length = fields.Float('Length')
+    length_uom = fields.Char('Length Uom')
+    heigth = fields.Float('Height')
+    heigth_uom = fields.Char('Height Uom')
+    weight = fields.Float('Weight')
+    weight_uom = fields.Char('Weight Uom')
+    volume = fields.Float('Volume')
+    volume_uom = fields.Char('Volume Uom')
+
+
+class ImporterProductPackagesDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    packages = fields.Boolean('Packages')
+
+
+class ImporterProductSupplierMinimumDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    supplier_minimum_quantity = fields.Float('Supplier Minimum Quantity')
+
+
+class ImporterProductSupplierMultipleDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    supplier_multiple_quantity = fields.Float('Supplier Multiple Quantity')
 
 
 class ImporterProductCodes(ModelView):
@@ -91,6 +134,14 @@ class Importer(metaclass=PoolMeta):
         return to_save
 
     @classmethod
+    def _import_template_hook(cls, record, template):
+        pass
+
+    @classmethod
+    def _import_product_hook(cls, record, product):
+        pass
+
+    @classmethod
     def import_product(cls, records):
         pool = Pool()
         Product = pool.get('product.product')
@@ -102,6 +153,7 @@ class Importer(metaclass=PoolMeta):
 
         try:
             ProductSupplier = pool.get('purchase.product_supplier')
+            ProductSupplierPrice = pool.get('purchase.product_supplier.price')
             Party = pool.get('party.party')
             parties = dict((x.code, x) for x in Party.search([]))
         except:
@@ -120,6 +172,24 @@ class Importer(metaclass=PoolMeta):
         except:
             brands = {}
 
+        try:
+            BOM = pool.get('production.bom')
+            boms = dict([(x.name, x) for x in BOM.search([])])
+        except:
+            pass
+
+        try:
+            Package = pool.get('product.package')
+        except KeyError:
+            pass
+
+        try:
+            Currency = pool.get('currency.currency')
+            currencies = {x.name: x for x in Currency.search([])}
+            currencies.update({x.symbol: x for x in Currency.search([])})
+        except KeyError:
+            currencies = {}
+
         categories = dict((x.name, x) for x in ProductCategory.search([]))
         uoms = {}
         for uom in Uom.search([]):
@@ -134,6 +204,8 @@ class Importer(metaclass=PoolMeta):
                     ('code', '!=', None),
                     ('code', '!=', ''),
                     ]))
+
+
 
         template_default_values = Template.default_get(Template._fields.keys(),
                 with_rec_name=False)
@@ -203,6 +275,37 @@ class Importer(metaclass=PoolMeta):
                 acc_category.accounting = True
                 template.account_category = acc_category
 
+            measures = None
+            if hasattr(Template, 'weight'):
+                measures = template
+            if hasattr(Product, 'weight'):
+                measures = product
+
+            if 'weight' in measures._fields and record.weight:
+                measures.weight = record.weight
+                measures.weight_uom = (uoms.get(record.uom_weight) or
+                    uoms.get('kg'))
+
+            if 'volume' in measures._fields and record.volume:
+                measures.volume = record.volume
+                measures.volume_uom = (uoms.get(record.uom_volume) or
+                    uoms.get('l'))
+
+            if 'width' in measures._fields and record.width:
+                measures.width = record.width
+                measures.width_uom = (uoms.get(record.uom_width) or
+                    uoms.get('m'))
+
+            if 'length' in measures._fields and record.length:
+                measures.length = record.length
+                measures.length_uom = (uoms.get(record.uom_length) or
+                    uoms.get('m'))
+
+            if 'height' in measures._fields and record.height:
+                measures.height = record.height
+                measures.height_uom = (uoms.get(record.uom_height) or
+                    uoms.get('m'))
+
             if 'tariff_codes' in template._fields and record.aranzel:
                 custom = customs.get(record.aranzel)
                 if not customs:
@@ -227,6 +330,14 @@ class Importer(metaclass=PoolMeta):
                         categories[cat] = category
                 template.categories = cats
 
+            template.consumable = record.consumable
+
+            if hasattr(Template, 'producible'):
+                template.producible = record.producible
+                bom = boms.get(record.bom_name)
+                if bom:
+                    product.boms = [bom]
+
             if 'product_suppliers' in template._fields and record.purchasable:
                 template.purchasable = record.purchasable
                 template.purchase_uom = uom
@@ -240,8 +351,19 @@ class Importer(metaclass=PoolMeta):
                 supplier = ProductSupplier()
                 supplier.party = party
                 supplier.code = record.supplier_code
+                if record.supplier_currency:
+                    supplier.currency = currencies.get('supplier_currency')
+                if ProductSupplier._fields.get('minimum_quantity') and record.supplier_minimum_quantity:
+                    supplier.minimum_quantity = record.minimum_quantity
+                if ProductSupplier._fields.get('multiple_quantity') and record.supplier_multiple_quantity:
+                    supplier.multiple_quantity = record.multiple_quantity
+                if record.supplier_price:
+                    exp = Decimal(str(10.0 ** -ProductSupplierPrice.unit_price.digits[1]))
+                    supplier_price = ProductSupplierPrice()
+                    supplier_price.quantity = 0
+                    supplier_price.unit_price = record.supplier_price.quantize(exp)
+                    supplier.prices.append(supplier_price)
                 template.product_suppliers = [supplier]
-
                 templates[record.template_code] = template
 
                 if 'brand' in template._fields and record.brand:
@@ -258,6 +380,21 @@ class Importer(metaclass=PoolMeta):
                 product.cost_price = record.cost_price
             if record.description:
                 product.description = record.description
+
+            # If product exist the packages are set all new, not updated.
+            if 'packages' in template._fields and record.packages:
+                packages = []
+                for package in record.packages.split('|'):
+                    name, quantity, is_default = package.split(';')
+                    ppackage = Package()
+                    ppackage.name = name
+                    ppackage.quantity = quantity
+                    ppackage.is_default = True if is_default == '1' else False
+                    packages.append(ppackage)
+                template.packages = packages
+
+            cls._import_template_hook(record, template)
+            cls._import_product_hook(record, product)
 
         ProductCategory.save(categories.values())
         Template.save(to_save)
