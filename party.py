@@ -98,6 +98,29 @@ class ImporterAEATSIIDepends(metaclass=PoolMeta):
 
     sii_identifier_type = fields.Char('SII Identification Type')
 
+
+class ImporterContactMechanism(ModelView):
+    'Importer Contact Method'
+    __name__ = 'importer.party.contact_mechanism'
+
+    party = fields.Char("Party")
+    type = fields.Char("Type")
+    value = fields.Char("Value")
+    name = fields.Char("Name")
+    language = fields.Char("Language")
+
+
+class ImporterContactMechanismInvoiceDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party.contact_mechanism'
+
+    invoice = fields.Boolean("Invoice")
+
+
+class ImporterContactMechanismStockDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party.contact_mechanism'
+
+    delivery = fields.Boolean("Delivery")
+
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
 
@@ -108,6 +131,11 @@ class Importer(metaclass=PoolMeta):
                 'party': {
                     'string': 'Party',
                     'model': 'importer.party',
+                    'chunked': True,
+                    },
+                'contact_mechanism': {
+                    'string': 'Contact Mechanism',
+                    'model': 'importer.party.contact_mechanism',
                     'chunked': True,
                     },
                 })
@@ -387,7 +415,7 @@ class Importer(metaclass=PoolMeta):
                 party.payable_bank_account = party.bank_accounts[0]
                 party.receivable_bank_account = party.bank_accounts[0]
 
-            
+
             if hasattr(Party, 'bank_accounts'):
                 company_pay_bank_acc = bank_accounts.get(
                     record.default_payable_company_bank_account)
@@ -448,3 +476,50 @@ class Importer(metaclass=PoolMeta):
                 rel_save.append(relation)
             Relation.save(rel_save)
         return to_save
+
+    @classmethod
+    def import_contact_mechanism(cls, records):
+        pool = Pool()
+        Party = pool.get('party.party')
+        Lang = pool.get('ir.lang')
+        ContactMechanism = pool.get('party.contact_mechanism')
+        ContactMechanismLanguage = pool.get('party.contact_mechanism.language')
+
+        company = Transaction().context.get('company')
+        languages = dict([(x.code, x) for x in Lang.search([])])
+        parties = dict([(x.code, x) for x in Party.search([])])
+
+        to_save_cm = []
+        to_save_cml = []
+        for record in records:
+            if not record.party in parties:
+                raise UserError(
+                    gettext('importer.party_not_found',
+                        party=record.party))
+            cm = ContactMechanism()
+            cm.party = parties[record.party]
+            cm.name = record.name
+            cm.type = record.type
+            cm.value = record.value
+
+            if hasattr(ContactMechanism, 'invoice'):
+                cm.invoice = False
+                if record.invoice:
+                    cm.invoice = record.invoice
+
+            if hasattr(ContactMechanism, 'delivery'):
+                cm.delivery = False
+                if record.delivery:
+                    cm.delivery = record.delivery
+
+            to_save_cm.append(cm)
+            if record.language:
+                cml = ContactMechanismLanguage()
+                cml.contact_mechanism = cm
+                cml.language = languages.get(record.language)
+                cml.company = company
+                to_save_cml.append(cml)
+
+        ContactMechanism.save(to_save_cm)
+        ContactMechanismLanguage.save(to_save_cml)
+        return to_save_cm
