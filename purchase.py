@@ -7,6 +7,7 @@ from trytond.tools import grouped_slice
 from trytond.transaction import Transaction
 from datetime import datetime
 
+
 class ImporterPurchase(ModelView):
     'Importer Purchase'
     __name__ = 'importer.purchase'
@@ -24,6 +25,7 @@ class ImporterPurchase(ModelView):
     discount = fields.Numeric('Discount')
     state = fields.Char('state')
 
+
 class ImporterProductSupplier(ModelView):
     'Importer Product Supplier'
     __name__ = 'importer.product.supplier'
@@ -37,6 +39,25 @@ class ImporterProductSupplier(ModelView):
     quantity = fields.Float('Product Quantity')
     unit_price = fields.Numeric('Unit Price')
     lead_time = fields.TimeDelta('Lead Time')
+
+
+class ImporterProductSupplierStockSupplyMinimum(metaclass=PoolMeta):
+    __name__ = 'importer.product.supplier'
+
+    minimum_quantity = fields.Float('Minimum Quantity')
+
+
+class ImporterProductSupplierStockSupplyMultiple(metaclass=PoolMeta):
+    __name__ = 'importer.product.supplier'
+
+    multiple_quantity = fields.Float('Multiple Quantity')
+
+
+class ImporterProductSupplierPurchaseSupplierPricePeriod(metaclass=PoolMeta):
+    __name__ = 'importer.product.supplier'
+
+    start_date = fields.Date('Start Date')
+    end_date = fields.Date('End Date')
 
 
 class Importer(metaclass=PoolMeta):
@@ -86,7 +107,6 @@ class Importer(metaclass=PoolMeta):
         currencies = {x.name: x for x in Currency.search([])}
         currencies.update({x.symbol: x for x in Currency.search([])})
 
-        start = datetime.now()
         purchases_to_save = []
         lines_to_save = []
         previous_header = None
@@ -194,6 +214,14 @@ class Importer(metaclass=PoolMeta):
         return purchases_to_save
 
     @classmethod
+    def _import_purchase_product_supplier_hook(cls, record, product_supplier):
+        pass
+
+    @classmethod
+    def _import_purchase_product_supplier_price_hook(cls, record, price):
+        pass
+
+    @classmethod
     def import_purchase_product_supplier(cls, records):
         pool = Pool()
         Party = pool.get('party.party')
@@ -283,6 +311,16 @@ class Importer(metaclass=PoolMeta):
             if record.lead_time:
                 product_supplier.lead_time = record.lead_time
 
+            if ('minimum_quantity' in product_supplier._fields and
+                    record.minimum_quantity):
+                product_supplier.minimum_quantity = record.minimum_quantity
+
+            if ('multiple_quantity' in product_supplier._fields and
+                    record.multiple_quantity):
+                product_supplier.multiple_quantity = record.multiple_quantity
+
+            cls._import_purchase_product_supplier_hook(record, product_supplier)
+
             if record.unit_price:
                 price = lines_to_delete.get(product_supplier, {}).get(
                         record.quantity)
@@ -297,6 +335,14 @@ class Importer(metaclass=PoolMeta):
                     price.product_supplier = product_supplier
                 price.quantity = record.quantity
                 price.unit_price = record.unit_price
+
+                if ('start_date' in price._fields and record.start_date):
+                    product_supplier.start_date = record.start_date
+                if ('end_date' in price._fields and record.end_date):
+                    product_supplier.end_date = record.end_date
+
+                cls._import_purchase_product_supplier_price_hook(record, price)
+
                 lines_to_save.append(price)
 
             product_supplier_to_save[key] = product_supplier
