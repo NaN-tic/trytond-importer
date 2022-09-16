@@ -105,12 +105,21 @@ class ImporterContactMechanism(ModelView):
 
     party = fields.Char("Party")
     type = fields.Char("Type")
-    invoice = fields.Boolean("Invoice")
-    delivery = fields.Boolean("Delivery")
     value = fields.Char("Value")
     name = fields.Char("Name")
     language = fields.Char("Language")
 
+
+class ImporterContactMechanismInvoiceDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party.contact_mechanism'
+
+    invoice = fields.Boolean("Invoice")
+
+
+class ImporterContactMechanismStockDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party.contact_mechanism'
+
+    delivery = fields.Boolean("Delivery")
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -406,7 +415,7 @@ class Importer(metaclass=PoolMeta):
                 party.payable_bank_account = party.bank_accounts[0]
                 party.receivable_bank_account = party.bank_accounts[0]
 
-            
+
             if hasattr(Party, 'bank_accounts'):
                 company_pay_bank_acc = bank_accounts.get(
                     record.default_payable_company_bank_account)
@@ -489,15 +498,19 @@ class Importer(metaclass=PoolMeta):
                         party=record.party))
             cm = ContactMechanism()
             cm.party = parties[record.party]
-            cm.invoice = False
-            if record.invoice:
-                cm.invoice = record.invoice
-            cm.delivery = False
-            if record.delivery:
-                cm.delivery = record.delivery
-            cm.value = record.value
             cm.name = record.name
             cm.type = record.type
+            cm.value = record.value
+
+            if hasattr(ContactMechanism, 'invoice'):
+                cm.invoice = False
+                if record.invoice:
+                    cm.invoice = record.invoice
+
+            if hasattr(ContactMechanism, 'delivery'):
+                cm.delivery = False
+                if record.delivery:
+                    cm.delivery = record.delivery
 
             to_save_cm.append(cm)
             if record.language:

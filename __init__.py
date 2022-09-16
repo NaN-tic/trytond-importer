@@ -62,6 +62,7 @@ def register():
         module='importer', type_='model')
     Pool.register(
         party.ImporterPartyStockDepends,
+        party.ImporterContactMechanismStockDepends,
         stock.Importer,
         stock.ImporterLocation,
         stock.ImporterStockMove,
@@ -103,6 +104,7 @@ def register():
         invoice.Importer,
         invoice.ImporterInvoice,
         party.ImporterPartyInvoiceDepends,
+        party.ImporterContactMechanismInvoiceDepends,
         depends=['account_invoice'],
         module='importer', type_='model')
     Pool.register(
