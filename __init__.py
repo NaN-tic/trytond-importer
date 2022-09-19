@@ -164,7 +164,7 @@ def register():
         module='importer', type_='model')
     Pool.register(
         product.ImporterProductProductMeasuresDepends,
-        depends=['product_measures'],
+        depends=['product_measurements'],
         module='importer', type_='model')
     Pool.register(
         product.ImporterProductPackagesDepends,
