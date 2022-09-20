@@ -39,7 +39,7 @@ class Importer(metaclass=PoolMeta):
 
     @classmethod
     def import_production_routes_header(cls, record):
-        return (record.name)
+        return (record.name,)
 
     @classmethod
     def _import_production_route_operation_hook(cls, record, operation):
@@ -59,7 +59,7 @@ class Importer(metaclass=PoolMeta):
 
         routes = dict((x.name, x) for x in Route.search([]))
         types = dict((x.name, x) for x  in OperationType.search([]))
-        WCCategory = dict((x.name,x) for x in WorkCenterCategory.search([]))
+        categories = dict((x.name,x) for x in WorkCenterCategory.search([]))
         uoms = {}
         for uom in Uom.search([]):
             uoms[uom.name.lower()] = uom
@@ -78,7 +78,6 @@ class Importer(metaclass=PoolMeta):
                 if not route:
                     route = Route(**values)
                     route.name = record.name
-                    print(uoms)
                     route.uom = uoms.get(record.uom and record.uom.lower())
                     to_save.append(route)
                     routes[record.name] = route
@@ -89,7 +88,7 @@ class Importer(metaclass=PoolMeta):
             operation = RouteOperation(**values)
             operation.route = route
             operation.operation_type = types.get(record.operation_type)
-            operation.work_center_category = WCCategory.get(
+            operation.work_center_category = categories.get(
                 record.workcenter_category)
             operation.time = record.time_
             operation.time_uom = minute_uom
