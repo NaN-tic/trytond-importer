@@ -17,6 +17,8 @@ from . import invoice
 from . import agronomics
 from . import order_point
 from . import production
+from . import party_credit
+from . import route
 
 def register():
     Pool.register(
@@ -34,6 +36,7 @@ def register():
     Pool.register(
         party.Importer,
         party.ImporterParty,
+        party.ImporterContactMechanism,
         depends=['party'],
         module='importer', type_='model')
     Pool.register(
@@ -61,6 +64,7 @@ def register():
         module='importer', type_='model')
     Pool.register(
         party.ImporterPartyStockDepends,
+        party.ImporterContactMechanismStockDepends,
         stock.Importer,
         stock.ImporterLocation,
         stock.ImporterStockMove,
@@ -102,6 +106,7 @@ def register():
         invoice.Importer,
         invoice.ImporterInvoice,
         party.ImporterPartyInvoiceDepends,
+        party.ImporterContactMechanismInvoiceDepends,
         depends=['account_invoice'],
         module='importer', type_='model')
     Pool.register(
@@ -163,14 +168,23 @@ def register():
         depends=['production'],
         module='importer', type_='model')
     Pool.register(
-        product.ImporterProductProductionRouteDepends,
-        depends=['production_route'],
-        module='importer', type_='model')
-    Pool.register(
         product.ImporterProductProductMeasuresDepends,
         depends=['product_measurements'],
         module='importer', type_='model')
     Pool.register(
         product.ImporterProductPackagesDepends,
         depends=['product_package'],
+        module='importer', type_='model')
+        party_credit.ImporterPartyCredit,
+        party_credit.Importer,
+        depends=['account_insurance_credit_limit'],
+        module='importer', type_='model')
+    Pool.register(
+        route.ImporterRoute,
+        route.Importer,
+        depends=['production_route'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductProductionRouteDepends,
+        depends=['production_route'],
         module='importer', type_='model')
