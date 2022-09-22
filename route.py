@@ -78,7 +78,8 @@ class Importer(metaclass=PoolMeta):
                 if not route:
                     route = Route(**values)
                     route.name = record.name
-                    route.uom = uoms.get(record.uom and record.uom.lower())
+                    if record.uom:
+                        route.uom = uoms.get(record.uom and record.uom.lower())
                     to_save.append(route)
                     routes[record.name] = route
 
@@ -92,7 +93,8 @@ class Importer(metaclass=PoolMeta):
                 record.workcenter_category)
             operation.time = record.time_
             operation.time_uom = minute_uom
-            operation.quantity = record.quantity or 0
+            if record.quantity:
+                operation.quantity = record.quantity
             if record.quantity_uom:
                 operation.quantity_uom = uoms.get(record.quantity_uom.lower())
             operation.calculation = record.calculation
