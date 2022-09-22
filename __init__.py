@@ -163,6 +163,10 @@ def register():
         depends=['production'],
         module='importer', type_='model')
     Pool.register(
+        product.ImporterProductProductionRouteDepends,
+        depends=['production_route'],
+        module='importer', type_='model')
+    Pool.register(
         product.ImporterProductProductMeasuresDepends,
         depends=['product_measurements'],
         module='importer', type_='model')

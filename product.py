@@ -37,6 +37,12 @@ class ImporterProductProductionDepends(metaclass=PoolMeta):
     bom_name = fields.Char('BOM Name')
 
 
+class ImporterProductProductionRouteDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    bom_route = fields.Char('BOM Route')
+
+
 class ImporterProductProductMeasuresDepends(metaclass=PoolMeta):
     __name__ = 'importer.product'
 
@@ -175,8 +181,14 @@ class Importer(metaclass=PoolMeta):
         try:
             BOM = pool.get('production.bom')
             boms = dict([(x.name, x) for x in BOM.search([])])
+            ProductBom = pool.get('product.product-production.bom')
         except:
-            pass
+            ProductBom = None
+
+        try:
+            ProductionRoute = pool.get('production.route')
+        except:
+            ProductionRoute = None
 
         try:
             Package = pool.get('product.package')
@@ -205,7 +217,8 @@ class Importer(metaclass=PoolMeta):
                     ('code', '!=', ''),
                     ]))
 
-
+        if ProductionRoute:
+            bom_routes = dict((x.name, x) for x in ProductionRoute.search([]))
 
         template_default_values = Template.default_get(Template._fields.keys(),
                 with_rec_name=False)
@@ -283,27 +296,27 @@ class Importer(metaclass=PoolMeta):
 
             if 'weight' in measures._fields and record.weight:
                 measures.weight = record.weight
-                measures.weight_uom = (uoms.get(record.uom_weight) or
+                measures.weight_uom = (uoms.get(record.weight_uom) or
                     uoms.get('kg'))
 
             if 'volume' in measures._fields and record.volume:
                 measures.volume = record.volume
-                measures.volume_uom = (uoms.get(record.uom_volume) or
+                measures.volume_uom = (uoms.get(record.volume_uom) or
                     uoms.get('l'))
 
             if 'width' in measures._fields and record.width:
                 measures.width = record.width
-                measures.width_uom = (uoms.get(record.uom_width) or
+                measures.width_uom = (uoms.get(record.width_uom) or
                     uoms.get('m'))
 
             if 'length' in measures._fields and record.length:
                 measures.length = record.length
-                measures.length_uom = (uoms.get(record.uom_length) or
+                measures.length_uom = (uoms.get(record.length_uom) or
                     uoms.get('m'))
 
             if 'height' in measures._fields and record.height:
                 measures.height = record.height
-                measures.height_uom = (uoms.get(record.uom_height) or
+                measures.height_uom = (uoms.get(record.height_uom) or
                     uoms.get('m'))
 
             if 'tariff_codes' in template._fields and record.aranzel:
@@ -336,7 +349,17 @@ class Importer(metaclass=PoolMeta):
                 template.producible = record.producible
                 bom = boms.get(record.bom_name)
                 if bom:
-                    product.boms = [bom]
+                    if ProductBom:
+                        product_bom = ProductBom()
+                        product_bom.bom = bom
+                        if 'route' in ProductBom._fields and record.bom_route:
+                            bom_route = bom_routes.get(record.bom_route)
+                            if bom_route:
+                                product_bom.route = bom_route
+                    if hasattr(product, 'boms'):
+                        product.boms += (product_bom,)
+                    else:
+                        product.boms = [product_bom]
 
             if 'product_suppliers' in template._fields and record.purchasable:
                 template.purchasable = record.purchasable
