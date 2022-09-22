@@ -34,6 +34,11 @@ def register():
         importer.ExcelTemplate,
         module='importer', type_='report')
     Pool.register(
+        party_credit.ImporterPartyCredit,
+        party_credit.Importer,
+        depends=['account_insurance_credit_limit'],
+        module='importer', type_='model')
+    Pool.register(
         party.Importer,
         party.ImporterParty,
         party.ImporterContactMechanism,
@@ -174,10 +179,6 @@ def register():
     Pool.register(
         product.ImporterProductPackagesDepends,
         depends=['product_package'],
-        module='importer', type_='model')
-        party_credit.ImporterPartyCredit,
-        party_credit.Importer,
-        depends=['account_insurance_credit_limit'],
         module='importer', type_='model')
     Pool.register(
         route.ImporterRoute,
