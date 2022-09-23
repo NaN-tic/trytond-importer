@@ -28,6 +28,8 @@ class ImporterProduct(ModelView):
     purchasable = fields.Boolean('Purchasable')
     salable = fields.Boolean('Salable')
     brand = fields.Char('Brand')
+    template_note = fields.Text('Template Note')
+    product_note = fields.Text('Product Note')
 
 
 class ImporterProductProductionDepends(metaclass=PoolMeta):
@@ -156,6 +158,7 @@ class Importer(metaclass=PoolMeta):
         Template = pool.get('product.template')
         Uom = pool.get('product.uom')
         ProductCostPriceMethod = pool.get('product.cost_price_method')
+        Note = pool.get('ir.note')
 
         try:
             ProductSupplier = pool.get('purchase.product_supplier')
@@ -228,6 +231,7 @@ class Importer(metaclass=PoolMeta):
 
         to_save = []
         products_to_save = []
+        notes_to_save = []
         for record in records:
             product = None
             template = None
@@ -414,10 +418,22 @@ class Importer(metaclass=PoolMeta):
                     packages.append(ppackage)
                 template.packages = packages
 
+            if record.template_note:
+                note = Note()
+                note.resource = template
+                note.message = record.template_note
+                notes_to_save.append(note)
+            if record.product_note:
+                note = Note()
+                note.resource = product
+                note.message = record.product_note
+                notes_to_save.append(note)
+
             cls._import_template_hook(record, template)
             cls._import_product_hook(record, product)
 
         ProductCategory.save(categories.values())
         Template.save(to_save)
         Product.save(products_to_save)
+        Note.save(notes_to_save)
         return to_save
