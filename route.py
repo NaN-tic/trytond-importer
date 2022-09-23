@@ -19,7 +19,7 @@ class ImporterRoute(ModelView):
     quantity = fields.Float('Quantity')
     quantity_uom = fields.Char('Quantity Uom')
     notes=fields.Char('Notes')
-
+    subcontracted_product = fields.Char('Subcontract Product')
 
 
 class Importer(metaclass=PoolMeta):
@@ -46,6 +46,10 @@ class Importer(metaclass=PoolMeta):
         pass
 
     @classmethod
+    def _import_production_route_route_hook(cls, record, route):
+        pass
+
+    @classmethod
     def import_routes(cls, records):
         pool = Pool()
         Route = pool.get('production.route')
@@ -54,8 +58,14 @@ class Importer(metaclass=PoolMeta):
         WorkCenterCategory = pool.get('production.work_center.category')
         Uom = pool.get('product.uom')
         ModelData = Pool().get('ir.model.data')
+        Product = pool.get('product.product')
 
         minute_uom =  ModelData.get_id('product', 'uom_minute')
+        products = dict((x.code, x) for x in Product.search([
+                    ('code', '!=', None),
+                    ('code', '!=', ''),
+                    ]))
+
 
         routes = dict((x.name, x) for x in Route.search([]))
         types = dict((x.name, x) for x  in OperationType.search([]))
@@ -80,6 +90,7 @@ class Importer(metaclass=PoolMeta):
                     route.name = record.name
                     if record.uom:
                         route.uom = uoms.get(record.uom and record.uom.lower())
+                    cls._import_production_route_route_hook(record, route)
                     to_save.append(route)
                     routes[record.name] = route
 
@@ -88,6 +99,7 @@ class Importer(metaclass=PoolMeta):
                 RouteOperation._fields.keys()),with_rec_name=False)
             operation = RouteOperation(**values)
             operation.route = route
+            operation.sequence = record.sequence or None
             operation.operation_type = types.get(record.operation_type)
             operation.work_center_category = categories.get(
                 record.workcenter_category)
@@ -99,6 +111,10 @@ class Importer(metaclass=PoolMeta):
                 operation.quantity_uom = uoms.get(record.quantity_uom.lower())
             operation.calculation = record.calculation
             operation.notes = record.notes
+            if (record.subcontracted_product and
+                    products.get(record.subcontracted_product)):
+                operation.subcontracted_product = products.get(
+                    record.subcontracted_product)
             cls._import_production_route_operation_hook(record, operation)
             lines_to_save.append(operation)
 
