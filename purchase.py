@@ -23,7 +23,7 @@ class ImporterPurchase(ModelView):
     invoice_method = fields.Char('Invoice Method')
     purchase_number = fields.Char('Purchase Number')
     discount = fields.Numeric('Discount')
-    state = fields.Char('state')
+    state = fields.Char('State')
 
 
 class ImporterProductSupplier(ModelView):
@@ -38,7 +38,7 @@ class ImporterProductSupplier(ModelView):
     code = fields.Char('Code')
     quantity = fields.Float('Product Quantity')
     unit_price = fields.Numeric('Unit Price')
-    lead_time = fields.Integer('Lead Time')
+    lead_time = fields.Integer('Lead Time (days)')
 
 
 class ImporterProductSupplierStockSupplyMinimum(metaclass=PoolMeta):
