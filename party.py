@@ -216,8 +216,6 @@ class Importer(metaclass=PoolMeta):
         to_save = []
         relations_to_save = {}
         for record in records:
-            if record.code in parties:
-                print("party duplicated:", record.code, record.name)
             party = Party()
             to_save.append(party)
 
@@ -233,6 +231,7 @@ class Importer(metaclass=PoolMeta):
             if hasattr(Party, 'customer'):
                 party.customer = record.customer
 
+            # TODO allow days, hours... cast_value format
             if (hasattr(Party, 'supplier_lead_time') and
                         record.supplier_lead_time):
                 party.supplier_lead_time = timedelta(
