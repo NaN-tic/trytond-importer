@@ -38,7 +38,7 @@ class ImporterProductSupplier(ModelView):
     code = fields.Char('Code')
     quantity = fields.Float('Product Quantity')
     unit_price = fields.Numeric('Unit Price')
-    lead_time = fields.TimeDelta('Lead Time')
+    lead_time = fields.Integer('Lead Time')
 
 
 class ImporterProductSupplierStockSupplyMinimum(metaclass=PoolMeta):
