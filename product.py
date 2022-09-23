@@ -288,9 +288,7 @@ class Importer(metaclass=PoolMeta):
                 acc_category.accounting = True
                 template.account_category = acc_category
 
-            measures = None
-            if hasattr(Template, 'weight'):
-                measures = template
+            measures = template
             if hasattr(Product, 'weight'):
                 measures = product
 
