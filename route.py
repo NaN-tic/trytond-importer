@@ -19,7 +19,7 @@ class ImporterRoute(ModelView):
     quantity = fields.Float('Quantity')
     quantity_uom = fields.Char('Quantity Uom')
     notes=fields.Char('Notes')
-
+    subcontracted_product = fields.Char('Subcontract Product')
 
 
 class Importer(metaclass=PoolMeta):
@@ -54,6 +54,12 @@ class Importer(metaclass=PoolMeta):
         WorkCenterCategory = pool.get('production.work_center.category')
         Uom = pool.get('product.uom')
         ModelData = Pool().get('ir.model.data')
+        Product = pool.get('product.product')
+
+        products = dict((x.code, x) for x in Product.search([
+                    ('code', '!=', None),
+                    ('code', '!=', ''),
+                    ]))
 
         minute_uom =  ModelData.get_id('product', 'uom_minute')
 
@@ -97,6 +103,10 @@ class Importer(metaclass=PoolMeta):
                 operation.quantity_uom = uoms.get(record.quantity_uom.lower())
             operation.calculation = record.calculation
             operation.notes = record.notes
+            if (record.subcontracted_product and
+                    products.get(record.subcontracted_product)):
+                operation.subcontracted_product = products.get(
+                    record.subcontracted_product)
             cls._import_production_route_operation_hook(record, operation)
             lines_to_save.append(operation)
 
