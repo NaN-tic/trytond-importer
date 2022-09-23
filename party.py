@@ -231,6 +231,7 @@ class Importer(metaclass=PoolMeta):
             if hasattr(Party, 'customer'):
                 party.customer = record.customer
 
+            # TODO allow days, hours... cast_value format
             if (hasattr(Party, 'supplier_lead_time') and
                         record.supplier_lead_time):
                 party.supplier_lead_time = timedelta(

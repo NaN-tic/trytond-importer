@@ -5,7 +5,7 @@ from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.tools import grouped_slice
 from trytond.transaction import Transaction
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class ImporterPurchase(ModelView):
@@ -308,8 +308,11 @@ class Importer(metaclass=PoolMeta):
                 product_supplier.code = record.code
             if record.currency and record.currency in currencies.keys():
                 product_supplier.currency = currencies.get(record.currency)
+
+            # TODO allow days, hours... cast_value format
             if record.lead_time:
-                product_supplier.lead_time = record.lead_time
+                product_supplier.lead_time = timedelta(
+                    days=record.lead_time)
 
             if ('minimum_quantity' in product_supplier._fields and
                     record.minimum_quantity):
