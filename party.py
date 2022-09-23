@@ -72,7 +72,7 @@ class ImporterAccountDepends(metaclass=PoolMeta):
     __name__ = 'importer.party'
 
     customer_tax_rule = fields.Char('Customer Tax Rule')
-    supplier_tax_rule = fields.Char('Supplier Tax Ruel')
+    supplier_tax_rule = fields.Char('Supplier Tax Rule')
 
 class ImporterCompanyBankDepends(metaclass=PoolMeta):
     __name__ = 'importer.party'
