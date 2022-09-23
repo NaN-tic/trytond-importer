@@ -16,6 +16,7 @@ from . import farm
 from . import invoice
 from . import agronomics
 from . import order_point
+from . import production
 from . import party_credit
 from . import route
 
@@ -32,6 +33,11 @@ def register():
     Pool.register(
         importer.ExcelTemplate,
         module='importer', type_='report')
+    Pool.register(
+        party_credit.ImporterPartyCredit,
+        party_credit.Importer,
+        depends=['account_insurance_credit_limit'],
+        module='importer', type_='model')
     Pool.register(
         party.Importer,
         party.ImporterParty,
@@ -119,6 +125,20 @@ def register():
         depends=['stock_supply'],
         module='importer', type_='model')
     Pool.register(
+        product.ImporterProductSupplierMinimumDepends,
+        purchase.ImporterProductSupplierStockSupplyMinimum,
+        depends=['stock_supply_minimum'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductSupplierMultipleDepends,
+        purchase.ImporterProductSupplierStockSupplyMultiple,
+        depends=['stock_supply_multiple'],
+        module='importer', type_='model')
+    Pool.register(
+        purchase.ImporterProductSupplierPurchaseSupplierPricePeriod,
+        depends=['purchase_supplier_price_period'],
+        module='importer', type_='model')
+    Pool.register(
         party.ImporterCustomerDepends,
         depends=['party_customer'],
         module='importer', type_='model')
@@ -147,12 +167,25 @@ def register():
         depends=['company_bank'],
         module='importer', type_='model')
     Pool.register(
-        party_credit.ImporterPartyCredit,
-        party_credit.Importer,
-        depends=['account_insurance_credit_limit'],
+        product.ImporterProductProductionDepends,
+        production.Importer,
+        production.ImporterProductionBom,
+        depends=['production'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductProductMeasuresDepends,
+        depends=['product_measurements'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductPackagesDepends,
+        depends=['product_package'],
         module='importer', type_='model')
     Pool.register(
         route.ImporterRoute,
         route.Importer,
+        depends=['production_route'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductProductionRouteDepends,
         depends=['production_route'],
         module='importer', type_='model')

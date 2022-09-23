@@ -233,7 +233,5 @@ class Importer(metaclass=PoolMeta):
         for to_save in grouped_slice(invoices_to_save):
             Invoice.save(list(to_save))
 
-        print("Invoices:", len(invoices_to_save), datetime.now() - start)
         Invoice.post_batch(invoices_to_post)
-        print("Invoices:" , len(invoices_to_save), datetime.now() - start)
         return invoices_to_save

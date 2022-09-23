@@ -205,8 +205,7 @@ class Data:
                     'rows': rows,
                     }
             except Exception as inst:
-                print(inst.args)
-                print(inst)
+                pass
         return {
             'type': 'none',
             'has_header': False,
@@ -258,7 +257,8 @@ class Importer(ModelSQL, ModelView):
         })
     binary_data = fields.Binary('Data', states={
             'invisible': Eval('data_source') != 'binary',
-            })
+            }, filename='binary_file_name')
+    binary_file_name = fields.Text('Binary File Name')
     sql_data = fields.Selection([(None, '')], "SQL Queries", states={
         'invisible': ~Eval('data_source').in_(['sql']),
         'required': Eval('data_source').in_(['sql']),
