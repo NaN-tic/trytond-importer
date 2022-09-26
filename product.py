@@ -323,10 +323,10 @@ class Importer(metaclass=PoolMeta):
 
             if 'tariff_codes' in template._fields and record.aranzel:
                 custom = customs.get(record.aranzel)
-                if not customs:
+                if not custom:
                     custom = TariffCode()
                     custom.code = record.aranzel
-                    customs[record.aranzel] = customs
+                    customs[record.aranzel] = custom
 
                 rel = TariffCodeRel()
                 rel.tariff_code = custom
@@ -428,7 +428,8 @@ class Importer(metaclass=PoolMeta):
                 note.resource = product
                 note.message = record.product_note
                 notes_to_save.append(note)
-
+            template.save()
+            templates[record.template_code] = template
             cls._import_template_hook(record, template)
             cls._import_product_hook(record, product)
 
