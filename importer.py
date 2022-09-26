@@ -241,7 +241,7 @@ class Importer(ModelSQL, ModelView):
         'invisible': ~Eval('data_source').in_(['sql']),
         'required': Eval('data_source').in_(['sql']),
         })
-    password = fields.Char('Password', states={
+    password = fields.Char('Password', strip=False, states={
         'invisible': ~Eval('data_source').in_(['sql']),
         'required': Eval('data_source').in_(['sql']),
         })
