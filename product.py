@@ -401,6 +401,8 @@ class Importer(metaclass=PoolMeta):
 
             if record.variant_suffix_code:
                 product.suffix_code = record.variant_suffix_code
+            if record.sale_price:
+                product.list_price = record.sale_price
             if record.cost_price:
                 product.cost_price = record.cost_price
             if record.description:
@@ -428,10 +430,10 @@ class Importer(metaclass=PoolMeta):
                 note.resource = product
                 note.message = record.product_note
                 notes_to_save.append(note)
-            template.save()
-            templates[record.template_code] = template
             cls._import_template_hook(record, template)
             cls._import_product_hook(record, product)
+            template.save()
+            templates[record.template_code] = template
 
         ProductCategory.save(categories.values())
         Template.save(to_save)
