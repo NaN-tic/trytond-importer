@@ -79,6 +79,7 @@ class ImporterTestCase(ModuleTestCase):
         Category = pool.get('product.category')
         category = Category()
         category.name = 'Actiu Leasing'
+        category.accounting = True
         category.save()
 
         self.import_('product', [{
