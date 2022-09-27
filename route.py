@@ -14,7 +14,7 @@ class ImporterRoute(ModelView):
     sequence = fields.Integer('Sequence')
     operation_type = fields.Char('Operation Type')
     workcenter_category = fields.Char('Work Center Category')
-    time_ = fields.Integer('Time (minutes)', help='In minutes')
+    time_ = fields.Numeric('Time (minutes)', help='In minutes')
     calculation = fields.Char('Calculation', help='standard/fixed')
     quantity = fields.Float('Quantity')
     quantity_uom = fields.Char('Quantity Uom')
