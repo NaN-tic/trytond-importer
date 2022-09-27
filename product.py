@@ -402,9 +402,9 @@ class Importer(metaclass=PoolMeta):
             if record.variant_suffix_code:
                 product.suffix_code = record.variant_suffix_code
             if record.sale_price:
-                product.list_price = record.sale_price
+                product.list_price = record.sale_price or Decimal(0)
             if record.cost_price:
-                product.cost_price = record.cost_price
+                product.cost_price = record.cost_price or Decimal(0)
             if record.description:
                 product.description = record.description
 
