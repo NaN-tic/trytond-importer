@@ -219,7 +219,7 @@ class Importer(metaclass=PoolMeta):
             line.credit = Decimal("%.2f" % (credit or 0))
             if account.party_required:
                 line.party = party
-            if account.second_currency:
+            if hasattr(account, 'second_currency') and account.second_currency:
                 line.second_currency = account.second_currency
                 line.amount_second_currency = Currency.compute(
                     account.currency, line.debit - line.credit, account.second_currency)
