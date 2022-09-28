@@ -306,7 +306,7 @@ class Importer(metaclass=PoolMeta):
                 measures.volume_uom = (uoms.get(record.volume_uom) or
                     uoms.get('l'))
 
-            if 'width' in measures._fields and record.width:
+            if 'width' in measures._fields and record.width is not None:
                 measures.width = record.width
                 measures.width_uom = (uoms.get(record.width_uom) or
                     uoms.get('m'))
