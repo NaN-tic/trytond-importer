@@ -105,6 +105,7 @@ class Importer(metaclass=PoolMeta):
         Party = pool.get('party.party')
         PartyIdentifier = pool.get('party.identifier')
         AccountType = pool.get('account.account.type')
+        Currency = pool.get('currency.currency')
 
         def _create_party(code, name):
             party = Party(name=name, code=code)
@@ -218,6 +219,11 @@ class Importer(metaclass=PoolMeta):
             line.credit = Decimal("%.2f" % (credit or 0))
             if account.party_required:
                 line.party = party
+            if account.second_currency:
+                line.second_currency = account.second_currency
+                line.amount_second_currency = Currency.compute(
+                    account.currency, line.debit - line.credit, account.second_currency)
+
             move.lines += (line, )
 
         if party_to_save:
