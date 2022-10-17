@@ -1,6 +1,7 @@
 from decimal import Decimal
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
+from trytond.modules.product import round_price
 
 
 class ImporterProduct(ModelView):
@@ -383,10 +384,9 @@ class Importer(metaclass=PoolMeta):
                 if ProductSupplier._fields.get('multiple_quantity') and record.supplier_multiple_quantity:
                     supplier.multiple_quantity = record.multiple_quantity
                 if record.supplier_price:
-                    exp = Decimal(str(10.0 ** -ProductSupplierPrice.unit_price.digits[1]))
                     supplier_price = ProductSupplierPrice()
                     supplier_price.quantity = 0
-                    supplier_price.unit_price = record.supplier_price.quantize(exp)
+                    supplier_price.unit_price = round_price(record.supplier_price)
                     supplier.prices.append(supplier_price)
                 template.product_suppliers = [supplier]
                 templates[record.template_code] = template

@@ -1,6 +1,6 @@
-from decimal import Decimal
 from trytond.model import fields
-from trytond.pool import PoolMeta, Pool
+from trytond.pool import PoolMeta
+from trytond.modules.product import round_price
 
 
 class ImporterSale(metaclass=PoolMeta):
@@ -19,16 +19,9 @@ class Importer(metaclass=PoolMeta):
 
     @classmethod
     def _import_sale_line_hook(cls, record, line):
-        pool = Pool()
-        Line = pool.get('sale.line')
-
         super()._import_sale_line_hook(record, line)
 
         if record.gross_unit_price is not None:
-            exp = Decimal(str(10.0 ** -Line.gross_unit_price.digits[1]))
-
-            line.gross_unit_price = record.gross_unit_price.quantize(
-                exp)
+            line.gross_unit_price = round_price(record.gross_unit_price)
             line.discount = record.discount
             line.update_prices()
-
