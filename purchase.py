@@ -1,11 +1,11 @@
-from decimal import Decimal
+from datetime import datetime, timedelta
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.tools import grouped_slice
 from trytond.transaction import Transaction
-from datetime import datetime, timedelta
+from trytond.modules.product import round_price
 
 
 class ImporterPurchase(ModelView):
@@ -102,8 +102,6 @@ class Importer(metaclass=PoolMeta):
         Product = pool.get('product.product')
         Currency = pool.get('currency.currency')
 
-        exp = Decimal(str(10.0 ** -Line.unit_price.digits[1]))
-
         currencies = {x.name: x for x in Currency.search([])}
         currencies.update({x.symbol: x for x in Currency.search([])})
 
@@ -191,11 +189,11 @@ class Importer(metaclass=PoolMeta):
                     line.package_quantity = None
                 if ('gross_unit_price' in Line._fields
                         and record.unit_price is not None):
-                    line.gross_unit_price = record.unit_price.quantize(exp)
+                    line.gross_unit_price = round_price(record.unit_price)
                     line.discount = record.discount
                     line.update_prices()
                 elif record.unit_price is not None:
-                    line.unit_price = record.unit_price.quantize(exp)
+                    line.unit_price = round_price(record.unit_price)
                 lines_to_save.append(line)
 
         for to_save in grouped_slice(purchases_to_save):

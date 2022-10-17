@@ -1,11 +1,11 @@
-from decimal import Decimal
+from datetime import datetime
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.tools import grouped_slice
 from trytond.transaction import Transaction
-from datetime import datetime
+from trytond.modules.product import round_price
 
 
 class ImporterSale(ModelView):
@@ -75,8 +75,6 @@ class Importer(metaclass=PoolMeta):
         Template = pool.get('product.template')
         Address = pool.get('party.address')
         Currency = pool.get('currency.currency')
-
-        exp = Decimal(str(10.0 ** -Line.unit_price.digits[1]))
 
         currencies = {x.name: x for x in Currency.search([])}
         currencies.update({x.symbol: x for x in Currency.search([])})
@@ -213,7 +211,7 @@ class Importer(metaclass=PoolMeta):
                     line.product_package = None
                     line.package_quantity = None
                 if record.unit_price is not None:
-                    line.unit_price = record.unit_price.quantize(exp)
+                    line.unit_price = round_price(record.unit_price)
                 cls._import_sale_line_hook(record, line)
                 lines_to_save.append(line)
 
