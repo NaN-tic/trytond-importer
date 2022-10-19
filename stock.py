@@ -1,6 +1,9 @@
 from trytond.model import ModelView, fields
 from trytond.transaction import Transaction
 from trytond.pool import PoolMeta, Pool
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
+
 
 
 class ImporterStockMove(ModelView):
@@ -107,7 +110,11 @@ class Importer(metaclass=PoolMeta):
 
             if (not from_location or not to_location or not product
                     or not record.quantity):
-                continue
+                raise UserError(gettext('importer.stock_move_error',
+                    from_location=record.from_location,
+                    to_location=record.to_location,
+                    product=record.product_code))
+
             move.from_location = from_location
             move.to_location = to_location
             move.product = product
