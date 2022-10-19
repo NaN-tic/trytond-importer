@@ -36,5 +36,8 @@
         <record model="ir.message" id="location_not_found">
             <field name="text">Location %(location)s not found.</field>
         </record>
+        <record model="ir.message" id="stock_move_error">
+            <field name="text">Coud not create move, could not find some info: from_location:"%(from_location)s", to_location:"%(to_location)s", product: "%(product)s."</field>
+        </record>
     </data>
 </tryton>
