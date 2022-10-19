@@ -47,6 +47,7 @@ def register():
         depends=['purchase'],
         module='importer', type_='model')
     Pool.register(
+        stock.Move,
         stock.Importer,
         stock.ImporterLocation,
         stock.ImporterStockMove,

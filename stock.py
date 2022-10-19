@@ -126,3 +126,14 @@ class Importer(metaclass=PoolMeta):
         with Transaction().set_context({'_skip_warnings': True}):
             Move.do(moves)
         return moves
+
+
+class Move(metaclass=PoolMeta):
+    __name__ = 'stock.move'
+
+    @classmethod
+    def check_origin(cls, moves, types=None):
+        skip_warnings = Transaction().context.get('_skip_warnings')
+        if skip_warnings:
+            return
+        return super().check_origin(moves, types)
