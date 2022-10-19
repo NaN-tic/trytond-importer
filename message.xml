@@ -48,6 +48,9 @@
         <record model="ir.message" id="party_not_found">
             <field name="text">Party "%(party)s" not found.</field>
         </record>
+        <record model="ir.message" id="stock_move_error">
+            <field name="text">Coud not create move, could not find some info: from_location:"%(from_location)s", to_location:"%(to_location)s", product: "%(product)s."</field>
+        </record>
     </data>
 
     <data depends="bank">
@@ -72,7 +75,6 @@
         </record>
         <record model="ir.message" id="order_point_type_not_supported">
             <field name="text">Type %(type_)s not supported for orderpoint.</field>
-        </record>
     </data>
 </tryton>
 
