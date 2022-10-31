@@ -8,11 +8,6 @@ class ImporterSale(metaclass=PoolMeta):
     gross_unit_price = fields.Numeric('Gross Unit Price')
     discount = fields.Numeric('Discount')
 
-    @classmethod
-    def __setup__(cls):
-        super().__setup__()
-        cls.gross_unit_price
-
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
