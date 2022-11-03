@@ -78,7 +78,6 @@ class Importer(metaclass=PoolMeta):
         lines_to_save = []
         previous_header = None
         invoice = None
-        start = datetime.now()
         company = Transaction().context.get('company')
 
         def create_party(name, code):

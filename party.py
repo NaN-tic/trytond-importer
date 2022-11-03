@@ -190,10 +190,8 @@ class Importer(metaclass=PoolMeta):
 
         try:
             Agent = pool.get('commission.agent')
-            Plan = pool.get('commission.plan')
             agents = dict([((x.party.code, x.plan.name), x)
                     for x in Agent.search([])])
-            plans = dict([(x.name, x) for x in Plan.search([])])
         except:
             pass
 
