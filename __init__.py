@@ -21,6 +21,7 @@ from . import order_point
 from . import production
 from . import party_credit
 from . import route
+from . import vacancy
 
 def register():
     Pool.register(
@@ -200,4 +201,9 @@ def register():
     Pool.register(
         product.ImporterProductProductionRouteDepends,
         depends=['production_route'],
+        module='importer', type_='model')
+    Pool.register(
+        vacancy.ImporterCandidate,
+        vacancy.Importer,
+        depends=['employee_vacancy'],
         module='importer', type_='model')

@@ -204,7 +204,7 @@ class Data:
                     'header_reliable': True,
                     'rows': rows,
                     }
-            except Exception as inst:
+            except Exception:
                 pass
         return {
             'type': 'none',
