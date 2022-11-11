@@ -151,7 +151,7 @@ class Importer(metaclass=PoolMeta):
                 if not create_party:
                     raise UserError(gettext(
                         'importer.party_required_for_account',
-                        account=record.account_code, move=move.number))
+                        account=record.account_code, move=record.number))
                 party = _create_party(record.party_code, record.party_name)
                 clients[party.code] = party
                 party_to_save.append(party)
