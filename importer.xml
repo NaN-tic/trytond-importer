@@ -18,6 +18,10 @@
         </record>
 
         <menuitem name="Importer" id="menu_importer" icon="importer-upload" sequence="90"/>
+        <record model="ir.ui.menu-res.group" id="menu_importer_group_importer">
+            <field name="menu" ref="menu_importer"/>
+            <field name="group" ref="group_importer"/>
+        </record>
 
         <record model="ir.ui.view" id="importer_view_form">
             <field name="model">importer</field>
