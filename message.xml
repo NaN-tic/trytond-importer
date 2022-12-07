@@ -49,7 +49,7 @@
             <field name="text">Party "%(party)s" not found.</field>
         </record>
         <record model="ir.message" id="value_not_in_selection">
-            <field name="text">Could not find this value in the field selection "%(field)%"
+            <field name="text">Could not find this value in the field selection "%(field)%"</field>
         </record>
     </data>
 
