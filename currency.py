@@ -3,9 +3,6 @@ import subprocess
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
-from stdnum import get_cc_module
-from trytond.exceptions import UserError
-from trytond.i18n import gettext
 from trytond.config import config
 
 class ImporterCurrency(ModelView):
@@ -33,7 +30,8 @@ class Importer(metaclass=PoolMeta):
     def import_currency(cls, records):
         env = os.environ.copy()
         env['PYTHONPATH'] = os.environ.get('PYTHONPATH', '') + 'trytond:proteus'
-        env['TRYTOND_DATABASE_URI'] = config.get('database', 'uri', default='sqlite:///')
+        env['TRYTOND_DATABASE_URI'] = config.get('database', 'uri',
+            default='sqlite:///')
         command = ('python ./trytond/trytond/modules/currency/scripts/'
             'import_currencies.py -d %s' % Transaction().database.name)
 
