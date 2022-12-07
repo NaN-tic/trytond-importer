@@ -1,9 +1,6 @@
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
-from trytond.transaction import Transaction
-from stdnum import get_cc_module
-from trytond.exceptions import UserError
-from trytond.i18n import gettext
+
 
 class ImporterCompany(ModelView):
     'Importer Company'
@@ -14,6 +11,7 @@ class ImporterCompany(ModelView):
     party_name = fields.Char("Party name")
     currency = fields.Char("Currency")
     timezone = fields.Char("timezone")
+
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -29,7 +27,7 @@ class Importer(metaclass=PoolMeta):
                     }
                 })
         return methods
-        
+
     @classmethod
     def import_company(cls, records):
         pool = Pool()
