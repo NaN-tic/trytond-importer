@@ -682,11 +682,37 @@ class ImporterColumn(ModelSQL, ModelView):
                 res[column.id] = ' | '.join([value_to_str(x) for x in values])
         return res
 
+
+    def get_selection_dict(self, model, field):
+        Lang = Pool().get('ir.lang')
+        Model = Pool().get(model)
+
+        d = {}
+
+        for language in Lang.search([('translatable', '=', True)]):
+            with Transaction().set_context(language=language.code):
+                for selection in Model.fields_get([field])[field]["selection"]:
+                    if selection[0] not in d:
+                        d[selection[0]] = selection[0]
+                    if selection[1] not in d:
+                        d[selection[1]] = selection[0]
+        return d
+
+
     def cast_value(self, value):
         if value is None:
             return value
         ttype = self.field.ttype
+        help = self.field.help
+
         if ttype in ('char', 'text'):
+            if help.startswith('selection|'):
+                _, model, field = help.split('|')
+                d = self.get_selection_dict(model, field)
+                if value.strip() not in d:
+                    raise UserError(gettext(
+                        'importer.value_not_in_selection', field=field))
+                return d[value.strip()]
             if isinstance(value, str):
                 if self.format and self.format == 'keep-spaces':
                     return value
@@ -864,6 +890,18 @@ class ExcelTemplate(Report):
             header.append(column.field.field_description)
         header = tuple(header)
         ws.append(header)
+
+        for column in importer.columns:
+            if column.field.help and column.field.help.startswith("selection"):
+                _, model, field_name = column.field.help.split("|")
+                ModelClass = pool.get(model)
+                selections = ModelClass.fields_get([field_name])[field_name]['selection']
+                selections = [i[0] for i in selections]
+                c = 2
+                for selection in selections:
+                    ws.cell(row=c, column=importer.columns.index(column)+1).value = selection
+                    c+= 1
+
         for column, number in zip(importer.columns, range(1, len(header) + 1)):
             c = column.field.help
             if c:
