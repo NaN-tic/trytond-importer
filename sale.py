@@ -26,6 +26,18 @@ class ImporterSale(ModelView):
     invoice_method = fields.Char('Invoice Method')
     sale_number = fields.Char('Sale Number')
 
+class ImporterSaleConfiguration(ModelView):
+    'Importer Sale Configuration'
+    __name__ = 'importer.sale.configuration'
+
+    company = fields.Char('Company')
+    sale_sequence_prefix = fields.Char("Sale sequence prefix")
+    sale_sequence_suffix = fields.Char("Sale sequence suffix")
+    sale_sequence_padding = fields.Integer("Sale sequence padding")
+    sale_sequence_number_next = fields.Integer("Sale sequence number next")
+    sale_invoice_method = fields.Char("Sale invoice method")
+    sale_shipment_method = fields.Char("Sale shipment method")
+    sale_process_after = fields.Char("Sale process after")
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -42,6 +54,11 @@ class Importer(metaclass=PoolMeta):
                 'sale_force': {
                     'string': 'Sale Create/Fix Party And Products',
                     'model': 'importer.sale',
+                    'chunked': False,
+                    },
+                'sale_configuration': {
+                    'string': 'Sale configuration',
+                    'model': 'importer.sale.configuration',
                     'chunked': False,
                     },
                 })
@@ -222,3 +239,46 @@ class Importer(metaclass=PoolMeta):
             Line.save(list(to_save))
 
         return sales_to_save
+
+    @classmethod
+    def import_sale_configuration(cls, records):
+        pool = Pool()
+
+        Sequence = pool.get("ir.sequence")
+        Configuration = pool.get("sale.configuration")
+        ModelData = pool.get("ir.model.data")
+        Company = pool.get("company.company")
+
+        print(Transaction().context)
+        configs = []
+        for record in records:
+            if record.company:
+                company, = Company.search([('party.name', '=', record.company)])
+                company_id = company.id
+            else:
+                company_id = Transaction().context.get('company')
+            with Transaction().set_context(company=company_id):
+                configuration = Configuration(1)
+                configuration.sale_invoice_method = record.sale_invoice_method
+                configuration.sale_shipment_method = record.sale_shipment_method
+                configuration.sale_process_after = record.sale_process_after
+
+                if record.sale_sequence_padding or record.sale_sequence_number_next:
+                    sequence = configuration.sale_sequence
+
+                    if not sequence or (sequence.company and sequence.company.id != company_id):
+                        sequence = Sequence()
+                        sequence.name = "Sale"
+                        configuration.sale_sequence = sequence
+                    sequence.company = company_id
+                    sequence.sequence_type = ModelData.get_id('sale', 'sequence_type_sale')
+                    sequence.prefix = record.sale_sequence_prefix
+                    sequence.suffix = record.sale_sequence_suffix
+                    sequence.padding = record.sale_sequence_padding
+                    sequence.number_next = record.sale_sequence_number_next
+                    sequence.save()
+
+                configuration.save()
+                configs.append(configuration)
+
+        return configs

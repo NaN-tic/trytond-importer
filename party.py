@@ -7,6 +7,17 @@ from trytond.exceptions import UserError
 from trytond.i18n import gettext
 
 
+class ImporterPartyConfiguration(ModelView):
+    'Importer Party Configuration'
+    __name__ = 'importer.party.configuration'
+
+    language_code = fields.Char('Language Code')
+    sequence_prefix = fields.Char("Sequence prefix")
+    sequence_suffix = fields.Char("Sequence suffix")
+    sequence_padding = fields.Integer("Sequence Padding")
+    sequence_number_next = fields.Integer("Sequence Number Next")
+
+
 class ImporterParty(ModelView):
     'Importer Party'
     __name__ = 'importer.party'
@@ -136,6 +147,11 @@ class Importer(metaclass=PoolMeta):
                 'contact_mechanism': {
                     'string': 'Contact Mechanism',
                     'model': 'importer.party.contact_mechanism',
+                    'chunked': True,
+                    },
+                'party_configuration': {
+                    'string': 'Party configuration',
+                    'model': 'importer.party.configuration',
                     'chunked': True,
                     },
                 })
@@ -520,3 +536,42 @@ class Importer(metaclass=PoolMeta):
         ContactMechanism.save(to_save_cm)
         ContactMechanismLanguage.save(to_save_cml)
         return to_save_cm
+
+    @classmethod
+    def import_party_configuration(cls, records):
+        pool = Pool()
+
+        Sequence = pool.get("ir.sequence")
+        Configuration = pool.get("party.configuration")
+        Lang = pool.get("ir.lang")
+        ModelData = pool.get("ir.model.data")
+
+        to_save = []
+        for record in records:
+            configuration = Configuration(1)
+
+            if record.sequence_padding or record.sequence_number_next:
+                sequence = configuration.party_sequence
+
+                if not sequence:
+                    sequence = Sequence()
+                    sequence.name = "Party"
+                    configuration.party_sequence = sequence
+
+                sequence.sequence_type = ModelData.get_id('party', 'sequence_type_party')
+                sequence.prefix = record.sequence_prefix
+                sequence.suffix = record.sequence_suffix
+                sequence.padding = record.sequence_padding
+                sequence.number_next = record.sequence_number_next
+                sequence.save()
+
+            langs = Lang.search(["code", "=", record.language_code], limit=1)
+            if langs:
+                configuration.party_lang, = langs
+                configuration.save()
+
+            to_save.append(configuration)
+
+        Configuration.save(to_save)
+
+        return to_save

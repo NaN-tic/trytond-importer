@@ -13,9 +13,15 @@
     </group>
     <label name="data_source"/>
     <field name="data_source"/>
-    <label name="sql_source"/>
-    <field name="sql_source"/>
+    <group id="data" colspan="3" col="3">
+        <field name="binary_data"/>
+        <field name="binary_file_name" invisible="1"/>
+        <field name="url_data" widget="url" colspan="3"/>
+        <field name="sql_data"/>
+    </group>
     <group id="sql" colspan="6" col="6">
+        <label name="sql_source"/>
+        <field name="sql_source"/>
         <label name="server"/>
         <field name="server"/>
         <label name="database"/>
@@ -26,12 +32,6 @@
         <field name="user"/>
         <label name="password"/>
         <field name="password" widget="password"/>
-    </group>
-    <group id="data" colspan="3" col="3">
-        <field name="binary_data"/>
-        <field name="binary_file_name" invisible="1"/>
-        <field name="url_data"/>
-        <field name="sql_data"/>
     </group>
     <group id="buttons" col="-1" colspan="3">
         <button name="detect"/>
