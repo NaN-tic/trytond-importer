@@ -26,6 +26,18 @@ class ImporterPurchase(ModelView):
     state = fields.Char('State')
 
 
+class ImporterPurchaseConfiguration(ModelView):
+    'Importer Purchase Configuration'
+    __name__ = 'importer.purchase.configuration'
+
+    company = fields.Char('Company')
+    sequence_prefix = fields.Char("Purchase sequence prefix")
+    sequence_suffix = fields.Char("Purchase sequence suffix")
+    sequence_padding = fields.Integer("Purchase sequence padding")
+    sequence_number_next = fields.Integer("Purchase sequence number next")
+    invoice_method = fields.Char("Purchase invoice method")
+    process_after = fields.Char("Purchase process after")
+
 class ImporterProductSupplier(ModelView):
     'Importer Product Supplier'
     __name__ = 'importer.product.supplier'
@@ -80,6 +92,11 @@ class Importer(metaclass=PoolMeta):
                 'purchase_product_supplier': {
                     'string': 'Purchase Product Supplier',
                     'model': 'importer.product.supplier',
+                    'chunked': False,
+                    },
+                'purchase_configuration': {
+                    'string': 'Purchase configuration',
+                    'model': 'importer.purchase.configuration',
                     'chunked': False,
                     },
                 })
@@ -357,3 +374,45 @@ class Importer(metaclass=PoolMeta):
             to_delete += quantities.values()
         Price.delete(to_delete)
         return to_save
+
+    @classmethod
+    def import_purchase_configuration(cls, records):
+        pool = Pool()
+
+        Sequence = pool.get("ir.sequence")
+        Configuration = pool.get("purchase.configuration")
+        ModelData = pool.get("ir.model.data")
+        Company = pool.get("company.company")
+
+        print(Transaction().context)
+        configs = []
+        for record in records:
+            if record.company:
+                company, = Company.search([('party.name', '=', record.company)])
+                company_id = company.id
+            else:
+                company_id = Transaction().context.get('company')
+            with Transaction().set_context(company=company_id):
+                configuration = Configuration(1)
+                configuration.purchase_invoice_method = record.invoice_method
+                configuration.purchase_process_after = record.process_after
+
+                if record.sequence_padding or record.sequence_number_next:
+                    sequence = configuration.purchase_sequence
+
+                    if not sequence or (sequence.company and sequence.company.id != company_id):
+                        sequence = Sequence()
+                        sequence.name = "Purchase"
+                        configuration.purchase_sequence = sequence
+                    sequence.company = company_id
+                    sequence.sequence_type = ModelData.get_id('purchase', 'sequence_type_purchase')
+                    sequence.prefix = record.sequence_prefix
+                    sequence.suffix = record.sequence_suffix
+                    sequence.padding = record.sequence_padding
+                    sequence.number_next = record.sequence_number_next
+                    sequence.save()
+
+                configuration.save()
+                configs.append(configuration)
+
+        return configs

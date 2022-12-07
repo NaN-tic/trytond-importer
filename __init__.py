@@ -22,6 +22,9 @@ from . import production
 from . import party_credit
 from . import route
 from . import vacancy
+from . import currency
+from . import company
+from . import country
 
 def register():
     Pool.register(
@@ -44,6 +47,7 @@ def register():
     Pool.register(
         party.Importer,
         party.ImporterParty,
+        party.ImporterPartyConfiguration,
         party.ImporterContactMechanism,
         depends=['party'],
         module='importer', type_='model')
@@ -51,6 +55,7 @@ def register():
         product.Importer,
         product.ImporterProduct,
         product.ImporterProductCodes,
+        product.ImporterProductConfiguration,
         depends=['product'],
         module='importer', type_='model')
     Pool.register(
@@ -61,6 +66,7 @@ def register():
     Pool.register(
         sale.Importer,
         sale.ImporterSale,
+        sale.ImporterSaleConfiguration,
         depends=['sale'],
         module='importer', type_='model')
     Pool.register(
@@ -78,6 +84,7 @@ def register():
         purchase.Importer,
         purchase.ImporterPurchase,
         purchase.ImporterProductSupplier,
+        purchase.ImporterPurchaseConfiguration,
         depends=['purchase'],
         module='importer', type_='model')
     Pool.register(
@@ -183,6 +190,7 @@ def register():
         product.ImporterProductProductionDepends,
         production.Importer,
         production.ImporterProductionBom,
+        production.ImporterProductionConfiguration,
         depends=['production'],
         module='importer', type_='model')
     Pool.register(
@@ -206,4 +214,20 @@ def register():
         vacancy.ImporterCandidate,
         vacancy.Importer,
         depends=['employee_vacancy'],
+        module='importer', type_='model')
+    Pool.register(
+        currency.Importer,
+        currency.ImporterCurrency,
+        depends=['currency'],
+        module='importer', type_='model')
+    Pool.register(
+        company.Importer,
+        company.ImporterCompany,
+        depends=['company'],
+        module='importer', type_='model')
+    Pool.register(
+        country.Importer,
+        country.ImporterCountry,
+        country.ImporterPostalCodes,
+        depends=['country'],
         module='importer', type_='model')
