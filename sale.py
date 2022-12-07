@@ -35,8 +35,8 @@ class ImporterSaleConfiguration(ModelView):
     sale_sequence_suffix = fields.Char("Sale sequence suffix")
     sale_sequence_padding = fields.Integer("Sale sequence padding")
     sale_sequence_number_next = fields.Integer("Sale sequence number next")
-    sale_invoice_method = fields.Char("Sale invoice method")
-    sale_shipment_method = fields.Char("Sale shipment method")
+    sale_invoice_method = fields.Char("Sale invoice method", help='selection|sale.sale|invoice_method')
+    sale_shipment_method = fields.Char("Sale shipment method", help='selection|sale.sale|shipment_method')
     sale_process_after = fields.Char("Sale process after")
 
 class Importer(metaclass=PoolMeta):
