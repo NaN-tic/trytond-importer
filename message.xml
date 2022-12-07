@@ -48,6 +48,9 @@
         <record model="ir.message" id="stock_move_error">
             <field name="text">Coud not create move, could not find some info: from_location:"%(from_location)s", to_location:"%(to_location)s", product: "%(product)s."</field>
         </record>
+        <record model="ir.message" id="value_not_in_selection">
+            <field name="text">Could not find this value in the field selection "%(field)%"
+        </record>
     </data>
 
     <data depends="bank">
