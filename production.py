@@ -7,7 +7,7 @@ from trytond.tools import grouped_slice
 
 
 class ImporterProductionBom(ModelView):
-    'Importer Producion Bom'
+    'Importer Production Bom'
     __name__ = 'importer.production.bom'
 
     name = fields.Char('Name')
@@ -18,6 +18,14 @@ class ImporterProductionBom(ModelView):
     output_quantity = fields.Float('Product Output Quantity')
     output_uom = fields.Char('Product Output UoM')
 
+class ImporterProductionConfiguration(ModelView):
+    'Importer Production Configuration'
+    __name__ = 'importer.production.configuration'
+
+    sequence_prefix = fields.Char("Sequence prefix")
+    sequence_suffix = fields.Char("Sequence suffix")
+    sequence_padding = fields.Integer("Sequence padding")
+    sequence_number_next = fields.Integer("Sequence number next")
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -27,8 +35,13 @@ class Importer(metaclass=PoolMeta):
         methods = super()._get_methods()
         methods.update({
                 'production_bom': {
-                    'string': 'Porduction BOM',
+                    'string': 'Production BOM',
                     'model': 'importer.production.bom',
+                    'chunked': True,
+                    },
+                'production_configuration': {
+                    'string': 'Production configuration',
+                    'model': 'importer.production.configuration',
                     'chunked': True,
                     },
                 })
@@ -129,3 +142,37 @@ class Importer(metaclass=PoolMeta):
         for to_save in grouped_slice(outputs_to_save):
             BomOutput.save(list(to_save))
         return boms_to_save or boms_found
+
+    @classmethod
+    def import_production_configuration(cls, records):
+        pool = Pool()
+
+        Sequence = pool.get("ir.sequence")
+        Configuration = pool.get("production.configuration")
+        ModelData = pool.get("ir.model.data")
+
+        to_save = []
+        for record in records:
+            configuration = Configuration(1)
+
+            if record.sequence_padding or record.sequence_number_next:
+                sequence = configuration.production_sequence
+
+                if not sequence:
+                    sequence = Sequence()
+                    sequence.name = "Production"
+                    configuration.production_sequence = sequence
+
+                sequence.sequence_type = ModelData.get_id('production', 'sequence_type_production')
+                sequence.prefix = record.sequence_prefix
+                sequence.suffix = record.sequence_suffix
+                sequence.padding = record.sequence_padding
+                sequence.number_next = record.sequence_number_next
+                sequence.save()
+
+            configuration.save()
+            to_save.append(configuration)
+
+        Configuration.save(to_save)
+
+        return to_save
