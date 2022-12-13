@@ -1,6 +1,7 @@
+from datetime import datetime
+from decimal import Decimal
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
-from decimal import Decimal
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.transaction import Transaction
@@ -132,7 +133,11 @@ class Importer(metaclass=PoolMeta):
         accounts_to_save = []
         party_to_save = []
         for record in records:
-            mdate = record.effective_date
+            if isinstance(record.effective_date, str):
+                mdate = datetime.strptime(
+                    record.effective_date, '%Y-%m-%d %H:%M:%s').date()
+            else:
+                mdate = record.effective_date.date()
             if (record.number, mdate) in moves:
                 continue
             if record.account_code is None:
@@ -222,7 +227,8 @@ class Importer(metaclass=PoolMeta):
             if hasattr(account, 'second_currency') and account.second_currency:
                 line.second_currency = account.second_currency
                 line.amount_second_currency = Currency.compute(
-                    account.currency, line.debit - line.credit, account.second_currency)
+                    account.currency, line.debit - line.credit,
+                    account.second_currency)
 
             move.lines += (line, )
 
@@ -270,7 +276,7 @@ class Importer(metaclass=PoolMeta):
                 sub_code = code[:-i].ljust(digits, '0')
                 if sub_code in chart:
                     new_account = chart.get(sub_code)
-                    if new_account.type != None:
+                    if new_account.type is not None:
                         account = new_account
                         break
 
@@ -292,8 +298,8 @@ class Importer(metaclass=PoolMeta):
             value = getattr(sim_account, field)
             setattr(account, field, value)
 
-        if (sim_account.code and sim_account.parent and
-                len(vals.get('code', '')) == len(sim_account.code)):
+        if (sim_account.code and sim_account.parent
+                and len(vals.get('code', '')) == len(sim_account.code)):
             account.parent = sim_account.parent
         else:
             account.parent = sim_account
