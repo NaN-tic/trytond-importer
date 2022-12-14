@@ -133,11 +133,11 @@ class Importer(metaclass=PoolMeta):
         accounts_to_save = []
         party_to_save = []
         for record in records:
-            if isinstance(record.effective_date, str):
-                mdate = datetime.strptime(
-                    record.effective_date, '%Y-%m-%d %H:%M:%s').date()
-            else:
-                mdate = record.effective_date.date()
+            mdate = record.effective_date
+            if isinstance(mdate, str):
+                mdate = datetime.strptime(mdate, '%Y-%m-%d %H:%M:%s').date()
+            elif isinstance(mdate, datetime):
+                mdate = mdate.date()
             if (record.number, mdate) in moves:
                 continue
             if record.account_code is None:
