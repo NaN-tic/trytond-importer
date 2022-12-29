@@ -98,7 +98,7 @@ class ImporterFarmFarrowingEvent(ModelView):
     child_birthdate = fields.Date("Child Birthdate")
     child_sex = fields.Char("Child Sex")
     child_weight = fields.Numeric("Child Weight")
-    child_lots = fields.Char("Child Lots")
+    child_number = fields.Char("Child Number")
     child_tags = fields.Char("Child Tags")
 
 
@@ -275,6 +275,10 @@ class Importer(metaclass=PoolMeta):
         return to_save
 
     @classmethod
+    def import_farm_animal_hook(cls, record, animal):
+        pass
+
+    @classmethod
     def import_farm_animal(cls, records):
         pool = Pool()
         FarmAnimal = pool.get('farm.animal')
@@ -307,6 +311,9 @@ class Importer(metaclass=PoolMeta):
                     animal.origin = record.origin
                 if record.number:
                     animal.number = record.number
+
+                cls.import_farm_animal_hook(record, animal)
+
             to_save.append(animal)
         FarmAnimal.save(to_save)
         return to_save
@@ -455,6 +462,10 @@ class Importer(metaclass=PoolMeta):
         return to_save
 
     @classmethod
+    def import_farm_farrowing_event_child_hook(cls, record, animal):
+        pass
+
+    @classmethod
     def import_farm_farrowing_event(cls,records):
         pool = Pool()
         FarmFarrowingEvent = pool.get('farm.farrowing.event')
@@ -464,13 +475,11 @@ class Importer(metaclass=PoolMeta):
         FarmFarrowingProblem = pool.get('farm.farrowing.problem')
         FarmTags = pool.get('farm.tag')
         AnimalTag = pool.get('farm.animal-farm.tag')
-        Lot = pool.get('stock.lot')
 
         locations = {x.code: x for x in Location.search([])}
         animals = {x.number: x for x in FarmAnimal.search([])}
         farrowing_problems = {
             x.name: x for x in FarmFarrowingProblem.search([])}
-        lots = {x.number: x for x in Lot.search([])}
         tags = {x.name: x for x in FarmTags.search([])}
 
         to_save = []
@@ -500,7 +509,7 @@ class Importer(metaclass=PoolMeta):
         to_save_animals_weights = []
         to_save_animals_tags = []
         for event, record in zip(to_save, records):
-            #A farrowing event ALWAYS have one alive animal
+            # A farrowing event ALWAYS have one alive animal
             if (record.child_birthdate or record.child_sex or
                     record.child_weight or record.child_lots or
                     record.child_tags):
@@ -522,8 +531,12 @@ class Importer(metaclass=PoolMeta):
                 animal_weight.weight = record.child_weight
                 to_save_animals_weights.append(animal_weight)
 
-            if record.child_lots:
-                animal.lots = [lots.get(record.child_lots)]
+            if record.child_number:
+                animal.number = record.child_number
+                if animal.lots:
+                    animal.lots[0].number = record.child_number
+
+            cls.import_farm_farrowing_event_child_hook(record, animal)
 
             if record.child_tags:
                 for tag in record.child_tags.split('|'):
