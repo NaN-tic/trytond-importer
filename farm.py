@@ -95,6 +95,11 @@ class ImporterFarmFarrowingEvent(ModelView):
     timestamp = fields.DateTime("Timestamp")
     live = fields.Integer("Live")
     problem = fields.Char("Problem")
+    child_birthdate = fields.Date("Child Birthdate")
+    child_sex = fields.Char("Child Sex")
+    child_weight = fields.Numeric("Child Weight")
+    child_number = fields.Char("Child Number")
+    child_tags = fields.Char("Child Tags")
 
 
 class ImporterFarmWeaningEvent(ModelView):
@@ -270,6 +275,10 @@ class Importer(metaclass=PoolMeta):
         return to_save
 
     @classmethod
+    def import_farm_animal_hook(cls, record, animal):
+        pass
+
+    @classmethod
     def import_farm_animal(cls, records):
         pool = Pool()
         FarmAnimal = pool.get('farm.animal')
@@ -302,6 +311,9 @@ class Importer(metaclass=PoolMeta):
                     animal.origin = record.origin
                 if record.number:
                     animal.number = record.number
+
+                cls.import_farm_animal_hook(record, animal)
+
             to_save.append(animal)
         FarmAnimal.save(to_save)
         return to_save
@@ -450,22 +462,32 @@ class Importer(metaclass=PoolMeta):
         return to_save
 
     @classmethod
+    def import_farm_farrowing_event_child_hook(cls, record, animal):
+        pass
+
+    @classmethod
     def import_farm_farrowing_event(cls,records):
         pool = Pool()
         FarmFarrowingEvent = pool.get('farm.farrowing.event')
         Location = pool.get('stock.location')
         FarmAnimal = pool.get('farm.animal')
+        FarmAnimalWeight = pool.get('farm.animal.weight')
         FarmFarrowingProblem = pool.get('farm.farrowing.problem')
+        FarmTags = pool.get('farm.tag')
+        AnimalTag = pool.get('farm.animal-farm.tag')
 
         locations = {x.code: x for x in Location.search([])}
         animals = {x.number: x for x in FarmAnimal.search([])}
         farrowing_problems = {
             x.name: x for x in FarmFarrowingProblem.search([])}
+        tags = {x.name: x for x in FarmTags.search([])}
 
         to_save = []
+        to_records = []
         for record in records:
             if not record.farm or not record.animal:
                 continue
+            to_records.append(record)
             farrowing_event = FarmFarrowingEvent()
             farrowing_event.farm = locations.get(record.farm)
             farrowing_event.animal = animals.get(record.animal)
@@ -482,6 +504,55 @@ class Importer(metaclass=PoolMeta):
             to_save.append(farrowing_event)
         FarmFarrowingEvent.save(to_save)
         FarmFarrowingEvent.validate_event(to_save)
+
+        to_save_animals = []
+        to_save_animals_weights = []
+        to_save_animals_tags = []
+        for event, record in zip(to_save, records):
+            # A farrowing event ALWAYS have one alive animal
+            if (record.child_birthdate or record.child_sex or
+                    record.child_weight or record.child_lots or
+                    record.child_tags):
+                if event.produced_animals:
+                    animal = event.produced_animals[0].animal
+                else:
+                    raise UserError(
+                        gettext('importer.produced_animals_not_found'))
+
+            if record.child_birthdate:
+                animal.birthdate = record.child_birthdate
+
+            if record.child_sex:
+                animal.sex = record.child_sex
+
+            if record.child_weight:
+                animal_weight = FarmAnimalWeight()
+                animal_weight.animal = animal
+                animal_weight.weight = record.child_weight
+                to_save_animals_weights.append(animal_weight)
+
+            if record.child_number:
+                animal.number = record.child_number
+                if animal.lots:
+                    animal.lots[0].number = record.child_number
+
+            cls.import_farm_farrowing_event_child_hook(record, animal)
+
+            if record.child_tags:
+                for tag in record.child_tags.split('|'):
+                    if tags.get(tag):
+                        tag_animal = AnimalTag()
+                        tag_animal.tag = tags.get(tag)
+                        tag_animal.animal = animal
+                        to_save_animals_tags.append(tag_animal)
+                    else:
+                        raise UserError(
+                            gettext('importer.tag_not_found', tag=tag))
+            to_save_animals.append(animal)
+
+        FarmAnimal.save(to_save_animals)
+        FarmAnimalWeight.save(to_save_animals_weights)
+        AnimalTag.save(to_save_animals_tags)
         return to_save
 
     @classmethod
