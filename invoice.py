@@ -155,7 +155,6 @@ class Importer(metaclass=PoolMeta):
                     party.save()
 
                 invoice.party = party
-                invoice.on_change_type()
                 invoice.on_change_party()
                 invoice.account = invoice.on_change_with_account()
                 invoice.journal = journals.get(record.journal)
