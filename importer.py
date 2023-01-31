@@ -5,11 +5,12 @@ import yaml
 import pytz
 import urllib.request
 import decimal
+import tempfile
 from decimal import Decimal
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.comments import Comment
-from openpyxl.writer.excel import save_virtual_workbook
+from openpyxl.writer.excel import save_workbook
 import textdistance
 import datetime
 import charset_normalizer
@@ -36,6 +37,11 @@ data_sources = [
     ('sql', 'SQL'),
     ]
 
+def save_virtual_workbook(workbook):
+    with tempfile.NamedTemporaryFile() as tmp:
+        save_workbook(workbook, tmp.name)
+        with open(tmp.name, 'rb') as f:
+            return f.read()
 
 def grouped_slice(records, count=None):
     'grouped_slice implementation that works with iterators'
@@ -911,3 +917,4 @@ class ExcelTemplate(Report):
             if c:
                 ws.cell(row=1, column=number).comment = Comment(c, "Tryton")
         return ('xlsx', save_virtual_workbook(wb), False, importer.name)
+
