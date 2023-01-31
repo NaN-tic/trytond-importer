@@ -5,9 +5,9 @@ import yaml
 import urllib.request
 import decimal
 from decimal import Decimal
+import tempfile
 import openpyxl
 from openpyxl import Workbook
-from openpyxl.writer.excel import save_virtual_workbook
 import textdistance
 import datetime
 import charset_normalizer
@@ -32,6 +32,11 @@ data_sources = [
     ('url', 'URL'),
     ]
 
+def save_virtual_workbook(workbook):
+    with tempfile.NamedTemporaryFile() as tmp:
+        save_workbook(workbook, tmp.name)
+        with open(tmp.name, 'rb') as f:
+            return f.read()
 
 def grouped_slice(records, count=None):
     'grouped_slice implementation that works with iterators'
