@@ -8,7 +8,6 @@ from trytond.transaction import Transaction
 from trytond.pool import Pool
 from trytond.modules.importer.importer import Data
 from trytond.modules.company.tests import create_company
-from trytond.modules.account.tests import create_chart
 from trytond.modules.account.tests import get_fiscalyear
 from trytond.modules.account_invoice.tests import set_invoice_sequences
 
@@ -106,7 +105,10 @@ class ImporterTestCase(ModuleTestCase):
         self.activate_module('account_code_digits')
 
         company = create_company()
-        create_chart(company)
+        self.import_('account_create_chart', [{
+                'company_name': company.party.name,
+                'chart_name': 'Minimal Account Chart',
+                }])
 
         Account = pool.get('account.account')
         accounts = Account.search([])

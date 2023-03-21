@@ -103,6 +103,7 @@ def register():
     Pool.register(
         account.Importer,
         account.ImporterAccountMove,
+        account.ImporterChart,
         party.ImporterAccountDepends,
         depends=['account'],
         module='importer', type_='model')

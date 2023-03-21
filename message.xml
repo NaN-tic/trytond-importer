@@ -44,6 +44,12 @@
         </record>
     </data>
 
+    <data depends="account">
+        <record model="ir.message" id="msg_chart_not_found">
+            <field name="text">Chart "%(chart)s" not found.</field>
+        </record>
+    </data>
+
     <data depends="bank">
         <record model="ir.message" id="wron_iban">
             <field name="text">Wrong Iban %(iban)s.</field>
