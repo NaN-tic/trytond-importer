@@ -6,6 +6,7 @@ from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.transaction import Transaction
 from trytond.tools import grouped_slice
+from trytond.wizard import Wizard
 
 
 class ImporterAccountMove(ModelView):
@@ -22,6 +23,16 @@ class ImporterAccountMove(ModelView):
     debit = fields.Float('Debit')
     credit = fields.Float('Credit')
     description = fields.Char('Description')
+
+
+class ImporterChart(ModelView):
+    'Importer Chart'
+    __name__ = 'importer.account.chart'
+    company_name = fields.Char('Company Name')
+    chart_name = fields.Char('Chart Name')
+    digits = fields.Integer('Digits')
+    receivable_code = fields.Char('Receivable Code')
+    payable_code = fields.Char('Payable Code')
 
 
 class Importer(metaclass=PoolMeta):
@@ -51,6 +62,11 @@ class Importer(metaclass=PoolMeta):
                 'model': 'importer.account.move',
                 'chunked': False,
             },
+            'account_create_chart': {
+                'string': 'Create Chart of Accounts',
+                'model': 'importer.account.chart',
+                'chunked': False,
+                }
         })
         return methods
 
@@ -324,3 +340,59 @@ class Importer(metaclass=PoolMeta):
         Account = Pool().get('account.account')
         accounts = Account.search([('company', '=', company)])
         return dict((str(a.code), a) for a in accounts)
+
+    def import_account_create_chart(cls, records):
+        "Create chart of accounts"
+        pool = Pool()
+        Account = pool.get('account.account')
+        AccountTemplate = pool.get('account.account.template')
+        Company = pool.get('company.company')
+        ModelData = pool.get('ir.model.data')
+        CreateChart = pool.get('account.create_chart', type='wizard')
+
+        for record in records:
+            record.company_name
+
+            companies = Company.search([
+                    ('party.name', '=', record.company_name),
+                    ], limit=1)
+            if not companies:
+                raise UserError(gettext('importer.msg_company_not_found',
+                        company=record.company_name))
+            company, = companies
+
+            charts = AccountTemplate.search([
+                    ('name', '=', record.chart_name),
+                    ])
+            if not charts:
+                raise UserError(gettext('importer.msg_chart_not_found',
+                        chart=record.chart_name))
+            chart, = charts
+
+            session_id, _, _ = CreateChart.create()
+            create_chart = CreateChart(session_id)
+            create_chart.account.account_template = chart
+            create_chart.account.company = company
+            if record.digits:
+                create_chart.account.account_code_digits = record.digits
+            create_chart.transition_create_account()
+            create_chart.properties.company = company
+            create_chart.properties.account_receivable = None
+            domain = [('type.receivable', '=', True)]
+            if record.receivable_code:
+                domain.append(('code', '=', record.receivable_code))
+
+            accounts = Account.search(domain, limit=1)
+            if accounts:
+                create_chart.properties.account_receivable, = accounts
+            create_chart.properties.account_payable = None
+            domain = [('type.payable', '=', True)]
+            if record.payable_code:
+                domain.append(('code', '=', record.payable_code))
+            accounts = Account.search(domain, limit=1)
+            if accounts:
+                create_chart.properties.account_payable, = accounts
+            create_chart.transition_create_properties()
+
+        return Account.search([('template', '=', chart)])
+
