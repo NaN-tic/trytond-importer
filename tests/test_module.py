@@ -53,11 +53,22 @@ class ImporterTestCase(ModuleTestCase):
         data = Data('text', None, json.dumps(records), None)
         importer.data_to_records(data.get_data())
 
+
+
     @with_transaction()
     def test_party(self):
         pool = Pool()
 
         self.activate_module('party')
+
+        self.import_('sequence', [{
+                'name': 'Test',
+                'sequence_type': 'Party',
+                'prefix': 'X',
+                'suffix': 'Y',
+                'padding': 4,
+                'number_next': 1,
+                }])
         self.import_('party', [{
                 'name': 'nan-tic',
                 'street': 'les paus',

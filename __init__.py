@@ -2,6 +2,7 @@
 # The COPYRIGHT file at the top level of this repository contains
 # the full copyright notices and license terms.
 from trytond.pool import Pool
+from . import ir
 from . import importer
 from . import party
 from . import price_list
@@ -31,6 +32,8 @@ def register():
         importer.Importer,
         importer.ImporterColumn,
         importer.ImportAsk,
+        ir.ImporterSequence,
+        ir.Importer,
         module='importer', type_='model')
     Pool.register(
         importer.AskAndImport,

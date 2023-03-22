@@ -42,6 +42,12 @@
         <record model="ir.message" id="value_not_in_selection">
             <field name="text">Could not find this value in the field selection "%(field)%"</field>
         </record>
+        <record model="ir.message" id="msg_sequence_type_required">
+            <field name="text">Sequence Type is required</field>
+        </record>
+	<record model="ir.message" id="msg_sequence_type_not_found">
+            <field name="text">Sequence Type "%(type)s" not found.</field>
+	</record>
     </data>
 
     <data depends="account">
