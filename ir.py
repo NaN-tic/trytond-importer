@@ -67,18 +67,18 @@ class Importer(metaclass=PoolMeta):
             else:
                 sequence, = sequences
 
-            if companies and record.company:
-                if not record.company in companies:
+            if companies and record.company_name:
+                if not record.company_name in companies:
                     raise UserError(
                         gettext('importer.msg_import_company_not_found',
                             company=record.company_name))
-                sequence.company = companies.get(record.company)
+                sequence.company = companies.get(record.company_name)
 
             sequence.sequence_type = sequence_type
             sequence.prefix = record.prefix
             sequence.suffix = record.suffix
-            sequence.padding = record.padding
-            sequence.number_next = record.number_next
+            sequence.padding = record.padding or 1
+            sequence.number_next = record.number_next or 1
             sequence.save()
 
         return sequences
