@@ -107,6 +107,7 @@ def register():
         account.Importer,
         account.ImporterAccountMove,
         account.ImporterChart,
+        account.ImporterFiscalYear,
         party.ImporterAccountDepends,
         depends=['account'],
         module='importer', type_='model')

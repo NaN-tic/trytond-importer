@@ -35,6 +35,20 @@ class ImporterChart(ModelView):
     payable_code = fields.Char('Payable Code')
 
 
+class ImporterFiscalYear(ModelView):
+    'Importer Fiscal Year'
+    __name__ = 'importer.account.fiscalyear'
+    name = fields.Char('Name')
+    company_name = fields.Char('Company Name')
+    start_date = fields.Date('Start Date')
+    end_date = fields.Date('End Date')
+    post_move_sequence_name = fields.Char('Post Move Sequence Name')
+    in_invoice_sequence_name = fields.Char('In Invoice Sequence Name')
+    out_invoice_sequence_name = fields.Char('Out Invoice Sequence Name')
+    in_credit_note_sequence_name = fields.Char('In Credit Note Sequence Name')
+    out_credit_note_sequence_name = fields.Char('Out Credit Note Sequence Name')
+
+
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
 
@@ -46,27 +60,32 @@ class Importer(metaclass=PoolMeta):
                 'string': 'Account Move',
                 'model': 'importer.account.move',
                 'chunked': False,
-            },
+                },
             'account_move_party': {
                 'string': 'Account Move Create Missing Party',
                 'model': 'importer.account.move',
                 'chunked': False,
-            },
+                },
             'account_move_account': {
                 'string': 'Account Move Create Missing Account',
                 'model': 'importer.account.move',
                 'chunked': False,
-            },
+                },
             'account_move_account_party': {
                 'string': 'Account Move Create Missing Account and Party',
                 'model': 'importer.account.move',
                 'chunked': False,
-            },
+                },
             'account_create_chart': {
                 'string': 'Create Chart of Accounts',
                 'model': 'importer.account.chart',
                 'chunked': False,
-                }
+                },
+            'account_fiscalyear': {
+                'string': 'Fiscal Year',
+                'model': 'importer.account.fiscalyear',
+                'chunked': False,
+                },
         })
         return methods
 
@@ -396,3 +415,58 @@ class Importer(metaclass=PoolMeta):
 
         return Account.search([('template', '=', chart)])
 
+    def import_account_fiscalyear(cls, records):
+        pool = Pool()
+        Company = pool.get('company.company')
+        Sequence = pool.get('ir.sequence')
+        SequenceStrict = pool.get('ir.sequence.strict')
+        ModelData = pool.get('ir.model.data')
+        FiscalYear = pool.get('account.fiscalyear')
+        InvoiceSequence = pool.get('account.fiscalyear.invoice_sequence')
+
+        type_invoice_id = ModelData.get_id('account_invoice',
+            'sequence_type_account_invoice')
+        type_accont_move_id = ModelData.get_id('account',
+            'sequence_type_account_move')
+
+        # Create a dictionary with the sequences of sequence_type = 'account.invoice'
+        invoice_sequences = {x.name: x for x in
+            SequenceStrict.search([('sequence_type', '=', type_invoice_id)])}
+        move_sequences = {x.name: x for x in
+            Sequence.search([('sequence_type', '=', type_accont_move_id)])}
+        companies = {x.party.name: x for x in Company.search([])}
+        fiscalyears = {x.name: x for x in FiscalYear.search([])}
+
+        for record in records:
+            fiscalyear = fiscalyears.get(record.name)
+            if not fiscalyear:
+                fiscalyear = FiscalYear()
+                fiscalyear.name = record.name
+                seq = InvoiceSequence()
+                seq.company = companies.get(record.company_name)
+                fiscalyear.invoice_sequences = [seq]
+            else:
+                seq = fiscalyear.invoice_sequences[0]
+            fiscalyear.start_date = record.start_date
+            fiscalyear.end_date = record.end_date
+            fiscalyear.company = companies.get(record.company_name)
+
+            if record.post_move_sequence_name:
+                fiscalyear.post_move_sequence = move_sequences.get(
+                    record.post_move_sequence_name)
+            else:
+                invoice_sequence = SequenceStrict()
+                invoice_sequence.name = 'x'
+                gt
+                fiscalyear.post_move_sequence = None
+            seq.out_invoice_sequence = invoice_sequences.get(
+                record.out_invoice_sequence_name)
+            seq.in_invoice_sequence = invoice_sequences.get(
+                record.in_invoice_sequence_name)
+            seq.out_credit_note_sequence = invoice_sequences.get(
+                record.out_credit_note_sequence_name)
+            seq.in_credit_note_sequence = invoice_sequences.get(
+                record.in_credit_note_sequence_name)
+            fiscalyear.save()
+            FiscalYear.create_period([fiscalyear])
+        return invoice_sequences, move_sequences

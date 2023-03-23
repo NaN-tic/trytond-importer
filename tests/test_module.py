@@ -8,7 +8,6 @@ from trytond.transaction import Transaction
 from trytond.pool import Pool
 from trytond.modules.importer.importer import Data
 from trytond.modules.company.tests import create_company
-from trytond.modules.account.tests import get_fiscalyear
 from trytond.modules.account_invoice.tests import set_invoice_sequences
 
 
@@ -139,12 +138,30 @@ class ImporterTestCase(ModuleTestCase):
         Invoice = pool.get('account.invoice')
         self.assertEqual(len(Invoice.search([])), 1)
 
+        Date = pool.get('ir.date')
 
-        FiscalYear = pool.get('account.fiscalyear')
-        fiscalyear = get_fiscalyear(company)
-        set_invoice_sequences(fiscalyear)
-        fiscalyear.save()
-        FiscalYear.create_period([fiscalyear])
+        # Current year
+        self.import_('sequence', [{
+                'name': 'Account Move',
+                'sequence_type': 'Account Move',
+                }])
+        self.import_('sequence', [{
+                'name': 'Invoice',
+                'sequence_type': 'Invoice',
+                'strict': '1',
+                }])
+        year = Date.today().year
+        self.import_('account_fiscalyear', [{
+                'name': str(year),
+                'company_name': company.party.name,
+                'start_date': str(year) + '-01-01',
+                'end_date': str(year) + '-12-31',
+                'post_move_sequence_name': 'Account Move',
+                'out_invoice_sequence_name': 'Invoice',
+                'in_invoice_sequence_name': 'Invoice',
+                'out_credit_note_sequence_name': 'Invoice',
+                'in_credit_note_sequence_name': 'Invoice',
+                }])
 
         Date = Pool().get('ir.date')
         today = Date.today()
