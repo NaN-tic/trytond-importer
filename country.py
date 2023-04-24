@@ -39,7 +39,7 @@ class Importer(metaclass=PoolMeta):
                     },
                 })
         return methods
-        
+
     @classmethod
     def import_country(cls, records):
         env = os.environ.copy()
