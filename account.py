@@ -159,6 +159,9 @@ class Importer(metaclass=PoolMeta):
                         account.name = record.account_name
                         account.type = account_type
                         account.company = company
+                        account.parent = None
+                        if chart.get(cls.get_code(acc_code)):
+                            account.parent = chart.get(cls.get_code(acc_code))
                 if not account or account is None:
                     raise UserError(gettext('importer.account_not_found',
                         account=record.account_code))
