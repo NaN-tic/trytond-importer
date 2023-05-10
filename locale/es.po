@@ -460,7 +460,7 @@ msgstr "Tipos"
 
 msgctxt "field:importer.product,uom:"
 msgid "UoM"
-msgstr "Unidad de mesura"
+msgstr "Unidad de medida"
 
 msgctxt "field:importer.product,variant_code:"
 msgid "Variant Code"
