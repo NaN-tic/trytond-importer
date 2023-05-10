@@ -60,7 +60,8 @@ class Importer(metaclass=PoolMeta):
                         type=record.sequence_type))
             sequence_type = sequences.get(record.sequence_type)
 
-            sequences = Sequence.search([('name', 'in', records)], limit=1)
+            names = [r.name for r in records]
+            sequences = Sequence.search([('name', 'in', names)], limit=1)
             if not sequences:
                 sequence = Sequence()
                 sequence.name = record.name
@@ -82,4 +83,3 @@ class Importer(metaclass=PoolMeta):
             sequence.save()
 
         return sequences
-
