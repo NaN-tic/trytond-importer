@@ -280,7 +280,7 @@ class Importer(metaclass=PoolMeta):
                 template.list_price = record.sale_price or Decimal(0)
             uom = None
             if record.uom:
-                uom = uoms.get(record.uom.lower() or 'u')
+                uom = uoms.get(record.uom.lower(), 'u')
             else:
                 uom = uoms.get('u')
                 # If we update a product, we dont need to change the uom
@@ -378,13 +378,13 @@ class Importer(metaclass=PoolMeta):
                     else:
                         product.boms = [product_bom]
 
-            if 'product_suppliers' in template._fields and record.purchasable:
+            if 'purchasable' in template._fields and record.purchasable:
                 template.purchasable = record.purchasable
-                template.purchase_uom = uom
+                template.purchase_uom = template.default_uom
 
             if 'salable' in template._fields and record.salable:
                 template.salable = record.salable
-                template.sale_uom = uom
+                template.sale_uom = template.default_uom
 
             if parties and record.supplier:
                 party = parties.get(record.supplier)
