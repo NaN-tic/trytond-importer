@@ -157,7 +157,7 @@ class Importer(metaclass=PoolMeta):
                 invoice.party = party
                 invoice.on_change_type()
                 invoice.on_change_party()
-                invoice.account = invoice.on_change_with_account()
+                invoice._update_account()
                 invoice.journal = journals.get(record.journal)
                 if 'payment_type' in Invoice._fields:
                     invoice.payment_type = None
