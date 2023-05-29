@@ -8,27 +8,13 @@ from trytond.transaction import Transaction
 from trytond.pool import Pool
 from trytond.modules.importer.importer import Data
 from trytond.modules.company.tests import create_company
-from trytond.modules.account_invoice.tests import set_invoice_sequences
 
 
 class ImporterTestCase(ModuleTestCase):
     'Test Importer module'
     module = 'importer'
-
-    def activate_module(self, name):
-        pool = Pool()
-        Module = pool.get('ir.module')
-        ActivateUpgrade = pool.get('ir.module.activate_upgrade', type='wizard')
-
-        modules = Module.search([('name', '=', name)], limit=1)
-        Module.activate(modules)
-
-        instance_id, _, _ = ActivateUpgrade.create()
-        ActivateUpgrade(instance_id).transition_upgrade()
-        ActivateUpgrade.delete(instance_id)
-
-        transaction = Transaction()
-        transaction.commit()
+    extras = ['party', 'company', 'product', 'sale', 'purchase', 'account_invoice',
+        'account_code_digits', 'stock', 'product_price_list']
 
     def import_(self, method, records):
         pool = Pool()
@@ -58,8 +44,6 @@ class ImporterTestCase(ModuleTestCase):
     def test_party(self):
         pool = Pool()
 
-        self.activate_module('party')
-
         self.import_('sequence', [{
                 'name': 'Test',
                 'sequence_type': 'Party',
@@ -81,9 +65,22 @@ class ImporterTestCase(ModuleTestCase):
     def test_product(self):
         pool = Pool()
 
-        self.activate_module('product')
-        self.activate_module('sale')
-        self.activate_module('purchase')
+        Date = Pool().get('ir.date')
+        today = Date.today()
+
+        company = create_company()
+        self.import_('account_create_chart', [{
+                'company_name': company.party.name,
+                'chart_name': 'Minimal Account Chart',
+                }])
+
+        Account = pool.get('account.account')
+        accounts = Account.search([])
+
+        for index,account in enumerate(accounts):
+                account.code = '000'+str(index+1)
+        Account.save(accounts)
+        Transaction().set_context(company=company.id)
 
         Category = pool.get('product.category')
         category = Category()
@@ -110,23 +107,17 @@ class ImporterTestCase(ModuleTestCase):
         Identifier = pool.get('product.identifier')
         self.assertEqual(len(Identifier.search([])), 1)
 
-
-        self.activate_module('account_invoice')
-        self.activate_module('account_code_digits')
-
-        company = create_company()
-        self.import_('account_create_chart', [{
-                'company_name': company.party.name,
-                'chart_name': 'Minimal Account Chart',
+        self.import_('price_list', [{
+                'name': "Price List",
+                'company_name': company.rec_name,
+                'tax_included': True,
+                'category': None,
+                'product_code': '0001A',
+                'quantity': 100,
+                'formula': '5.12',
                 }])
-
-        Account = pool.get('account.account')
-        accounts = Account.search([])
-
-        for index,account in enumerate(accounts):
-                account.code = '000'+str(index+1)
-        Account.save(accounts)
-        Transaction().set_context(company=company.id)
+        PriceList = pool.get('product.price_list')
+        self.assertEqual(len(PriceList.search([])), 1)
 
         self.import_('invoice', [{
                 'party_name': company.party.name,
@@ -137,8 +128,6 @@ class ImporterTestCase(ModuleTestCase):
 
         Invoice = pool.get('account.invoice')
         self.assertEqual(len(Invoice.search([])), 1)
-
-        Date = pool.get('ir.date')
 
         # Current year
         self.import_('sequence', [{
@@ -163,9 +152,6 @@ class ImporterTestCase(ModuleTestCase):
                 'in_credit_note_sequence_name': 'Invoice',
                 }])
 
-        Date = Pool().get('ir.date')
-        today = Date.today()
-
         self.import_('account_move_account_party', [{
                 'account_name': 'Despeses Desembre Maria Eugenia',
                 'party_name': company.party.name,
@@ -181,8 +167,6 @@ class ImporterTestCase(ModuleTestCase):
         Move = pool.get('account.move')
         self.assertEqual(len(Move.search([])), 1)
 
-        self.activate_module('stock')
-
         self.import_('location', [{
                 'name': 'Estanteria 3Z',
                 'code': '1245AVXS',
@@ -190,7 +174,6 @@ class ImporterTestCase(ModuleTestCase):
 
         Location = pool.get('stock.location')
         self.assertEqual(len(Location.search([])), 9)
-
 
         self.import_('sale', [{
                 'party_name': company.party.name,
@@ -209,7 +192,6 @@ class ImporterTestCase(ModuleTestCase):
         sale, = Sale.search([])
         self.assertEqual(len(sale.lines), 1)
 
-
         self.import_('purchase', [{
                 'party_name': company.party.name,
                 'date': today.strftime('%Y-%m-%d'),
@@ -226,7 +208,6 @@ class ImporterTestCase(ModuleTestCase):
         purchase, = Purchase.search([])
         self.assertEqual(len(purchase.lines), 1)
 
-
         self.import_('purchase_product_supplier', [{
                 'party_name': company.party.name,
                 'party_code': company.party.code,
@@ -242,25 +223,6 @@ class ImporterTestCase(ModuleTestCase):
         self.assertEqual(len(ProductSupplier.search([])), 1)
         product_supplier, = ProductSupplier.search([])
         self.assertEqual(len(product_supplier.prices), 1)
-
-    @with_transaction()
-    def test_product_price_list(self):
-        self.activate_module('product_price_list')
-
-        pool = Pool()
-        PriceList = pool.get('product.price_list')
-        Company = pool.get('company.company')
-
-        self.import_('price_list', [{
-                'name': "Price List",
-                'company_name': Company.search([])[0].rec_name,
-                'tax_included': True,
-                'category': None,
-                'product_code': '0001A',
-                'quantity': 100,
-                'formula': '5.12',
-                }])
-        self.assertEqual(len(PriceList.search([])), 1)
 
 
 del ModuleTestCase
