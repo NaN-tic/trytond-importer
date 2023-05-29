@@ -530,7 +530,10 @@ class Importer(ModelSQL, ModelView):
                                     importer=self.rec_name))
                         else:
                             value = None
-                setattr(record, column.field.name, value)
+                try:
+                    setattr(record, column.field.name, value)
+                except TypeError:
+                    pass
 
             for field in missing_fields:
                 setattr(record, field, None)
@@ -913,4 +916,3 @@ class ExcelTemplate(Report):
             if c:
                 ws.cell(row=1, column=number).comment = Comment(c, "Tryton")
         return ('xlsx', save_virtual_workbook(wb), False, importer.name)
-
