@@ -150,8 +150,10 @@ class Importer(metaclass=PoolMeta):
                     purchase_date = record.date.date()
                 purchase.purchase_date = purchase_date
 
-                if record.state:
+                # in case state is done or cancelled, create purchase and set the state
+                if record.state and record.state in ('cancelled', 'done'):
                     purchase.state = record.state
+
                 if record.purchase_number:
                     purchase.number = record.purchase_number
 
@@ -219,7 +221,8 @@ class Importer(metaclass=PoolMeta):
         for to_save in grouped_slice(lines_to_save):
             Line.save(list(to_save))
 
-        purchases = [x for x in purchases_to_save if x.state != 'done']
+        purchases = [x for x in purchases_to_save
+                        if x.state not in ('cancelled', 'done')]
         if purchases:
             Purchase.quote(purchases)
         if purchases:
