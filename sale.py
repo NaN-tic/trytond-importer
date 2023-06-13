@@ -25,6 +25,8 @@ class ImporterSale(ModelView):
     shipment_method = fields.Char('Shipment Method')
     invoice_method = fields.Char('Invoice Method')
     sale_number = fields.Char('Sale Number')
+    state = fields.Char('State')
+
 
 class ImporterSaleConfiguration(ModelView):
     'Importer Sale Configuration'
@@ -38,6 +40,7 @@ class ImporterSaleConfiguration(ModelView):
     sale_invoice_method = fields.Char("Sale invoice method", help='selection|sale.sale|invoice_method')
     sale_shipment_method = fields.Char("Sale shipment method", help='selection|sale.sale|shipment_method')
     sale_process_after = fields.Char("Sale process after")
+
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -111,6 +114,7 @@ class Importer(metaclass=PoolMeta):
         sales_to_save = []
         lines_to_save = []
         previous_header = None
+        sales_workflow = dict({'quote': [], 'confirm': [], 'process': []})
         for record in records:
             header = cls.import_sale_header(record)
             if any(header) and header != previous_header:
@@ -140,6 +144,13 @@ class Importer(metaclass=PoolMeta):
                     sale.sale_date = record.date.date()
                 else:
                     sale.sale_date = record.date
+
+                # sale workflow (states)
+                if record.state:
+                    if record.state in ('cancelled', 'done'):
+                        sale.state = record.state
+                    elif record.state in sales_workflow:
+                        sales_workflow[record.state] += [sale]
 
                 if record.currency and record.currency in currencies.keys():
                     sale.currency = currencies.get(record.currency)
@@ -237,6 +248,21 @@ class Importer(metaclass=PoolMeta):
 
         for to_save in grouped_slice(lines_to_save):
             Line.save(list(to_save))
+
+        to_quote = (sales_workflow.get('quote', [])
+                        + sales_workflow.get('confirm', [])
+                        + sales_workflow.get('process', []))
+        if to_quote:
+            Sale.quote(to_quote)
+
+        to_confirm = (sales_workflow.get('confirm', [])
+                        + sales_workflow.get('process', []))
+        if to_confirm:
+            Sale.confirm(to_confirm)
+
+        to_process = sales_workflow.get('process', [])
+        if to_process:
+            Sale.process(to_process)
 
         return sales_to_save
 

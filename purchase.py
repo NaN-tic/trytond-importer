@@ -38,6 +38,7 @@ class ImporterPurchaseConfiguration(ModelView):
     invoice_method = fields.Char("Purchase invoice method")
     process_after = fields.Char("Purchase process after")
 
+
 class ImporterProductSupplier(ModelView):
     'Importer Product Supplier'
     __name__ = 'importer.product.supplier'
@@ -151,7 +152,7 @@ class Importer(metaclass=PoolMeta):
                     purchase_date = record.date.date()
                 purchase.purchase_date = purchase_date
 
-                # in case state is done or cancelled, create purchase and set the state
+                # purchase workflow (states)
                 if record.state:
                     if record.state in ('cancelled', 'done'):
                         purchase.state = record.state
