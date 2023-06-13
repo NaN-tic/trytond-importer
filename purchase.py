@@ -125,6 +125,7 @@ class Importer(metaclass=PoolMeta):
         purchases_to_save = []
         lines_to_save = []
         previous_header = None
+        purchases_workflow = dict({'quote': [], 'confirm': [], 'process': []})
         for record in records:
             header = cls.import_purchase_header(record)
             if any(header) and header != previous_header:
@@ -151,8 +152,11 @@ class Importer(metaclass=PoolMeta):
                 purchase.purchase_date = purchase_date
 
                 # in case state is done or cancelled, create purchase and set the state
-                if record.state and record.state in ('cancelled', 'done'):
-                    purchase.state = record.state
+                if record.state:
+                    if record.state in ('cancelled', 'done'):
+                        purchase.state = record.state
+                    elif record.state in purchases_workflow:
+                        purchases_workflow[record.state] += [purchase]
 
                 if record.purchase_number:
                     purchase.number = record.purchase_number
@@ -221,14 +225,21 @@ class Importer(metaclass=PoolMeta):
         for to_save in grouped_slice(lines_to_save):
             Line.save(list(to_save))
 
-        purchases = [x for x in purchases_to_save
-                        if x.state not in ('cancelled', 'done')]
-        if purchases:
-            Purchase.quote(purchases)
-        if purchases:
-            Purchase.confirm(purchases)
-        if purchases:
-            Purchase.process(purchases)
+        to_quote = (purchases_workflow.get('quote', [])
+                        + purchases_workflow.get('confirm', [])
+                        + purchases_workflow.get('process', []))
+        if to_quote:
+            Purchase.quote(to_quote)
+
+        to_confirm = (purchases_workflow.get('confirm', [])
+                        + purchases_workflow.get('process', []))
+        if to_confirm:
+            Purchase.confirm(to_confirm)
+
+        to_process = purchases_workflow.get('process', [])
+        if to_process:
+            Purchase.process(to_process)
+
         return purchases_to_save
 
     @classmethod
