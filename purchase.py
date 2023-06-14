@@ -129,6 +129,7 @@ class Importer(metaclass=PoolMeta):
 
         to_quote = []
         to_confirm = []
+        to_process = []
 
         for record in records:
             header = cls.import_purchase_header(record)
@@ -161,8 +162,10 @@ class Importer(metaclass=PoolMeta):
                         purchase.state = record.state
                     elif record.state == 'quote':
                         to_quote += [purchase]
-                    elif record.state in ('confirm', 'process'):
+                    elif record.state == 'confirm':
                         to_confirm += [purchase]
+                    elif record.state == 'process':
+                        to_process += [purchase]
 
                 if record.purchase_number:
                     purchase.number = record.purchase_number
@@ -233,8 +236,10 @@ class Importer(metaclass=PoolMeta):
 
         if to_quote:
             Purchase.quote(to_quote + to_confirm)
-        if to_confirm:
-            Purchase.confirm(to_confirm)
+        if to_confirm or to_process:
+            Purchase.confirm(to_confirm + to_process)
+        if to_process:
+            Purchase.confirm(to_process)
 
         return purchases_to_save
 

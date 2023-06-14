@@ -117,6 +117,7 @@ class Importer(metaclass=PoolMeta):
 
         to_quote = []
         to_confirm = []
+        to_process = []
 
         for record in records:
             header = cls.import_sale_header(record)
@@ -154,8 +155,10 @@ class Importer(metaclass=PoolMeta):
                         sale.state = record.state
                     elif record.state == 'quote':
                         to_quote += [sale]
-                    elif record.state in ('confirm', 'process'):
+                    elif record.state == 'confirm':
                         to_confirm += [sale]
+                    elif record.state == 'process':
+                        to_process += [sale]
 
                 if record.currency and record.currency in currencies.keys():
                     sale.currency = currencies.get(record.currency)
@@ -256,8 +259,10 @@ class Importer(metaclass=PoolMeta):
 
         if to_quote:
             Sale.quote(to_quote + to_confirm)
-        if to_confirm:
-            Sale.confirm(to_confirm)
+        if to_confirm or to_process:
+            Sale.confirm(to_confirm + to_process)
+        if to_process:
+            Sale.confirm(to_process)
 
         return sales_to_save
 
