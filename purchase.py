@@ -126,7 +126,10 @@ class Importer(metaclass=PoolMeta):
         purchases_to_save = []
         lines_to_save = []
         previous_header = None
-        purchases_workflow = dict({'quote': [], 'confirm': [], 'process': []})
+
+        to_quote = []
+        to_confirm = []
+
         for record in records:
             header = cls.import_purchase_header(record)
             if any(header) and header != previous_header:
@@ -154,10 +157,12 @@ class Importer(metaclass=PoolMeta):
 
                 # purchase workflow (states)
                 if record.state:
-                    if record.state in ('cancelled', 'done'):
+                    if record.state in ('draft', 'cancelled', 'done'):
                         purchase.state = record.state
-                    elif record.state in purchases_workflow:
-                        purchases_workflow[record.state] += [purchase]
+                    elif record.state == 'quote':
+                        to_quote += [purchase]
+                    elif record.state in ('confirm', 'process'):
+                        to_confirm += [purchase]
 
                 if record.purchase_number:
                     purchase.number = record.purchase_number
@@ -226,20 +231,10 @@ class Importer(metaclass=PoolMeta):
         for to_save in grouped_slice(lines_to_save):
             Line.save(list(to_save))
 
-        to_quote = (purchases_workflow.get('quote', [])
-                        + purchases_workflow.get('confirm', [])
-                        + purchases_workflow.get('process', []))
         if to_quote:
-            Purchase.quote(to_quote)
-
-        to_confirm = (purchases_workflow.get('confirm', [])
-                        + purchases_workflow.get('process', []))
+            Purchase.quote(to_quote + to_confirm)
         if to_confirm:
             Purchase.confirm(to_confirm)
-
-        to_process = purchases_workflow.get('process', [])
-        if to_process:
-            Purchase.process(to_process)
 
         return purchases_to_save
 

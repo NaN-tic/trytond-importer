@@ -114,7 +114,10 @@ class Importer(metaclass=PoolMeta):
         sales_to_save = []
         lines_to_save = []
         previous_header = None
-        sales_workflow = dict({'quote': [], 'confirm': [], 'process': []})
+
+        to_quote = []
+        to_confirm = []
+
         for record in records:
             header = cls.import_sale_header(record)
             if any(header) and header != previous_header:
@@ -147,10 +150,12 @@ class Importer(metaclass=PoolMeta):
 
                 # sale workflow (states)
                 if record.state:
-                    if record.state in ('cancelled', 'done'):
+                    if record.state in ('draft', 'cancelled', 'done'):
                         sale.state = record.state
-                    elif record.state in sales_workflow:
-                        sales_workflow[record.state] += [sale]
+                    elif record.state == 'quote':
+                        to_quote += [sale]
+                    elif record.state in ('confirm', 'process'):
+                        to_confirm += [sale]
 
                 if record.currency and record.currency in currencies.keys():
                     sale.currency = currencies.get(record.currency)
@@ -249,20 +254,10 @@ class Importer(metaclass=PoolMeta):
         for to_save in grouped_slice(lines_to_save):
             Line.save(list(to_save))
 
-        to_quote = (sales_workflow.get('quote', [])
-                        + sales_workflow.get('confirm', [])
-                        + sales_workflow.get('process', []))
         if to_quote:
-            Sale.quote(to_quote)
-
-        to_confirm = (sales_workflow.get('confirm', [])
-                        + sales_workflow.get('process', []))
+            Sale.quote(to_quote + to_confirm)
         if to_confirm:
             Sale.confirm(to_confirm)
-
-        to_process = sales_workflow.get('process', [])
-        if to_process:
-            Sale.process(to_process)
 
         return sales_to_save
 
