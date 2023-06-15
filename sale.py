@@ -156,8 +156,11 @@ class Importer(metaclass=PoolMeta):
                     elif record.state == 'quote':
                         to_quote += [sale]
                     elif record.state == 'confirm':
+                        to_quote += [sale]
                         to_confirm += [sale]
                     elif record.state == 'process':
+                        to_quote += [sale]
+                        to_confirm += [sale]
                         to_process += [sale]
 
                 if record.currency and record.currency in currencies.keys():
@@ -257,8 +260,8 @@ class Importer(metaclass=PoolMeta):
         for to_save in grouped_slice(lines_to_save):
             Line.save(list(to_save))
 
-        Sale.quote(to_quote + to_confirm + to_process)
-        Sale.confirm(to_confirm + to_process)
+        Sale.quote(to_quote)
+        Sale.confirm(to_confirm)
         Sale.process(to_process)
 
         return sales_to_save
