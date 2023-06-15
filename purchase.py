@@ -163,11 +163,8 @@ class Importer(metaclass=PoolMeta):
                     elif record.state == 'quote':
                         to_quote += [purchase]
                     elif record.state == 'confirm':
-                        to_quote += [purchase]
                         to_confirm += [purchase]
                     elif record.state == 'process':
-                        to_quote += [purchase]
-                        to_confirm += [purchase]
                         to_process += [purchase]
 
                 if record.purchase_number:
@@ -236,6 +233,9 @@ class Importer(metaclass=PoolMeta):
 
         for to_save in grouped_slice(lines_to_save):
             Line.save(list(to_save))
+
+        to_confirm += to_process
+        to_quote += to_confirm
 
         Purchase.quote(to_quote)
         Purchase.confirm(to_confirm)
