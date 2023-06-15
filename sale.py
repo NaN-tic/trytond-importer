@@ -257,12 +257,9 @@ class Importer(metaclass=PoolMeta):
         for to_save in grouped_slice(lines_to_save):
             Line.save(list(to_save))
 
-        if to_quote:
-            Sale.quote(to_quote + to_confirm)
-        if to_confirm or to_process:
-            Sale.confirm(to_confirm + to_process)
-        if to_process:
-            Sale.confirm(to_process)
+        Sale.quote(to_quote + to_confirm + to_process)
+        Sale.confirm(to_confirm + to_process)
+        Sale.process(to_process)
 
         return sales_to_save
 
