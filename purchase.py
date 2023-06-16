@@ -38,6 +38,7 @@ class ImporterPurchaseConfiguration(ModelView):
     invoice_method = fields.Char("Purchase invoice method")
     process_after = fields.Char("Purchase process after")
 
+
 class ImporterProductSupplier(ModelView):
     'Importer Product Supplier'
     __name__ = 'importer.product.supplier'
@@ -125,6 +126,11 @@ class Importer(metaclass=PoolMeta):
         purchases_to_save = []
         lines_to_save = []
         previous_header = None
+
+        to_quote = []
+        to_confirm = []
+        to_process = []
+
         for record in records:
             header = cls.import_purchase_header(record)
             if any(header) and header != previous_header:
@@ -150,8 +156,17 @@ class Importer(metaclass=PoolMeta):
                     purchase_date = record.date.date()
                 purchase.purchase_date = purchase_date
 
+                # purchase workflow (states)
                 if record.state:
-                    purchase.state = record.state
+                    if record.state in ('draft', 'cancelled', 'done'):
+                        purchase.state = record.state
+                    elif record.state == 'quote':
+                        to_quote += [purchase]
+                    elif record.state == 'confirm':
+                        to_confirm += [purchase]
+                    elif record.state == 'process':
+                        to_process += [purchase]
+
                 if record.purchase_number:
                     purchase.number = record.purchase_number
 
@@ -219,13 +234,13 @@ class Importer(metaclass=PoolMeta):
         for to_save in grouped_slice(lines_to_save):
             Line.save(list(to_save))
 
-        purchases = [x for x in purchases_to_save if x.state != 'done']
-        if purchases:
-            Purchase.quote(purchases)
-        if purchases:
-            Purchase.confirm(purchases)
-        if purchases:
-            Purchase.process(purchases)
+        to_confirm += to_process
+        to_quote += to_confirm
+
+        Purchase.quote(to_quote)
+        Purchase.confirm(to_confirm)
+        Purchase.process(to_process)
+
         return purchases_to_save
 
     @classmethod

@@ -8,27 +8,13 @@ from trytond.transaction import Transaction
 from trytond.pool import Pool
 from trytond.modules.importer.importer import Data
 from trytond.modules.company.tests import create_company
-from trytond.modules.account_invoice.tests import set_invoice_sequences
 
 
 class ImporterTestCase(ModuleTestCase):
     'Test Importer module'
     module = 'importer'
-
-    def activate_module(self, name):
-        pool = Pool()
-        Module = pool.get('ir.module')
-        ActivateUpgrade = pool.get('ir.module.activate_upgrade', type='wizard')
-
-        modules = Module.search([('name', '=', name)], limit=1)
-        Module.activate(modules)
-
-        instance_id, _, _ = ActivateUpgrade.create()
-        ActivateUpgrade(instance_id).transition_upgrade()
-        ActivateUpgrade.delete(instance_id)
-
-        transaction = Transaction()
-        transaction.commit()
+    extras = ['party', 'company', 'product', 'sale', 'purchase', 'account_invoice',
+        'account_code_digits', 'stock', 'product_price_list']
 
     def import_(self, method, records):
         pool = Pool()
@@ -58,8 +44,6 @@ class ImporterTestCase(ModuleTestCase):
     def test_party(self):
         pool = Pool()
 
-        self.activate_module('party')
-
         self.import_('sequence', [{
                 'name': 'Test',
                 'sequence_type': 'Party',
@@ -81,9 +65,24 @@ class ImporterTestCase(ModuleTestCase):
     def test_product(self):
         pool = Pool()
 
-        self.activate_module('product')
-        self.activate_module('sale')
-        self.activate_module('purchase')
+        Date = Pool().get('ir.date')
+        today = Date.today()
+
+        company = create_company()
+        self.import_('account_create_chart', [{
+                'company_name': company.party.name,
+                'chart_name': 'Minimal Account Chart',
+                }])
+
+        Account = pool.get('account.account')
+        accounts = Account.search([])
+
+        for index,account in enumerate(accounts):
+                account.code = '000'+str(index+1)
+        Account.save(accounts)
+        Transaction().set_context(company=company.id)
+
+        Party = pool.get('party.party')
 
         Category = pool.get('product.category')
         category = Category()
@@ -110,23 +109,17 @@ class ImporterTestCase(ModuleTestCase):
         Identifier = pool.get('product.identifier')
         self.assertEqual(len(Identifier.search([])), 1)
 
-
-        self.activate_module('account_invoice')
-        self.activate_module('account_code_digits')
-
-        company = create_company()
-        self.import_('account_create_chart', [{
-                'company_name': company.party.name,
-                'chart_name': 'Minimal Account Chart',
+        self.import_('price_list', [{
+                'name': "Price List",
+                'company_name': company.rec_name,
+                'tax_included': True,
+                'category': None,
+                'product_code': '0001A',
+                'quantity': 100,
+                'formula': '5.12',
                 }])
-
-        Account = pool.get('account.account')
-        accounts = Account.search([])
-
-        for index,account in enumerate(accounts):
-                account.code = '000'+str(index+1)
-        Account.save(accounts)
-        Transaction().set_context(company=company.id)
+        PriceList = pool.get('product.price_list')
+        self.assertEqual(len(PriceList.search([])), 1)
 
         self.import_('invoice', [{
                 'party_name': company.party.name,
@@ -137,8 +130,6 @@ class ImporterTestCase(ModuleTestCase):
 
         Invoice = pool.get('account.invoice')
         self.assertEqual(len(Invoice.search([])), 1)
-
-        Date = pool.get('ir.date')
 
         # Current year
         self.import_('sequence', [{
@@ -163,9 +154,6 @@ class ImporterTestCase(ModuleTestCase):
                 'in_credit_note_sequence_name': 'Invoice',
                 }])
 
-        Date = Pool().get('ir.date')
-        today = Date.today()
-
         self.import_('account_move_account_party', [{
                 'account_name': 'Despeses Desembre Maria Eugenia',
                 'party_name': company.party.name,
@@ -181,8 +169,6 @@ class ImporterTestCase(ModuleTestCase):
         Move = pool.get('account.move')
         self.assertEqual(len(Move.search([])), 1)
 
-        self.activate_module('stock')
-
         self.import_('location', [{
                 'name': 'Estanteria 3Z',
                 'code': '1245AVXS',
@@ -191,7 +177,7 @@ class ImporterTestCase(ModuleTestCase):
         Location = pool.get('stock.location')
         self.assertEqual(len(Location.search([])), 9)
 
-
+        # sales
         self.import_('sale', [{
                 'party_name': company.party.name,
                 'currency': company.currency.name,
@@ -201,32 +187,87 @@ class ImporterTestCase(ModuleTestCase):
                 'product_code': '0001A',
                 'quantity': 5,
                 'unit_price': 0.75,
-                'sale_number': '164664'
+                'sale_number': '164664-A'
+                }, {
+                'party_name': company.party.name,
+                'currency': company.currency.name,
+                'shipment_method': 'manual',
+                'invoice_method': 'manual',
+                'state': 'quote',
+                'product_code': '0001A',
+                'quantity': 5,
+                'unit_price': 0.75,
+                'sale_number': '164664-B'
+                }, {
+                'party_name': company.party.name,
+                'currency': company.currency.name,
+                'shipment_method': 'manual',
+                'invoice_method': 'manual',
+                'state': 'confirm',
+                'product_code': '0001A',
+                'quantity': 5,
+                'unit_price': 0.75,
+                'sale_number': '164664-C'
                 }])
 
         Sale = pool.get('sale.sale')
-        self.assertEqual(len(Sale.search([])), 1)
-        sale, = Sale.search([])
-        self.assertEqual(len(sale.lines), 1)
+        sales = Sale.search([])
+        self.assertEqual(len(sales), 3)
+        sale1, sale2, sale3 = sales
+        self.assertEqual(len(sale1.lines), 1)
+        self.assertEqual(
+            sorted([sale1.state, sale2.state, sale3.state]),
+            ['confirmed', 'draft', 'quotation'])
 
+        # purchases
+        self.import_('party', [{
+                'name': 'supplier1'
+                }, {
+                'name': 'supplier2'
+                }, {
+                'name': 'supplier3'
+                }])
+        supplier1, supplier2, supplier3 = Party.search([], limit=3, order=[('id', 'desc')])
 
         self.import_('purchase', [{
-                'party_name': company.party.name,
+                'party_name': supplier1.name,
                 'date': today.strftime('%Y-%m-%d'),
                 'state': 'draft',
                 'invoice_method': 'manual',
                 'product_code': '0001A',
                 'quantity': 5,
                 'unit_price': 0.75,
-                'purchase_number': '164643'
+                'purchase_number': '164643-A'
+                }, {
+                'party_name': supplier2.name,
+                'date': today.strftime('%Y-%m-%d'),
+                'state': 'quote',
+                'invoice_method': 'manual',
+                'product_code': '0001A',
+                'quantity': 5,
+                'unit_price': 0.75,
+                'purchase_number': '164643-B'
+                }, {
+                'party_name': supplier3.name,
+                'date': today.strftime('%Y-%m-%d'),
+                'state': 'confirm',
+                'invoice_method': 'manual',
+                'product_code': '0001A',
+                'quantity': 5,
+                'unit_price': 0.75,
+                'purchase_number': '164643-C'
                 }])
 
         Purchase = pool.get('purchase.purchase')
-        self.assertEqual(len(Purchase.search([])), 1)
-        purchase, = Purchase.search([])
-        self.assertEqual(len(purchase.lines), 1)
+        purchases = Purchase.search([])
+        self.assertEqual(len(purchases), 3)
+        purchase1, purchase2, purchase3 = purchases
+        self.assertEqual(len(purchase1.lines), 1)
+        self.assertEqual(
+            sorted([purchase1.state, purchase2.state, purchase3.state]),
+            ['confirmed', 'draft', 'quotation'])
 
-
+        # purchase product supplier
         self.import_('purchase_product_supplier', [{
                 'party_name': company.party.name,
                 'party_code': company.party.code,
@@ -242,25 +283,6 @@ class ImporterTestCase(ModuleTestCase):
         self.assertEqual(len(ProductSupplier.search([])), 1)
         product_supplier, = ProductSupplier.search([])
         self.assertEqual(len(product_supplier.prices), 1)
-
-    @with_transaction()
-    def test_product_price_list(self):
-        self.activate_module('product_price_list')
-
-        pool = Pool()
-        PriceList = pool.get('product.price_list')
-        Company = pool.get('company.company')
-
-        self.import_('price_list', [{
-                'name': "Price List",
-                'company_name': Company.search([])[0].rec_name,
-                'tax_included': True,
-                'category': None,
-                'product_code': '0001A',
-                'quantity': 100,
-                'formula': '5.12',
-                }])
-        self.assertEqual(len(PriceList.search([])), 1)
 
 
 del ModuleTestCase
