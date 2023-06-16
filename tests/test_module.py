@@ -82,6 +82,8 @@ class ImporterTestCase(ModuleTestCase):
         Account.save(accounts)
         Transaction().set_context(company=company.id)
 
+        Party = pool.get('party.party')
+
         Category = pool.get('product.category')
         category = Category()
         category.name = 'Actiu Leasing'
@@ -175,6 +177,7 @@ class ImporterTestCase(ModuleTestCase):
         Location = pool.get('stock.location')
         self.assertEqual(len(Location.search([])), 9)
 
+        # sales
         self.import_('sale', [{
                 'party_name': company.party.name,
                 'currency': company.currency.name,
@@ -184,30 +187,87 @@ class ImporterTestCase(ModuleTestCase):
                 'product_code': '0001A',
                 'quantity': 5,
                 'unit_price': 0.75,
-                'sale_number': '164664'
+                'sale_number': '164664-A'
+                }, {
+                'party_name': company.party.name,
+                'currency': company.currency.name,
+                'shipment_method': 'manual',
+                'invoice_method': 'manual',
+                'state': 'quote',
+                'product_code': '0001A',
+                'quantity': 5,
+                'unit_price': 0.75,
+                'sale_number': '164664-B'
+                }, {
+                'party_name': company.party.name,
+                'currency': company.currency.name,
+                'shipment_method': 'manual',
+                'invoice_method': 'manual',
+                'state': 'confirm',
+                'product_code': '0001A',
+                'quantity': 5,
+                'unit_price': 0.75,
+                'sale_number': '164664-C'
                 }])
 
         Sale = pool.get('sale.sale')
-        self.assertEqual(len(Sale.search([])), 1)
-        sale, = Sale.search([])
-        self.assertEqual(len(sale.lines), 1)
+        sales = Sale.search([])
+        self.assertEqual(len(sales), 3)
+        sale1, sale2, sale3 = sales
+        self.assertEqual(len(sale1.lines), 1)
+        self.assertEqual(
+            sorted([sale1.state, sale2.state, sale3.state]),
+            ['confirmed', 'draft', 'quotation'])
+
+        # purchases
+        self.import_('party', [{
+                'name': 'supplier1'
+                }, {
+                'name': 'supplier2'
+                }, {
+                'name': 'supplier3'
+                }])
+        supplier1, supplier2, supplier3 = Party.search([], limit=3, order=[('id', 'desc')])
 
         self.import_('purchase', [{
-                'party_name': company.party.name,
+                'party_name': supplier1.name,
                 'date': today.strftime('%Y-%m-%d'),
                 'state': 'draft',
                 'invoice_method': 'manual',
                 'product_code': '0001A',
                 'quantity': 5,
                 'unit_price': 0.75,
-                'purchase_number': '164643'
+                'purchase_number': '164643-A'
+                }, {
+                'party_name': supplier2.name,
+                'date': today.strftime('%Y-%m-%d'),
+                'state': 'quote',
+                'invoice_method': 'manual',
+                'product_code': '0001A',
+                'quantity': 5,
+                'unit_price': 0.75,
+                'purchase_number': '164643-B'
+                }, {
+                'party_name': supplier3.name,
+                'date': today.strftime('%Y-%m-%d'),
+                'state': 'confirm',
+                'invoice_method': 'manual',
+                'product_code': '0001A',
+                'quantity': 5,
+                'unit_price': 0.75,
+                'purchase_number': '164643-C'
                 }])
 
         Purchase = pool.get('purchase.purchase')
-        self.assertEqual(len(Purchase.search([])), 1)
-        purchase, = Purchase.search([])
-        self.assertEqual(len(purchase.lines), 1)
+        purchases = Purchase.search([])
+        self.assertEqual(len(purchases), 3)
+        purchase1, purchase2, purchase3 = purchases
+        self.assertEqual(len(purchase1.lines), 1)
+        self.assertEqual(
+            sorted([purchase1.state, purchase2.state, purchase3.state]),
+            ['confirmed', 'draft', 'quotation'])
 
+        # purchase product supplier
         self.import_('purchase_product_supplier', [{
                 'party_name': company.party.name,
                 'party_code': company.party.code,
