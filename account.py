@@ -174,8 +174,7 @@ class Importer(metaclass=PoolMeta):
             mdate = record.effective_date
             period = periods.get(mdate)
             if not period:
-                period_id = Period.find(company, date=mdate, exception=True,
-                    test_state=True)
+                period_id = Period.find(company, date=mdate, test_state=True)
                 period = Period(period_id)
                 periods[mdate] = period
             if isinstance(mdate, str):
