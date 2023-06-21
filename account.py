@@ -161,14 +161,23 @@ class Importer(metaclass=PoolMeta):
             account_type, = AccountType.search([('company', '=', company)],
                 limit=1)
 
-        moves = dict(((x.post_number, x.date), x)
-            for x in Move.search([('company', '=', company)]))
+        moves = set((x.post_number, x.date)
+               for x in Move.search([
+                        ('company', '=', company),
+                        ('period.state', '=', 'open'),
+                        ]))
         moves_to_save = []
         previous_header = None
         accounts_to_save = []
         party_to_save = []
         for record in records:
             mdate = record.effective_date
+            period = periods.get(mdate)
+            if not period:
+                period_id = Period.find(company, date=mdate, exception=True,
+                    test_state=True)
+                period = Period(period_id)
+                periods[mdate] = period
             if isinstance(mdate, str):
                 mdate = datetime.strptime(mdate, '%Y-%m-%d %H:%M:%s').date()
             elif isinstance(mdate, datetime):
@@ -210,19 +219,6 @@ class Importer(metaclass=PoolMeta):
                     with_rec_name=False)
 
                 date = record.effective_date
-                period = periods.get(date)
-                if not period:
-                    period = Period.search([
-                            ('start_date', '<=', date),
-                            ('end_date', '>=', date),
-                            ('type', '=', 'standard'),
-                            ('company', '=', company),
-                            ], limit=1)
-                    if not period:
-                        raise UserError(gettext('importer.no_period_for_date',
-                                date=date.strftime('%Y-%m-%d')))
-                    period = period[0]
-                    periods[date] = period
                 move = Move(**values)
                 move.date = date
                 move.post_number = record.number
@@ -249,6 +245,10 @@ class Importer(metaclass=PoolMeta):
 
             debit = 0
             credit = 0
+            if not record.debit:
+                record.debit = 0
+            if not record.credit:
+                record.credit = 0
             if record.debit < 0:
                 credit = abs(record.debit or 0)
             else:
@@ -257,6 +257,19 @@ class Importer(metaclass=PoolMeta):
                 debit += abs(record.credit or 0)
             else:
                 credit += record.credit or 0
+
+            # Control that only one debit or credit has value.
+            # And none of them has, not create line.
+            if debit and credit:
+                balance = debit - credit
+                if balance == 0:
+                    continue
+                elif balance < 0:
+                    debit = 0
+                    credit = abs(balance)
+                else:
+                    debit = balance
+                    credit = 0
 
             line.debit = Decimal("%.2f" % (debit or 0))
             line.credit = Decimal("%.2f" % (credit or 0))
