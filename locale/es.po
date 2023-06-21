@@ -870,10 +870,6 @@ msgctxt "model:ir.message,text:msg_invalid_invoice_type"
 msgid "Invoice type must be 'out' or 'in' but \"%(type)s\" was found."
 msgstr "El tipo de facutura debe ser \"out\" o \"in\" y se obtenido \"%(type)s\"."
 
-msgctxt "model:ir.message,text:no_period_for_date"
-msgid "No period for date \"%(date)s\"."
-msgstr "No hay periodo para la fecha \"%(date)s\"."
-
 msgctxt "model:ir.message,text:no_records_imported"
 msgid "No records where imported using importer \"%(importer)s\"."
 msgstr ""

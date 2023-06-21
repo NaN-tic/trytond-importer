@@ -24,9 +24,6 @@
         <record model="ir.message" id="account_not_found">
             <field name="text">Account %(account)s not found.</field>
         </record>
-        <record model="ir.message" id="no_period_for_date">
-            <field name="text">No period for date "%(date)s".</field>
-        </record>
         <record model="ir.message" id="party_required_for_account">
             <field name="text">Account "%(account)s" requires a party but no party was supplied in move "%(move)s".</field>
         </record>
