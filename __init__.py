@@ -2,30 +2,31 @@
 # The COPYRIGHT file at the top level of this repository contains
 # the full copyright notices and license terms.
 from trytond.pool import Pool
+from . import agronomics
+from . import account
+from . import company
+from . import country
+from . import crop
+from . import currency
+from . import farm
+from . import invoice
 from . import ir
 from . import importer
+from . import lot
+from . import marketing
+from . import order_point
 from . import party
+from . import party_credit
 from . import price_list
 from . import product
+from . import production
+from . import purchase
 from . import sale
 from . import sale_discount
 from . import sale_3_discounts
-from . import purchase
 from . import stock
-from . import account
-from . import lot
-from . import crop
-from . import farm
-from . import invoice
-from . import agronomics
-from . import order_point
-from . import production
-from . import party_credit
 from . import route
 from . import vacancy
-from . import currency
-from . import company
-from . import country
 
 def register():
     Pool.register(
@@ -235,4 +236,9 @@ def register():
         country.ImporterCountry,
         country.ImporterPostalCodes,
         depends=['country'],
+        module='importer', type_='model')
+    Pool.register(
+        marketing.Importer,
+        marketing.ImporterMarketingEmail,
+        depends=['marketing_email'],
         module='importer', type_='model')
