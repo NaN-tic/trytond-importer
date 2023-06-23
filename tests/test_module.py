@@ -8,7 +8,6 @@ from trytond.transaction import Transaction
 from trytond.pool import Pool
 from trytond.modules.importer.importer import Data
 from trytond.modules.company.tests import create_company
-from trytond.modules.account_invoice.tests import set_invoice_sequences
 
 
 class ImporterTestCase(ModuleTestCase):
