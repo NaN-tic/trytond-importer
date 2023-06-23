@@ -122,9 +122,3 @@ class Importer(metaclass=PoolMeta):
             RouteOperation.save(lines_to_save)
 
         return to_save
-
-
-
-
-
-
