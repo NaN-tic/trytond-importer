@@ -6,7 +6,6 @@ from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.transaction import Transaction
 from trytond.tools import grouped_slice
-from trytond.wizard import Wizard
 
 
 class ImporterAccountMove(ModelView):
@@ -381,7 +380,6 @@ class Importer(metaclass=PoolMeta):
         Account = pool.get('account.account')
         AccountTemplate = pool.get('account.account.template')
         Company = pool.get('company.company')
-        ModelData = pool.get('ir.model.data')
         CreateChart = pool.get('account.create_chart', type='wizard')
 
         for record in records:
@@ -472,7 +470,6 @@ class Importer(metaclass=PoolMeta):
             else:
                 invoice_sequence = SequenceStrict()
                 invoice_sequence.name = 'x'
-                gt
                 fiscalyear.post_move_sequence = None
             seq.out_invoice_sequence = invoice_sequences.get(
                 record.out_invoice_sequence_name)
