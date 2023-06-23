@@ -1,5 +1,6 @@
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
+from trytond.transaction import Transaction
 
 
 class ImporterMarketingEmail(ModelView):
@@ -8,6 +9,7 @@ class ImporterMarketingEmail(ModelView):
 
     mailing_list = fields.Char('Mailing List', required=True)
     email = fields.Char('Email', required=True)
+    active = fields.Boolean('Active')
 
 
 class Importer(metaclass=PoolMeta):
@@ -32,7 +34,8 @@ class Importer(metaclass=PoolMeta):
         Email = pool.get('marketing.email')
 
         lists = {x.name: x for x in List.search([])}
-        existing = set([(x.email, x.list_.name) for x in Email.search([])])
+        with Transaction().set_context(active_test=False):
+            existing = set([(x.email, x.list_.name) for x in Email.search([])])
 
         to_save = []
         for record in records:
@@ -47,6 +50,7 @@ class Importer(metaclass=PoolMeta):
             email = Email()
             email.email = record.email
             email.list_ = lists[record.mailing_list]
+            email.active = record.active
             to_save.append(email)
 
         Email.save(to_save)
