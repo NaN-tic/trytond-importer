@@ -51,6 +51,7 @@ class Importer(metaclass=PoolMeta):
             email.email = record.email
             email.list_ = lists[record.mailing_list]
             email.active = record.active
+            email.email_token = Email.default_email_token()
             to_save.append(email)
 
         Email.save(to_save)
