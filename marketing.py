@@ -35,7 +35,7 @@ class Importer(metaclass=PoolMeta):
 
         lists = {x.name: x for x in List.search([])}
         with Transaction().set_context(active_test=False):
-            existing = set([(x.email, x.list_.name) for x in Email.search([])])
+            existing = {(x.email, x.list_.name): x for x in Email.search([])}
 
         to_save = []
         for record in records:
@@ -46,12 +46,13 @@ class Importer(metaclass=PoolMeta):
             if record.mailing_list not in lists:
                 continue
             if (record.email, record.mailing_list) in existing:
-                continue
-            email = Email()
-            email.email = record.email
-            email.list_ = lists[record.mailing_list]
-            email.active = record.active
-            email.email_token = Email.default_email_token()
+                email = existing[(record.email, record.mailing_list)]
+            else:
+                email = Email()
+                email.email = record.email
+                email.list_ = lists[record.mailing_list]
+            if record.active is not None:
+                email.active = record.active
             to_save.append(email)
 
         Email.save(to_save)
