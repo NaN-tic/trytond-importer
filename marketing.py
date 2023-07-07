@@ -51,6 +51,11 @@ class Importer(metaclass=PoolMeta):
                 continue
             if (address, record.mailing_list) in existing:
                 email = existing[(address, record.mailing_list)]
+                if not email.id:
+                    # If e-mail is found twice in the data set we ignore the
+                    # second one because trying to save the same new object
+                    # twice will raise an error.
+                    continue
             else:
                 email = Email()
                 email.email = address
