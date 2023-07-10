@@ -275,7 +275,6 @@ class Importer(metaclass=PoolMeta):
         ModelData = pool.get("ir.model.data")
         Company = pool.get("company.company")
 
-        print(Transaction().context)
         configs = []
         for record in records:
             if record.company:
