@@ -184,8 +184,8 @@ class Importer(metaclass=PoolMeta):
             if (record.number, mdate) in moves:
                 continue
             if record.account_code is None:
-                print("Not account code:", record.account_code, record.number,
-                      record.description, record.credit, record.debit)
+                # print("Not account code:", record.account_code, record.number,
+                #       record.description, record.credit, record.debit)
                 continue
             header = cls.import_account_move_header(record)
             acc_code = cls.get_account_code(record.account_code)
