@@ -143,8 +143,11 @@ class Importer(metaclass=PoolMeta):
         Currency = pool.get('currency.currency')
 
         def _create_party(code, name):
-            party = Party(name=name, code=code)
-            party.identifiers = [PartyIdentifier(code=code, type=None)]
+            party = Party(name=name)
+            if code:
+                party.code = code
+                party.identifiers = [PartyIdentifier(code=code, type=None)]
+            party.save()
             return party
 
         accounts = cls.get_dict_accounts()
@@ -168,8 +171,40 @@ class Importer(metaclass=PoolMeta):
         moves_to_save = []
         previous_header = None
         accounts_to_save = []
-        party_to_save = []
+        party_createds = {}
         for record in records:
+            # Ensure the move lis has to be created before create all the
+            # related fields.
+            debit = 0
+            credit = 0
+            if not record.debit:
+                record.debit = 0
+            if not record.credit:
+                record.credit = 0
+            if record.debit < 0:
+                credit = abs(record.debit or 0)
+            else:
+                debit = record.debit or 0
+            if record.credit < 0:
+                debit += abs(record.credit or 0)
+            else:
+                credit += record.credit or 0
+
+            # Control that only one debit or credit has value.
+            # And none of them has, not create line.
+            if debit and credit:
+                balance = debit - credit
+                if balance == 0:
+                    continue
+                elif balance < 0:
+                    debit = 0
+                    credit = abs(balance)
+                else:
+                    debit = balance
+                    credit = 0
+            elif not debit and not credit:
+                continue
+
             mdate = record.effective_date
             period = periods.get(mdate)
             if not period:
@@ -234,42 +269,17 @@ class Importer(metaclass=PoolMeta):
                     raise UserError(gettext(
                         'importer.party_required_for_account',
                         account=record.account_code, move=record.number))
-                party = _create_party(party_code, record.party_name)
+                party_name = record.party_name
+                if party_name in party_createds:
+                    party = party_createds[party_name]
+                else:
+                    party = _create_party(party_code, party_name)
+                    party_createds[party_name] = party
                 clients[party.code] = party
-                party_to_save.append(party)
 
             line = Line()
             line.account = account
             line.description = record.description
-
-            debit = 0
-            credit = 0
-            if not record.debit:
-                record.debit = 0
-            if not record.credit:
-                record.credit = 0
-            if record.debit < 0:
-                credit = abs(record.debit or 0)
-            else:
-                debit = record.debit or 0
-            if record.credit < 0:
-                debit += abs(record.credit or 0)
-            else:
-                credit += record.credit or 0
-
-            # Control that only one debit or credit has value.
-            # And none of them has, not create line.
-            if debit and credit:
-                balance = debit - credit
-                if balance == 0:
-                    continue
-                elif balance < 0:
-                    debit = 0
-                    credit = abs(balance)
-                else:
-                    debit = balance
-                    credit = 0
-
             line.debit = Decimal("%.2f" % (debit or 0))
             line.credit = Decimal("%.2f" % (credit or 0))
             if account.party_required:
@@ -282,8 +292,6 @@ class Importer(metaclass=PoolMeta):
 
             move.lines += (line, )
 
-        if party_to_save:
-            Party.save(party_to_save)
         if accounts_to_save:
             Account.save(accounts_to_save)
 
