@@ -235,7 +235,8 @@ class Importer(metaclass=PoolMeta):
 
             parties[record.code] = party
             party.name = record.name
-            party.code = record.code
+            if record.code:
+                party.code = record.code
             if 'trade_name' in party._fields:
                 party.trade_name = record.trade_name
 
