@@ -97,7 +97,7 @@ class ImporterTestCase(ModuleTestCase):
                 'account_category': category.name,
                 'purchasable': 'True',
                 'salable': 'True',
-                'supplier_unit_price': Decimal('5'),
+                'supplier_unit_price': '5',
                 }])
         Product = pool.get('product.product')
         self.assertEqual(len(Product.search([])), 1)
