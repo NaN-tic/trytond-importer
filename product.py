@@ -397,10 +397,10 @@ class Importer(metaclass=PoolMeta):
                     supplier.minimum_quantity = record.minimum_quantity
                 if ProductSupplier._fields.get('multiple_quantity') and record.supplier_multiple_quantity:
                     supplier.multiple_quantity = record.multiple_quantity
-                if record.supplier_price:
+                if record.supplier_unit_price:
                     supplier_price = ProductSupplierPrice()
                     supplier_price.quantity = 0
-                    supplier_price.unit_price = round_price(record.supplier_price)
+                    supplier_price.unit_price = round_price(record.supplier_unit_price)
                     supplier.prices.append(supplier_price)
                 template.product_suppliers = [supplier]
                 templates[record.template_code] = template
