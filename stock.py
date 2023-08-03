@@ -18,6 +18,7 @@ class ImporterStockMove(ModelView):
     quantity = fields.Float('Quantity')
     cost_price = fields.Numeric('Cost Price')
     unit_price = fields.Numeric('Unit Price')
+    lot = fields.Char('Lot')
 
 
 class ImporterLocation(ModelView):
@@ -92,6 +93,7 @@ class Importer(metaclass=PoolMeta):
         Move = pool.get('stock.move')
         Location = pool.get('stock.location')
         Product = pool.get('product.product')
+        Lot = pool.get('stock.lot')
 
         location_names = ([x.from_location for x in records] +
             [x.to_location for x in records])
@@ -101,12 +103,29 @@ class Importer(metaclass=PoolMeta):
         codes = [x.product_code for x in records]
         products = {x.code: x for x in Product.search([('code', 'in', codes)])}
 
+        lots = {}
+        if hasattr(Move, 'lot'):
+            for record in records:
+                if record.lot:
+                    domain = [
+                        ('number', '=', record.lot),
+                        ('product.code', '=', record.product_code)
+                        ]
+                    if hasattr(Move, 'expiration_date'):
+                        domain.append(
+                            ('expiration_date', '>=', record.effective_date))
+                    lots_ = Lot.search(domain)
+                    if lots_:
+                        lot = lots_[0]
+                        lots[lot.number] = lot
+
         to_save = []
         for record in records:
             move = Move()
             from_location = locations.get(record.from_location)
             to_location = locations.get(record.to_location)
             product = products.get(record.product_code)
+            lot = lots.get(record.lot)
 
             if (not from_location or not to_location or not product
                     or not record.quantity):
@@ -124,6 +143,8 @@ class Importer(metaclass=PoolMeta):
             move.uom = product.default_uom
             move.effective_date = record.effective_date
             move.planned_date = record.planned_date
+            if lot:
+                move.lot = lot
             to_save.append(move)
         Move.save(to_save)
         return to_save

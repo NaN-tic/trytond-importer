@@ -726,6 +726,10 @@ msgctxt "field:importer.stock.move,unit_price:"
 msgid "Unit Price"
 msgstr "Precio unitario"
 
+msgctxt "field:importer.stock.move,lot:"
+msgid "Lot"
+msgstr "Lote"
+
 msgctxt "help:importer,template:"
 msgid ""
 "Check to indicate that this importer is a template and thus should appear in"
