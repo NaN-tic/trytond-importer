@@ -117,7 +117,7 @@ class Importer(metaclass=PoolMeta):
                     lots_ = Lot.search(domain)
                     if lots_:
                         lot = lots_[0]
-                        lots[lot.number] = lot
+                        lots[(lot.number, record.product_code)] = lot
 
         to_save = []
         for record in records:
@@ -125,7 +125,7 @@ class Importer(metaclass=PoolMeta):
             from_location = locations.get(record.from_location)
             to_location = locations.get(record.to_location)
             product = products.get(record.product_code)
-            lot = lots.get(record.lot)
+            lot = lots.get((record.lot, record.product_code))
 
             if (not from_location or not to_location or not product
                     or not record.quantity):
