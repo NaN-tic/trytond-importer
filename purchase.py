@@ -199,7 +199,14 @@ class Importer(metaclass=PoolMeta):
                         ('code', '=', record.product_code),
                         ])
                 if len(products) != 1:
-                    raise UserError(gettext('importer.single_product_error',
+                    active_products = []
+                    for product in products:
+                        if product.active:
+                            active_products.append(product)
+                    if len(active_products) == 1:
+                        products = active_products
+                    else:
+                        raise UserError(gettext('importer.single_product_error',
                             product=record.product_code))
 
                 values = Line.default_get(
