@@ -7,8 +7,14 @@
             <field name="text">Name "%(name)s" is not valid for column "%(column)s" in importer "%(importer)s".</field>
         </record>
   	    <record model="ir.message" id="no_records_imported">
-              <field name="text">No records where imported using importer "%(importer)s".</field>
+            <field name="text">No records where imported using importer "%(importer)s".</field>
   	    </record>
+        <record model="ir.message" id="msg_invalid_connection">
+            <field name="text">Could not establish connection using importer "%(importer)s".</field>
+        </record>
+        <record model="ir.message" id="msg_successful_connection">
+            <field name="text">Successful connection using importer "%(importer)s".</field>
+        </record>
         <record model="ir.message" id="single_party_error">
             <field name="text">There must be one and only one party with "%(party)s".</field>
         </record>
@@ -42,9 +48,9 @@
         <record model="ir.message" id="msg_sequence_type_required">
             <field name="text">Sequence Type is required</field>
         </record>
-	<record model="ir.message" id="msg_sequence_type_not_found">
-            <field name="text">Sequence Type "%(type)s" not found.</field>
-	</record>
+        <record model="ir.message" id="msg_sequence_type_not_found">
+                <field name="text">Sequence Type "%(type)s" not found.</field>
+        </record>
     </data>
 
     <data depends="account">
