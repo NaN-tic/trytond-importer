@@ -329,11 +329,11 @@ class Importer(ModelSQL, ModelView):
                 importer.sql_source)
             method()
 
-    def get_connection(self):
+    def get_connection(self, fail=True):
         if self.data_source != 'sql':
             return
         method = getattr(self, "get_connection_%s" % self.sql_source)
-        return method()
+        return method(fail=fail)
 
     def get_sql(self):
         if self.data_source != 'sql':
@@ -646,7 +646,9 @@ class ImporterColumn(ModelSQL, ModelView):
             binary_data = importer.binary_data
         else:
             binary_data = self.importer.binary_data
-        conn = self.importer.get_connection()
+        conn = self.importer.get_connection(fail=False)
+        if not conn:
+            return []
         sql = self.importer.get_sql()
         data = Data(self.importer.data_source, binary_data,
             self.importer.text_data, self.importer.url_data, conn, sql)
