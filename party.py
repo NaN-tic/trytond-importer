@@ -569,10 +569,7 @@ class Importer(metaclass=PoolMeta):
             langs = Lang.search(["code", "=", record.language_code], limit=1)
             if langs:
                 configuration.party_lang, = langs
-                configuration.save()
-
-            to_save.append(configuration)
+            break
 
         Configuration.save(to_save)
-
-        return to_save
+        return [Configuration(1)]
