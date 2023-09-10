@@ -18,6 +18,18 @@ class ImporterSequence(ModelView):
     strict = fields.Boolean('Strict')
 
 
+class ImporterLanguage(ModelView):
+    'Importer Language'
+    __name__ = 'importer.language'
+
+    code = fields.Char('Code')
+    name = fields.Char('Name')
+    translatable = fields.Boolean('Translatable')
+    parent = fields.Char('Parent')
+    date = fields.Char('Date Format')
+    decimal_point = fields.Char('Decimal Point')
+
+
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
 
@@ -25,6 +37,11 @@ class Importer(metaclass=PoolMeta):
     def _get_methods(cls):
         methods = super()._get_methods()
         methods.update({
+                'language': {
+                    'string': 'Languages',
+                    'model': 'importer.language',
+                    'chunked': True,
+                    },
                 'sequence': {
                     'string': 'Sequence',
                     'model': 'importer.sequence',
@@ -32,6 +49,34 @@ class Importer(metaclass=PoolMeta):
                     },
                 })
         return methods
+
+    @classmethod
+    def import_language(cls, records):
+        pool = Pool()
+        Language = pool.get('ir.lang')
+
+        to_save = []
+        for record in records:
+            languages = Language.search([('code', '=', record.code)])
+            if languages:
+                language, = languages
+            else:
+                language = Language()
+            if record.name:
+                language.name = record.name
+            if not record.translatable is None:
+                language.translatable = record.translatable
+            if record.parent:
+                language.parent = record.parent
+            if record.date:
+                language.date = record.date
+            if record.decimal_point:
+                language.decimal_point = record.decimal_point
+
+            to_save.append(language)
+
+        Language.save(to_save)
+        return to_save
 
     @classmethod
     def import_sequence(cls, records):

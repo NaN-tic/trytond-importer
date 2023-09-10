@@ -14,7 +14,7 @@ class ImporterTestCase(ModuleTestCase):
     'Test Importer module'
     module = 'importer'
     extras = ['party', 'company', 'product', 'sale', 'purchase', 'account_invoice',
-        'account_code_digits', 'stock', 'product_price_list']
+        'account_code_digits', 'stock', 'product_price_list', 'user_role']
 
     def import_(self, method, records):
         pool = Pool()
@@ -37,8 +37,6 @@ class ImporterTestCase(ModuleTestCase):
 
         data = Data('text', None, json.dumps(records), None)
         importer.data_to_records(data.get_data())
-
-
 
     @with_transaction()
     def test_party(self):
@@ -68,7 +66,33 @@ class ImporterTestCase(ModuleTestCase):
         Date = Pool().get('ir.date')
         today = Date.today()
 
+        self.import_('language', [{
+                'code': 'ca',
+                'translatable': True,
+                }])
+        Language = pool.get('ir.lang')
+        self.assertEqual(len(Language.search([('translatable', '=', True)])), 2)
+
         company = create_company()
+
+        self.import_('role', [{
+                'name': 'Test',
+                'groups': 'Sales,Purchase',
+                }])
+
+        self.import_('user', [{
+                'name': 'User',
+                'login': 'user',
+                'email': 'user@nan-tic.com',
+                'password': '0123456789',
+                'language_code': 'ca',
+                'groups': 'Administration',
+                'roles': 'Test',
+                'companies': company.party.name,
+                'company': company.party.name,
+                }])
+
+
         self.import_('account_create_chart', [{
                 'company_name': company.party.name,
                 'chart_name': 'Minimal Account Chart',
@@ -77,8 +101,8 @@ class ImporterTestCase(ModuleTestCase):
         Account = pool.get('account.account')
         accounts = Account.search([])
 
-        for index,account in enumerate(accounts):
-                account.code = '000'+str(index+1)
+        for index, account in enumerate(accounts):
+                account.code = '000' + str(index + 1)
         Account.save(accounts)
         Transaction().set_context(company=company.id)
 

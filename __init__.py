@@ -25,6 +25,7 @@ from . import sale
 from . import sale_discount
 from . import sale_3_discounts
 from . import stock
+from . import res
 from . import route
 from . import vacancy
 
@@ -33,8 +34,11 @@ def register():
         importer.Importer,
         importer.ImporterColumn,
         importer.ImportAsk,
+        ir.ImporterLanguage,
         ir.ImporterSequence,
         ir.Importer,
+        res.ImporterUser,
+        res.Importer,
         module='importer', type_='model')
     Pool.register(
         importer.AskAndImport,
@@ -241,4 +245,8 @@ def register():
         marketing.Importer,
         marketing.ImporterMarketingEmail,
         depends=['marketing_email'],
+        module='importer', type_='model')
+    Pool.register(
+        res.ImporterRole,
+        depends=['user_role'],
         module='importer', type_='model')
