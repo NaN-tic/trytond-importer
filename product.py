@@ -1,13 +1,21 @@
+from itertools import groupby
 from decimal import Decimal
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
 from trytond.model import ModelView, fields
-from trytond.pool import PoolMeta, Pool
 from trytond.modules.product import round_price
+from trytond.pool import PoolMeta, Pool
+from trytond.transaction import Transaction
 
 
 class ImporterProduct(ModelView):
     'Importer Product'
     __name__ = 'importer.product'
 
+    company = fields.Char('Company',
+        help="Company field can be used to set company-dependent fields."
+        "Better sort records by company prior to import for better "
+        "performance.")
     template_code = fields.Char('Template Code')
     variant_code = fields.Char('Variant Code')
     variant_suffix_code = fields.Char('Variant Suffix Code')
@@ -166,6 +174,28 @@ class Importer(metaclass=PoolMeta):
 
     @classmethod
     def import_product(cls, records):
+        pool = Pool()
+        try:
+            Company = pool.get('company.company')
+        except KeyError:
+            Company = None
+
+        imported = []
+        for company_name, records in groupby(records, key=lambda x: x.company):
+            company = None
+            if company_name and Company:
+                companies = Company.search([('party.name', '=', company_name)], limit=1)
+                if not companies:
+                    raise UserError(gettext('importer.msg_company_not_found',
+                        company=company_name))
+                company, = companies
+            with Transaction().set_context(
+                    company=company.id if company else None):
+                imported += cls._import_product(records)
+        return imported
+
+    @classmethod
+    def _import_product(cls, records):
         pool = Pool()
         Product = pool.get('product.product')
         Template = pool.get('product.template')

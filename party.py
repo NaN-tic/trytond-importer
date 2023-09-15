@@ -1,3 +1,4 @@
+from itertools import groupby
 from datetime import timedelta
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
@@ -22,6 +23,10 @@ class ImporterParty(ModelView):
     'Importer Party'
     __name__ = 'importer.party'
 
+    company = fields.Char('Company',
+        help="Company field can be used to set company-dependent fields."
+        "Better sort records by company prior to import for better "
+        "performance.")
     code = fields.Char('Code')
     name = fields.Char('Name')
     trade_name = fields.Char('Trade Name')
@@ -159,6 +164,29 @@ class Importer(metaclass=PoolMeta):
 
     @classmethod
     def import_party(cls, records):
+        pool = Pool()
+        try:
+            Company = pool.get('company.company')
+        except KeyError:
+            Company = None
+
+        imported = []
+        for company_name, records in groupby(records, key=lambda x: x.company):
+            company = None
+            if company_name and Company:
+                companies = Company.search([('party.name', '=', company_name)], limit=1)
+                if not companies:
+                    raise UserError(gettext('importer.msg_company_not_found',
+                        company=company_name))
+                company, = companies
+            with Transaction().set_context(
+                    company=company.id if company else None):
+                imported += cls._import_party(records)
+        return imported
+
+
+    @classmethod
+    def _import_party(cls, records):
         pool = Pool()
         Party = pool.get('party.party')
         PartyCategory = pool.get('party.category')
