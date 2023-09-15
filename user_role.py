@@ -1,3 +1,5 @@
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
 from trytond.model import ModelView, fields
 from trytond.pool import Pool, PoolMeta
 

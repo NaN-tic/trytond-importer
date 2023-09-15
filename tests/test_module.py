@@ -1,7 +1,5 @@
-
 # This file is part of Tryton.  The COPYRIGHT file at the top level of
 # this repository contains the full copyright notices and license terms.
-
 import json
 from trytond.tests.test_tryton import ModuleTestCase, with_transaction
 from trytond.transaction import Transaction
@@ -51,10 +49,10 @@ class ImporterTestCase(ModuleTestCase):
                 'number_next': 1,
                 }])
         self.import_('party', [{
-                'name': 'nan-tic',
-                'street': 'les paus',
+                'name': 'NaN-tic',
+                'street': 'Les Paus, 98 Local 2',
                 'city': 'Sabadell',
-                'code': 'NA',
+                'code': '08202',
                 }])
         Party = pool.get('party.party')
         self.assertEqual(len(Party.search([])), 1)
@@ -106,6 +104,11 @@ class ImporterTestCase(ModuleTestCase):
         Account.save(accounts)
         Transaction().set_context(company=company.id)
 
+        self.import_('party', [{
+                'company': company.party.name,
+                'name': 'Party in company',
+                }])
+
         Party = pool.get('party.party')
 
         Category = pool.get('product.category')
@@ -115,6 +118,7 @@ class ImporterTestCase(ModuleTestCase):
         category.save()
 
         self.import_('product', [{
+                'company': company.party.name,
                 'name': 'Aigua',
                 'variant_suffix_code': 'A',
                 'template_code': '0001',
@@ -122,6 +126,7 @@ class ImporterTestCase(ModuleTestCase):
                 'purchasable': 'True',
                 'salable': 'True',
                 'supplier_unit_price': '5',
+                'cost_price': '5',
                 }])
         Product = pool.get('product.product')
         self.assertEqual(len(Product.search([])), 1)
