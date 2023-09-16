@@ -172,20 +172,19 @@ class Importer(metaclass=PoolMeta):
 
         imported = []
         for company_name, records in groupby(records, key=lambda x: x.company):
-            company = None
+            company_id = Transaction().context.get('company')
             if Company:
                 if company_name:
                     companies = Company.search([('party.name', '=', company_name)], limit=1)
                     if not companies:
                         raise UserError(gettext('importer.msg_company_not_found',
                             company=company_name))
-                    company, = companies
-                else:
+                    company_id = companies[0].id
+                elif not company_id:
                     companies = Company.search([], limit=1)
                     if companies:
                         company, = companies
-            with Transaction().set_context(
-                    company=company.id if company else None):
+            with Transaction().set_context(company=company_id):
                 imported += cls._import_party(records)
         return imported
 
