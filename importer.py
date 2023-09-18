@@ -763,6 +763,8 @@ class ImporterColumn(ModelSQL, ModelView):
                 except ValueError:
                     # TODO: Raise Error
                     return None
+            elif not isinstance(value, datetime.date):
+                return None
         elif ttype in ('datetime', 'timestamp'):
             if isinstance(value, str):
                 value = value.strip()
@@ -775,6 +777,8 @@ class ImporterColumn(ModelSQL, ModelView):
                 except ValueError:
                     # TODO: Raise Error
                     return None
+            elif not isinstance(value, (datetime.datetime, datetime.date)):
+                return None
         elif ttype == 'boolean':
             value = str(value).strip()
             if value.lower() in ('false', 'off', '0', ''):
