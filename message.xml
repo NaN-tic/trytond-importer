@@ -106,4 +106,12 @@
             <field name="text">Can't find tag "%(tag)s".</field>
         </record>
     </data>
+
+    <data depends="company">
+        <record model="ir.message" id="msg_name_required">
+            <field name="">Missing company name.</field>
+        </record>
+        <record model="ir.message" id="msg_currency_not_found">
+            <field name="text">Currency %(currency)s not found.</field>k
+    </data>
 </tryton>

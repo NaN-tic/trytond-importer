@@ -1,5 +1,7 @@
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
 
 
 class ImporterCompany(ModelView):
@@ -7,8 +9,6 @@ class ImporterCompany(ModelView):
     __name__ = 'importer.company'
 
     name = fields.Char("Name")
-    party_code = fields.Char("Party code")
-    party_name = fields.Char("Party name")
     currency = fields.Char("Currency")
     timezone = fields.Char("timezone")
 
@@ -38,27 +38,37 @@ class Importer(metaclass=PoolMeta):
 
         to_save = []
         for record in records:
-            company = Company()
+            if not record.name:
+                raise UserError(gettext('importer.msg_name_required'))
 
-            if record.party_code:
-                company.party = Party.search(["code", "=", record.party_code])[0]
+            companies = Company.search([('party.name', '=', record.name)],
+                limit=1)
+            if companies:
+                company, = companies
             else:
-                company.party = Party.search(["name", "=", record.party_name])[0]
+                company = Company()
 
-            if not record.currency:
-                eur = Currency.search(["code","=","EUR"])
-                if len(eur) == 0:
-                    return []
-                company.currency = eur[0]
+            parties = Party.search(["name", "=", record.name], limit=1)
+            if parties:
+                party, = parties
             else:
-                company.currency = Currency.search(["code", "=", record.currency])[0].id
+                party = Party()
+                party.name = record.name
+                party.save()
 
-            if not record.timezone:
-                company.timezone = "Europe/Madrid"
-            else:
+            if record.currency:
+                currencies = Currency.search([
+                    ('code', '=', record.currency or 'EUR'),
+                    ], limit=1)
+                if not currencies:
+                    raise UserError(gettext('importer.msg_currency_not_found',
+                            currency=record.currency))
+                company.currency, = currencies
+
+            if record.timezone:
                 company.timezone = record.timezone
 
-            company.save()
             to_save.append(company)
 
+        Company.save(to_save)
         return to_save
