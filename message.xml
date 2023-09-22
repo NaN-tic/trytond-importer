@@ -113,5 +113,6 @@
         </record>
         <record model="ir.message" id="msg_currency_not_found">
             <field name="text">Currency %(currency)s not found.</field>k
+        </record>
     </data>
 </tryton>
