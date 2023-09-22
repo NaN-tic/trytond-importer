@@ -47,14 +47,14 @@ class Importer(metaclass=PoolMeta):
                 company, = companies
             else:
                 company = Company()
-
-            parties = Party.search(["name", "=", record.name], limit=1)
-            if parties:
-                party, = parties
-            else:
-                party = Party()
-                party.name = record.name
-                party.save()
+                parties = Party.search(["name", "=", record.name], limit=1)
+                if parties:
+                    party, = parties
+                else:
+                    party = Party()
+                    party.name = record.name
+                    party.save()
+                company.party = party
 
             if record.currency:
                 currencies = Currency.search([
