@@ -93,7 +93,10 @@ class Importer(metaclass=PoolMeta):
         Move = pool.get('stock.move')
         Location = pool.get('stock.location')
         Product = pool.get('product.product')
-        Lot = pool.get('stock.lot')
+        try:
+            Lot = pool.get('stock.lot')
+        except KeyError:
+            Lot = None
 
         location_names = ([x.from_location for x in records] +
             [x.to_location for x in records])
@@ -106,7 +109,7 @@ class Importer(metaclass=PoolMeta):
         lots = {}
         if hasattr(Move, 'lot'):
             for record in records:
-                if record.lot:
+                if Lot and record.lot:
                     domain = [
                         ('number', '=', record.lot),
                         ('product.code', '=', record.product_code)
