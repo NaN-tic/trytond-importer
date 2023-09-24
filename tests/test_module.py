@@ -73,6 +73,17 @@ class ImporterTestCase(ModuleTestCase):
 
         company = create_company()
 
+        self.import_('employee', [{
+                'name': 'Supervisor',
+                'company': company.party.name,
+                }, {
+                'name': 'Supervised',
+                'company': company.party.name,
+                'from_date': today.strftime('%Y-%m-%d'),
+                'to_date': today.strftime('%Y-%m-%d'),
+                'supervisor': 'Supervisor',
+                }])
+
         self.import_('role', [{
                 'name': 'Test',
                 'groups': 'Sales,Purchase',
@@ -88,6 +99,8 @@ class ImporterTestCase(ModuleTestCase):
                 'roles': 'Test',
                 'companies': company.party.name,
                 'company': company.party.name,
+                'employees': 'Supervised',
+                'employee': 'Supervised',
                 }])
 
 

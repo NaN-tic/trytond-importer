@@ -234,6 +234,7 @@ def register():
     Pool.register(
         company.Importer,
         company.ImporterCompany,
+        company.ImporterEmployee,
         depends=['company'],
         module='importer', type_='model')
     Pool.register(
