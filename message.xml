@@ -123,5 +123,8 @@
         <record model="ir.message" id="msg_supervisor_not_found">
             <field name="text">Supervisor "%(supervisor)s" not found.</field>
         </record>
+        <record model="ir.message" id="msg_employee_not_found">
+            <field name="text">Employee %(employee)s not found.</field>
+        </record>
     </data>
 </tryton>
