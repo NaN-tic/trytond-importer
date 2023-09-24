@@ -19,6 +19,9 @@ class ImporterUser(ModelView):
     companies = fields.Char('Companies',
         help="Comma separated list of company names")
     company = fields.Char('Company')
+    employees = fields.Char('Employees',
+        help="Comma separated list of employee names")
+    employee = fields.Char('Employee')
 
 
 class Importer(metaclass=PoolMeta):
@@ -50,8 +53,10 @@ class Importer(metaclass=PoolMeta):
             UserRole = None
         try:
             Company = pool.get('company.company')
+            Employee = pool.get('company.employee')
         except KeyError:
             Company = None
+            Employee = None
 
         langs = Language.search([('translatable', '=', True)])
         langs = {x.code: x for x in langs}
@@ -70,6 +75,12 @@ class Importer(metaclass=PoolMeta):
             companies = {x.party.name: x for x in companies}
         else:
             companies = {}
+
+        if Employee:
+            employees = Employee.search([])
+            employees = {x.party.name: x for x in employees}
+        else:
+            employees = {}
 
         to_save = []
         for record in records:
@@ -127,6 +138,24 @@ class Importer(metaclass=PoolMeta):
                                 'importer.msg_company_not_found',
                                 company=record.company))
                     user.company = companies[record.company]
+
+            if Employee:
+                if record.employees:
+                    employees_to_add = []
+                    for employee in record.employees.split(','):
+                        if employee.strip() not in employees:
+                            raise UserError(gettext(
+                                    'importer.msg_employee_not_found',
+                                    employee=employee))
+                        employees_to_add.append(employees[employee])
+                    user.employees = employees_to_add
+
+                if record.employee:
+                    if record.employee.strip() not in employees:
+                        raise UserError(gettext(
+                                'importer.msg_employee_not_found',
+                                employee=record.employee))
+                    user.employee = employees[record.employee]
 
             to_save.append(user)
 

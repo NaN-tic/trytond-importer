@@ -120,5 +120,8 @@
         <record model="ir.message" id="msg_currency_not_found">
             <field name="text">Currency %(currency)s not found.</field>
         </record>
+        <record model="ir.message" id="msg_supervisor_not_found">
+            <field name="text">Supervisor "%(supervisor)s" not found.</field>
+        </record>
     </data>
 </tryton>
