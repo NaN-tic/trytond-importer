@@ -101,14 +101,13 @@ class Importer(metaclass=PoolMeta):
             if not record.name:
                 raise UserError(gettext('importer.msg_name_required'))
 
-
             employees = Employee.search([('party.name', '=', record.name)],
                 limit=1)
             if employees:
-                employee, = companies
+                employee, = employees
             else:
                 employee = Employee()
-                parties = Party.search(["name", "=", record.name], limit=1)
+                parties = Party.search(['name', '=', record.name], limit=1)
                 if parties:
                     party, = parties
                 else:

@@ -76,6 +76,9 @@ class ImporterTestCase(ModuleTestCase):
         self.import_('employee', [{
                 'name': 'Supervisor',
                 'company': company.party.name,
+                'from_date': None,
+                'to_date': None,
+                'supervisor': None,
                 }, {
                 'name': 'Supervised',
                 'company': company.party.name,
@@ -83,6 +86,12 @@ class ImporterTestCase(ModuleTestCase):
                 'to_date': today.strftime('%Y-%m-%d'),
                 'supervisor': 'Supervisor',
                 }])
+        Employee = pool.get('company.employee')
+
+        employees = [x.party.name for x in Employee.search([],
+            order=[('party.name', 'ASC')])]
+        self.assertEqual(employees, ['Supervised', 'Supervisor'])
+
 
         self.import_('role', [{
                 'name': 'Test',
