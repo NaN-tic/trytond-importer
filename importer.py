@@ -255,7 +255,7 @@ class Importer(ModelSQL, ModelView):
         'invisible': ~Eval('data_source').in_(['sql']),
         'required': Eval('data_source').in_(['sql']),
         })
-    schema = fields.Char('schema', states={
+    schema = fields.Char('Schema', states={
         'invisible': ~Eval('data_source').in_(['sql']),
         })
     where = fields.Char('Where', states={
