@@ -462,7 +462,7 @@ class Importer(metaclass=PoolMeta):
                 party.receivable_bank_account = party.bank_accounts[0]
 
 
-            if hasattr(Party, 'bank_accounts'):
+            if hasattr(Party, 'payable_company_bank_account'):
                 company_pay_bank_acc = bank_accounts.get(
                     record.default_payable_company_bank_account)
                 company_rec_bank_acc = bank_accounts.get(
