@@ -67,7 +67,7 @@
 
     <data depends="bank">
         <record model="ir.message" id="wron_iban">
-            <field name="text">Wrong Iban %(iban)s.</field>
+            <field name="text">Wrong IBAN %(iban)s.</field>
         </record>
         <record model="ir.message" id="bank_not_found">
             <field name="text">Bank not found for iban: %(iban)s.</field>
