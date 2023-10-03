@@ -27,8 +27,8 @@ from trytond.rpc import RPC
 from trytond.report import Report
 
 
-distance_threshold = config.getfloat('importer', 'distance_threshold',
-    default=0.6)
+DISTANCE_THRESHOLD = config.getfloat('importer', 'distance_threshold',
+    default=0.0)
 
 data_sources = [
     ('binary', 'File'),
@@ -376,7 +376,7 @@ class Importer(ModelSQL, ModelView):
 
     @classmethod
     @ModelView.button
-    def detect(cls, importers):
+    def detect(cls, importers, distance_threshold=None):
         pool = Pool()
         Column = pool.get('importer.column')
 
@@ -392,7 +392,7 @@ class Importer(ModelSQL, ModelView):
             header_reliable = item['header_reliable']
             use_header = has_header
             if rows and (has_header or not header_reliable):
-                use_header = importer.detect_header(rows[0])
+                use_header = importer.detect_header(rows[0], distance_threshold)
                 columns += importer.columns
 
             importer.has_header = use_header
@@ -401,10 +401,13 @@ class Importer(ModelSQL, ModelView):
         cls.save(importers)
         Column.save(columns)
 
-    def detect_header(self, row):
+    def detect_header(self, row, distance_threshold):
         pool = Pool()
         Lang = pool.get('ir.lang')
         Field = pool.get('ir.model.field')
+
+        if distance_threshold is None:
+            distance_threshold = DISTANCE_THRESHOLD
 
         field_ids = []
         strings = {}
@@ -435,7 +438,7 @@ class Importer(ModelSQL, ModelView):
                     header_minimum = min(header_minimum, value)
                 if header_minimum < row_minimum[0]:
                     row_minimum = (header_minimum, header)
-            if row_minimum[0] < distance_threshold:
+            if row_minimum[0] <= distance_threshold:
                 column.name = row_minimum[1]
                 use_header = True
             else:
