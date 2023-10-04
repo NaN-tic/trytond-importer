@@ -1,6 +1,6 @@
 import os
 import subprocess
-from trytond.model import ModelView, fields
+from trytond.model import ModelView
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
 from trytond.config import config
@@ -9,7 +9,6 @@ class ImporterCurrency(ModelView):
     'Importer Currency'
     __name__ = 'importer.currency'
 
-    name = fields.Char("name")
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
