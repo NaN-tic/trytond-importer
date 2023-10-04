@@ -11,8 +11,9 @@ from trytond.modules.company.tests import create_company
 class ImporterTestCase(ModuleTestCase):
     'Test Importer module'
     module = 'importer'
-    extras = ['party', 'company', 'product', 'sale', 'purchase', 'account_invoice',
-        'account_code_digits', 'stock', 'product_price_list', 'user_role']
+    extras = ['party', 'company', 'product', 'sale', 'purchase',
+        'account_invoice', 'account_code_digits', 'stock',
+        'product_price_list', 'user_role', 'bank', 'bank_es']
 
     def import_(self, method, records):
         pool = Pool()
@@ -60,7 +61,6 @@ class ImporterTestCase(ModuleTestCase):
     @with_transaction()
     def test_product(self):
         pool = Pool()
-
         Date = Pool().get('ir.date')
         today = Date.today()
 
@@ -126,12 +126,34 @@ class ImporterTestCase(ModuleTestCase):
         Account.save(accounts)
         Transaction().set_context(company=company.id)
 
+        Party = pool.get('party.party')
+
         self.import_('party', [{
                 'company': company.party.name,
                 'name': 'Party in company',
                 }])
 
-        Party = pool.get('party.party')
+        Bank = pool.get('bank')
+        self.import_('bank', [{
+                    'name': 'Sabadell',
+                    'bic': 'BSABESBBXXX',
+                    }])
+        bank, = Bank.search([])
+        self.assertEqual(bank.bic, 'BSABESBBXXX')
+        Bank.delete([bank])
+
+        # Spain must be created before bank_es can be imported
+        Country = pool.get('country.country')
+        spain = Country()
+        spain.name = 'Spain'
+        spain.code = 'ES'
+        spain.save()
+
+        self.import_('spanish_bank', [{
+                    'name': 'x',
+                    }])
+        banks = Bank.search([])
+        self.assertGreater(len(banks), 10)
 
         Category = pool.get('product.category')
         category = Category()

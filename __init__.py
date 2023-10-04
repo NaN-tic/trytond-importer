@@ -4,6 +4,8 @@
 from trytond.pool import Pool
 from . import agronomics
 from . import account
+from . import bank
+from . import bank_es
 from . import company
 from . import country
 from . import crop
@@ -253,3 +255,14 @@ def register():
         user_role.ImporterRole,
         depends=['user_role'],
         module='importer', type_='model')
+    Pool.register(
+        bank.Importer,
+        bank.ImporterBank,
+        depends=['bank'],
+        module='importer', type_='model')
+    Pool.register(
+        bank_es.Importer,
+        bank_es.ImporterSpanishBank,
+        depends=['bank_es'],
+        module='importer', type_='model')
+
