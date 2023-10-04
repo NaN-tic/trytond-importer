@@ -127,4 +127,9 @@
             <field name="text">Employee %(employee)s not found.</field>
         </record>
     </data>
+    <data depends="bank">
+        <record model="ir.message" id="msg_bank_name_required">
+            <field name="text">The bank name is required.</field>
+        </record>
+    </data>
 </tryton>
