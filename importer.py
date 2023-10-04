@@ -458,6 +458,13 @@ class Importer(ModelSQL, ModelView):
         info = self._get_methods()
         return info[self.method]['chunked']
 
+    @property
+    def requires_records(self):
+        # Some importers (such as country) don't really require records as
+        # input
+        info = self._get_methods()
+        return info[self.method].get('requires_records', True)
+
     @fields.depends('method')
     def on_change_with_model(self, name=None):
         pool = Pool()
@@ -478,11 +485,14 @@ class Importer(ModelSQL, ModelView):
         # Records will be an iterator
         method = getattr(self, 'import_' + self.method)
         new_records = []
-        if self.chunked:
-            for records in grouped_slice(self.get_records(data=data)):
-                new_records += method(records)
+        if self.requires_records:
+            if self.chunked:
+                for records in grouped_slice(self.get_records(data=data)):
+                    new_records += method(records)
+            else:
+                new_records += method(self.get_records(data=data))
         else:
-            new_records += method(self.get_records(data=data))
+            new_records = method()
         return new_records
 
     def get_records(self, raise_errors=True, data=None):

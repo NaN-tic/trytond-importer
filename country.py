@@ -10,14 +10,10 @@ class ImporterCountry(ModelView):
     'Importer Country'
     __name__ = 'importer.country'
 
-    name = fields.Char("name")
-
 
 class ImporterPostalCodes(ModelView):
     'Importer Postal Codes'
     __name__ = 'importer.country.postal_codes'
-
-    name = fields.Char("name")
 
 
 class Importer(metaclass=PoolMeta):
@@ -31,17 +27,19 @@ class Importer(metaclass=PoolMeta):
                     'string': 'Country',
                     'model': 'importer.country',
                     'chunked': True,
+                    'requires_records': False,
                     },
                 'spanish_postal_codes': {
                     'string': 'Postal codes',
                     'model': 'importer.country.postal_codes',
                     'chunked': True,
+                    'requires_records': False,
                     },
                 })
         return methods
 
     @classmethod
-    def import_country(cls, records):
+    def import_country(cls):
         env = os.environ.copy()
         env['PYTHONPATH'] = os.environ.get('PYTHONPATH', '') + 'trytond:proteus'
         env['TRYTOND_DATABASE_URI'] = config.get('database', 'uri',
@@ -54,10 +52,10 @@ class Importer(metaclass=PoolMeta):
         # We commit the transaction to access to all the created countries
         Transaction().connection.commit()
 
-        Currency = Pool().get("country.country")
-        return Currency.search([])
+        Country = Pool().get("country.country")
+        return Country.search([])
 
-    def import_spanish_postal_codes(cls, records):
+    def import_spanish_postal_codes(cls):
         env = os.environ.copy()
         env['PYTHONPATH'] = os.environ.get('PYTHONPATH', '') + 'trytond:proteus'
         env['TRYTOND_DATABASE_URI'] = config.get('database', 'uri',
