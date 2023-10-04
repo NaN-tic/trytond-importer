@@ -1,0 +1,57 @@
+from trytond.model import ModelView, fields
+from trytond.pool import PoolMeta, Pool
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
+
+
+class ImporterBank(ModelView):
+    'Importer Bank'
+    __name__ = 'importer.bank'
+    name = fields.Char('Name')
+    bic = fields.Char('BIC')
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'bank': {
+                    'string': 'Banks',
+                    'model': 'importer.bank',
+                    'chunked': True,
+                    },
+                })
+        return methods
+
+    @classmethod
+    def import_bank(cls, records):
+        pool = Pool()
+        Party = pool.get('party.party')
+        Bank = pool.get('bank')
+
+        to_save = []
+        for record in records:
+            if not record.name:
+                raise UserError(gettext('importer.msg_bank_name_required'))
+            banks = Bank.search([('party.name', '=', record.name)], limit=1)
+            if banks:
+                bank, = banks
+            else:
+                parties = Party.search([('name', '=', record.name)], limit=1)
+                if parties:
+                    party, = parties
+                else:
+                    party = Party()
+                    party.name = record.name
+                    party.save()
+                bank = Bank()
+                bank.party = party
+
+            bank.bic = record.bic
+            to_save.append(bank)
+
+        Bank.save(to_save)
+        return to_save
