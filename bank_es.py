@@ -1,4 +1,4 @@
-from trytond.model import ModelView, fields
+from trytond.model import ModelView
 from trytond.pool import PoolMeta, Pool
 
 

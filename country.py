@@ -1,6 +1,6 @@
 import os
 import subprocess
-from trytond.model import ModelView, fields
+from trytond.model import ModelView
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
 from trytond.config import config
