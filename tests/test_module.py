@@ -28,11 +28,12 @@ class ImporterTestCase(ModuleTestCase):
         importer.use_header = True
         importer.save()
 
-        fields = records[0].keys()
-        for column in importer.columns:
-            if column.field.name in fields:
-                column.name = column.field.name
-                column.save()
+        if records:
+            fields = records[0].keys()
+            for column in importer.columns:
+                if column.field.name in fields:
+                    column.name = column.field.name
+                    column.save()
 
         data = Data('text', None, json.dumps(records), None)
         importer.data_to_records(data.get_data())
@@ -149,9 +150,7 @@ class ImporterTestCase(ModuleTestCase):
         spain.code = 'ES'
         spain.save()
 
-        self.import_('spanish_bank', [{
-                    'name': 'x',
-                    }])
+        self.import_('spanish_bank', [])
         banks = Bank.search([])
         self.assertGreater(len(banks), 10)
 

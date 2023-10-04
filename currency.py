@@ -22,6 +22,7 @@ class Importer(metaclass=PoolMeta):
                     'string': 'Currency',
                     'model': 'importer.currency',
                     'chunked': True,
+                    'requires_records': False,
                     }
                 })
         return methods
