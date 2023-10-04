@@ -27,7 +27,7 @@ class Importer(metaclass=PoolMeta):
         return methods
         
     @classmethod
-    def import_currency(cls, records):
+    def import_currency(cls):
         env = os.environ.copy()
         env['PYTHONPATH'] = os.environ.get('PYTHONPATH', '') + 'trytond:proteus'
         env['TRYTOND_DATABASE_URI'] = config.get('database', 'uri',
