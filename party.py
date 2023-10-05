@@ -425,8 +425,10 @@ class Importer(metaclass=PoolMeta):
                     bank_accounts[iban]=account_number
                     bank_account.numbers = [account_number]
                     party.bank_accounts += (bank_account,)
-                party.payable_bank_account = party.bank_accounts[0]
-                party.receivable_bank_account = party.bank_accounts[0]
+
+                if 'payable_bank_account' in party._fields:
+                    party.payable_bank_account = party.bank_accounts[0]
+                    party.receivable_bank_account = party.bank_accounts[0]
 
 
             if hasattr(Party, 'bank_accounts'):
