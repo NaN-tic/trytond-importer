@@ -260,6 +260,7 @@ class Importer(metaclass=PoolMeta):
 
         vats = {}
         to_save = []
+        to_set_bank_accounts = []
         relations_to_save = {}
         for record in records:
             party = Party()
@@ -459,9 +460,7 @@ class Importer(metaclass=PoolMeta):
                     bank_account.numbers = [account_number]
                     party.bank_accounts += (bank_account,)
 
-                if 'payable_bank_account' in party._fields:
-                    party.payable_bank_account = party.bank_accounts[0]
-                    party.receivable_bank_account = party.bank_accounts[0]
+                to_set_bank_accounts.append(party)
 
 
             if hasattr(Party, 'payable_company_bank_account'):
@@ -516,6 +515,16 @@ class Importer(metaclass=PoolMeta):
 
         PartyCategory.save(categories.values())
         Party.save(to_save)
+        if 'payable_bank_account' in party._fields:
+            # These fields must be set after party has been saved as only
+            # accounts in bank_accounts can be used
+            for party in to_set_bank_accounts:
+                if not party.bank_accounts:
+                    continue
+                party.payable_bank_account = party.bank_accounts[0]
+                party.receivable_bank_account = party.bank_accounts[0]
+            Party.save(to_save)
+
         if 'relations' in party._fields:
             new_parties = dict((x.code, x) for x in to_save)
             rel_save = []
