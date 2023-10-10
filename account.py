@@ -167,6 +167,7 @@ class Importer(metaclass=PoolMeta):
                for x in Move.search([
                         ('company', '=', company),
                         ('period.state', '=', 'open'),
+                        ('post_number', '!=', None),
                         ]))
         moves_to_save = []
         previous_header = None
