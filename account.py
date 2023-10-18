@@ -392,6 +392,7 @@ class Importer(metaclass=PoolMeta):
         Company = pool.get('company.company')
         CreateChart = pool.get('account.create_chart', type='wizard')
 
+        chart_ids = []
         for record in records:
             record.company_name
 
@@ -410,6 +411,7 @@ class Importer(metaclass=PoolMeta):
                 raise UserError(gettext('importer.msg_chart_not_found',
                         chart=record.chart_name))
             chart, = charts
+            chart_ids.append(chart.id)
 
             session_id, _, _ = CreateChart.create()
             create_chart = CreateChart(session_id)
@@ -436,7 +438,7 @@ class Importer(metaclass=PoolMeta):
                 create_chart.properties.account_payable, = accounts
             create_chart.transition_create_properties()
 
-        return Account.search([('template', '=', chart)])
+        return Account.search([('template', 'in', chart_ids)])
 
     def import_account_fiscalyear(cls, records):
         pool = Pool()
