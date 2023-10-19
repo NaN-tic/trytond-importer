@@ -123,6 +123,7 @@ class Importer(metaclass=PoolMeta):
         currencies = {x.name: x for x in Currency.search([])}
         currencies.update({x.symbol: x for x in Currency.search([])})
 
+        purchase = None
         purchases_to_save = []
         lines_to_save = []
         previous_header = None
@@ -192,6 +193,9 @@ class Importer(metaclass=PoolMeta):
 
                 if record.invoice_method:
                     purchase.invoice_method = record.invoice_method
+
+            if not purchase or not purchase.party:
+                continue
 
             if record.product_code:
                 with Transaction().set_context(active_test=False):
