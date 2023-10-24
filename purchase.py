@@ -325,8 +325,8 @@ class Importer(metaclass=PoolMeta):
                     ('party', '=', party.id),
                     ('template', '=', template.id),
                     ('product', '=', product.id),
-                    ])
-                if len(product_suppliers) == 1:
+                    ], limit=1)
+                if product_suppliers:
                     product_supplier, = product_suppliers
                     lines_to_delete = {}
                     lines_to_delete[product_supplier] = {}
