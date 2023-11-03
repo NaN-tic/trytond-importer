@@ -287,8 +287,8 @@ class ImporterTestCase(ModuleTestCase):
                 'currency': company.currency.name,
                 'product_code': '0001A',
                 'quantity': 100,
-                'unit_price': 13.75,
-                'template_code':411,
+                'unit_price': '13.75',
+                'template_code': 411,
                 'code': '4324'
                 }])
 
