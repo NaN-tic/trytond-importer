@@ -378,7 +378,7 @@ class Importer(metaclass=PoolMeta):
                         product_supplier.save()
                     price.product_supplier = product_supplier
                 price.quantity = record.quantity
-                price.unit_price = record.unit_price
+                price.unit_price = round_price(record.unit_price)
 
                 if ('start_date' in price._fields and record.start_date):
                     product_supplier.start_date = record.start_date
