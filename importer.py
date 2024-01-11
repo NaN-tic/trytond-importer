@@ -232,17 +232,17 @@ class Importer(ModelSQL, ModelView):
     has_header = fields.Boolean('Has Header?')
     use_header = fields.Boolean('Use Header?', states={
             'invisible': ~Eval('has_header'),
-            }, depends=['has_header'])
+            })
     data_source = fields.Selection(
         [(None, ''), ] + data_sources, 'Data Source')
     sql_source = fields.Selection([(None, ''), ], 'SQL Source', states={
         'invisible': ~Eval('data_source').in_(['sql']),
         'required': Eval('data_source').in_(['sql']),
-        }, depends=['data_source'])
+        })
     server = fields.Char('Server', states={
         'invisible': ~Eval('data_source').in_(['sql']),
         'required': Eval('data_source').in_(['sql']),
-        }, depends=['data_source'])
+        })
     user = fields.Char('User', states={
         'invisible': ~Eval('data_source').in_(['sql']),
         'required': Eval('data_source').in_(['sql']),
@@ -606,7 +606,7 @@ class ImporterColumn(ModelSQL, ModelView):
         'on_change_with_model')
     field = fields.Many2One('ir.model.field', 'Field', ondelete='CASCADE',
         required=True, readonly=True,
-        domain=[('model', '=', Eval('model'))], depends=['model'])
+        domain=[('model', '=', Eval('model'))])
     name = fields.Char('Column Name')
     format = fields.Selection('_get_formats', 'Format')
     examples = fields.Function(fields.Char('Examples'),
