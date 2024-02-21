@@ -754,13 +754,20 @@ class ImporterColumn(ModelSQL, ModelView):
                     value = value.replace(decimal_symbol, '.')
             try:
                 if ttype == 'float':
-                    return float(value)
+                    value = float(value)
+                    if self.field.digits:
+                        value = round(value, self.field.digits[1])
+                    return value
                 elif ttype == 'integer':
                     return int(value)
                 elif ttype == 'numeric':
                     if isinstance(value, float):
-                        return Decimal('%.10f' % value)
-                    return Decimal(value)
+                        value = Decimal('%.10f' % value)
+                    else:
+                        value = Decimal(value)
+                    if self.field.digits:
+                        value = value.quantize(10 ** -self.field.digits[1])
+                    return value
             except (ValueError, decimal.InvalidOperation):
                 # TODO: Raise Error
                 return None
