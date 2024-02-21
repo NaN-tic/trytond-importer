@@ -3,7 +3,7 @@ from decimal import Decimal
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.model import ModelView, fields
-from trytond.modules.product import round_price
+from trytond.modules.product import price_digits, round_price
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
 
@@ -22,14 +22,15 @@ class ImporterProduct(ModelView):
     name = fields.Char('Name')
     description = fields.Char('Description')
     uom = fields.Char('UoM')
-    sale_price = fields.Numeric('Sale Price')
-    cost_price = fields.Numeric('Cost Price')
+    sale_price = fields.Numeric('Sale Price', digits=price_digits)
+    cost_price = fields.Numeric('Cost Price', digits=price_digits)
     type_ = fields.Char('Type')
     cost_price_method = fields.Char('Cost Price Method')
     supplier = fields.Char('Supplier')
     supplier_code = fields.Char('Supplier Code')
     supplier_currency = fields.Char('Supplier Currency')
-    supplier_unit_price = fields.Numeric('Supplier Unit Price')
+    supplier_unit_price = fields.Numeric('Supplier Unit Price',
+        digits=price_digits)
     categories = fields.Char('Categories')
     account_category = fields.Char('Account Category')
     aranzel = fields.Char('Aranzel')
@@ -49,6 +50,7 @@ class ImporterProductConfiguration(ModelView):
     template_sequence_suffix = fields.Char("Sequence suffix")
     template_sequence_padding = fields.Integer("Sequence padding")
     template_sequence_number_next = fields.Integer("Sequence number next")
+
 
 class ImporterProductProductionDepends(metaclass=PoolMeta):
     __name__ = 'importer.product'
