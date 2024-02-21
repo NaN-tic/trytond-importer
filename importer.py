@@ -753,10 +753,13 @@ class ImporterColumn(ModelSQL, ModelView):
                         value = value.replace(symbol, '')
                     value = value.replace(decimal_symbol, '.')
             try:
+                pool = Pool()
+                ModelClass = pool.get(self.field.model.model)
+                field = getattr(ModelClass, self.field.name)
                 if ttype == 'float':
                     value = float(value)
-                    if self.field.digits:
-                        value = round(value, self.field.digits[1])
+                    if field.digits:
+                        value = round(value, field.digits[1])
                     return value
                 elif ttype == 'integer':
                     return int(value)
@@ -765,8 +768,9 @@ class ImporterColumn(ModelSQL, ModelView):
                         value = Decimal('%.10f' % value)
                     else:
                         value = Decimal(value)
-                    if self.field.digits:
-                        value = value.quantize(10 ** -self.field.digits[1])
+                    if field.digits:
+                        value = value.quantize(Decimal(str(
+                                    10 ** -field.digits[1])))
                     return value
             except (ValueError, decimal.InvalidOperation):
                 # TODO: Raise Error
