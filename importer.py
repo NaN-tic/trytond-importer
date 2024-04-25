@@ -606,7 +606,10 @@ class ImporterColumn(ModelSQL, ModelView):
         'on_change_with_model')
     field = fields.Many2One('ir.model.field', 'Field', ondelete='CASCADE',
         required=True, readonly=True,
-        domain=[('model', '=', Eval('model'))])
+        domain=[
+            ('model_ref', '=',
+                Eval('_parent_importer', Eval('context', {})).get('model', -1))
+        ])
     name = fields.Char('Column Name')
     format = fields.Selection('_get_formats', 'Format')
     examples = fields.Function(fields.Char('Examples'),
@@ -614,8 +617,8 @@ class ImporterColumn(ModelSQL, ModelView):
 
     @fields.depends('importer', '_parent_importer.model')
     def on_change_with_model(self, name=None):
-        if self.importer and self.importer.model:
-            return self.importer.model.id
+        if self.importer and self.importer.model_ref:
+            return self.importer.model_ref.id
 
     @classmethod
     def __setup__(cls):
@@ -754,7 +757,7 @@ class ImporterColumn(ModelSQL, ModelView):
                     value = value.replace(decimal_symbol, '.')
             try:
                 pool = Pool()
-                ModelClass = pool.get(self.field.model.model)
+                ModelClass = pool.get(self.field.model)
                 field = getattr(ModelClass, self.field.name)
                 if ttype == 'float':
                     value = float(value)
