@@ -391,6 +391,8 @@ class Importer(metaclass=PoolMeta):
                     if not category and cat:
                         category = ProductCategory()
                         category.name = cat
+                        categories[cat] = category
+                        category.save()
                     if category:
                         cats += [category]
                         categories[cat] = category
