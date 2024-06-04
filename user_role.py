@@ -48,7 +48,7 @@ class Importer(metaclass=PoolMeta):
 
             if record.groups:
                 groups_to_add = []
-                for group in record.groups.split(','):
+                for group in [x.strip() for x in record.groups.split(',')]:
                     if group.strip() not in groups:
                         raise UserError(gettext('importer.msg_group_not_found',
                                 group=group))
@@ -59,5 +59,3 @@ class Importer(metaclass=PoolMeta):
 
         Role.save(to_save)
         return to_save
-
-
