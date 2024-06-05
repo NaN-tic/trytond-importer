@@ -1,3 +1,4 @@
+from types import SimpleNamespace
 from itertools import groupby
 from decimal import Decimal
 from trytond.exceptions import UserError
@@ -167,11 +168,15 @@ class Importer(metaclass=PoolMeta):
         return to_save
 
     @classmethod
-    def _import_template_hook(cls, record, template):
+    def _setup_import_template_hook(cls, cache, records):
         pass
 
     @classmethod
-    def _import_product_hook(cls, record, product):
+    def _import_template_hook(cls, cache, record, template):
+        pass
+
+    @classmethod
+    def _import_product_hook(cls, cache, record, product):
         pass
 
     @classmethod
@@ -211,30 +216,31 @@ class Importer(metaclass=PoolMeta):
         ProductCostPriceMethod = pool.get('product.cost_price_method')
         Note = pool.get('ir.note')
 
+        cache = SimpleNamespace()
         try:
             ProductSupplier = pool.get('purchase.product_supplier')
             ProductSupplierPrice = pool.get('purchase.product_supplier.price')
             Party = pool.get('party.party')
-            parties = dict((x.code, x) for x in Party.search([]))
+            cache.parties = dict((x.code, x) for x in Party.search([]))
         except:
-            parties = {}
+            cache.parties = {}
 
         try:
             TariffCodeRel = pool.get('product-customs.tariff.code')
             TariffCode = pool.get('customs.tariff.code')
-            customs = dict((x.code, x) for x in TariffCode.search([]))
+            cache.customs = dict((x.code, x) for x in TariffCode.search([]))
         except:
-            customs = {}
+            cache.customs = {}
 
         try:
             Brand = pool.get('product.brand')
-            brands = dict((x.name, x) for x in Brand.search([]))
+            cache.brands = dict((x.name, x) for x in Brand.search([]))
         except:
-            brands = {}
+            cache.brands = {}
 
         try:
             BOM = pool.get('production.bom')
-            boms = dict([(x.name, x) for x in BOM.search([])])
+            cache.boms = dict([(x.name, x) for x in BOM.search([])])
             ProductBom = pool.get('product.product-production.bom')
         except:
             ProductBom = None
@@ -251,28 +257,28 @@ class Importer(metaclass=PoolMeta):
 
         try:
             Currency = pool.get('currency.currency')
-            currencies = {x.name: x for x in Currency.search([])}
-            currencies.update({x.symbol: x for x in Currency.search([])})
+            cache.currencies = {x.name: x for x in Currency.search([])}
+            cache.currencies.update({x.symbol: x for x in Currency.search([])})
         except KeyError:
-            currencies = {}
+            cache.currencies = {}
 
-        categories = dict((x.name, x) for x in ProductCategory.search([]))
-        uoms = {}
+        cache.categories = dict((x.name, x) for x in ProductCategory.search([]))
+        cache.uoms = {}
         for uom in Uom.search([]):
-            uoms[uom.name.lower()] = uom
-            uoms[uom.symbol.lower()] = uom
+            cache.uoms[uom.name.lower()] = uom
+            cache.uoms[uom.symbol.lower()] = uom
 
-        products = dict((x.code, x) for x in Product.search([
+        cache.products = dict((x.code, x) for x in Product.search([
                     ('code', '!=', None),
                     ('code', '!=', ''),
                     ]))
-        templates = dict((x.code, x) for x in Template.search([
+        cache.templates = dict((x.code, x) for x in Template.search([
                     ('code', '!=', None),
                     ('code', '!=', ''),
                     ]))
 
         if ProductionRoute:
-            bom_routes = dict((x.name, x) for x in ProductionRoute.search([]))
+            cache.bom_routes = dict((x.name, x) for x in ProductionRoute.search([]))
 
         template_default_values = Template.default_get(Template._fields.keys(),
                 with_rec_name=False)
@@ -280,9 +286,12 @@ class Importer(metaclass=PoolMeta):
                 with_rec_name=False)
         cost_price_methods = ProductCostPriceMethod.get_cost_price_methods()
 
+        cls._setup_import_template_hook(cache, records)
+
         to_save = []
         products_to_save = []
         notes_to_save = []
+
         for record in records:
             product = None
             template = None
@@ -291,11 +300,11 @@ class Importer(metaclass=PoolMeta):
             else:
                 code = ((record.template_code or '')
                     + (record.variant_suffix_code or ''))
-            product = products.get(code)
+            product = cache.products.get(code)
             if product:
                 template = product.template
-            elif record.template_code in templates:
-                template = templates.get(record.template_code)
+            elif record.template_code in cache.templates:
+                template = cache.templates.get(record.template_code)
 
             if not template:
                 template = Template(**template_default_values)
@@ -316,9 +325,9 @@ class Importer(metaclass=PoolMeta):
                 template.list_price = record.sale_price or Decimal(0)
             uom = None
             if record.uom:
-                uom = uoms.get(record.uom.lower(), 'u')
+                uom = cache.uoms.get(record.uom.lower(), 'u')
             else:
-                uom = uoms.get('u')
+                uom = cache.uoms.get('u')
                 # If we update a product, we dont need to change the uom
                 if hasattr(product, 'default_uom') and product.default_uom:
                     uom = None
@@ -335,11 +344,11 @@ class Importer(metaclass=PoolMeta):
 
             if ('account_category' in template._fields and
                     record.account_category):
-                acc_category = categories.get(record.account_category)
+                acc_category = cache.categories.get(record.account_category)
                 if not acc_category:
                     acc_category = ProductCategory()
                     acc_category.name = record.account_category
-                    categories[record.account_category] = acc_category
+                    cache.categories[record.account_category] = acc_category
                 acc_category.accounting = True
                 template.account_category = acc_category
 
@@ -349,35 +358,35 @@ class Importer(metaclass=PoolMeta):
 
             if 'weight' in measures._fields and record.weight:
                 measures.weight = record.weight
-                measures.weight_uom = (uoms.get(record.weight_uom) or
-                    uoms.get('kg'))
+                measures.weight_uom = (cache.uoms.get(record.weight_uom) or
+                    cache.uoms.get('kg'))
 
             if 'volume' in measures._fields and record.volume:
                 measures.volume = record.volume
-                measures.volume_uom = (uoms.get(record.volume_uom) or
-                    uoms.get('l'))
+                measures.volume_uom = (cache.uoms.get(record.volume_uom) or
+                    cache.uoms.get('l'))
 
             if 'width' in measures._fields and record.width is not None:
                 measures.width = record.width
-                measures.width_uom = (uoms.get(record.width_uom) or
-                    uoms.get('m'))
+                measures.width_uom = (cache.uoms.get(record.width_uom) or
+                    cache.uoms.get('m'))
 
             if 'length' in measures._fields and record.length:
                 measures.length = record.length
-                measures.length_uom = (uoms.get(record.length_uom) or
-                    uoms.get('m'))
+                measures.length_uom = (cache.uoms.get(record.length_uom) or
+                    cache.uoms.get('m'))
 
             if 'height' in measures._fields and record.height:
                 measures.height = record.height
-                measures.height_uom = (uoms.get(record.height_uom) or
-                    uoms.get('m'))
+                measures.height_uom = (cache.uoms.get(record.height_uom) or
+                    cache.uoms.get('m'))
 
             if 'tariff_codes' in template._fields and record.aranzel:
-                custom = customs.get(record.aranzel)
+                custom = cache.customs.get(record.aranzel)
                 if not custom:
                     custom = TariffCode()
                     custom.code = record.aranzel
-                    customs[record.aranzel] = custom
+                    cache.customs[record.aranzel] = custom
 
                 rel = TariffCodeRel()
                 rel.tariff_code = custom
@@ -387,28 +396,28 @@ class Importer(metaclass=PoolMeta):
             if record.categories:
                 cats = []
                 for cat in record.categories.split('|'):
-                    category = categories.get(cat)
+                    category = cache.categories.get(cat)
                     if not category and cat:
                         category = ProductCategory()
                         category.name = cat
-                        categories[cat] = category
+                        cache.categories[cat] = category
                         category.save()
                     if category:
                         cats += [category]
-                        categories[cat] = category
+                        cache.categories[cat] = category
                 template.categories = cats
 
             template.consumable = record.consumable
 
             if hasattr(Template, 'producible'):
                 template.producible = record.producible
-                bom = boms.get(record.bom_name)
+                bom = cache.boms.get(record.bom_name)
                 if bom:
                     if ProductBom:
                         product_bom = ProductBom()
                         product_bom.bom = bom
                         if 'route' in ProductBom._fields and record.bom_route:
-                            bom_route = bom_routes.get(record.bom_route)
+                            bom_route = cache.bom_routes.get(record.bom_route)
                             if bom_route:
                                 product_bom.route = bom_route
                     if hasattr(product, 'boms'):
@@ -424,13 +433,13 @@ class Importer(metaclass=PoolMeta):
                 template.salable = record.salable
                 template.sale_uom = template.default_uom
 
-            if parties and record.supplier:
-                party = parties.get(record.supplier)
+            if cache.parties and record.supplier:
+                party = cache.parties.get(record.supplier)
                 supplier = ProductSupplier()
                 supplier.party = party
                 supplier.code = record.supplier_code
                 if record.supplier_currency:
-                    supplier.currency = currencies.get('supplier_currency')
+                    supplier.currency = cache.currencies.get('supplier_currency')
                 if ProductSupplier._fields.get('minimum_quantity') and record.supplier_minimum_quantity:
                     supplier.minimum_quantity = record.minimum_quantity
                 if ProductSupplier._fields.get('multiple_quantity') and record.supplier_multiple_quantity:
@@ -441,14 +450,14 @@ class Importer(metaclass=PoolMeta):
                     supplier_price.unit_price = round_price(record.supplier_unit_price)
                     supplier.prices.append(supplier_price)
                 template.product_suppliers = [supplier]
-                templates[record.template_code] = template
+                cache.templates[record.template_code] = template
 
                 if 'brand' in template._fields and record.brand:
-                    brand = brands.get(record.brand)
+                    brand = cache.brands.get(record.brand)
                     if not brand:
                         brand = Brand()
                         brand.name = record.brand
-                        brands[record.brand] = brand
+                        cache.brands[record.brand] = brand
                         template.brand = brand
 
             if record.variant_suffix_code:
@@ -482,12 +491,11 @@ class Importer(metaclass=PoolMeta):
                 note.resource = product
                 note.message = record.product_note
                 notes_to_save.append(note)
-            cls._import_template_hook(record, template)
-            cls._import_product_hook(record, product)
-            template.save()
-            templates[record.template_code] = template
+            cls._import_template_hook(cache, record, template)
+            cls._import_product_hook(cache, record, product)
+            cache.templates[record.template_code] = template
 
-        ProductCategory.save(categories.values())
+        ProductCategory.save(cache.categories.values())
         Template.save(to_save)
         Product.save(products_to_save)
         Note.save(notes_to_save)
