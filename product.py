@@ -216,6 +216,12 @@ class Importer(metaclass=PoolMeta):
         ProductCostPriceMethod = pool.get('product.cost_price_method')
         Note = pool.get('ir.note')
 
+        def object_to_set(template, product, field):
+            field = getattr(Product, field, None)
+            if isinstance(field, fields.Function) and not field.setter:
+                return template
+            return product
+
         cache = SimpleNamespace()
         try:
             ProductSupplier = pool.get('purchase.product_supplier')
@@ -352,33 +358,34 @@ class Importer(metaclass=PoolMeta):
                 acc_category.accounting = True
                 template.account_category = acc_category
 
-            measures = template
-            if hasattr(Product, 'weight'):
-                measures = product
-
-            if 'weight' in measures._fields and record.weight:
-                measures.weight = record.weight
-                measures.weight_uom = (cache.uoms.get(record.weight_uom) or
+            if record.weight is not None:
+                obj = object_to_set(template, product, 'weight')
+                obj.weight = record.weight
+                obj.weight_uom = (cache.uoms.get(record.weight_uom) or
                     cache.uoms.get('kg'))
 
-            if 'volume' in measures._fields and record.volume:
-                measures.volume = record.volume
-                measures.volume_uom = (cache.uoms.get(record.volume_uom) or
+            if record.volume is not None:
+                obj = object_to_set(template, product, 'volume')
+                obj.volume = record.volume
+                obj.volume_uom = (cache.uoms.get(record.volume_uom) or
                     cache.uoms.get('l'))
 
-            if 'width' in measures._fields and record.width is not None:
-                measures.width = record.width
-                measures.width_uom = (cache.uoms.get(record.width_uom) or
+            if record.width is not None:
+                obj = object_to_set(template, product, 'width')
+                obj.width = record.width
+                obj.width_uom = (cache.uoms.get(record.width_uom) or
                     cache.uoms.get('m'))
 
-            if 'length' in measures._fields and record.length:
-                measures.length = record.length
-                measures.length_uom = (cache.uoms.get(record.length_uom) or
+            if record.length is not None:
+                obj = object_to_set(template, product, 'length')
+                obj.length = record.length
+                obj.length_uom = (cache.uoms.get(record.length_uom) or
                     cache.uoms.get('m'))
 
-            if 'height' in measures._fields and record.height:
-                measures.height = record.height
-                measures.height_uom = (cache.uoms.get(record.height_uom) or
+            if record.height is not None:
+                obj = object_to_set(template, product, 'height')
+                obj.height = record.height
+                obj.height_uom = (cache.uoms.get(record.height_uom) or
                     cache.uoms.get('m'))
 
             if 'tariff_codes' in template._fields and record.aranzel:
