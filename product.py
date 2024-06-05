@@ -358,31 +358,31 @@ class Importer(metaclass=PoolMeta):
                 acc_category.accounting = True
                 template.account_category = acc_category
 
-            if record.weight is not None:
+            if getattr(record, 'weight', None) is not None:
                 obj = object_to_set(template, product, 'weight')
                 obj.weight = record.weight
                 obj.weight_uom = (cache.uoms.get(record.weight_uom) or
                     cache.uoms.get('kg'))
 
-            if record.volume is not None:
+            if getattr(record, 'volume', None) is not None:
                 obj = object_to_set(template, product, 'volume')
                 obj.volume = record.volume
                 obj.volume_uom = (cache.uoms.get(record.volume_uom) or
                     cache.uoms.get('l'))
 
-            if record.width is not None:
+            if getattr(record, 'width', None) is not None:
                 obj = object_to_set(template, product, 'width')
                 obj.width = record.width
                 obj.width_uom = (cache.uoms.get(record.width_uom) or
                     cache.uoms.get('m'))
 
-            if record.length is not None:
+            if getattr(record, 'length', None) is not None:
                 obj = object_to_set(template, product, 'length')
                 obj.length = record.length
                 obj.length_uom = (cache.uoms.get(record.length_uom) or
                     cache.uoms.get('m'))
 
-            if record.height is not None:
+            if getattr(record, 'height', None) is not None:
                 obj = object_to_set(template, product, 'height')
                 obj.height = record.height
                 obj.height_uom = (cache.uoms.get(record.height_uom) or
