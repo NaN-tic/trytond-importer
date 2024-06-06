@@ -191,6 +191,9 @@ class Importer(metaclass=PoolMeta):
                 imported += cls._import_party(records)
         return imported
 
+    @classmethod
+    def _import_party_hook(cls, cache, record, party):
+        pass
 
     @classmethod
     def _import_party(cls, records):
