@@ -790,6 +790,8 @@ class ImporterColumn(ModelSQL, ModelView):
                 except ValueError:
                     # TODO: Raise Error
                     return None
+            elif isinstance(value, datetime.datetime):
+                return value.date()
             elif not isinstance(value, datetime.date):
                 return None
         elif ttype in ('datetime', 'timestamp'):
