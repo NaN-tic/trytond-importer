@@ -461,6 +461,7 @@ class Importer(metaclass=PoolMeta):
         companies = {x.party.name: x for x in Company.search([])}
         fiscalyears = {x.name: x for x in FiscalYear.search([])}
 
+        imported = []
         for record in records:
             fiscalyear = fiscalyears.get(record.name)
             if not fiscalyear:
@@ -475,13 +476,8 @@ class Importer(metaclass=PoolMeta):
             fiscalyear.end_date = record.end_date
             fiscalyear.company = companies.get(record.company_name)
 
-            if record.post_move_sequence_name:
-                fiscalyear.post_move_sequence = move_sequences.get(
-                    record.post_move_sequence_name)
-            else:
-                invoice_sequence = SequenceStrict()
-                invoice_sequence.name = 'x'
-                fiscalyear.post_move_sequence = None
+            fiscalyear.post_move_sequence = move_sequences.get(
+                record.post_move_sequence_name)
             seq.out_invoice_sequence = invoice_sequences.get(
                 record.out_invoice_sequence_name)
             seq.in_invoice_sequence = invoice_sequences.get(
@@ -492,4 +488,5 @@ class Importer(metaclass=PoolMeta):
                 record.in_credit_note_sequence_name)
             fiscalyear.save()
             FiscalYear.create_period([fiscalyear])
-        return invoice_sequences, move_sequences
+            imported.append(fiscalyear)
+        return imported
