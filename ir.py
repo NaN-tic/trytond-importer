@@ -93,7 +93,8 @@ class Importer(metaclass=PoolMeta):
             companies = {x.party.name: x for x in Company.search([])}
         else:
             companies = {}
-        sequences = {x.name: x for x in Type.search([])}
+        types = {x.name: x for x in Type.search([])}
+        to_return = []
         for record in records:
             if record.strict:
                 Sequence = SequenceStrict
@@ -102,13 +103,12 @@ class Importer(metaclass=PoolMeta):
 
             if not record.sequence_type:
                 raise UserError(gettext('importer.msg_sequence_type_required'))
-            if record.sequence_type not in sequences:
+            if record.sequence_type not in types:
                 raise UserError(gettext('importer.msg_sequence_type_not_found',
                         type=record.sequence_type))
-            sequence_type = sequences.get(record.sequence_type)
+            sequence_type = types.get(record.sequence_type)
 
-            names = [r.name for r in records]
-            sequences = Sequence.search([('name', 'in', names)], limit=1)
+            sequences = Sequence.search([('name', '=', record.name)], limit=1)
             if not sequences:
                 sequence = Sequence()
                 sequence.name = record.name
@@ -128,5 +128,6 @@ class Importer(metaclass=PoolMeta):
             sequence.padding = record.padding or 1
             sequence.number_next = record.number_next or 1
             sequence.save()
+            to_return.append(sequence)
 
-        return sequences
+        return to_return
