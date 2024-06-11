@@ -120,7 +120,7 @@ class Importer(metaclass=PoolMeta):
                 'product': {
                     'string': 'Product',
                     'model': 'importer.product',
-                    'chunked': True,
+                    'chunked': False,
                     },
                 'product_codes': {
                     'string': 'Product Codes',
@@ -335,7 +335,7 @@ class Importer(metaclass=PoolMeta):
             else:
                 uom = cache.uoms.get('u')
                 # If we update a product, we dont need to change the uom
-                if hasattr(product, 'default_uom') and product.default_uom:
+                if product.id is not None:
                     uom = None
 
             if uom:
