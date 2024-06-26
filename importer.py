@@ -617,8 +617,8 @@ class ImporterColumn(ModelSQL, ModelView):
 
     @fields.depends('importer', '_parent_importer.model')
     def on_change_with_model(self, name=None):
-        if self.importer and self.importer.model_ref:
-            return self.importer.model_ref.id
+        if self.importer and self.importer.model:
+            return self.importer.model.id
 
     @classmethod
     def __setup__(cls):
