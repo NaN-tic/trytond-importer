@@ -25,7 +25,7 @@ from . import production
 from . import purchase
 from . import sale
 from . import sale_discount
-from . import sale_3_discounts
+from . import discount_formula
 from . import stock
 from . import res
 from . import route
@@ -86,9 +86,9 @@ def register():
         depends=['sale_discount'],
         module='importer', type_='model')
     Pool.register(
-        sale_3_discounts.Importer,
-        sale_3_discounts.ImporterSale,
-        depends=['sale_3_discounts'],
+        discount_formula.Importer,
+        discount_formula.ImporterSale,
+        depends=['sale_discount', 'discount_formula'],
         module='importer', type_='model')
     Pool.register(
         party.ImporterPurchaseDepends,
