@@ -1,19 +1,7 @@
 #
-# Albert Cervera i Areny <albert@nan-tic.com>, 2023.
 msgid ""
-msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Albert Cervera i Areny <albert@nan-tic.com>\n"
-"PO-Revision-Date: 2023-09-28 01:18+0200\n"
-"Project-Id-Version: \n"
-"Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
-"Language: ca_ES\n"
-"Content-Transfer-Encoding: 8bit\n"
-"MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.12.3\n"
+msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-#, fuzzy
 msgctxt "field:importer,binary_data:"
 msgid "Data"
 msgstr "Dades"
@@ -54,8 +42,12 @@ msgctxt "field:importer,password:"
 msgid "Password"
 msgstr "Contrasenya"
 
+msgctxt "field:importer,reverse_columns:"
+msgid "Reverse Column"
+msgstr "Columna inversa"
+
 msgctxt "field:importer,schema:"
-msgid "schema"
+msgid "Schema"
 msgstr "Esquema"
 
 msgctxt "field:importer,server:"
@@ -161,6 +153,30 @@ msgstr "Pare"
 msgctxt "field:importer.language,translatable:"
 msgid "Translatable"
 msgstr "Traduïble"
+
+msgctxt "field:importer.reverse_column,examples:"
+msgid "Examples"
+msgstr "Exemples"
+
+msgctxt "field:importer.reverse_column,field:"
+msgid "Field"
+msgstr "Camp"
+
+msgctxt "field:importer.reverse_column,format:"
+msgid "Format"
+msgstr "Format"
+
+msgctxt "field:importer.reverse_column,importer:"
+msgid "Importation"
+msgstr "Importació"
+
+msgctxt "field:importer.reverse_column,model:"
+msgid "Model"
+msgstr "Model"
+
+msgctxt "field:importer.reverse_column,name:"
+msgid "Column Name"
+msgstr "Nom de la columna"
 
 msgctxt "field:importer.sequence,company_name:"
 msgid "Company Name"
@@ -282,6 +298,10 @@ msgctxt "model:importer.language,name:"
 msgid "Importer Language"
 msgstr "Importador d'idiomes"
 
+msgctxt "model:importer.reverse_column,name:"
+msgid "Importer Reverse Column"
+msgstr "Columna inversa de l'importador"
+
 msgctxt "model:importer.sequence,name:"
 msgid "Importer Party Configuration"
 msgstr "Configuració del tercer de l'importador"
@@ -352,9 +372,7 @@ msgstr "No s'ha pogut establir la connexió amb l'importador \"%(importer)s\"."
 
 msgctxt "model:ir.message,text:msg_invalid_invoice_type"
 msgid "Invoice type must be 'out' or 'in' but \"%(type)s\" was found."
-msgstr ""
-"El tipus de factura ha de ser \"fora\" o \"dins\", però s'ha trobat \""
-"%(type)s\"."
+msgstr "El tipus de factura ha de ser \"fora\" o \"dins\", però s'ha trobat \"%(type)s\"."
 
 msgctxt "model:ir.message,text:msg_role_not_found"
 msgid "Role with name \"%(name)s\" not found."
@@ -385,8 +403,8 @@ msgid ""
 "Account \"%(account)s\" requires a party but no party was supplied in move "
 "\"%(move)s\"."
 msgstr ""
-"El compte \"%(account)s\" requereix un tercer, però no s'ha proporcionat cap "
-"tercer al moviment \"%(move)s\"."
+"El compte \"%(account)s\" requereix un tercer, però no s'ha proporcionat cap"
+" tercer al moviment \"%(move)s\"."
 
 msgctxt "model:ir.message,text:product_category_not_found"
 msgid "Product category \"%(category)s\" not found."
@@ -467,6 +485,14 @@ msgstr "SQL"
 msgctxt "selection:importer.import.ask,data_source:"
 msgid "URL"
 msgstr "URL"
+
+msgctxt "view:importer:"
+msgid "File columns"
+msgstr "Fitxer columnes"
+
+msgctxt "view:importer:"
+msgid "Importer columns"
+msgstr "Columnes d'importador"
 
 msgctxt "wizard_button:importer.ask_and_import,ask,end:"
 msgid "Cancel"

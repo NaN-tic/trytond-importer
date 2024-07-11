@@ -42,5 +42,12 @@
     <field name="where" colspan="5"/>
     <separator name="text_data" colspan="6"/>
     <field name="text_data" colspan="6" height="200"/>
-    <field name="columns" colspan="6" height="500"/>
+    <notebook colspan="6">
+        <page string="Importer columns" id="columns">
+            <field name="columns" colspan="6" height="500"/>
+        </page>
+        <page string="File columns" id="reverse_columns">
+            <field name="reverse_columns" colspan="6" height="500"/>
+        </page>
+    </notebook>
 </form>

@@ -36,6 +36,7 @@ def register():
     Pool.register(
         importer.Importer,
         importer.ImporterColumn,
+        importer.ImporterReverseColumn,
         importer.ImportAsk,
         ir.Importer,
         ir.ImporterLanguage,

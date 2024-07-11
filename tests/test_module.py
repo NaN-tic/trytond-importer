@@ -36,7 +36,8 @@ class ImporterTestCase(ModuleTestCase):
                     column.save()
 
         data = Data('text', None, json.dumps(records), None)
-        importer.data_to_records(data.get_data())
+        data.load()
+        importer.data_to_records(data)
 
     @with_transaction()
     def test_party(self):

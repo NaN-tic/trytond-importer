@@ -1,17 +1,6 @@
 #
-# Albert Cervera i Areny <albert@nan-tic.com>, 2023.
 msgid ""
-msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Albert Cervera i Areny <albert@nan-tic.com>\n"
-"PO-Revision-Date: 2023-09-28 01:09+0200\n"
-"Project-Id-Version: \n"
-"Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
-"Language: ca_ES\n"
-"Content-Transfer-Encoding: 8bit\n"
-"MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.12.3\n"
+msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 msgctxt "field:importer,binary_data:"
 msgid "Data"
@@ -53,8 +42,12 @@ msgctxt "field:importer,password:"
 msgid "Password"
 msgstr "Contraseña"
 
+msgctxt "field:importer,reverse_columns:"
+msgid "Reverse Column"
+msgstr "Columna inversa"
+
 msgctxt "field:importer,schema:"
-msgid "schema"
+msgid "Schema"
 msgstr "Esquema"
 
 msgctxt "field:importer,server:"
@@ -160,6 +153,30 @@ msgstr "Padre"
 msgctxt "field:importer.language,translatable:"
 msgid "Translatable"
 msgstr "Traducible"
+
+msgctxt "field:importer.reverse_column,examples:"
+msgid "Examples"
+msgstr "Ejemplos"
+
+msgctxt "field:importer.reverse_column,field:"
+msgid "Field"
+msgstr "Campo"
+
+msgctxt "field:importer.reverse_column,format:"
+msgid "Format"
+msgstr "Formato"
+
+msgctxt "field:importer.reverse_column,importer:"
+msgid "Importation"
+msgstr "Importación"
+
+msgctxt "field:importer.reverse_column,model:"
+msgid "Model"
+msgstr "Modelo"
+
+msgctxt "field:importer.reverse_column,name:"
+msgid "Column Name"
+msgstr "Nombre de columna"
 
 msgctxt "field:importer.sequence,company_name:"
 msgid "Company Name"
@@ -281,6 +298,10 @@ msgctxt "model:importer.language,name:"
 msgid "Importer Language"
 msgstr "Idioma del importador"
 
+msgctxt "model:importer.reverse_column,name:"
+msgid "Importer Reverse Column"
+msgstr "Columna inversa del importador"
+
 msgctxt "model:importer.sequence,name:"
 msgid "Importer Party Configuration"
 msgstr "Importador de Configuración de Terceros"
@@ -352,8 +373,7 @@ msgstr ""
 
 msgctxt "model:ir.message,text:msg_invalid_invoice_type"
 msgid "Invoice type must be 'out' or 'in' but \"%(type)s\" was found."
-msgstr ""
-"El tipo de facutura debe ser \"out\" o \"in\" y se obtenido \"%(type)s\"."
+msgstr "El tipo de facutura debe ser \"out\" o \"in\" y se obtenido \"%(type)s\"."
 
 msgctxt "model:ir.message,text:msg_role_not_found"
 msgid "Role with name \"%(name)s\" not found."
@@ -468,6 +488,14 @@ msgstr "SQL"
 msgctxt "selection:importer.import.ask,data_source:"
 msgid "URL"
 msgstr "URL"
+
+msgctxt "view:importer:"
+msgid "File columns"
+msgstr "Fichero columnas"
+
+msgctxt "view:importer:"
+msgid "Importer columns"
+msgstr "Columnas de importador"
 
 msgctxt "wizard_button:importer.ask_and_import,ask,end:"
 msgid "Cancel"
