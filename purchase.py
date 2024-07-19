@@ -317,14 +317,14 @@ class Importer(metaclass=PoolMeta):
                 raise UserError(gettext(
                     'importer.missing_template_product_code'))
 
-            key = (party.id, template.id, product.id)
+            key = (party.id, template.id, product and product.id)
             if key in product_supplier_to_save:
                 product_supplier = product_supplier_to_save[key]
             else:
                 product_suppliers = ProductSupplier.search([
                     ('party', '=', party.id),
                     ('template', '=', template.id),
-                    ('product', '=', product.id),
+                    ('product', '=', product and product.id),
                     ], limit=1)
                 if product_suppliers:
                     product_supplier, = product_suppliers
