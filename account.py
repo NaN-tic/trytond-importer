@@ -151,7 +151,7 @@ class Importer(metaclass=PoolMeta):
             return party
 
         accounts = cls.get_dict_accounts()
-        clients = cls.get_party_dict()
+        parties = cls.get_party_dict()
         journals = dict((x.code, x) for x in Journal.search([]))
 
         periods = {}
@@ -263,7 +263,7 @@ class Importer(metaclass=PoolMeta):
                 moves_to_save.append(move)
 
             party_code = cls.get_party_code(record.party_code)
-            party = clients.get(party_code)
+            party = parties.get(party_code)
             if account.party_required and not party:
                 if not create_party:
                     raise UserError(gettext(
@@ -275,7 +275,7 @@ class Importer(metaclass=PoolMeta):
                 else:
                     party = _create_party(party_code, party_name)
                     party_createds[party_name] = party
-                clients[party.code] = party
+                parties[party.code] = party
 
             line = Line()
             line.account = account
@@ -284,7 +284,7 @@ class Importer(metaclass=PoolMeta):
             line.credit = Decimal("%.2f" % (credit or 0))
             if account.party_required:
                 line.party = party
-            if hasattr(account, 'second_currency') and account.second_currency:
+            if account.id is not None and account.second_currency:
                 line.second_currency = account.second_currency
                 line.amount_second_currency = Currency.compute(
                     account.currency, line.debit - line.credit,
