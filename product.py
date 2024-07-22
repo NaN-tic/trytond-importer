@@ -41,6 +41,7 @@ class ImporterProduct(ModelView):
     brand = fields.Char('Brand')
     template_note = fields.Text('Template Note')
     product_note = fields.Text('Product Note')
+    location = fields.Char('Location')
 
 class ImporterProductConfiguration(ModelView):
     'Importer Product Configuration'
@@ -215,6 +216,8 @@ class Importer(metaclass=PoolMeta):
         Uom = pool.get('product.uom')
         ProductCostPriceMethod = pool.get('product.cost_price_method')
         Note = pool.get('ir.note')
+        Location = pool.get('stock.location')
+        ProductLocation = pool.get('stock.product.location')
 
         def object_to_set(template, product, field):
             field = getattr(Product, field, None)
@@ -269,6 +272,7 @@ class Importer(metaclass=PoolMeta):
             cache.currencies = {}
 
         cache.categories = dict((x.name, x) for x in ProductCategory.search([]))
+        cache.locations = dict((x.name, x) for x in Location.search([]))
         cache.uoms = {}
         for uom in Uom.search([]):
             cache.uoms[uom.name.lower()] = uom
@@ -475,7 +479,17 @@ class Importer(metaclass=PoolMeta):
                 product.cost_price = record.cost_price or Decimal(0)
             if record.description:
                 product.description = record.description
-
+            if record.location:
+                warehouse = Location.get_default_warehouse()
+                product_location = ProductLocation()
+                product_location.warehouse = warehouse
+                location = cache.locations.get(record.location)
+                if not location:
+                    location = Location()
+                    location.name = record.location
+                    cache.locations[record.location] = location
+                product_location.location = location
+                template.locations += (product_location,)
             # If product exist the packages are set all new, not updated.
             if 'packages' in template._fields and record.packages:
                 packages = []

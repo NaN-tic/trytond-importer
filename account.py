@@ -1,5 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
+from types import SimpleNamespace
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
@@ -23,6 +24,10 @@ class ImporterAccountMove(ModelView):
     credit = fields.Float('Credit')
     description = fields.Char('Description')
 
+class ImporterAccountMoveDependsAnalytic(metaclass=PoolMeta):
+    __name__ = 'importer.account.move'
+
+    analytic_account = fields.Char('Analytic Account')
 
 class ImporterChart(ModelView):
     'Importer Chart'
@@ -141,6 +146,16 @@ class Importer(metaclass=PoolMeta):
         PartyIdentifier = pool.get('party.identifier')
         AccountType = pool.get('account.account.type')
         Currency = pool.get('currency.currency')
+        AnalyticAccount = pool.get('analytic_account.account')
+        AnalyticLine = pool.get('analytic_account.line')
+
+        cache = SimpleNamespace()
+        try:
+            AnalyticAccount = pool.get('analytic_account.account')
+            cache.analytic_accounts = dict((x.code, x) for x in
+                AnalyticAccount.search([]))
+        except:
+            pass
 
         def _create_party(code, name):
             party = Party(name=name)
@@ -289,6 +304,28 @@ class Importer(metaclass=PoolMeta):
                 line.amount_second_currency = Currency.compute(
                     account.currency, line.debit - line.credit,
                     account.second_currency)
+            if hasattr(Line, 'analytic_lines'):
+                analytic_account = cache.analytic_accounts.get(
+                    record.analytic_account)
+                if not analytic_account:
+                    analytic_account = AnalyticAccount()
+                    root_account = AnalyticAccount.search([
+                        ('type', '=', 'root'),
+                        ('company', '=', company),
+                        ], limit=1)
+                    root_account = root_account[0] if root_account else None
+                    analytic_account.name = record.analytic_account
+                    analytic_account.company = company
+                    analytic_account.type = 'normal'
+                    analytic_account.root = root_account
+                    analytic_account.parent = root_account
+                    cache.analytic_accounts[record.analytic_account] = analytic_account
+                analytic_line = AnalyticLine()
+                analytic_line.account = analytic_account
+                analytic_line.date = record.effective_date
+                analytic_line.debit = line.debit
+                analytic_line.credit = line.credit
+                line.analytic_lines = [analytic_line]
 
             move.lines += (line, )
 

@@ -38,6 +38,11 @@ class ImporterParty(ModelView):
     city = fields.Char('City')
     subdivision = fields.Char('Subdivision')
     country = fields.Char('Country')
+    shipment_street = fields.Char('Shipment Street')
+    shipment_postal_code = fields.Char('Shipment Postal Code')
+    shipment_city = fields.Char('Shipment City')
+    shipment_subdivision = fields.Char('Shipment Subdivision')
+    shipment_country = fields.Char('Shipment Country')
     phone = fields.Char('Phone')
     fax = fields.Char('Fax')
     email = fields.Char('E-Mail')
@@ -250,6 +255,12 @@ class Importer(metaclass=PoolMeta):
                     for x in Agent.search([])])
         except:
             pass
+        try:
+            Agent = pool.get('commission.agent')
+            cache.agents_no_plan = dict([(x.party.name, x)
+                    for x in Agent.search([])])
+        except:
+            pass
 
         try:
             Incoterm = pool.get('incoterm')
@@ -316,6 +327,26 @@ class Importer(metaclass=PoolMeta):
             addresses.append(address)
             if record.language:
                 party.lang = cache.languages.get(record.language)
+
+            if (record.shipment_street or record.shipment_postal_code or
+                    record.shipment_city or record.shipment_subdivision or
+                    record.shipment_country):
+                shipment_address = Address()
+                shipment_address.street = record.shipment_street
+                shipment_address.postal_code = record.shipment_postal_code
+                shipment_address.city = record.shipment_city
+                country = cache.countries.get(record.shipment_country)
+                shipment_address.country = country
+                subdivision = (record.shipment_subdivision
+                            and record.shipment_subdivision.capitalize())
+                subdivision = cache.subdivisions.get(subdivision)
+                if (subdivision and country):
+                    if subdivision in country.subdivisions:
+                        shipment_address.subdivision = subdivision
+                if (subdivision and not country):
+                    shipment_address.subdivision = subdivision
+                    shipment_address.country = subdivision.country
+                addresses.append(shipment_address)
 
             party.addresses = addresses
 
@@ -496,10 +527,14 @@ class Importer(metaclass=PoolMeta):
                 new_agents = []
                 CommisionAgentSelection = pool.get('commission.agent.selection')
                 for agent in record.agent.split('|'):
-                    agent, plan = agent.split(',')
+                    if ',' in agent:
+                        agent, plan = agent.split(',')
+                        key = (agent, plan)
+                        com_a = cache.agents.get((key))
+                    else:
+                        com_a = cache.agents_no_plan.get(agent)
+                        plan = None
                     com_agen_sel = CommisionAgentSelection()
-                    key = (agent, plan)
-                    com_a = cache.agents.get((key))
                     if not com_a:
                         raise UserError(gettext('importer.agent_not_found',
                             agent=agent, plan=plan))
@@ -544,7 +579,7 @@ class Importer(metaclass=PoolMeta):
         Party.save(to_save)
         Note.save(notes_to_save)
 
-        if 'payable_bank_account' in party._fields:
+        if 'payable_bank_account' in Party._fields:
             # These fields must be set after party has been saved as only
             # accounts in bank_accounts can be used
             for party in to_set_bank_accounts:
@@ -554,7 +589,7 @@ class Importer(metaclass=PoolMeta):
                 party.receivable_bank_account = party.bank_accounts[0]
             Party.save(to_save)
 
-        if 'relations' in party._fields:
+        if 'relations' in Party._fields:
             new_parties = dict((x.code, x) for x in to_save)
             rel_save = []
             for code, relation in relations_to_save.items():

@@ -121,6 +121,10 @@ def register():
         depends=['account'],
         module='importer', type_='model')
     Pool.register(
+        account.ImporterAccountMoveDependsAnalytic,
+        depends=['analytic_account'],
+        module='importer', type_='model')
+    Pool.register(
         farm.Importer,
         farm.ImporterFarmMoveEvent,
         farm.ImporterFarmRemovalEvent,
