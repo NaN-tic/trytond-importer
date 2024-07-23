@@ -955,7 +955,10 @@ class ImporterReverseColumn(ModelSQL, ModelView):
         res={}
         for r_column in r_columns:
             records = importers[r_column.importer]
-            values = records[r_column.name]
+            try:
+                values = records[r_column.name]
+            except KeyError:
+                values = []
             if all([x is None for x in values]):
                 res[r_column.id] = None
             else:
