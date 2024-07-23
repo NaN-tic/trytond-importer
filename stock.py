@@ -19,6 +19,7 @@ class ImporterStockMove(ModelView):
     cost_price = fields.Numeric('Cost Price')
     unit_price = fields.Numeric('Unit Price')
     lot = fields.Char('Lot')
+    currency = fields.Char('Currency')
 
 
 class ImporterLocation(ModelView):
@@ -98,6 +99,7 @@ class Importer(metaclass=PoolMeta):
         Move = pool.get('stock.move')
         Location = pool.get('stock.location')
         Product = pool.get('product.product')
+        Currency = pool.get('currency.currency')
         try:
             Lot = pool.get('stock.lot')
         except KeyError:
@@ -110,6 +112,7 @@ class Importer(metaclass=PoolMeta):
 
         codes = [x.product_code for x in records]
         products = {x.code: x for x in Product.search([('code', 'in', codes)])}
+        currencies = {x.code: x for x in Currency.search([])}
 
         lots = {}
         if hasattr(Move, 'lot'):
@@ -151,6 +154,8 @@ class Importer(metaclass=PoolMeta):
             move.unit = product.default_uom
             move.effective_date = record.effective_date
             move.planned_date = record.planned_date
+            if record.currency:
+                move.currency = currencies.get(record.currency)
             if lot:
                 move.lot = lot
             to_save.append(move)
