@@ -148,7 +148,7 @@ class Importer(metaclass=PoolMeta):
             move.quantity = record.quantity
             move.cost_price = record.cost_price
             move.unit_price = record.unit_price
-            move.uom = product.default_uom
+            move.unit = product.default_uom
             move.effective_date = record.effective_date
             move.planned_date = record.planned_date
             if lot:
