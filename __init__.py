@@ -36,6 +36,7 @@ def register():
     Pool.register(
         importer.Importer,
         importer.ImporterColumn,
+        importer.ImporterReverseColumn,
         importer.ImportAsk,
         ir.Importer,
         ir.ImporterLanguage,
@@ -118,6 +119,10 @@ def register():
         account.ImporterFiscalYear,
         party.ImporterAccountDepends,
         depends=['account'],
+        module='importer', type_='model')
+    Pool.register(
+        account.ImporterAccountMoveDependsAnalytic,
+        depends=['analytic_account'],
         module='importer', type_='model')
     Pool.register(
         farm.Importer,

@@ -69,6 +69,10 @@ class Data:
         self.url_data = url_data
         self.connection = conn
         self.sql = sql
+        self.type = None
+        self.has_header = None
+        self.header_reliable = None
+        self.rows = None
 
     @staticmethod
     def to_str(d):
@@ -117,8 +121,7 @@ class Data:
             return StringIO(str())
         return BytesIO(bytes())
 
-    def get_data(self):
-        'Return a list of lists'
+    def load(self):
         # Process XLSX files
         try:
             book = openpyxl.load_workbook(filename=self.get_data_file(),
@@ -136,12 +139,11 @@ class Data:
                 # fails too, so we set the limit to 1024 which is the maximum
                 # number of columns allowed by LibreOffice
                 rows.append([x.value for x in row[:1024]])
-            return {
-                'type': 'xlsx',
-                'has_header': False,
-                'header_reliable': False,
-                'rows': rows,
-                }
+            self.type = 'xlsx'
+            self.has_header = False
+            self.header_reliable = False
+            self.rows = rows
+            return
 
         # Process JSON and YAML files
         try:
@@ -155,12 +157,11 @@ class Data:
                 content = None
         if isinstance(content, list):
             if all(isinstance(x, list) for x in content):
-                return {
-                    'type': type,
-                    'has_header': False,
-                    'header_reliable': True,
-                    'rows': content,
-                    }
+                self.type = type
+                self.has_header = False
+                self.header_reliable = True
+                self.rows = content
+                return
             if all(isinstance(x, dict) for x in content):
                 # TODO: We're considering that all records have all the keys
                 rows = []
@@ -170,12 +171,11 @@ class Data:
                     for key in sorted(item.keys()):
                         row.append(item[key])
                     rows.append(row)
-                return {
-                    'type': type,
-                    'has_header': True,
-                    'header_reliable': True,
-                    'rows': rows,
-                    }
+                self.type = type
+                self.has_header = True
+                self.header_reliable = True
+                self.rows = rows
+                return
 
         # Process CSV files
         try:
@@ -189,12 +189,11 @@ class Data:
             reader = csv.reader(data, dialect)
             for row in reader:
                 rows.append(row)
-            return {
-                'type': 'csv',
-                'has_header': has_header,
-                'header_reliable': False,
-                'rows': rows,
-                }
+            self.type = 'csv'
+            self.has_header = has_header
+            self.header_reliable = False
+            self.rows = rows
+            return
         except:
             pass
 
@@ -204,20 +203,18 @@ class Data:
                 cursor.execute(self.sql)
                 rows = [[item[0] for item in cursor.description]]
                 rows += cursor.fetchall()
-                return {
-                    'type': 'sql',
-                    'has_header': True,
-                    'header_reliable': True,
-                    'rows': rows,
-                    }
+                self.type = 'sql'
+                self.has_header = True
+                self.header_reliable = True
+                self.rows = rows
+                return
             except Exception:
                 pass
-        return {
-            'type': 'none',
-            'has_header': False,
-            'header_reliable': False,
-            'rows': [],
-            }
+        self.type = 'none'
+        self.has_header = False
+        self.header_reliable = False
+        self.rows = []
+        return
 
 
 class Importer(ModelSQL, ModelView):
@@ -276,6 +273,8 @@ class Importer(ModelSQL, ModelView):
             'invisible': Eval('data_source') != 'url',
             })
     columns = fields.One2Many('importer.column', 'importer', 'Column')
+    reverse_columns = fields.One2Many('importer.reverse_column',
+            'importer', 'Reverse Column')
 
     @classmethod
     def __setup__(cls):
@@ -386,15 +385,16 @@ class Importer(ModelSQL, ModelView):
             sql = importer.get_sql()
             data = Data(importer.data_source, importer.binary_data,
                 importer.text_data, importer.url_data, conn, sql)
-            item = data.get_data()
-            rows = item['rows']
-            has_header = item['has_header']
-            header_reliable = item['header_reliable']
+            data.load()
+            rows = data.rows
+            has_header = data.has_header
+            header_reliable = data.header_reliable
             use_header = has_header
             if rows and (has_header or not header_reliable):
                 use_header = importer.detect_header(rows[0], distance_threshold)
                 columns += importer.columns
-
+                importer.generate_reverse_columns(rows[0])
+                importer.fill_reverse_columns()
             importer.has_header = use_header
             importer.use_header = use_header
 
@@ -444,6 +444,68 @@ class Importer(ModelSQL, ModelView):
             else:
                 column.name = None
         return use_header
+
+    def generate_reverse_columns(self, row):
+        pool = Pool()
+        ReverseColumn = pool.get('importer.reverse_column')
+
+        self.reverse_columns = ()
+        for header in row:
+            header = str(header)
+            r_column = ReverseColumn()
+            r_column.importer = self.id
+            r_column.name = header
+            r_column.field = None
+            self.reverse_columns += (r_column,)
+
+    def fill_reverse_columns(self, name=None):
+        pool = Pool()
+        Column = pool.get('importer.column')
+
+        for r_column in self.reverse_columns:
+            column = self.column_match_name(r_column.name, Column)
+            if column:
+                r_column.field = column.field
+                r_column.format = column.format
+
+    @fields.depends('columns', 'reverse_columns', methods=['equal_columns'])
+    def on_change_columns(self, name=None):
+        for r_column in self.reverse_columns:
+            for column in self.columns:
+                if r_column.name == column.name:
+                    if self.equal_columns(column, r_column):
+                        break
+                    r_column.field = column.field
+                    r_column.format = column.format
+                elif r_column.field == column.field:
+                    r_column.field = None
+
+    @fields.depends('columns', 'reverse_columns', methods=['equal_columns'])
+    def on_change_reverse_columns(self, name=None):
+        for column in self.columns:
+            for r_column in self.reverse_columns:
+                if column.field == r_column.field:
+                    if self.equal_columns(column, r_column):
+                        break
+                    column.name = r_column.name
+                    column.format = r_column.format
+                elif column.name == r_column.name:
+                    column.name = None
+
+    def column_match_name(self, name, Model):
+        columns = Model.search([
+            ('importer', '=', self.id),
+            ('name', '=', name),
+            ], limit=1)
+        if columns:
+            return columns[0]
+        return None
+
+    def equal_columns(self, column1, column2):
+        return (column1.name == column2.name and
+                column1.field == column2.field and
+                column1.format == column2.format)
+
 
     @classmethod
     def get_methods(cls):
@@ -496,9 +558,6 @@ class Importer(ModelSQL, ModelView):
         return new_records
 
     def get_records(self, raise_errors=True, data=None):
-        '''
-        data is a dictionary with the structure returned by get_data()
-        '''
         pool = Pool()
         methods = self._get_methods()
         Model = pool.get(methods[self.method]['model'])
@@ -508,9 +567,8 @@ class Importer(ModelSQL, ModelView):
             sql = self.get_sql()
             data = Data(self.data_source, self.binary_data, self.text_data,
                 self.url_data, conn, sql)
-            data = data.get_data()
-
-        rows = data['rows']
+            data.load()
+        rows = data.rows
         if not rows:
             return []
         indexes = self.get_field_indexes(rows)
@@ -668,7 +726,8 @@ class ImporterColumn(ModelSQL, ModelView):
         sql = self.importer.get_sql()
         data = Data(self.importer.data_source, binary_data,
             self.importer.text_data, self.importer.url_data, conn, sql)
-        rows = data.get_data()['rows']
+        data.load()
+        rows = data.rows
         if rows:
             return sorted([x for x in rows[0] if x])
         return []
@@ -677,6 +736,7 @@ class ImporterColumn(ModelSQL, ModelView):
     def get_examples(self, columns, name):
         pool = Pool()
         Lang = pool.get('ir.lang')
+        Importer = pool.get('importer')
 
         language = Transaction().context.get('language') or 'en'
         language, = Lang.search([('code', '=', language)])
@@ -693,12 +753,13 @@ class ImporterColumn(ModelSQL, ModelView):
             if column.importer in importers:
                 continue
             records = []
-            for record in column.importer.get_records(raise_errors=False):
+            with Transaction().set_context({'importer.binary_data': 'data'}):
+                importer = Importer(column.importer.id)
+            for record in importer.get_records(raise_errors=False):
                 records.append(record)
                 if len(records) >= 3:
                     break
             importers[column.importer] = records
-
         res = {}
         for column in columns:
             records = importers[column.importer]
@@ -833,6 +894,74 @@ class ImporterColumn(ModelSQL, ModelView):
                         importer=self.importer))
 
 
+class ImporterReverseColumn(ModelSQL, ModelView):
+    'Importer Reverse Column'
+    __name__ = 'importer.reverse_column'
+
+    importer = fields.Many2One('importer', 'Importation', required=True)
+    name = fields.Char('Column Name', required=True, readonly=True)
+    model = fields.Function(fields.Many2One('ir.model', 'Model'),
+        'on_change_with_model')
+    field = fields.Many2One('ir.model.field', 'Field',
+            domain=[('model_ref', '=', Eval('model')),])
+    format = fields.Selection('_get_formats', 'Format')
+    examples = fields.Function(fields.Char('Examples'),'get_examples')
+    # examples = fields.Char('Examples')
+
+    @fields.depends('importer', '_parent_importer.model')
+    def on_change_with_model(self, name=None):
+        if self.importer and self.importer.model:
+            return self.importer.model.id
+
+    @classmethod
+    def _get_formats(cls):
+        pool = Pool()
+        Column = pool.get('importer.column')
+        return Column._get_formats()
+
+    @classmethod
+    def get_examples(self, r_columns, name):
+        pool = Pool()
+        Lang = pool.get('ir.lang')
+
+        language = Transaction().context.get('language') or 'en'
+        language, = Lang.search([('code', '=', language)])
+
+        def value_to_str(value):
+            if isinstance(value, str):
+                return value
+            if isinstance(value, datetime.date):
+                return language.strftime(value)
+            return str(value)
+
+        importers = {}
+        for r_column in r_columns:
+            importer = r_column.importer
+            if importer in importers:
+                continue
+            conn = importer.get_connection()
+            sql = importer.get_sql()
+            data = Data(importer.data_source, importer.binary_data,
+                importer.text_data, importer.url_data, conn, sql)
+            data.load()
+            headers = data.rows[0]
+            rows = data.rows[1:]
+            records = {}
+            for i in range(min(len(rows), 3)):
+                row = rows[i]
+                for j in range(len(headers)):
+                    records.setdefault(headers[j], []).append(row[j])
+            importers[r_column.importer] = records
+        res={}
+        for r_column in r_columns:
+            records = importers[r_column.importer]
+            values = records[r_column.name]
+            if all([x is None for x in values]):
+                res[r_column.id] = None
+            else:
+                res[r_column.id] = ' | '.join([value_to_str(x) for x in values])
+        return res
+
 class ImportAsk(ModelView):
     'Import Ask'
     __name__ = 'importer.import.ask'
@@ -866,7 +995,8 @@ class AskAndImport(Wizard):
         sql = self.ask.importer.get_sql()
         data = Data(self.ask.data_source, self.ask.binary_data,
             self.ask.text_data, self.ask.url_data, conn, sql)
-        records = self.ask.importer.data_to_records(data.get_data())
+        data.load()
+        records = self.ask.importer.data_to_records(data)
         if not records:
             raise UserError(gettext('importer.no_records_imported',
                 importer=self.ask.importer.rec_name))
