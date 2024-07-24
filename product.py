@@ -87,6 +87,10 @@ class ImporterProductPackagesDepends(metaclass=PoolMeta):
 
     packages = fields.Boolean('Packages')
 
+class ImporterProductStockProductLocationDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    location = fields.Char('Location')
 
 class ImporterProductSupplierMinimumDepends(metaclass=PoolMeta):
     __name__ = 'importer.product'
@@ -217,7 +221,6 @@ class Importer(metaclass=PoolMeta):
         ProductCostPriceMethod = pool.get('product.cost_price_method')
         Note = pool.get('ir.note')
         Location = pool.get('stock.location')
-        ProductLocation = pool.get('stock.product.location')
 
         def object_to_set(template, product, field):
             field = getattr(Product, field, None)
@@ -262,6 +265,11 @@ class Importer(metaclass=PoolMeta):
         try:
             Package = pool.get('product.package')
         except KeyError:
+            pass
+
+        try:
+            ProductLocation = pool.get('stock.product.location')
+        except:
             pass
 
         try:
@@ -479,7 +487,7 @@ class Importer(metaclass=PoolMeta):
                 product.cost_price = record.cost_price or Decimal(0)
             if record.description:
                 product.description = record.description
-            if record.location:
+            if hasattr(Template, 'locations') and record.location:
                 warehouse = Location.get_default_warehouse()
                 product_location = ProductLocation()
                 product_location.warehouse = warehouse
