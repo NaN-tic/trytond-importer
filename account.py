@@ -146,12 +146,11 @@ class Importer(metaclass=PoolMeta):
         PartyIdentifier = pool.get('party.identifier')
         AccountType = pool.get('account.account.type')
         Currency = pool.get('currency.currency')
-        AnalyticAccount = pool.get('analytic_account.account')
-        AnalyticLine = pool.get('analytic_account.line')
 
         cache = SimpleNamespace()
         try:
             AnalyticAccount = pool.get('analytic_account.account')
+            AnalyticLine = pool.get('analytic_account.line')
             cache.analytic_accounts = dict((x.code, x) for x in
                 AnalyticAccount.search([]))
         except:
