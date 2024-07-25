@@ -303,7 +303,7 @@ class Importer(metaclass=PoolMeta):
                 line.amount_second_currency = Currency.compute(
                     account.currency, line.debit - line.credit,
                     account.second_currency)
-            if hasattr(Line, 'analytic_lines'):
+            if hasattr(Line, 'analytic_lines') and record.analytic_account is not None:
                 analytic_account = cache.analytic_accounts.get(
                     record.analytic_account)
                 if not analytic_account:
