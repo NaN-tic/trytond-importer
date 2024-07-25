@@ -37,6 +37,7 @@ def register():
         importer.Importer,
         importer.ImporterColumn,
         importer.ImporterReverseColumn,
+        importer.ImporterError,
         importer.ImportAsk,
         ir.Importer,
         ir.ImporterLanguage,
@@ -90,6 +91,10 @@ def register():
         discount_formula.Importer,
         discount_formula.ImporterSale,
         depends=['sale_discount', 'discount_formula'],
+        module='importer', type_='model')
+    Pool.register(
+        discount_formula.ImporterProductSupplier,
+        depends=['purchase', 'discount_formula'],
         module='importer', type_='model')
     Pool.register(
         party.ImporterPurchaseDepends,

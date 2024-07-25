@@ -65,13 +65,13 @@
             <field name="perm_delete" eval="True"/>
         </record>
 
-        <record model="ir.model.button" id="importer_sync_columns_button">
-            <field name="name">sync_columns</field>
-            <field name="string">Sync Columns</field>
+        <record model="ir.model.button" id="importer_update_columns_button">
+            <field name="name">update_columns</field>
+            <field name="string">Update Columns</field>
             <field name="model">importer</field>
         </record>
-        <record model="ir.model.button-res.group" id="importer_sync_columns_button_group_importer">
-            <field name="button" ref="importer_sync_columns_button"/>
+        <record model="ir.model.button-res.group" id="importer_update_columns_button_group_importer">
+            <field name="button" ref="importer_update_columns_button"/>
             <field name="group" ref="group_importer"/>
         </record>
         <record model="ir.model.button" id="importer_detect_button">
@@ -114,16 +114,6 @@
             <field name="type">tree</field>
             <field name="name">importer_column_list</field>
         </record>
-        <record model="ir.ui.view" id="importer_reverse_column_view_list">
-            <field name="model">importer.reverse_column</field>
-            <field name="type">tree</field>
-            <field name="name">importer_reverse_column_list</field>
-        </record>
-        <record model="ir.ui.view" id="importer_reverse_column_view_form">
-            <field name="model">importer.reverse_column</field>
-            <field name="type">form</field>
-            <field name="name">importer_reverse_column_form</field>
-        </record>
         <record model="ir.model.access" id="access_importer_column">
             <field name="model">importer.column</field>
             <field name="perm_read" eval="False"/>
@@ -139,6 +129,17 @@
             <field name="perm_create" eval="True"/>
             <field name="perm_delete" eval="True"/>
         </record>
+
+        <record model="ir.ui.view" id="importer_reverse_column_view_list">
+            <field name="model">importer.reverse_column</field>
+            <field name="type">tree</field>
+            <field name="name">importer_reverse_column_list</field>
+        </record>
+        <record model="ir.ui.view" id="importer_reverse_column_view_form">
+            <field name="model">importer.reverse_column</field>
+            <field name="type">form</field>
+            <field name="name">importer_reverse_column_form</field>
+        </record>
         <record model="ir.model.access" id="access_importer_reverse_column">
             <field name="model">importer.reverse_column</field>
             <field name="perm_read" eval="False"/>
@@ -148,6 +149,32 @@
         </record>
         <record model="ir.model.access" id="access_importer_reverse_column_importer">
             <field name="model">importer.reverse_column</field>
+            <field name="group" ref="group_importer"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_delete" eval="True"/>
+        </record>
+
+        <record model="ir.ui.view" id="importer_error_view_list">
+            <field name="model">importer.error</field>
+            <field name="type">tree</field>
+            <field name="name">importer_error_list</field>
+        </record>
+        <record model="ir.ui.view" id="importer_error_view_form">
+            <field name="model">importer.error</field>
+            <field name="type">form</field>
+            <field name="name">importer_error_form</field>
+        </record>
+        <record model="ir.model.access" id="access_importer_error">
+            <field name="model">importer.error</field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_delete" eval="False"/>
+        </record>
+        <record model="ir.model.access" id="access_importer_error_importer">
+            <field name="model">importer.error</field>
             <field name="group" ref="group_importer"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
