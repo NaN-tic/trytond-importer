@@ -42,7 +42,8 @@ def register():
     Pool.register(
         importer.Importer,
         importer.ImporterColumn,
-        importer.ImporterReverseColumn,
+        importer.ImporterSourceColumn,
+        importer.ImporterError,
         importer.ImportAsk,
         ir.Importer,
         ir.ImporterLanguage,

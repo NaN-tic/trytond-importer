@@ -1194,6 +1194,7 @@ class ImporterSourceColumn(ModelSQL, ModelView):
         Column = pool.get('importer.column')
         return Column._get_formats()
 
+
     @classmethod
     def update_examples(cls, columns):
         pool = Pool()
