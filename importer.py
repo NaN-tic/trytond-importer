@@ -294,9 +294,9 @@ class Importer(ModelSQL, ModelView):
     url_data = fields.Char('Data URL', states={
             'invisible': Eval('data_source') != 'url',
             })
-    columns = fields.One2Many('importer.column', 'importer', 'Column')
-    reverse_columns = fields.One2Many('importer.reverse_column',
-            'importer', 'Reverse Column')
+    columns = fields.One2Many('importer.column', 'importer', 'Columns')
+    source_columns = fields.One2Many('importer.source_column',
+            'importer', 'Source Columns')
     errors = fields.One2Many('importer.error', 'importer', 'Errors')
 
     @classmethod
@@ -327,7 +327,6 @@ class Importer(ModelSQL, ModelView):
     @classmethod
     def create(cls, vlist):
         importers = super().create(vlist)
-        cls.update_columns(importers)
         return importers
 
     @classmethod
@@ -345,7 +344,6 @@ class Importer(ModelSQL, ModelView):
                             gettext('importer.change_method_warning',
                                 name=importer.name))
         super().write(*args)
-        cls.update_columns(sum(args[::2], []))
 
     @classmethod
     @ModelView.button
@@ -376,9 +374,11 @@ class Importer(ModelSQL, ModelView):
     def update_columns(cls, importers):
         pool = Pool()
         Column = pool.get('importer.column')
+        SourceColumn = pool.get('importer.source_column')
 
         to_delete = []
         to_save = []
+        source_to_save = []
         for importer in importers:
             if not importer.model:
                 continue
@@ -400,14 +400,27 @@ class Importer(ModelSQL, ModelView):
                 column.importer = importer
                 column.field = field
                 to_save.append(column)
+
+            conn = importer.get_connection()
+            sql = importer.get_sql()
+            data = Data(importer.data_source, importer.binary_data,
+                importer.text_data, importer.url_data, conn, sql)
+            data.load()
+            importer.generate_source_columns(data.rows[0])
+            importer.fill_source_columns()
+            SourceColumn.update_examples(importer.source_columns)
+            source_to_save += importer.source_columns
+
         Column.delete(to_delete)
         Column.save(to_save)
+        SourceColumn.save(source_to_save)
 
     @classmethod
     @ModelView.button
     def detect(cls, importers, distance_threshold=None):
         pool = Pool()
         Column = pool.get('importer.column')
+        SourceColumn = pool.get('importer.source_column')
 
         columns = []
         for importer in importers:
@@ -421,8 +434,10 @@ class Importer(ModelSQL, ModelView):
             if data.rows and (data.has_header or not header_reliable):
                 use_header = importer.detect_header(data.rows[0], distance_threshold)
                 columns += importer.columns
-                importer.generate_reverse_columns(data.rows[0])
-                importer.fill_reverse_columns()
+                importer.generate_source_columns(data.rows[0])
+                importer.fill_source_columns()
+                SourceColumn.update_examples(importer.source_columns)
+
             importer.has_header = use_header
             importer.use_header = use_header
 
@@ -473,32 +488,32 @@ class Importer(ModelSQL, ModelView):
                 column.name = None
         return use_header
 
-    def generate_reverse_columns(self, row):
+    def generate_source_columns(self, row):
         pool = Pool()
-        ReverseColumn = pool.get('importer.reverse_column')
+        ReverseColumn = pool.get('importer.source_column')
 
-        self.reverse_columns = ()
+        self.source_columns = ()
         for header in row:
             header = str(header)
             r_column = ReverseColumn()
             r_column.importer = self.id
             r_column.name = header
             r_column.field = None
-            self.reverse_columns += (r_column,)
+            self.source_columns += (r_column,)
 
-    def fill_reverse_columns(self, name=None):
+    def fill_source_columns(self, name=None):
         pool = Pool()
         Column = pool.get('importer.column')
 
-        for r_column in self.reverse_columns:
+        for r_column in self.source_columns:
             column = self.column_match_name(r_column.name, Column)
             if column:
                 r_column.field = column.field
                 r_column.format = column.format
 
-    @fields.depends('columns', 'reverse_columns', methods=['equal_columns'])
+    @fields.depends('columns', 'source_columns', methods=['equal_columns'])
     def on_change_columns(self, name=None):
-        for r_column in self.reverse_columns:
+        for r_column in self.source_columns:
             for column in self.columns:
                 if r_column.name == column.name:
                     if self.equal_columns(column, r_column):
@@ -508,10 +523,10 @@ class Importer(ModelSQL, ModelView):
                 elif r_column.field == column.field:
                     r_column.field = None
 
-    @fields.depends('columns', 'reverse_columns', methods=['equal_columns'])
-    def on_change_reverse_columns(self, name=None):
+    @fields.depends('columns', 'source_columns', methods=['equal_columns'])
+    def on_change_source_columns(self, name=None):
         for column in self.columns:
-            for r_column in self.reverse_columns:
+            for r_column in self.source_columns:
                 if column.field == r_column.field:
                     if self.equal_columns(column, r_column):
                         break
@@ -639,7 +654,7 @@ class Importer(ModelSQL, ModelView):
                 error = Error()
                 error.importer = self
                 error.message = message % kwargs
-                error.row_number = record.row_number
+                error.row_number = record and record.row_number
                 error.record = tools.record_to_str(record, fields=setup.fields)
                 error.type = 'specific'
                 to_save.append(error)
@@ -677,6 +692,10 @@ class Importer(ModelSQL, ModelView):
             - {c.field.name for c in self.columns})
 
         row_number = 0
+        if hasattr(Model, 'row_number'):
+            update_row_number = True
+        else:
+            update_row_number = False
         for row in rows:
             row_number += 1
             if not any(row):
@@ -706,7 +725,9 @@ class Importer(ModelSQL, ModelView):
 
             for field in missing_fields:
                 setattr(record, field, None)
-            record.row_number = row_number
+
+            if update_row_number:
+                record.row_number = row_number
 
             yield record
 
@@ -841,36 +862,14 @@ class ImporterColumn(ModelSQL, ModelView):
         Lang = pool.get('ir.lang')
         Importer = pool.get('importer')
 
-        language = Transaction().context.get('language') or 'en'
-        language, = Lang.search([('code', '=', language)])
-
-        def value_to_str(value):
-            if isinstance(value, str):
-                return value
-            if isinstance(value, datetime.date):
-                return language.strftime(value)
-            return str(value)
-
-        importers = {}
+        res = {x.id: None for x in columns}
         for column in columns:
-            if column.importer in importers:
+            if not column.name:
                 continue
-            records = []
-            with Transaction().set_context({'importer.binary_data': 'data'}):
-                importer = Importer(column.importer.id)
-            for record in importer.get_records(raise_errors=False):
-                records.append(record)
-                if len(records) >= 3:
+            for sc in column.importer.source_columns:
+                if sc.name == column.name:
+                    res[column.id] = sc.examples
                     break
-            importers[column.importer] = records
-        res = {}
-        for column in columns:
-            records = importers[column.importer]
-            values = [getattr(x, column.field.name) for x in records]
-            if all([x is None for x in values]):
-                res[column.id] = None
-            else:
-                res[column.id] = ' | '.join([value_to_str(x) for x in values])
         return res
 
     def get_selection_dict(self, model, field):
@@ -996,9 +995,9 @@ class ImporterColumn(ModelSQL, ModelView):
                         importer=self.importer))
 
 
-class ImporterReverseColumn(ModelSQL, ModelView):
-    'Importer Reverse Column'
-    __name__ = 'importer.reverse_column'
+class ImporterSourceColumn(ModelSQL, ModelView):
+    'Importer Source Column'
+    __name__ = 'importer.source_column'
 
     importer = fields.Many2One('importer', 'Importation', required=True)
     name = fields.Char('Column Name', required=True, readonly=True)
@@ -1007,8 +1006,7 @@ class ImporterReverseColumn(ModelSQL, ModelView):
     field = fields.Many2One('ir.model.field', 'Field',
             domain=[('model_ref', '=', Eval('model')),])
     format = fields.Selection('_get_formats', 'Format')
-    examples = fields.Function(fields.Char('Examples'),'get_examples')
-    # examples = fields.Char('Examples')
+    examples = fields.Char('Examples', readonly=True)
 
     @fields.depends('importer', '_parent_importer.model')
     def on_change_with_model(self, name=None):
@@ -1021,8 +1019,9 @@ class ImporterReverseColumn(ModelSQL, ModelView):
         Column = pool.get('importer.column')
         return Column._get_formats()
 
+
     @classmethod
-    def get_examples(self, r_columns, name):
+    def update_examples(cls, columns):
         pool = Pool()
         Lang = pool.get('ir.lang')
 
@@ -1037,8 +1036,8 @@ class ImporterReverseColumn(ModelSQL, ModelView):
             return str(value)
 
         importers = {}
-        for r_column in r_columns:
-            importer = r_column.importer
+        for column in columns:
+            importer = column.importer
             if importer in importers:
                 continue
             conn = importer.get_connection()
@@ -1054,19 +1053,19 @@ class ImporterReverseColumn(ModelSQL, ModelView):
                     row = rows[i]
                     for j in range(len(headers)):
                         records.setdefault(headers[j], []).append(row[j])
-            importers[r_column.importer] = records
+            importers[column.importer] = records
+
         res={}
-        for r_column in r_columns:
-            records = importers[r_column.importer]
+        for column in columns:
+            records = importers[column.importer]
             try:
-                values = records[r_column.name]
+                values = records[column.name]
             except KeyError:
                 values = []
             if all([x is None for x in values]):
-                res[r_column.id] = None
+                column.examples = None
             else:
-                res[r_column.id] = ' | '.join([value_to_str(x) for x in values])
-        return res
+                column.examples = ' | '.join([value_to_str(x) for x in values])
 
 
 class ImporterError(ModelSQL, ModelView):

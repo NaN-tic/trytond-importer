@@ -48,8 +48,8 @@
         <page string="Importer columns" id="columns">
             <field name="columns" colspan="4" height="500"/>
         </page>
-        <page string="File columns" id="reverse_columns">
-            <field name="reverse_columns" colspan="4" height="500"/>
+        <page string="File columns" id="source_columns">
+            <field name="source_columns" colspan="4" height="500"/>
         </page>
         <page name="text_data">
             <field name="text_data" height="500" colspan="4"/>

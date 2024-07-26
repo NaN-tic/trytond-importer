@@ -107,12 +107,12 @@
         <record model="ir.ui.view" id="importer_column_view_form">
             <field name="model">importer.column</field>
             <field name="type">form</field>
-            <field name="name">importer_column_form</field>
+            <field name="name">column_form</field>
         </record>
         <record model="ir.ui.view" id="importer_column_view_tree">
             <field name="model">importer.column</field>
             <field name="type">tree</field>
-            <field name="name">importer_column_list</field>
+            <field name="name">column_list</field>
         </record>
         <record model="ir.model.access" id="access_importer_column">
             <field name="model">importer.column</field>
@@ -130,25 +130,25 @@
             <field name="perm_delete" eval="True"/>
         </record>
 
-        <record model="ir.ui.view" id="importer_reverse_column_view_list">
-            <field name="model">importer.reverse_column</field>
+        <record model="ir.ui.view" id="importer_source_column_view_list">
+            <field name="model">importer.source_column</field>
             <field name="type">tree</field>
-            <field name="name">importer_reverse_column_list</field>
+            <field name="name">source_column_list</field>
         </record>
-        <record model="ir.ui.view" id="importer_reverse_column_view_form">
-            <field name="model">importer.reverse_column</field>
+        <record model="ir.ui.view" id="importer_source_column_view_form">
+            <field name="model">importer.source_column</field>
             <field name="type">form</field>
-            <field name="name">importer_reverse_column_form</field>
+            <field name="name">source_column_form</field>
         </record>
-        <record model="ir.model.access" id="access_importer_reverse_column">
-            <field name="model">importer.reverse_column</field>
+        <record model="ir.model.access" id="access_importer_source_column">
+            <field name="model">importer.source_column</field>
             <field name="perm_read" eval="False"/>
             <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>
             <field name="perm_delete" eval="False"/>
         </record>
-        <record model="ir.model.access" id="access_importer_reverse_column_importer">
-            <field name="model">importer.reverse_column</field>
+        <record model="ir.model.access" id="access_importer_source_column_importer">
+            <field name="model">importer.source_column</field>
             <field name="group" ref="group_importer"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>

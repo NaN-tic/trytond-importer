@@ -29,7 +29,7 @@ class Setup(SimpleNamespace):
         self.on_error = on_error
         self.errors = []
 
-    def error(self, message, record, **kwargs):
+    def error(self, message, record=None, **kwargs):
         if self.on_error == 'raise':
             raise UserError(message.format(**kwargs))
         self.errors.append((record, message, kwargs))
@@ -57,13 +57,12 @@ class ImporterModel(ModelView):
 
     def importer_assign(self, record):
         cls = self.__class__
-        for field in self.setup().fields:
+        for field in Setup.get().fields:
             if hasattr(cls, field):
                 setattr(self, field, getattr(self, field, None))
 
     def importer_error(self, message, **kwargs):
-        setup = self.setup()
-        setup.error(message, self, **kwargs)
+        Setup.get().error(message, self, **kwargs)
 
 
 class Cache:
@@ -114,8 +113,9 @@ class Cache:
                     kv = key(record)
                     if kv in self.values:
                         if self.duplicates == 'abort-on-load':
-                            raise UserError(f'Duplicate key "{kv}" found loading model '
+                            Setup.get().error(f'Duplicate key "{kv}" found loading model '
                                 '"{model}"')
+                            continue
                         elif self.duplicates == 'first':
                             continue
                     self.values.setdefault(kv, []).append(record)
@@ -132,9 +132,10 @@ class Cache:
         try:
             values = self.values[key]
         except KeyError:
-            raise UserKeyError(f'Key "{key}" not found accessing "{self.model}"')
+            Setup.get().error(f'Key "{key}" not found accessing "{self.model}"')
+            return
         if len(values) > 1 and self.duplicates == 'abort-on-use':
-            raise UserError(f'Duplicate key "{key}" found accessing "{self.model}"')
+            Setup.get().error(f'Duplicate key "{key}" found accessing "{self.model}"')
         if self.duplicates == 'all':
             return values
         return values[0]

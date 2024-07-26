@@ -7,9 +7,10 @@ from trytond.model import ModelView, fields
 from trytond.modules.product import price_digits, round_price
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
+from .tools import ImporterModel, Cache, Setup
 
 
-class ImporterProduct(ModelView):
+class ImporterProduct(ImporterModel):
     'Importer Product'
     __name__ = 'importer.product'
 
@@ -43,131 +44,6 @@ class ImporterProduct(ModelView):
     product_note = fields.Text('Product Note')
     location = fields.Char('Location')
 
-class ImporterProductConfiguration(ModelView):
-    'Importer Product Configuration'
-    __name__ = "importer.product.configuration"
-
-    cost_price_method = fields.Char("Cost price method")
-    template_sequence_prefix = fields.Char("Sequence prefix")
-    template_sequence_suffix = fields.Char("Sequence suffix")
-    template_sequence_padding = fields.Integer("Sequence padding")
-    template_sequence_number_next = fields.Integer("Sequence number next")
-
-
-class ImporterProductProductionDepends(metaclass=PoolMeta):
-    __name__ = 'importer.product'
-
-    producible = fields.Boolean('Producible')
-    bom_name = fields.Char('BOM Name')
-
-
-class ImporterProductProductionRouteDepends(metaclass=PoolMeta):
-    __name__ = 'importer.product'
-
-    bom_route = fields.Char('BOM Route')
-
-
-class ImporterProductProductMeasuresDepends(metaclass=PoolMeta):
-    __name__ = 'importer.product'
-
-    width = fields.Float('Width')
-    width_uom = fields.Char('Width Uom')
-    length = fields.Float('Length')
-    length_uom = fields.Char('Length Uom')
-    height = fields.Float('Height')
-    height_uom = fields.Char('Height Uom')
-    weight = fields.Float('Weight')
-    weight_uom = fields.Char('Weight Uom')
-    volume = fields.Float('Volume')
-    volume_uom = fields.Char('Volume Uom')
-
-
-class ImporterProductPackagesDepends(metaclass=PoolMeta):
-    __name__ = 'importer.product'
-
-    packages = fields.Boolean('Packages')
-
-
-class ImporterProductSupplierMinimumDepends(metaclass=PoolMeta):
-    __name__ = 'importer.product'
-
-    supplier_minimum_quantity = fields.Float('Supplier Minimum Quantity')
-
-
-class ImporterProductSupplierMultipleDepends(metaclass=PoolMeta):
-    __name__ = 'importer.product'
-
-    supplier_multiple_quantity = fields.Float('Supplier Multiple Quantity')
-
-
-class ImporterProductCodes(ModelView):
-    'Importer Product'
-    __name__ = 'importer.product_codes'
-
-    template_code = fields.Char('Template Code')
-    variant_code = fields.Char('Variant Code')
-    variant_suffix_code = fields.Char('Variant Suffix Code')
-    type_ = fields.Char('type')
-    code = fields.Char('Code')
-
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
-    @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'product': {
-                    'string': 'Product',
-                    'model': 'importer.product',
-                    'chunked': False,
-                    },
-                'product_codes': {
-                    'string': 'Product Codes',
-                    'model': 'importer.product_codes',
-                    'chunked': True,
-                    },
-                'product_configuration': {
-                    'string': 'Product configuration',
-                    'model': 'importer.product.configuration',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_product_codes(cls, records):
-        pool = Pool()
-        Product = pool.get('product.product')
-        Identifier = pool.get('product.identifier')
-
-        products = dict((x.code, x) for x in Product.search([
-                    ('code', '!=', None),
-                    ('code', '!=', ''),
-                    ]))
-        to_save = []
-        for record in records:
-            if not record.code:
-                continue
-            identifier = Identifier()
-            identifier.type = record.type_
-            if record.variant_code:
-                code = record.variant_code
-            else:
-                code = ((record.template_code or '')
-                    + (record.variant_suffix_code or ''))
-            identifier.code = record.code
-            product = products.get(code)
-            if not product:
-                # TODO: Raise an error
-                continue
-            identifier.product = product
-            to_save.append(identifier)
-
-        Identifier.save(to_save)
-        return to_save
-
     @classmethod
     def _setup_import_template_hook(cls, cache, records):
         pass
@@ -181,7 +57,11 @@ class Importer(metaclass=PoolMeta):
         pass
 
     @classmethod
-    def import_product(cls, records):
+    def importer_start(cls):
+        super().importer_start()
+
+    @classmethod
+    def importer_import(cls, records):
         pool = Pool()
         try:
             Company = pool.get('company.company')
@@ -520,6 +400,132 @@ class Importer(metaclass=PoolMeta):
         Template.save(to_save)
         Product.save(products_to_save)
         Note.save(notes_to_save)
+        return to_save
+
+
+class ImporterProductConfiguration(ModelView):
+    'Importer Product Configuration'
+    __name__ = "importer.product.configuration"
+
+    cost_price_method = fields.Char("Cost price method")
+    template_sequence_prefix = fields.Char("Sequence prefix")
+    template_sequence_suffix = fields.Char("Sequence suffix")
+    template_sequence_padding = fields.Integer("Sequence padding")
+    template_sequence_number_next = fields.Integer("Sequence number next")
+
+
+class ImporterProductProductionDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    producible = fields.Boolean('Producible')
+    bom_name = fields.Char('BOM Name')
+
+
+class ImporterProductProductionRouteDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    bom_route = fields.Char('BOM Route')
+
+
+class ImporterProductProductMeasuresDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    width = fields.Float('Width')
+    width_uom = fields.Char('Width Uom')
+    length = fields.Float('Length')
+    length_uom = fields.Char('Length Uom')
+    height = fields.Float('Height')
+    height_uom = fields.Char('Height Uom')
+    weight = fields.Float('Weight')
+    weight_uom = fields.Char('Weight Uom')
+    volume = fields.Float('Volume')
+    volume_uom = fields.Char('Volume Uom')
+
+
+class ImporterProductPackagesDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    packages = fields.Boolean('Packages')
+
+
+class ImporterProductSupplierMinimumDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    supplier_minimum_quantity = fields.Float('Supplier Minimum Quantity')
+
+
+class ImporterProductSupplierMultipleDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    supplier_multiple_quantity = fields.Float('Supplier Multiple Quantity')
+
+
+class ImporterProductCodes(ModelView):
+    'Importer Product'
+    __name__ = 'importer.product_codes'
+
+    template_code = fields.Char('Template Code')
+    variant_code = fields.Char('Variant Code')
+    variant_suffix_code = fields.Char('Variant Suffix Code')
+    type_ = fields.Char('type')
+    code = fields.Char('Code')
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'product': {
+                    'string': 'Product',
+                    'model': 'importer.product',
+                    'chunked': False,
+                    },
+                'product_codes': {
+                    'string': 'Product Codes',
+                    'model': 'importer.product_codes',
+                    'chunked': True,
+                    },
+                'product_configuration': {
+                    'string': 'Product configuration',
+                    'model': 'importer.product.configuration',
+                    'chunked': True,
+                    },
+                })
+        return methods
+
+    @classmethod
+    def import_product_codes(cls, records):
+        pool = Pool()
+        Product = pool.get('product.product')
+        Identifier = pool.get('product.identifier')
+
+        products = dict((x.code, x) for x in Product.search([
+                    ('code', '!=', None),
+                    ('code', '!=', ''),
+                    ]))
+        to_save = []
+        for record in records:
+            if not record.code:
+                continue
+            identifier = Identifier()
+            identifier.type = record.type_
+            if record.variant_code:
+                code = record.variant_code
+            else:
+                code = ((record.template_code or '')
+                    + (record.variant_suffix_code or ''))
+            identifier.code = record.code
+            product = products.get(code)
+            if not product:
+                # TODO: Raise an error
+                continue
+            identifier.product = product
+            to_save.append(identifier)
+
+        Identifier.save(to_save)
         return to_save
 
     @classmethod
