@@ -349,7 +349,6 @@ class Importer(metaclass=PoolMeta):
                 # If we update a product, we dont need to change the uom
                 if product.id is not None:
                     uom = None
-
             if uom:
                 template.default_uom = uom
             if record.cost_price_method:
@@ -497,7 +496,7 @@ class Importer(metaclass=PoolMeta):
                     location.name = record.location
                     cache.locations[record.location] = location
                 product_location.location = location
-                template.locations += (product_location,)
+                template.locations = (product_location,)
             # If product exist the packages are set all new, not updated.
             if 'packages' in template._fields and record.packages:
                 packages = []
