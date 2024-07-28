@@ -57,7 +57,7 @@
         <page name="errors">
             <label name="on_error"/>
             <field name="on_error"/>
-            <newline/>
+            <button name="clean_errors" colspan="2"/>
             <field name="errors" height="500" colspan="4"/>
         </page>
     </notebook>

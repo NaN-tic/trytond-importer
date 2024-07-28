@@ -318,6 +318,10 @@ class Importer(ModelSQL, ModelView):
                     'icon': 'importer-upload',
                     'invisible': ~Bool(Eval('data_source').in_(['sql'])),
                     },
+                'clean_errors': {
+                    'icon': 'tryton-clear',
+                    'invisible': ~Bool(Eval('errors')),
+                    },
                 })
 
     @classmethod
@@ -368,6 +372,14 @@ class Importer(ModelSQL, ModelView):
             sql = sql_file.read()
             sql = sql.format(schema=self.schema, domain=self.where)
             return sql
+
+    @classmethod
+    @ModelView.button
+    def clean_errors(cls, importers):
+        pool = Pool()
+        Error = pool.get('importer.error')
+
+        Error.delete(sum([x.errors for x in importers], ()))
 
     @classmethod
     @ModelView.button
