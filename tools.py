@@ -48,6 +48,9 @@ class ImporterModel(ModelView):
     def importer_start(cls):
         pass
 
+    def importer_context(self):
+        return {}
+
     def importer_header(self):
         pass
 
@@ -67,10 +70,10 @@ class ImporterModel(ModelView):
 
 class Cache:
     def __init__(self, model, key, domain=None, context=None,
-             duplicates='first'):
+             duplicates='first', case_sensitive=False, required=True):
         '''
         `model` is the name of the model to cache or the model class
-        
+
         `key` maybe a field name or a function that returns a key. It can also be a list of keys. In this case the record will be added for each key value.
 
         `duplicates` can be one of:
@@ -78,6 +81,8 @@ class Cache:
         - `abort-on-load`: will raise an exception if there are duplicates on loading
         - `abort-on-use`: will raise an exception if there are duplicates and the key is used
         - `all`: will return all the records with the same key
+
+        'required' indicates if the key is expected to exist
         '''
         if isinstance(model, str):
             self.model = model
@@ -89,7 +94,10 @@ class Cache:
             keys = [key]
 
         def mygetter(key, record):
-            return getattr(record, key)
+            value = getattr(record, key)
+            if isinstance(value, str) and not case_sensitive:
+                value = value.lower()
+            return value
 
         self.keys = []
         for key in keys:
@@ -99,6 +107,7 @@ class Cache:
             self.keys.append(key)
         self.domain = domain
         self.context = context
+        self.required = required
         assert duplicates in ('first', 'abort-on-load', 'abort-on-use', 'all'), duplicates
         self.duplicates = duplicates
         self.values = None
@@ -121,10 +130,19 @@ class Cache:
                     self.values.setdefault(kv, []).append(record)
 
     def get(self, key):
+        if self.values is None:
+            self.load()
         try:
-            return self[key]
-        except UserKeyError:
+            values = self.values[key]
+        except KeyError:
+            if self.required:
+                Setup.get().error(f'Key "{key}" not found accessing "{self.model}"')
             return
+        if len(values) > 1 and self.duplicates == 'abort-on-use':
+            Setup.get().error(f'Duplicate key "{key}" found accessing "{self.model}"')
+        if self.duplicates == 'all':
+            return values
+        return values[0]
 
     def __getitem__(self, key):
         if self.values is None:
@@ -140,3 +158,12 @@ class Cache:
             return values
         return values[0]
 
+    def __setitem__(self, key, value):
+        if self.values is None:
+            self.load()
+        self.values[key] = [value]
+
+    def __contains__(self, key):
+        if self.values is None:
+            self.load()
+        return key in self.values

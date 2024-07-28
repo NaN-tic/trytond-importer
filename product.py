@@ -45,49 +45,46 @@ class ImporterProduct(ImporterModel):
     location = fields.Char('Location')
 
     @classmethod
-    def _setup_import_template_hook(cls, cache, records):
+    def importer_template(self, template):
         pass
 
     @classmethod
-    def _import_template_hook(cls, cache, record, template):
-        pass
-
-    @classmethod
-    def _import_product_hook(cls, cache, record, product):
+    def importer_product(self, product):
         pass
 
     @classmethod
     def importer_start(cls):
         super().importer_start()
+        cache = Setup.get().cache
+        cache.companies = Cache('company.company', 'name')
+        cache.parties = Cache('party.party', 'code', context={'active_test': False},
+            duplicates='abort-on-use')
+        cache.customs = Cache('customs.tariff.code', 'code')
+        cache.brands = Cache('product.brand', 'name')
+        cache.boms = Cache('production.bom', 'name')
+        cache.currencies = Cache('currency.currency', ('name', 'symbol'))
+        cache.uoms = Cache('product.uom', ('name', 'symbol'))
+        cache.categories = Cache('product.category', 'name')
+        cache.locations = Cache('stock.location', 'name')
+        cache.bom_routes = Cache('production.route', 'name')
+        cache.products = Cache('product.product', 'code', domain=[
+                ('code', '!=', None),
+                ('code', '!=', ''),
+                ], required=False)
+        cache.templates = Cache('product.template', 'code', domain=[
+                ('code', '!=', None),
+                ('code', '!=', ''),
+                ], required=False)
+
+    def importer_context(self):
+        res = super().importer_context()
+        setup = Setup.get()
+        if 'company' in setup.fields and self.company:
+            res['company'] = setup.company.get(self.company)
+        return res
 
     @classmethod
     def importer_import(cls, records):
-        pool = Pool()
-        try:
-            Company = pool.get('company.company')
-        except KeyError:
-            Company = None
-
-        imported = []
-        for company_name, records in groupby(records, key=lambda x: x.company):
-            company_id = Transaction().context.get('company')
-            if Company:
-                if company_name:
-                    companies = Company.search([('party.name', '=', company_name)], limit=1)
-                    if not companies:
-                        raise UserError(gettext('importer.msg_company_not_found',
-                            company=company_name))
-                    company_id = companies[0].id
-                elif not company_id:
-                    companies = Company.search([], limit=1)
-                    if companies:
-                        company, = companies
-            with Transaction().set_context(company=company_id):
-                imported += cls._import_product(records)
-        return imported
-
-    @classmethod
-    def _import_product(cls, records):
         pool = Pool()
         Product = pool.get('product.product')
         Template = pool.get('product.template')
@@ -105,70 +102,37 @@ class ImporterProduct(ImporterModel):
                 return template
             return product
 
-        cache = SimpleNamespace()
+        from timer import Timer
+        t = Timer()
+
+        setup = Setup.get()
+        cache = setup.cache
         try:
             ProductSupplier = pool.get('purchase.product_supplier')
             ProductSupplierPrice = pool.get('purchase.product_supplier.price')
             Party = pool.get('party.party')
-            cache.parties = dict((x.code, x) for x in Party.search([]))
         except:
-            cache.parties = {}
-
+            pass
         try:
             TariffCodeRel = pool.get('product-customs.tariff.code')
             TariffCode = pool.get('customs.tariff.code')
-            cache.customs = dict((x.code, x) for x in TariffCode.search([]))
         except:
-            cache.customs = {}
+            pass
 
         try:
             Brand = pool.get('product.brand')
-            cache.brands = dict((x.name, x) for x in Brand.search([]))
         except:
-            cache.brands = {}
+            pass
 
         try:
-            BOM = pool.get('production.bom')
-            cache.boms = dict([(x.name, x) for x in BOM.search([])])
             ProductBom = pool.get('product.product-production.bom')
         except:
             ProductBom = None
 
         try:
-            ProductionRoute = pool.get('production.route')
-        except:
-            ProductionRoute = None
-
-        try:
             Package = pool.get('product.package')
         except KeyError:
             pass
-
-        try:
-            Currency = pool.get('currency.currency')
-            cache.currencies = {x.name: x for x in Currency.search([])}
-            cache.currencies.update({x.symbol: x for x in Currency.search([])})
-        except KeyError:
-            cache.currencies = {}
-
-        cache.categories = dict((x.name, x) for x in ProductCategory.search([]))
-        cache.locations = dict((x.name, x) for x in Location.search([]))
-        cache.uoms = {}
-        for uom in Uom.search([]):
-            cache.uoms[uom.name.lower()] = uom
-            cache.uoms[uom.symbol.lower()] = uom
-
-        cache.products = dict((x.code, x) for x in Product.search([
-                    ('code', '!=', None),
-                    ('code', '!=', ''),
-                    ]))
-        cache.templates = dict((x.code, x) for x in Template.search([
-                    ('code', '!=', None),
-                    ('code', '!=', ''),
-                    ]))
-
-        if ProductionRoute:
-            cache.bom_routes = dict((x.name, x) for x in ProductionRoute.search([]))
 
         template_default_values = Template.default_get(Template._fields.keys(),
                 with_rec_name=False)
@@ -176,16 +140,15 @@ class ImporterProduct(ImporterModel):
                 with_rec_name=False)
         cost_price_methods = ProductCostPriceMethod.get_cost_price_methods()
 
-        cls._setup_import_template_hook(cache, records)
-
         to_save = []
         products_to_save = []
         notes_to_save = []
+        categories_to_save = []
 
         for record in records:
             product = None
             template = None
-            if record.variant_code:
+            if 'variant_code' in setup.fields and record.variant_code:
                 code = record.variant_code
             else:
                 code = ((record.template_code or '')
@@ -193,8 +156,11 @@ class ImporterProduct(ImporterModel):
             product = cache.products.get(code)
             if product:
                 template = product.template
-            elif record.template_code in cache.templates:
+
+            if record.template_code and record.template_code in cache.templates:
                 template = cache.templates.get(record.template_code)
+                if not template and product:
+                    template = product.template
 
             if not template:
                 template = Template(**template_default_values)
@@ -207,11 +173,11 @@ class ImporterProduct(ImporterModel):
                 products_to_save.append(product)
             to_save.append(template)
 
-            if record.name:
+            if 'name' in setup.fields:
                 template.name = record.name
-            if record.template_code:
+            if 'template_code' in setup.fields:
                 template.code = record.template_code
-            if record.sale_price:
+            if 'sale_price' in setup.fields:
                 template.list_price = record.sale_price or Decimal(0)
             uom = None
             if record.uom:
@@ -232,47 +198,32 @@ class ImporterProduct(ImporterModel):
 
                 template.cost_price_method = cost_price_method
 
-            if ('account_category' in template._fields and
+            if ('account_category' in setup.fields and
                     record.account_category):
                 acc_category = cache.categories.get(record.account_category)
                 if not acc_category:
                     acc_category = ProductCategory()
                     acc_category.name = record.account_category
                     cache.categories[record.account_category] = acc_category
+                    categories_to_save.append(acc_category)
                 acc_category.accounting = True
                 template.account_category = acc_category
 
-            if getattr(record, 'weight', None) is not None:
-                obj = object_to_set(template, product, 'weight')
-                obj.weight = record.weight
-                obj.weight_uom = (cache.uoms.get(record.weight_uom) or
-                    cache.uoms.get('kg'))
+            for field in ('weight', 'volume', 'width', 'length', 'height'):
+                if field not in setup.fields:
+                    continue
+                obj = object_to_set(template, product, field)
+                setattr(obj, field, getattr(record, field))
 
-            if getattr(record, 'volume', None) is not None:
-                obj = object_to_set(template, product, 'volume')
-                obj.volume = record.volume
-                obj.volume_uom = (cache.uoms.get(record.volume_uom) or
-                    cache.uoms.get('l'))
+            for field in ('weight_uom', 'volume_uom', 'width_uom',
+                    'length_uom', 'height_uom'):
+                if field not in setup.fields:
+                    continue
+                obj = object_to_set(template, product, field)
+                uom = cache.uoms.get(getattr(record, field))
+                setattr(obj, field, uom)
 
-            if getattr(record, 'width', None) is not None:
-                obj = object_to_set(template, product, 'width')
-                obj.width = record.width
-                obj.width_uom = (cache.uoms.get(record.width_uom) or
-                    cache.uoms.get('m'))
-
-            if getattr(record, 'length', None) is not None:
-                obj = object_to_set(template, product, 'length')
-                obj.length = record.length
-                obj.length_uom = (cache.uoms.get(record.length_uom) or
-                    cache.uoms.get('m'))
-
-            if getattr(record, 'height', None) is not None:
-                obj = object_to_set(template, product, 'height')
-                obj.height = record.height
-                obj.height_uom = (cache.uoms.get(record.height_uom) or
-                    cache.uoms.get('m'))
-
-            if 'tariff_codes' in template._fields and record.aranzel:
+            if 'tariff_codes' in setup.fields and record.aranzel:
                 custom = cache.customs.get(record.aranzel)
                 if not custom:
                     custom = TariffCode()
@@ -284,7 +235,7 @@ class ImporterProduct(ImporterModel):
                 template.tariff_codes = [rel]
 
             # If product exist the categories are set all new, not updated.
-            if record.categories:
+            if 'categories' in setup.fields and record.categories:
                 cats = []
                 for cat in record.categories.split('|'):
                     category = cache.categories.get(cat)
@@ -298,9 +249,10 @@ class ImporterProduct(ImporterModel):
                         cache.categories[cat] = category
                 template.categories = cats
 
-            template.consumable = record.consumable
+            if 'consumable' in setup.fields:
+                template.consumable = record.consumable
 
-            if hasattr(Template, 'producible'):
+            if 'producible' in setup.fields:
                 template.producible = record.producible
                 bom = cache.boms.get(record.bom_name)
                 if bom:
@@ -316,15 +268,21 @@ class ImporterProduct(ImporterModel):
                     else:
                         product.boms = [product_bom]
 
-            if 'purchasable' in template._fields and record.purchasable:
+            if 'purchasable' in setup.fields:
                 template.purchasable = record.purchasable
-                template.purchase_uom = template.default_uom
+                if record.purchasable:
+                    template.purchase_uom = template.default_uom
+                else:
+                    template.purchase_uom = None
 
-            if 'salable' in template._fields and record.salable:
+            if 'salable' in setup.fields:
                 template.salable = record.salable
-                template.sale_uom = template.default_uom
+                if record.salable:
+                    template.sale_uom = template.default_uom
+                else:
+                    template.sale_uom = None
 
-            if cache.parties and record.supplier:
+            if cache.parties and 'supplier' in setup.fields:
                 party = cache.parties.get(record.supplier)
                 supplier = ProductSupplier()
                 supplier.party = party
@@ -343,23 +301,26 @@ class ImporterProduct(ImporterModel):
                 template.product_suppliers = [supplier]
                 cache.templates[record.template_code] = template
 
-                if 'brand' in template._fields and record.brand:
-                    brand = cache.brands.get(record.brand)
-                    if not brand:
-                        brand = Brand()
-                        brand.name = record.brand
-                        cache.brands[record.brand] = brand
-                        template.brand = brand
+                if 'brand' in setup.fields and record.brand:
+                    if record.brand:
+                        brand = cache.brands.get(record.brand)
+                        if not brand:
+                            brand = Brand()
+                            brand.name = record.brand
+                            cache.brands[record.brand] = brand
+                    else:
+                        brand = None
+                    template.brand = brand
 
-            if record.variant_suffix_code:
+            if 'variant_code' in setup.fields:
                 product.suffix_code = record.variant_suffix_code
-            if record.sale_price:
+            if 'list_price' in setup.fields:
                 product.list_price = record.sale_price or Decimal(0)
-            if record.cost_price:
+            if 'cost_price' in setup.fields:
                 product.cost_price = record.cost_price or Decimal(0)
-            if record.description:
+            if 'description' in setup.fields:
                 product.description = record.description
-            if record.location:
+            if 'location' in setup.fields:
                 warehouse = Location.get_default_warehouse()
                 product_location = ProductLocation()
                 product_location.warehouse = warehouse
@@ -371,7 +332,7 @@ class ImporterProduct(ImporterModel):
                 product_location.location = location
                 template.locations += (product_location,)
             # If product exist the packages are set all new, not updated.
-            if 'packages' in template._fields and record.packages:
+            if 'packages' in setup.fields and record.packages:
                 packages = []
                 for package in record.packages.split('|'):
                     name, quantity, is_default = package.split(';')
@@ -382,24 +343,30 @@ class ImporterProduct(ImporterModel):
                     packages.append(ppackage)
                 template.packages = packages
 
-            if record.template_note:
+            if 'template_note' in setup.fields:
                 note = Note()
                 note.resource = template
                 note.message = record.template_note
                 notes_to_save.append(note)
-            if record.product_note:
+            if 'product_note' in setup.fields:
                 note = Note()
                 note.resource = product
                 note.message = record.product_note
                 notes_to_save.append(note)
-            cls._import_template_hook(cache, record, template)
-            cls._import_product_hook(cache, record, product)
+            record.importer_template(template)
+            record.importer_product(product)
             cache.templates[record.template_code] = template
 
-        ProductCategory.save(cache.categories.values())
+        print('Looped (%s)...' % len(to_save), t)
+        ProductCategory.save(categories_to_save)
+        print('Categorized...', t)
         Template.save(to_save)
+        print('Templated...', t)
         Product.save(products_to_save)
+        print('Producted...', t)
+        print('SAVE VALUES: ', [x._save_values for x in products_to_save])
         Note.save(notes_to_save)
+        print('Noted', t)
         return to_save
 
 

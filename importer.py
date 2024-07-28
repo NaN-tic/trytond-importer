@@ -635,11 +635,15 @@ class Importer(ModelSQL, ModelView):
             # in order to make testing faster.
             soft_limit = SOFT_LIMIT // 10
             limit = LIMIT // 10
+            previous_context = {}
             previous_header = None
             call = False
             subrecords = []
             new_records = []
             for record in self.get_records(data=data):
+                # We do not sort based on context so there can be performance issues
+                # if the context changes often
+                context = record.importer_context()
                 header = record.importer_header()
                 if header and any(header) and header != previous_header:
                     previous_header = header
@@ -647,15 +651,22 @@ class Importer(ModelSQL, ModelView):
                         call = True
                 elif len(subrecords) >= limit:
                     call = True
+                elif context != previous_context:
+                    call = True
+
                 if call:
-                    new_records += Model.importer_import(subrecords)
+                    with Transaction().set_context(previous_context):
+                        new_records += Model.importer_import(subrecords)
                     subrecords = []
                     call = False
                     soft_limit = SOFT_LIMIT
                     limit = LIMIT
                 subrecords.append(record)
+                previous_context = context
+
             if subrecords:
-                new_records += Model.importer_import(subrecords)
+                with Transaction().set_context(previous_context):
+                    new_records += Model.importer_import(subrecords)
 
         if setup.errors:
             Error.delete(self.errors)
