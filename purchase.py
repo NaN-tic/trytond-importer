@@ -6,6 +6,8 @@ from trytond.i18n import gettext
 from trytond.tools import grouped_slice
 from trytond.transaction import Transaction
 from trytond.modules.product import round_price
+from .tools import ImporterModel, Cache, Setup
+
 
 
 class ImporterPurchase(ModelView):
@@ -39,7 +41,7 @@ class ImporterPurchaseConfiguration(ModelView):
     process_after = fields.Char("Purchase process after")
 
 
-class ImporterProductSupplier(ModelView):
+class ImporterProductSupplier(ImporterModel):
     'Importer Product Supplier'
     __name__ = 'importer.product.supplier'
 
@@ -52,6 +54,147 @@ class ImporterProductSupplier(ModelView):
     quantity = fields.Float('Product Quantity')
     unit_price = fields.Numeric('Unit Price')
     lead_time = fields.Integer('Lead Time (days)')
+
+    @classmethod
+    def importer_start(cls):
+        super().importer_start()
+        cache = Setup.get().cache
+        cache.currencies = Cache('currency.currency', ('name', 'symbol'))
+        cache.parties_by_code = Cache('party.party', 'code', context={'active_test': False},
+            duplicates='abort-on-use')
+        cache.parties_by_name = Cache('party.party', 'name', context={'active_test': False},
+            duplicates='abort-on-use')
+        cache.products = Cache('product.product', 'code', context={'active_test': False},
+            duplicates='abort-on-use')
+        cache.templates = Cache('product.template', 'code', context={'active_test': False},
+            duplicates='abort-on-use')
+        cache.product_suppliers = Cache('purchase.product_supplier',
+            lambda x: (x.party.id, x.template.id, x.product and x.product.id),
+            context={'active_test': False}, required=False)
+
+    def importer_product_supplier(self, record):
+        pass
+
+    def importer_price(self, record):
+        pass
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        ProductSupplier = pool.get('purchase.product_supplier')
+        Price = pool.get('purchase.product_supplier.price')
+        Template = pool.get('product.template')
+
+        setup = Setup.get()
+        cache = setup.cache
+        lines_to_delete = {}
+        lines_to_save = []
+        product_supplier_to_save = {}
+        templates_to_save = []
+        for record in records:
+            if record.party_code:
+                party = cache.parties_by_code.get(record.party_code)
+            elif record.party_name:
+                party = cache.parties_by_name.get(record.party_name)
+
+            if not party:
+                continue
+
+            if record.product_code:
+                product = cache.products.get(record.product_code)
+                if not product:
+                    record.importer_error('Product '
+                        '%(product_code)s not found',
+                        product_code=record.product_code)
+                    continue
+                template = product.template
+            elif record.template_code:
+                product = None
+                template = cache.templates.get(record.template_code)
+                if not template:
+                    record.importer_error('Template '
+                        '%(template_code)s not found',
+                        template_code=record.template_code)
+                    continue
+            else:
+                record.importer_error(
+                    'importer.missing_template_product_code')
+                continue
+
+            key = (party.id, template.id, product and product.id)
+            if key in product_supplier_to_save:
+                product_supplier = product_supplier_to_save[key]
+            else:
+                product_supplier = cache.product_suppliers.get(key)
+                if product_supplier:
+                    lines_to_delete = {}
+                    lines_to_delete[product_supplier] = {}
+                    for price in product_supplier.prices:
+                        lines_to_delete[product_supplier][price.quantity] = (
+                            price)
+                else:
+                    values = ProductSupplier.default_get(
+                        list(ProductSupplier._fields.keys()), with_rec_name=False)
+                    product_supplier = ProductSupplier(**values)
+
+                    product_supplier.party = party
+                    product_supplier.template = template
+                    product_supplier.product = product
+                    if not template.purchasable:
+                        template.purchasable = True
+                        template.purchase_uom = template.default_uom
+                        templates_to_save.append(template)
+
+            if 'currency' in setup.fields:
+                product_supplier.currency = cache.currencies[record.currency]
+
+            # TODO allow days, hours... cast_value format
+            if 'lead_time' in setup.fields:
+                product_supplier.lead_time = timedelta(
+                    days=record.lead_time)
+
+            record.importer_assign(product_supplier)
+
+            record.importer_product_supplier(product_supplier)
+
+            if record.unit_price:
+                price = lines_to_delete.get(product_supplier, {}).get(
+                        record.quantity)
+                if price:
+                    del lines_to_delete[product_supplier][record.quantity]
+                else:
+                    values = Price.default_get(
+                        list(Price._fields.keys()), with_rec_name=False)
+                    price = Price(**values)
+                    if product_supplier.id is None:
+                        product_supplier.save()
+                    price.product_supplier = product_supplier
+                price.quantity = record.quantity
+                price.unit_price = round_price(record.unit_price)
+
+                if ('start_date' in setup.fields and record.start_date):
+                    product_supplier.start_date = record.start_date
+                if ('end_date' in setup.fields and record.end_date):
+                    product_supplier.end_date = record.end_date
+
+                record.importer_price(price)
+
+                lines_to_save.append(price)
+
+            product_supplier_to_save[key] = product_supplier
+
+        Template.save(templates_to_save)
+
+        to_save = list(product_supplier_to_save.values())
+        ProductSupplier.save(to_save)
+
+        Price.save(lines_to_save)
+        to_delete = []
+        for quantities in lines_to_delete.values():
+            to_delete += quantities.values()
+        Price.delete(to_delete)
+        return to_save
+
 
 
 class ImporterProductSupplierStockSupplyMinimum(metaclass=PoolMeta):
@@ -253,153 +396,6 @@ class Importer(metaclass=PoolMeta):
         Purchase.process(to_process)
 
         return purchases_to_save
-
-    @classmethod
-    def _import_purchase_product_supplier_hook(cls, record, product_supplier):
-        pass
-
-    @classmethod
-    def _import_purchase_product_supplier_price_hook(cls, record, price):
-        pass
-
-    @classmethod
-    def import_purchase_product_supplier(cls, records):
-        pool = Pool()
-        Party = pool.get('party.party')
-        ProductSupplier = pool.get('purchase.product_supplier')
-        Price = pool.get('purchase.product_supplier.price')
-        Product = pool.get('product.product')
-        Currency = pool.get('currency.currency')
-        Template = pool.get('product.template')
-
-        currencies = {x.name: x for x in Currency.search([])}
-        currencies.update({x.symbol: x for x in Currency.search([])})
-
-        lines_to_delete = {}
-        lines_to_save = []
-        product_supplier_to_save = {}
-        for record in records:
-            party_domain=[]
-            parties = []
-            if record.party_code:
-                party_domain.append(('code', '=', record.party_code))
-            elif record.party_name:
-                party_domain.append(('name', '=', record.party_name))
-            if party_domain and party_domain != []:
-                with Transaction().set_context(active_test=False):
-                    parties = Party.search(party_domain)
-            if len(parties) != 1:
-                raise UserError(gettext('importer.single_party_error',
-                        party=(record.party_code or record.party_name)))
-            party, = parties
-
-            if record.product_code:
-                with Transaction().set_context(active_test=False):
-                    products = Product.search([
-                        ('code', '=', record.product_code),
-                        ])
-                if len(products) != 1:
-                    raise UserError(gettext('importer.single_product_error',
-                            product=record.product_code))
-                product, = products
-                template = product.template
-            elif record.template_code:
-                with Transaction().set_context(active_test=False):
-                    templates = Template.search([
-                        ('code', '=', record.template_code),
-                        ])
-                if len(templates) != 1:
-                    raise UserError(gettext('importer.single_product_error',
-                            product=record.template_code))
-                product = None
-                template, = templates
-            else:
-                raise UserError(gettext(
-                    'importer.missing_template_product_code'))
-
-            key = (party.id, template.id, product and product.id)
-            if key in product_supplier_to_save:
-                product_supplier = product_supplier_to_save[key]
-            else:
-                product_suppliers = ProductSupplier.search([
-                    ('party', '=', party.id),
-                    ('template', '=', template.id),
-                    ('product', '=', product and product.id),
-                    ], limit=1)
-                if product_suppliers:
-                    product_supplier, = product_suppliers
-                    lines_to_delete = {}
-                    lines_to_delete[product_supplier] = {}
-                    for price in product_supplier.prices:
-                        lines_to_delete[product_supplier][price.quantity] = (
-                            price)
-                else:
-                    values = ProductSupplier.default_get(
-                    list(ProductSupplier._fields.keys()), with_rec_name=False)
-                    product_supplier = ProductSupplier(**values)
-
-                    product_supplier.party = party
-                    product_supplier.template = template
-                    product_supplier.product = product
-                    if not template.purchasable:
-                        template.purchasable = True
-                        template.purchase_uom = template.default_uom
-                        template.save()
-            if record.code:
-                product_supplier.code = record.code
-            if record.currency and record.currency in currencies.keys():
-                product_supplier.currency = currencies.get(record.currency)
-
-            # TODO allow days, hours... cast_value format
-            if record.lead_time:
-                product_supplier.lead_time = timedelta(
-                    days=record.lead_time)
-
-            if ('minimum_quantity' in product_supplier._fields and
-                    record.minimum_quantity):
-                product_supplier.minimum_quantity = record.minimum_quantity
-
-            if ('multiple_quantity' in product_supplier._fields and
-                    record.multiple_quantity):
-                product_supplier.multiple_quantity = record.multiple_quantity
-
-            cls._import_purchase_product_supplier_hook(record, product_supplier)
-
-            if record.unit_price:
-                price = lines_to_delete.get(product_supplier, {}).get(
-                        record.quantity)
-                if price:
-                    del lines_to_delete[product_supplier][record.quantity]
-                else:
-                    values = Price.default_get(
-                        list(Price._fields.keys()), with_rec_name=False)
-                    price = Price(**values)
-                    if product_supplier.id is None:
-                        product_supplier.save()
-                    price.product_supplier = product_supplier
-                price.quantity = record.quantity
-                price.unit_price = round_price(record.unit_price)
-
-                if ('start_date' in price._fields and record.start_date):
-                    product_supplier.start_date = record.start_date
-                if ('end_date' in price._fields and record.end_date):
-                    product_supplier.end_date = record.end_date
-
-                cls._import_purchase_product_supplier_price_hook(record, price)
-
-                lines_to_save.append(price)
-
-            product_supplier_to_save[key] = product_supplier
-
-        to_save = list(product_supplier_to_save.values())
-        ProductSupplier.save(to_save)
-
-        Price.save(lines_to_save)
-        to_delete = []
-        for quantities in lines_to_delete.values():
-            to_delete += quantities.values()
-        Price.delete(to_delete)
-        return to_save
 
     @classmethod
     def import_purchase_configuration(cls, records):

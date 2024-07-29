@@ -156,6 +156,15 @@ class Importer(metaclass=PoolMeta):
         except:
             pass
 
+        cache = SimpleNamespace()
+        try:
+            AnalyticAccount = pool.get('analytic_account.account')
+            AnalyticLine = pool.get('analytic_account.line')
+            cache.analytic_accounts = dict((x.code, x) for x in
+                AnalyticAccount.search([]))
+        except:
+            pass
+
         def _create_party(code, name):
             party = Party(name=name)
             if code:

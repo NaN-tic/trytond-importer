@@ -1,7 +1,7 @@
 <tree editable="1">
     <field name="importer"/>
-    <field name="field"/>
     <field name="name"/>
+    <field name="field"/>
     <field name="format"/>
     <field name="examples"/>
 </tree>

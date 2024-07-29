@@ -16,6 +16,7 @@ from . import ir
 from . import importer
 from . import lot
 from . import marketing
+from . import meta
 from . import order_point
 from . import party
 from . import party_credit
@@ -32,6 +33,8 @@ from . import route
 from . import user_role
 from . import vacancy
 
+from . import tools
+
 def register():
     Pool.register(
         importer.Importer,
@@ -43,6 +46,8 @@ def register():
         ir.ImporterSequence,
         res.Importer,
         res.ImporterUser,
+        meta.Importer,
+        meta.ImporterMeta,
         module='importer', type_='model')
     Pool.register(
         importer.AskAndImport,
@@ -98,6 +103,10 @@ def register():
         purchase.ImporterProductSupplier,
         purchase.ImporterPurchaseConfiguration,
         depends=['purchase'],
+        module='importer', type_='model')
+    Pool.register(
+        discount_formula.ImporterProductSupplier,
+        depends=['purchase', 'discount_formula'],
         module='importer', type_='model')
     Pool.register(
         party.ImporterPartyStockDepends,

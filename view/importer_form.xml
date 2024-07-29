@@ -13,10 +13,20 @@
     </group>
     <label name="data_source"/>
     <field name="data_source"/>
-    <group id="data" colspan="3" col="3">
+    <group id="buttons" col="-1" colspan="4">
+        <button name="update_columns"/>
+        <button name="detect"/>
+        <button name="import_"/>
+        <button name="check_connection"/>
+        <button name="export"/>
+    </group>
+    <group id="data" colspan="6" col="6">
+        <label name="url_data"/>
+        <field name="url_data" widget="url" colspan="5"/>
+        <label name="binary_data"/>
         <field name="binary_data"/>
-        <field name="binary_file_name" invisible="1"/>
-        <field name="url_data" widget="url" colspan="3"/>
+        <field name="binary_file_name" colspan="4"/>
+        <label name="sql_data"/>
         <field name="sql_data"/>
     </group>
     <group id="sql" colspan="6" col="6">
@@ -32,22 +42,24 @@
         <field name="user"/>
         <label name="password"/>
         <field name="password" widget="password"/>
+        <label name="where"/>
+        <field name="where" colspan="5"/>
     </group>
-    <group id="buttons" col="-1" colspan="3">
-        <button name="detect"/>
-        <button name="import_"/>
-        <button name="check_connection"/>
-    </group>
-    <label name="where"/>
-    <field name="where" colspan="5"/>
-    <separator name="text_data" colspan="6"/>
-    <field name="text_data" colspan="6" height="200"/>
     <notebook colspan="6">
         <page string="Importer columns" id="columns">
-            <field name="columns" colspan="6" height="500"/>
+            <field name="columns" colspan="4" height="500"/>
         </page>
-        <page string="File columns" id="reverse_columns">
-            <field name="reverse_columns" colspan="6" height="500"/>
+        <page string="File columns" id="source_columns">
+            <field name="source_columns" colspan="4" height="500"/>
+        </page>
+        <page name="text_data">
+            <field name="text_data" height="500" colspan="4"/>
+        </page>
+        <page name="errors">
+            <label name="on_error"/>
+            <field name="on_error"/>
+            <button name="clean_errors" colspan="2"/>
+            <field name="errors" height="500" colspan="4"/>
         </page>
     </notebook>
 </form>

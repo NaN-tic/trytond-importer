@@ -1,0 +1,16 @@
+<form col="6">
+    <label name="importer"/>
+    <field name="importer"/>
+    <newline/>
+    <label name="field"/>
+    <field name="field"/>
+    <label name="name"/>
+    <field name="name"/>
+    <label name="value"/>
+    <field name="value"/>
+    <label name="format"/>
+    <field name="format"/>
+    <label name="examples"/>
+    <field name="examples" colspan="4"/>
+</form>
+

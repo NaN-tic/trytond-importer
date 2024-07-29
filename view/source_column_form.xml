@@ -2,10 +2,10 @@
     <label name="importer"/>
     <field name="importer"/>
     <newline/>
-    <label name="field"/>
-    <field name="field"/>
     <label name="name"/>
     <field name="name"/>
+    <label name="field"/>
+    <field name="field"/>
     <label name="format"/>
     <field name="format"/>
     <label name="examples"/>
