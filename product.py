@@ -1,12 +1,7 @@
-from types import SimpleNamespace
-from itertools import groupby
 from decimal import Decimal
-from trytond.exceptions import UserError
-from trytond.i18n import gettext
 from trytond.model import ModelView, fields
 from trytond.modules.product import price_digits, round_price
 from trytond.pool import PoolMeta, Pool
-from trytond.transaction import Transaction
 from .tools import ImporterModel, Cache, Setup
 
 
@@ -91,7 +86,6 @@ class ImporterProduct(ImporterModel):
         Template = pool.get('product.template')
         ProductCategory = pool.get('product.category')
         Template = pool.get('product.template')
-        Uom = pool.get('product.uom')
         ProductCostPriceMethod = pool.get('product.cost_price_method')
         Note = pool.get('ir.note')
 
@@ -106,7 +100,6 @@ class ImporterProduct(ImporterModel):
         try:
             ProductSupplier = pool.get('purchase.product_supplier')
             ProductSupplierPrice = pool.get('purchase.product_supplier.price')
-            Party = pool.get('party.party')
         except:
             pass
         try:
@@ -406,6 +399,7 @@ class ImporterProductStockProductLocationDepends(metaclass=PoolMeta):
         cache.locations = Cache('stock.location', 'name')
 
     def importer_template(self, template):
+        pool = Pool()
         Location = pool.get('stock.location')
         ProductLocation = pool.get('stock.product.location')
 

@@ -935,10 +935,6 @@ class ImporterColumn(ModelSQL, ModelView):
 
     @classmethod
     def get_examples(self, columns, name):
-        pool = Pool()
-        Lang = pool.get('ir.lang')
-        Importer = pool.get('importer')
-
         res = {x.id: None for x in columns}
         for column in columns:
             if not column.name:
@@ -1133,7 +1129,6 @@ class ImporterSourceColumn(ModelSQL, ModelView):
                         records.setdefault(headers[j], []).append(row[j])
             importers[column.importer] = records
 
-        res={}
         for column in columns:
             records = importers[column.importer]
             try:
