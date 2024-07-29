@@ -35,6 +35,9 @@ from . import vacancy
 
 from . import tools
 
+__all__ = ['tools']
+
+
 def register():
     Pool.register(
         importer.Importer,
