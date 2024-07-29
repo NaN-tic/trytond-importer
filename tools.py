@@ -132,6 +132,8 @@ class Cache:
     def get(self, key):
         if self.values is None:
             self.load()
+        if isinstance(key, str):
+            key = key.lower()
         try:
             values = self.values[key]
         except KeyError:
@@ -147,6 +149,8 @@ class Cache:
     def __getitem__(self, key):
         if self.values is None:
             self.load()
+        if isinstance(key, str):
+            key = key.lower()
         try:
             values = self.values[key]
         except KeyError:

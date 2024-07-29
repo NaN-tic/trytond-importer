@@ -70,14 +70,12 @@ class ImporterProductSupplier(ImporterModel):
             duplicates='abort-on-use')
         cache.product_suppliers = Cache('purchase.product_supplier',
             lambda x: (x.party.id, x.template.id, x.product and x.product.id),
-            context={'active_test': False})
+            context={'active_test': False}, required=False)
 
-    @classmethod
-    def _import_purchase_product_supplier_hook(cls, record, product_supplier):
+    def importer_product_supplier(self, record):
         pass
 
-    @classmethod
-    def _import_purchase_product_supplier_price_hook(cls, record, price):
+    def importer_price(self, record):
         pass
 
     @classmethod
@@ -157,7 +155,7 @@ class ImporterProductSupplier(ImporterModel):
 
             record.importer_assign(product_supplier)
 
-            cls._import_purchase_product_supplier_hook(record, product_supplier)
+            record.importer_product_supplier(product_supplier)
 
             if record.unit_price:
                 price = lines_to_delete.get(product_supplier, {}).get(
@@ -174,12 +172,12 @@ class ImporterProductSupplier(ImporterModel):
                 price.quantity = record.quantity
                 price.unit_price = round_price(record.unit_price)
 
-                if ('start_date' in price._fields and record.start_date):
+                if ('start_date' in setup.fields and record.start_date):
                     product_supplier.start_date = record.start_date
-                if ('end_date' in price._fields and record.end_date):
+                if ('end_date' in setup.fields and record.end_date):
                     product_supplier.end_date = record.end_date
 
-                cls._import_purchase_product_supplier_price_hook(record, price)
+                record.importer_price(price)
 
                 lines_to_save.append(price)
 

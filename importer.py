@@ -704,6 +704,7 @@ class Importer(ModelSQL, ModelView):
                     call = True
 
                 if call:
+                    print('One chunk!', len(subrecords))
                     with Transaction().set_context(previous_context):
                         new_records += Model.importer_import(subrecords)
                     subrecords = []
@@ -1071,7 +1072,8 @@ class ImporterSourceColumn(ModelSQL, ModelView):
     'Importer Source Column'
     __name__ = 'importer.source_column'
 
-    importer = fields.Many2One('importer', 'Importation', required=True)
+    importer = fields.Many2One('importer', 'Importation', required=True,
+        ondelete='CASCADE')
     name = fields.Char('Column Name', required=True, readonly=True)
     model = fields.Function(fields.Many2One('ir.model', 'Model'),
         'on_change_with_model')

@@ -96,16 +96,16 @@ def register():
         depends=['sale_discount', 'discount_formula'],
         module='importer', type_='model')
     Pool.register(
-        discount_formula.ImporterProductSupplier,
-        depends=['purchase', 'discount_formula'],
-        module='importer', type_='model')
-    Pool.register(
         party.ImporterPurchaseDepends,
         purchase.Importer,
         purchase.ImporterPurchase,
         purchase.ImporterProductSupplier,
         purchase.ImporterPurchaseConfiguration,
         depends=['purchase'],
+        module='importer', type_='model')
+    Pool.register(
+        discount_formula.ImporterProductSupplier,
+        depends=['purchase', 'discount_formula'],
         module='importer', type_='model')
     Pool.register(
         party.ImporterPartyStockDepends,
