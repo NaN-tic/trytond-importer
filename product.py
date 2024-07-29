@@ -56,7 +56,7 @@ class ImporterProduct(ImporterModel):
     def importer_start(cls):
         super().importer_start()
         cache = Setup.get().cache
-        cache.companies = Cache('company.company', 'name')
+        cache.companies = Cache('company.company', key=lambda x: x.party.name)
         cache.parties = Cache('party.party', 'code', context={'active_test': False},
             duplicates='abort-on-use')
         cache.customs = Cache('customs.tariff.code', 'code')
@@ -65,7 +65,6 @@ class ImporterProduct(ImporterModel):
         cache.currencies = Cache('currency.currency', ('name', 'symbol'))
         cache.uoms = Cache('product.uom', ('name', 'symbol'))
         cache.categories = Cache('product.category', 'name')
-        cache.locations = Cache('stock.location', 'name')
         cache.bom_routes = Cache('production.route', 'name')
         cache.products = Cache('product.product', 'code', domain=[
                 ('code', '!=', None),
@@ -80,7 +79,9 @@ class ImporterProduct(ImporterModel):
         res = super().importer_context()
         setup = Setup.get()
         if 'company' in setup.fields and self.company:
-            res['company'] = setup.company.get(self.company)
+            company = setup.cache.companies.get(self.company)
+            if company:
+                res['company'] = company.id
         return res
 
     @classmethod
@@ -93,17 +94,12 @@ class ImporterProduct(ImporterModel):
         Uom = pool.get('product.uom')
         ProductCostPriceMethod = pool.get('product.cost_price_method')
         Note = pool.get('ir.note')
-        Location = pool.get('stock.location')
-        ProductLocation = pool.get('stock.product.location')
 
         def object_to_set(template, product, field):
             field = getattr(Product, field, None)
             if isinstance(field, fields.Function) and not field.setter:
                 return template
             return product
-
-        from timer import Timer
-        t = Timer()
 
         setup = Setup.get()
         cache = setup.cache
@@ -320,17 +316,6 @@ class ImporterProduct(ImporterModel):
                 product.cost_price = record.cost_price or Decimal(0)
             if 'description' in setup.fields:
                 product.description = record.description
-            if 'location' in setup.fields:
-                warehouse = Location.get_default_warehouse()
-                product_location = ProductLocation()
-                product_location.warehouse = warehouse
-                location = cache.locations.get(record.location)
-                if not location:
-                    location = Location()
-                    location.name = record.location
-                    cache.locations[record.location] = location
-                product_location.location = location
-                template.locations = (product_location,)
 
             # If product exist the packages are set all new, not updated.
             if 'packages' in setup.fields and record.packages:
@@ -358,16 +343,10 @@ class ImporterProduct(ImporterModel):
             record.importer_product(product)
             cache.templates[record.template_code] = template
 
-        print('Looped (%s)...' % len(to_save), t)
         ProductCategory.save(categories_to_save)
-        print('Categorized...', t)
         Template.save(to_save)
-        print('Templated...', t)
         Product.save(products_to_save)
-        print('Producted...', t)
-        print('SAVE VALUES: ', [x._save_values for x in products_to_save])
         Note.save(notes_to_save)
-        print('Noted', t)
         return to_save
 
 
@@ -419,6 +398,31 @@ class ImporterProductStockProductLocationDepends(metaclass=PoolMeta):
     __name__ = 'importer.product'
 
     location = fields.Char('Location')
+
+    @classmethod
+    def importer_start(cls):
+        super().importer_start()
+        cache = Setup.get().cache
+        cache.locations = Cache('stock.location', 'name')
+
+    def importer_template(self, template):
+        Location = pool.get('stock.location')
+        ProductLocation = pool.get('stock.product.location')
+
+        setup = Setup.get()
+        cache = setup.cache
+        if 'location' in setup.fields:
+            warehouse = Location.get_default_warehouse()
+            product_location = ProductLocation()
+            product_location.warehouse = warehouse
+            location = cache.locations.get(self.location)
+            if not location:
+                location = Location()
+                location.name = self.location
+                cache.locations[self.location] = location
+            product_location.location = location
+            template.locations = (product_location,)
+
 
 class ImporterProductSupplierMinimumDepends(metaclass=PoolMeta):
     __name__ = 'importer.product'

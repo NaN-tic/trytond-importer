@@ -33,6 +33,8 @@ from . import route
 from . import user_role
 from . import vacancy
 
+from . import tools
+
 def register():
     Pool.register(
         importer.Importer,

@@ -467,7 +467,11 @@ class Importer(ModelSQL, ModelView):
             data = Data(importer.data_source, importer.binary_data,
                 importer.text_data, importer.url_data, conn, sql)
             data.load()
-            importer.generate_source_columns(data.rows[0])
+            if data.rows and importer.has_header:
+                # TODO: Source columns should always be created, including
+                # when no headers exist. We should use indices instead in those
+                # cases.
+                importer.generate_source_columns(data.rows[0])
             importer.fill_source_columns()
             SourceColumn.update_examples(importer.source_columns)
             source_to_save += importer.source_columns
