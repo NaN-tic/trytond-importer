@@ -1,0 +1,15 @@
+<form col="6">
+    <label name="importer"/>
+    <field name="importer"/>
+    <newline/>
+    <label name="type"/>
+    <field name="type"/>
+    <label name="on_error"/>
+    <field name="on_error"/>
+    <label name="row_number"/>
+    <field name="row_number"/>
+    <separator name="message" colspan="4"/>
+    <field name="message" colspan="4"/>
+    <separator name="record" colspan="4"/>
+    <field name="record" colspan="4" height="200"/>
+</form>

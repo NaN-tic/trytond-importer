@@ -2,6 +2,7 @@
     <field name="importer"/>
     <field name="field"/>
     <field name="name"/>
+    <field name="value"/>
     <field name="format"/>
     <field name="examples"/>
 </tree>
