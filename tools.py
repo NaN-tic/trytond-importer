@@ -59,10 +59,10 @@ class ImporterModel(ModelView):
         pass
 
     def importer_assign(self, record):
-        cls = self.__class__
+        cls = record.__class__
         for field in Setup.get().fields:
-            if hasattr(cls, field):
-                setattr(self, field, getattr(self, field, None))
+            if field in cls._fields:
+                setattr(record, field, getattr(self, field, None))
 
     def importer_error(self, message, **kwargs):
         Setup.get().error(message, self, **kwargs)
