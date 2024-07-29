@@ -27,6 +27,7 @@ class ImporterTestCase(ModuleTestCase):
         importer.has_header = True
         importer.use_header = True
         importer.save()
+        Importer.update_columns([importer])
 
         if records:
             fields = records[0].keys()
