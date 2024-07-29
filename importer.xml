@@ -83,6 +83,15 @@
             <field name="button" ref="importer_clean_errors_button"/>
             <field name="group" ref="group_importer"/>
         </record>
+        <record model="ir.model.button" id="importer_export_button">
+            <field name="name">export</field>
+            <field name="string">Export</field>
+            <field name="model">importer</field>
+        </record>
+        <record model="ir.model.button-res.group" id="importer_export_button_group_importer">
+            <field name="button" ref="importer_export_button"/>
+            <field name="group" ref="group_importer"/>
+        </record>
         <record model="ir.model.button" id="importer_detect_button">
             <field name="name">detect</field>
             <field name="string">Detect</field>

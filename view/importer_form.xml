@@ -18,6 +18,7 @@
         <button name="detect"/>
         <button name="import_"/>
         <button name="check_connection"/>
+        <button name="export"/>
     </group>
     <group id="data" colspan="6" col="6">
         <label name="url_data"/>

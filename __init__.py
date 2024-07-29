@@ -16,6 +16,7 @@ from . import ir
 from . import importer
 from . import lot
 from . import marketing
+from . import meta
 from . import order_point
 from . import party
 from . import party_credit
@@ -44,6 +45,8 @@ def register():
         ir.ImporterSequence,
         res.Importer,
         res.ImporterUser,
+        meta.Importer,
+        meta.ImporterMeta,
         module='importer', type_='model')
     Pool.register(
         importer.AskAndImport,

@@ -1,3 +1,4 @@
+import base64
 import re
 import csv
 import json
@@ -229,9 +230,6 @@ class Data:
         return
 
 
-
-
-
 class Importer(ModelSQL, ModelView):
     'Importer'
     __name__ = 'importer'
@@ -322,6 +320,9 @@ class Importer(ModelSQL, ModelView):
                     'icon': 'tryton-clear',
                     'invisible': ~Bool(Eval('errors')),
                     },
+                'export': {
+                    'icon': 'tryton-export',
+                    },
                 })
 
     @classmethod
@@ -380,6 +381,54 @@ class Importer(ModelSQL, ModelView):
         Error = pool.get('importer.error')
 
         Error.delete(sum([x.errors for x in importers], ()))
+
+    @classmethod
+    @ModelView.button
+    def export(cls, importers):
+        res = []
+        for importer in importers:
+            js = {}
+            js['name'] = importer.name
+            js['method'] = importer.method
+            js['data_source'] = importer.data_source
+            js['has_header'] = importer.has_header
+            js['use_header'] = importer.use_header
+            js['on_error'] = importer.on_error
+            # Text
+            js['text_data'] = importer.text_data
+            # Binary
+            if importer.binary_data:
+                js['binary_data'] = base64.b64encode(importer.binary_data).decode('utf-8')
+            else:
+                js['binary_data'] = None
+            # URL
+            js['url_data'] = importer.url_data
+            # SQL
+            js['sql_source'] = importer.sql_source
+            js['server'] = importer.server
+            js['user'] = importer.user
+            js['password'] = importer.password
+            js['database'] = importer.database
+            js['schema'] = importer.schema
+            js['where'] = importer.where
+
+            if importer.columns:
+                for column in importer.columns:
+                    if not column.name and not column.value:
+                        continue
+                    js['column_field'] = column.field.name
+                    js['column_name'] = column.name
+                    js['column_value'] = column.value
+                    js['column_format'] = column.format
+                    res.append(js)
+                    js = js.copy()
+                    for key in list(js.keys()):
+                        js[key] = None
+            else:
+                res.append(js)
+        with open('/tmp/importer.json', 'w') as f:
+            json.dump(res, f)
+        return res
 
     @classmethod
     @ModelView.button
