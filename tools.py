@@ -62,6 +62,10 @@ class ImporterModel(ModelView):
         cls = record.__class__
         for field in Setup.get().fields:
             if field in cls._fields:
+                f = cls._fields[field]
+                if isinstance(f, (fields.Many2One, fields.Many2Many,
+                        fields.One2Many, fields.One2One)):
+                    continue
                 setattr(record, field, getattr(self, field, None))
 
     def importer_error(self, message, **kwargs):

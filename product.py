@@ -308,7 +308,7 @@ class ImporterProduct(ImporterModel):
                         brand = None
                     template.brand = brand
 
-            if 'variant_code' in setup.fields:
+            if 'variant_suffix_code' in setup.fields:
                 product.suffix_code = record.variant_suffix_code
             if 'list_price' in setup.fields:
                 product.list_price = record.sale_price or Decimal(0)
