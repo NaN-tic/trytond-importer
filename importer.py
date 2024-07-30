@@ -713,7 +713,6 @@ class Importer(ModelSQL, ModelView):
                     call = True
 
                 if call:
-                    print('One chunk!', len(subrecords))
                     with Transaction().set_context(previous_context):
                         new_records += Model.importer_import(subrecords)
                     subrecords = []
