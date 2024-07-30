@@ -504,6 +504,7 @@ class Importer(ModelSQL, ModelView):
         to_delete = []
         to_save = []
         source_to_save = []
+        source_to_delete = []
         for importer in importers:
             if not importer.model:
                 continue
@@ -532,6 +533,8 @@ class Importer(ModelSQL, ModelView):
             data = Data(importer.data_source, importer.binary_data,
                 importer.text_data, importer.url_data, conn, sql)
             data.load()
+
+            source_to_delete += importer.source_columns
             if data.rows and importer.has_header:
                 # TODO: Source columns should always be created, including
                 # when no headers exist. We should use indices instead in those
@@ -543,6 +546,7 @@ class Importer(ModelSQL, ModelView):
 
         Column.delete(to_delete)
         Column.save(to_save)
+        SourceColumn.delete(source_to_delete)
         SourceColumn.save(source_to_save)
 
     @classmethod
