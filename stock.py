@@ -3,10 +3,11 @@ from trytond.transaction import Transaction
 from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
+from .tools import ImporterModel, Cache, Setup
 
 
 
-class ImporterStockMove(ModelView):
+class ImporterStockMove(ImporterModel):
     'Importer Stock Move'
     __name__ = 'importer.stock.move'
 
@@ -20,6 +21,71 @@ class ImporterStockMove(ModelView):
     unit_price = fields.Numeric('Unit Price')
     lot = fields.Char('Lot')
     currency = fields.Char('Currency')
+
+    @classmethod
+    def importer_start(cls):
+        pool = Pool()
+        Product = pool.get('product.product')
+
+        super().importer_start()
+        setup = Setup().get()
+        cache = setup.cache
+
+        cache.locations = Cache('stock.location', 'name')
+        cache.products = Cache('product.product', 'code')
+        cache.currencies = Cache('currency.currency', 'code')
+        cache.lots = Cache('stock.lot', ['number', lambda x: x.product.code])
+        # Cache Product UOMs to prevent cache trashin of if we try to use
+        # the value from cache.products
+        cache.uoms = {x.id: x.default_uom for x in Product.search([])}
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        Move = pool.get('stock.move')
+        try:
+            Lot = pool.get('stock.lot')
+        except KeyError:
+            Lot = None
+
+        setup = Setup.get()
+        cache = setup.cache
+
+        to_save = []
+        for record in records:
+            from_location = cache.locations.get(record.from_location)
+            to_location = cache.locations.get(record.to_location)
+            product = cache.products.get(record.product_code)
+
+            if not product:
+                continue
+            if (not from_location or not to_location or not product
+                    or not record.quantity):
+                raise UserError(gettext('importer.stock_move_error',
+                    from_location=record.from_location,
+                    to_location=record.to_location,
+                    product=record.product_code))
+
+            move = Move()
+            move.from_location = from_location
+            move.to_location = to_location
+            move.product = product
+            move.quantity = round(record.quantity)
+            if 'cost_price' in setup.fields:
+                move.cost_price = record.cost_price
+            if 'unit_price' in setup.fields:
+                move.unit_price = record.unit_price
+            move.unit = cache.uoms[product.id]
+            move.effective_date = record.effective_date
+            move.planned_date = record.planned_date
+            if 'currency' in setup.fields:
+                move.currency = cache.currencies.get(record.currency)
+            if Lot:
+                move.lot = cache.lots.get((record.lot, record.product_code))
+            to_save.append(move)
+        Move.save(to_save)
+        return to_save
+
 
 
 class ImporterLocation(ModelView):
@@ -92,75 +158,6 @@ class Importer(metaclass=PoolMeta):
 
         Location.save(to_save.values())
         return updated_locations
-
-    @classmethod
-    def import_stock_move(cls, records):
-        pool = Pool()
-        Move = pool.get('stock.move')
-        Location = pool.get('stock.location')
-        Product = pool.get('product.product')
-        Currency = pool.get('currency.currency')
-        try:
-            Lot = pool.get('stock.lot')
-        except KeyError:
-            Lot = None
-
-        location_names = ([x.from_location for x in records] +
-            [x.to_location for x in records])
-        locations = {x.name: x for x in Location.search([
-            ('name', 'in', location_names)])}
-
-        codes = [x.product_code for x in records]
-        products = {x.code: x for x in Product.search([('code', 'in', codes)])}
-        currencies = {x.code: x for x in Currency.search([])}
-
-        lots = {}
-        if hasattr(Move, 'lot'):
-            for record in records:
-                if Lot and record.lot:
-                    domain = [
-                        ('number', '=', record.lot),
-                        ('product.code', '=', record.product_code)
-                        ]
-                    if hasattr(Move, 'expiration_date'):
-                        domain.append(
-                            ('expiration_date', '>=', record.effective_date))
-                    lots_ = Lot.search(domain)
-                    if lots_:
-                        lot = lots_[0]
-                        lots[(lot.number, record.product_code)] = lot
-
-        to_save = []
-        for record in records:
-            move = Move()
-            from_location = locations.get(record.from_location)
-            to_location = locations.get(record.to_location)
-            product = products.get(record.product_code)
-            lot = lots.get((record.lot, record.product_code))
-
-            if (not from_location or not to_location or not product
-                    or not record.quantity):
-                raise UserError(gettext('importer.stock_move_error',
-                    from_location=record.from_location,
-                    to_location=record.to_location,
-                    product=record.product_code))
-
-            move.from_location = from_location
-            move.to_location = to_location
-            move.product = product
-            move.quantity = record.quantity
-            move.cost_price = record.cost_price
-            move.unit_price = record.unit_price
-            move.unit = product.default_uom
-            move.effective_date = record.effective_date
-            move.planned_date = record.planned_date
-            if record.currency:
-                move.currency = currencies.get(record.currency)
-            if lot:
-                move.lot = lot
-            to_save.append(move)
-        Move.save(to_save)
-        return to_save
 
     @classmethod
     def import_stock_move_and_do(cls, records):

@@ -28,6 +28,7 @@ class Setup(SimpleNamespace):
         assert on_error in ('skip', 'log', 'raise'), on_error
         self.on_error = on_error
         self.errors = []
+        self.fields = []
 
     def error(self, message, record=None, **kwargs):
         if self.on_error == 'raise':
