@@ -902,37 +902,11 @@ class ImporterColumn(ModelSQL, ModelView):
             ("decimal-'", "Decimal (')"),
             ]
 
-    @fields.depends('importer', '_parent_importer.has_header',
-        '_parent_importer.use_header', '_parent_importer.id',
-        '_parent_importer.data_source', '_parent_importer.binary_data',
-        '_parent_importer.text_data', '_parent_importer.url_data')
+    @fields.depends('importer', '_parent_importer.source_columns')
     def autocomplete_name(self):
-        pool = Pool()
-        Importer = pool.get('importer')
-
         if not self.importer:
-            return
-        if not self.importer.has_header or not self.importer.use_header:
-            return
-        if (self.importer.id >= 0 and isinstance(
-                    self.importer.binary_data, int)):
-            # The client will send the size of the binary field instead of its
-            # content if it does not have it loaded.
-            importer = Importer(self.importer.id)
-            binary_data = importer.binary_data
-        else:
-            binary_data = self.importer.binary_data
-        conn = self.importer.get_connection(fail=False)
-        if not conn:
             return []
-        sql = self.importer.get_sql()
-        data = Data(self.importer.data_source, binary_data,
-            self.importer.text_data, self.importer.url_data, conn, sql)
-        data.load()
-        rows = data.rows
-        if rows:
-            return sorted([x for x in rows[0] if x])
-        return []
+        return sorted([x.name for x in self.importer.source_columns])
 
     @classmethod
     def get_examples(self, columns, name):
