@@ -25,6 +25,7 @@ from trytond.i18n import gettext
 from trytond.config import config
 from trytond.rpc import RPC
 from trytond.report import Report
+from trytond.modules.currency.fields import Monetary
 
 
 DISTANCE_THRESHOLD = config.getfloat('importer', 'distance_threshold',
@@ -544,6 +545,7 @@ class Importer(ModelSQL, ModelView):
                         else:
                             value = None
                 try:
+                    print(f'RECORD: {record} | COLUMN: {column.field.name} | VALUE: {value}')
                     setattr(record, column.field.name, value)
                 except TypeError:
                     pass
@@ -724,6 +726,8 @@ class ImporterColumn(ModelSQL, ModelView):
 
 
     def cast_value(self, value):
+        pool = Pool()
+        Company = pool.get('company.company')
         if value is None:
             return value
         ttype = self.field.ttype

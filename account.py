@@ -47,6 +47,16 @@ class ImporterFiscalYear(ModelView):
     in_credit_note_sequence_name = fields.Char('In Credit Note Sequence Name')
     out_credit_note_sequence_name = fields.Char('Out Credit Note Sequence Name')
 
+class ImporterAccountAsset(ModelView):
+    'Importer Account Asset'
+    __name__ = 'importer.account.asset'
+    value = fields.Float('Value')
+    product_code = fields.Char('Product Code')
+    depreciated_amount = fields.Float('Depreciated Amount')
+    residual_value = fields.Float('Residual Value')
+    purchase_date = fields.Date('Purchase Date')
+    start_date = fields.Date('Start Date')
+    end_date = fields.Date('End Date')
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -85,6 +95,11 @@ class Importer(metaclass=PoolMeta):
                 'model': 'importer.account.fiscalyear',
                 'chunked': False,
                 },
+            'account_asset': {
+                'string': 'Asset',
+                'model': 'importer.account.asset',
+                'chunked': False,
+                },
         })
         return methods
 
@@ -110,6 +125,9 @@ class Importer(metaclass=PoolMeta):
     def import_account_move_account_party(cls, records):
         return cls._import_account_move(records, create_party=True,
             create_account=True)
+
+    def import_account_asset(cls, records):
+        return cls._import_account_asset(records)
 
     @classmethod
     def get_dict_accounts(cls):
@@ -493,3 +511,31 @@ class Importer(metaclass=PoolMeta):
             fiscalyear.save()
             FiscalYear.create_period([fiscalyear])
         return invoice_sequences, move_sequences
+
+    @classmethod
+    def _import_account_asset(cls, records):
+        pool = Pool()
+        Asset = pool.get('account.asset')
+        Product = pool.get('product.product')
+        imported = []
+        for record in records:
+            found_product = []
+            if record.product_code:
+                found_product = Product.search([('code', '=', record.product_code )], limit=1)
+            if found_product:
+                found_product = found_product[0]
+                asset = Asset()
+                asset.product = found_product
+                asset.value = record.value
+                asset.depreciated_amount = record.depreciated_amount
+                asset.residual_value = record.residual_value
+                asset.purchase_date = record.purchase_date
+                asset.start_date = record.start_date
+                asset.end_date = record.end_date
+                imported.append(asset)
+                Asset.save(imported)
+            else:
+                if hasattr(record, 'product_code'):
+                    raise UserError(gettext('importer.single_product_error',
+                        product=record.product_code))
+        return imported
