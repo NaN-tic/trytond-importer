@@ -50,10 +50,10 @@ class ImporterFiscalYear(ModelView):
 class ImporterAccountAsset(ModelView):
     'Importer Account Asset'
     __name__ = 'importer.account.asset'
-    value = fields.Float('Value')
+    value = fields.Decimal('Value')
     product_code = fields.Char('Product Code')
-    depreciated_amount = fields.Float('Depreciated Amount')
-    residual_value = fields.Float('Residual Value')
+    depreciated_amount = fields.Decimal('Depreciated Amount')
+    residual_value = fields.Decimal('Residual Value')
     purchase_date = fields.Date('Purchase Date')
     start_date = fields.Date('Start Date')
     end_date = fields.Date('End Date')
@@ -526,7 +526,7 @@ class Importer(metaclass=PoolMeta):
                 found_product = found_product[0]
                 asset = Asset()
                 asset.product = found_product
-                asset.value = round(record.value, 2)
+                asset.value = record.value
                 asset.depreciated_amount = record.depreciated_amount
                 asset.residual_value = record.residual_value
                 asset.purchase_date = record.purchase_date
