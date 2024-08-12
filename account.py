@@ -50,10 +50,10 @@ class ImporterFiscalYear(ModelView):
 class ImporterAccountAsset(ModelView):
     'Importer Account Asset'
     __name__ = 'importer.account.asset'
-    value = fields.Decimal('Value')
+    value = fields.Numeric('Value')
     product_code = fields.Char('Product Code')
-    depreciated_amount = fields.Decimal('Depreciated Amount')
-    residual_value = fields.Decimal('Residual Value')
+    depreciated_amount = fields.Numeric('Depreciated Amount')
+    residual_value = fields.Numeric('Residual Value')
     purchase_date = fields.Date('Purchase Date')
     start_date = fields.Date('Start Date')
     end_date = fields.Date('End Date')
