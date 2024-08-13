@@ -57,6 +57,8 @@ class ImporterAccountAsset(ModelView):
     purchase_date = fields.Date('Purchase Date')
     start_date = fields.Date('Start Date')
     end_date = fields.Date('End Date')
+    comment = fields.Char('Comment')
+    number = fields.Char('Number')
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -525,8 +527,10 @@ class Importer(metaclass=PoolMeta):
             if found_product:
                 found_product = found_product[0]
                 asset = Asset()
+                asset.number = record.number if record.number else None
                 asset.product = found_product
                 asset.value = record.value
+                asset.comment = record.comment
                 asset.depreciated_amount = record.depreciated_amount
                 asset.residual_value = record.residual_value
                 asset.purchase_date = record.purchase_date

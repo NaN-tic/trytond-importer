@@ -545,7 +545,6 @@ class Importer(ModelSQL, ModelView):
                         else:
                             value = None
                 try:
-                    print(f'RECORD: {record} | COLUMN: {column.field.name} | VALUE: {value}')
                     setattr(record, column.field.name, value)
                 except TypeError:
                     pass
@@ -726,8 +725,6 @@ class ImporterColumn(ModelSQL, ModelView):
 
 
     def cast_value(self, value):
-        pool = Pool()
-        Company = pool.get('company.company')
         if value is None:
             return value
         ttype = self.field.ttype
