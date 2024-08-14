@@ -25,6 +25,7 @@ from trytond.i18n import gettext
 from trytond.config import config
 from trytond.rpc import RPC
 from trytond.report import Report
+from trytond.modules.currency.fields import Monetary
 
 
 DISTANCE_THRESHOLD = config.getfloat('importer', 'distance_threshold',
