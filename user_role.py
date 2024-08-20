@@ -51,7 +51,7 @@ class Importer(metaclass=PoolMeta):
                 for group in [x.strip() for x in record.groups.split(',')]:
                     if group.strip() not in groups:
                         raise UserError(gettext('importer.msg_group_not_found',
-                                group=group))
+                                name=group))
                     groups_to_add.append(groups[group])
                 role.groups = groups_to_add
 
