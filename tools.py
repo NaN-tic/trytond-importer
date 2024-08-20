@@ -112,6 +112,7 @@ class Cache:
             self.keys.append(key)
         self.domain = domain
         self.context = context
+        self.case_sensitive = case_sensitive
         self.required = required
         assert duplicates in ('first', 'abort-on-load', 'abort-on-use', 'all'), duplicates
         self.duplicates = duplicates
@@ -137,7 +138,7 @@ class Cache:
     def get(self, key):
         if self.values is None:
             self.load()
-        if isinstance(key, str):
+        if isinstance(key, str) and not self.case_sensitive:
             key = key.lower()
         try:
             values = self.values[key]
@@ -154,7 +155,7 @@ class Cache:
     def __getitem__(self, key):
         if self.values is None:
             self.load()
-        if isinstance(key, str):
+        if isinstance(key, str) and not self.case_sensitive:
             key = key.lower()
         try:
             values = self.values[key]
@@ -170,9 +171,13 @@ class Cache:
     def __setitem__(self, key, value):
         if self.values is None:
             self.load()
+        if isinstance(key, str) and not self.case_sensitive:
+            key = key.lower()
         self.values[key] = [value]
 
     def __contains__(self, key):
         if self.values is None:
             self.load()
+        if isinstance(key, str) and not self.case_sensitive:
+            key = key.lower()
         return key in self.values
