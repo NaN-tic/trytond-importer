@@ -59,6 +59,7 @@ class ImporterProductSupplier(ImporterModel):
     def importer_start(cls):
         super().importer_start()
         cache = Setup.get().cache
+
         cache.currencies = Cache('currency.currency', ('name', 'symbol'))
         cache.parties_by_code = Cache('party.party', 'code', context={'active_test': False},
             duplicates='abort-on-use')
