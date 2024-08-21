@@ -145,7 +145,8 @@ class Cache:
         try:
             values = self.values[key]
         except KeyError:
-            if self.required:
+            # If key is None we don't usually want the error to be reported
+            if key and self.required:
                 Setup.get().error(f'Key "{key}" not found accessing "{self.model}"')
             return
         if len(values) > 1 and self.duplicates == 'abort-on-use':
