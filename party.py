@@ -8,6 +8,7 @@ from trytond.transaction import Transaction
 from stdnum import get_cc_module
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
+from .tools import ImporterModel, Cache, Setup
 
 
 class ImporterPartyConfiguration(ModelView):
@@ -21,7 +22,7 @@ class ImporterPartyConfiguration(ModelView):
     sequence_number_next = fields.Integer("Sequence Number Next")
 
 
-class ImporterParty(ModelView):
+class ImporterParty(ImporterModel):
     'Importer Party'
     __name__ = 'importer.party'
 
@@ -60,248 +61,99 @@ class ImporterParty(ModelView):
     type_of_relation = fields.Char('Type of relation')
     note = fields.Char('Note')
 
+    @classmethod
+    def importer_start(cls):
+        super().importer_start()
+        cache = Setup.get().cache
+        cache.banks = Cache('bank', key=lambda x: x.bank_code.zfill(4))
+        cache.bank_accounts = Cache('bank.account.number', 'number_compact')
+        cache.payment_terms = Cache('account.invoice.payment_term', 'name')
+        cache.payment_types = Cache('account.payment.type', 'name')
+        cache.relations = Cache('party.relation.type', 'name')
+        cache.tax_rules = Cache('account.tax.rule', 'name')
+        cache.agents = Cache('commission.agent', key=lambda x: (x.party.code, x.plan.name))
+        cache.agents_no_plan = Cache('commission.agent', key=lambda x: x.party.name)
+        cache.inco_terms = Cache('incoterm', 'code')
+        cache.languages = Cache('ir.lang', 'code')
+        cache.categories = Cache('party.category', 'name')
+        cache.countries = Cache('country.country', 'code')
+        cache.subdivisions = Cache('country.subdivision', 'name')
+        cache.parties = Cache('party.party', 'code')
 
-class ImporterPartyInvoiceDepends(metaclass=PoolMeta):
-    __name__ = 'importer.party'
-
-    invoice_address = fields.Boolean('Invoice Address')
-
-class ImporterPartyStockDepends(metaclass=PoolMeta):
-    __name__ = 'importer.party'
-
-    delivery_address = fields.Boolean('Delivery Address')
-
-class ImporterCustomerDepends(metaclass=PoolMeta):
-    __name__ = 'importer.party'
-
-    customer = fields.Boolean('Customer')
-
-class ImporterSupplierDepends(metaclass=PoolMeta):
-    __name__ = 'importer.party'
-
-    supplier = fields.Boolean('Supplier')
-
-
-class ImporterPurchaseDepends(metaclass=PoolMeta):
-    __name__ = 'importer.party'
-
-    supplier_lead_time = fields.Integer('Supplier Lead Time (days)')
-
-class ImporterCommissionDepends(metaclass=PoolMeta):
-    __name__ = 'importer.party'
-
-    agent = fields.Char('Agent (code)')
-
-class ImporterAccountDepends(metaclass=PoolMeta):
-    __name__ = 'importer.party'
-
-    customer_tax_rule = fields.Char('Customer Tax Rule')
-    supplier_tax_rule = fields.Char('Supplier Tax Rule')
-
-class ImporterCompanyBankDepends(metaclass=PoolMeta):
-    __name__ = 'importer.party'
-    default_payable_company_bank_account = fields.Char(
-        'Default payable company  Bank Account')
-    default_receivable_company_bank_account = fields.Char(
-        'Default receivable company Bank Account')
-
-class ImporterIncotermDepends(metaclass=PoolMeta):
-    __name__ = 'importer.party'
-
-    incoterm_name = fields.Char('Incoterm Name')
-    incoterm_place = fields.Char('Incoterm Place')
-
-class ImporterIncotermPurchaseDepends(metaclass=PoolMeta):
-    __name__ = 'importer.party'
-
-    incoterm_purchase_name = fields.Char('Incoterm Purchase Name')
-    incoterm_purchase_place = fields.Char('Incoterm Purchase Place')
-
-class ImporterAEATSIIDepends(metaclass=PoolMeta):
-    __name__ = 'importer.party'
-
-    sii_identifier_type = fields.Char('SII Identification Type')
-
-
-class ImporterContactMechanism(ModelView):
-    'Importer Contact Method'
-    __name__ = 'importer.party.contact_mechanism'
-
-    party = fields.Char("Party")
-    type = fields.Char("Type")
-    value = fields.Char("Value")
-    name = fields.Char("Name")
-    language = fields.Char("Language")
-
-
-class ImporterContactMechanismInvoiceDepends(metaclass=PoolMeta):
-    __name__ = 'importer.party.contact_mechanism'
-
-    invoice = fields.Boolean("Invoice")
-
-
-class ImporterContactMechanismStockDepends(metaclass=PoolMeta):
-    __name__ = 'importer.party.contact_mechanism'
-
-    delivery = fields.Boolean("Delivery")
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
+    def importer_context(self):
+        res = super().importer_context()
+        setup = Setup.get()
+        if 'company' in setup.fields and self.company:
+            company = setup.cache.companies.get(self.company)
+            if company:
+                res['company'] = company.id
+        return res
 
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'party': {
-                    'string': 'Party',
-                    'model': 'importer.party',
-                    'chunked': True,
-                    },
-                'contact_mechanism': {
-                    'string': 'Contact Mechanism',
-                    'model': 'importer.party.contact_mechanism',
-                    'chunked': True,
-                    },
-                'party_configuration': {
-                    'string': 'Party configuration',
-                    'model': 'importer.party.configuration',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_party(cls, records):
-        pool = Pool()
-        try:
-            Company = pool.get('company.company')
-        except KeyError:
-            Company = None
-
-        imported = []
-        for company_name, records in groupby(records, key=lambda x: x.company):
-            company_id = Transaction().context.get('company')
-            if Company:
-                if company_name:
-                    companies = Company.search([('party.name', '=', company_name)], limit=1)
-                    if not companies:
-                        raise UserError(gettext('importer.msg_company_not_found',
-                            company=company_name))
-                    company_id = companies[0].id
-                elif not company_id:
-                    companies = Company.search([], limit=1)
-                    if companies:
-                        company, = companies
-            with Transaction().set_context(company=company_id):
-                imported += cls._import_party(records)
-        return imported
-
-    @classmethod
-    def _import_party_hook(cls, cache, record, party):
+    def importer_party(cls, record, party):
         pass
 
     @classmethod
-    def _import_party(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Party = pool.get('party.party')
-        PartyCategory = pool.get('party.category')
         Address = pool.get('party.address')
         ContactMechanism = pool.get('party.contact_mechanism')
-        Lang = pool.get('ir.lang')
-        Country = pool.get('country.country')
-        Subdivision = pool.get('country.subdivision')
         PartyIdentifier = pool.get('party.identifier')
+        PartyCategory = pool.get('party.category')
+        BankAccount = pool.get('bank.account')
+        AccountNumber = pool.get('bank.account.number')
         Note = pool.get('ir.note')
 
-        cache = SimpleNamespace()
-        try:
-            Bank = pool.get('bank')
-            BankAccount = pool.get('bank.account')
-            AccountNumber = pool.get('bank.account.number')
-            cache.banks = dict((x.bank_code.zfill(4), x) for x in Bank.search([]))
-            cache.bank_accounts = dict((x.number_compact, x) for x in
-                    AccountNumber.search([]))
-        except:
-            pass
-
-        import_account_fields = True
         try:
             PaymentTerm = pool.get('account.invoice.payment_term')
             PaymentTermLine = pool.get('account.invoice.payment_term.line')
+        except KeyError:
+            PaymentTerm = None
+            PaymentTermLine = None
+        try:
             PaymentType = pool.get('account.payment.type')
-            cache.payment_terms = dict([(x.name, x) for x in PaymentTerm.search([])])
-            cache.payment_types = dict([(x.name, x) for x in
-                PaymentType.search([])])
-        except:
-            import_account_fields = False
-
-
+        except KeyError:
+            PaymentType = None
         try:
             Relation = pool.get('party.relation')
-            RelationType = pool.get('party.relation.type')
-            cache.relations = dict((x.name, x) for x in RelationType.search([]))
-        except:
-            pass
+        except KeyError:
+            Relation = None
 
-        try:
-            TaxRule = pool.get('account.tax.rule')
-            cache.tax_rules = dict([(x.name, x) for x in TaxRule.search([])])
-        except:
-            pass
-
-        try:
-            Agent = pool.get('commission.agent')
-            cache.agents = dict([((x.party.code, x.plan.name), x)
-                    for x in Agent.search([])])
-        except:
-            pass
-        try:
-            Agent = pool.get('commission.agent')
-            cache.agents_no_plan = dict([(x.party.name, x)
-                    for x in Agent.search([])])
-        except:
-            pass
-
-        try:
-            Incoterm = pool.get('incoterm')
-            cache.incoterms = dict([(x.code, x) for x in Incoterm.search([])])
-        except:
-            pass
-
+        setup = Setup.get()
+        cache = setup.cache
 
         company = Transaction().context.get('company')
-
-        cache.languages = dict([(x.code, x) for x in Lang.search([])])
-        cache.categories = dict([(x.name, x) for x in PartyCategory.search([])])
-        cache.countries = dict([(x.code, x) for x in Country.search([])])
-        cache.subdivisions = dict([(x.name, x) for x in Subdivision.search([])])
-        cache.parties = dict([(x.code, x) for x in Party.search([])])
-
         vats = {}
         to_save = []
         to_set_bank_accounts = []
+        categories_to_save = []
         notes_to_save = []
         relations_to_save = {}
         for record in records:
-            party = Party()
+            party = None
+            if record.code:
+                party = cache.parties.get(record.code)
+
+            if not party:
+                party = Party()
+                party.code = record.code
+                cache.parties[record.code] = party
+
             to_save.append(party)
 
-            cache.parties[record.code] = party
-            party.name = record.name
-            if record.code:
-                party.code = record.code
-            if 'trade_name' in party._fields:
+            if 'name' in setup.fields:
+                party.name = record.name
+            if 'trade_name' in setup.fields:
                 party.trade_name = record.trade_name
-
-            if hasattr(Party, 'supplier'):
+            if 'supplier' in setup.fields:
                 party.supplier = record.supplier
-
-            if hasattr(Party, 'customer'):
+            if 'customer' in setup.fields:
                 party.customer = record.customer
 
             # TODO allow days, hours... cast_value format
-            if (hasattr(Party, 'supplier_lead_time') and
-                        record.supplier_lead_time):
+            if ('supplier_lead_time' in setup.fields
+                    and record.supplier_lead_time):
                 party.supplier_lead_time = timedelta(
                     days=record.supplier_lead_time)
 
@@ -325,7 +177,7 @@ class Importer(metaclass=PoolMeta):
                 address.subdivision = subdivision
                 address.country = subdivision.country
             addresses.append(address)
-            if record.language:
+            if 'language' in setup.fields:
                 party.lang = cache.languages.get(record.language)
 
             if (record.shipment_street or record.shipment_postal_code or
@@ -383,64 +235,61 @@ class Importer(metaclass=PoolMeta):
                     contacts.append(contact)
             party.contact_mechanisms = contacts
 
-            if import_account_fields:
-                payment_term = cache.payment_terms.get(record.customer_payment_term)
-                if (record.customer_payment_term and not payment_term):
-                    payment_term = PaymentTerm(
-                        name=record.customer_payment_term)
-                    payment_term.lines = [PaymentTermLine(type='remainder')]
-                    payment_term.save()
-                    cache.payment_terms[record.customer_payment_term] = payment_term
+            payment_term = cache.payment_terms.get(record.customer_payment_term)
+            if (record.customer_payment_term and not payment_term):
+                payment_term = PaymentTerm(name=record.customer_payment_term)
+                payment_term.lines = [PaymentTermLine(type='remainder')]
+                payment_term.save()
+                cache.payment_terms[record.customer_payment_term] = payment_term
 
-                if payment_term:
-                    party.customer_payment_term = payment_term
+            if payment_term:
+                party.customer_payment_term = payment_term
 
-                payment_term = cache.payment_terms.get(record.supplier_payment_term)
-                if (record.supplier_payment_term and not payment_term):
-                    payment_term = PaymentTerm(
-                        name=record.supplier_payment_term)
-                    payment_term.lines = [PaymentTermLine(type='remainder')]
-                    payment_term.save()
-                    cache.payment_terms[record.supplier_payment_term] = payment_term
+            payment_term = cache.payment_terms.get(record.supplier_payment_term)
+            if (record.supplier_payment_term and not payment_term):
+                payment_term = PaymentTerm(name=record.supplier_payment_term)
+                payment_term.lines = [PaymentTermLine(type='remainder')]
+                payment_term.save()
+                cache.payment_terms[record.supplier_payment_term] = payment_term
 
-                if payment_term:
-                    party.supplier_payment_term = payment_term
+            if payment_term:
+                party.supplier_payment_term = payment_term
 
-                customer_payment_type = cache.payment_types.get(
-                        (record.customer_payment_type, 'receivable'))
-                if (record.customer_payment_type and
-                        not customer_payment_type):
-                    customer_payment_type = PaymentType(
-                        name=record.customer_payment_type)
-                    customer_payment_type.kind = 'receivable'
-                    customer_payment_type.account_bank = 'none'
-                    customer_payment_type.save()
-                    cache.payment_types[(record.customer_payment_type,
-                        'receivable')]=customer_payment_type
+            customer_payment_type = cache.payment_types.get(
+                    (record.customer_payment_type, 'receivable'))
+            if (record.customer_payment_type and
+                    not customer_payment_type):
+                customer_payment_type = PaymentType(
+                    name=record.customer_payment_type)
+                customer_payment_type.kind = 'receivable'
+                customer_payment_type.account_bank = 'none'
+                customer_payment_type.save()
+                cache.payment_types[(record.customer_payment_type,
+                    'receivable')]=customer_payment_type
 
-                if customer_payment_type and record.customer_payment_type:
-                    party.customer_payment_type = customer_payment_type
+            if customer_payment_type and record.customer_payment_type:
+                party.customer_payment_type = customer_payment_type
 
-                supplier_payment_type = cache.payment_types.get(
-                        (record.supplier_payment_type, 'payable'))
-                if (record.supplier_payment_type
-                        and not supplier_payment_type):
-                    supplier_payment_type = PaymentType(
-                            name=record.supplier_payment_type)
-                    supplier_payment_type.kind = 'payable'
-                    supplier_payment_type.account_bank = 'none'
-                    supplier_payment_type.save()
-                    cache.payment_types[(record.supplier_payment_type,
-                        'payable')] = supplier_payment_type
-                if supplier_payment_type and record.supplier_payment_type:
-                    party.supplier_payment_type = supplier_payment_type
+            supplier_payment_type = cache.payment_types.get(
+                    (record.supplier_payment_type, 'payable'))
+            if (record.supplier_payment_type
+                    and not supplier_payment_type):
+                supplier_payment_type = PaymentType(
+                        name=record.supplier_payment_type)
+                supplier_payment_type.kind = 'payable'
+                supplier_payment_type.account_bank = 'none'
+                supplier_payment_type.save()
+                cache.payment_types[(record.supplier_payment_type,
+                    'payable')] = supplier_payment_type
+            if supplier_payment_type and record.supplier_payment_type:
+                party.supplier_payment_type = supplier_payment_type
 
             if (record.customer_payment_days
-                    and 'customer_payment_days' in party._fields):
+                    and 'customer_payment_days' in setup.fields):
                 party.customer_payment_days = record.customer_payment_days
 
             if (record.supplier_payment_days
-                    and 'supplier_payment_days' in party._fields):
+                    and 'supplier_payment_days' in setup.fields):
                 party.supplier_payment_days = record.supplier_payment_days
 
             if record.vat:
@@ -466,6 +315,7 @@ class Importer(metaclass=PoolMeta):
                     if not category and cat:
                         category = PartyCategory()
                         category.name = cat
+                        categories_to_save.append(category)
                     if category:
                         cats += [category]
                         cache.categories[cat] = category
@@ -573,13 +423,14 @@ class Importer(metaclass=PoolMeta):
                 note.message = record.note
                 notes_to_save.append(note)
 
-            cls._import_party_hook(cache, record, party)
+            cls.importer_party(record, party)
+            print('Record', record.code, record.row_number)
 
-        PartyCategory.save(cache.categories.values())
+        PartyCategory.save(categories_to_save)
         Party.save(to_save)
         Note.save(notes_to_save)
 
-        if 'payable_bank_account' in Party._fields:
+        if 'payable_bank_account' in setup.fields:
             # These fields must be set after party has been saved as only
             # accounts in bank_accounts can be used
             for party in to_set_bank_accounts:
@@ -589,7 +440,7 @@ class Importer(metaclass=PoolMeta):
                 party.receivable_bank_account = party.bank_accounts[0]
             Party.save(to_save)
 
-        if 'relations' in Party._fields:
+        if 'relations' in setup.fields:
             new_parties = dict((x.code, x) for x in to_save)
             rel_save = []
             for code, relation in relations_to_save.items():
@@ -597,6 +448,113 @@ class Importer(metaclass=PoolMeta):
                 rel_save.append(relation)
             Relation.save(rel_save)
         return to_save
+
+
+class ImporterPartyInvoiceDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+    invoice_address = fields.Boolean('Invoice Address')
+
+
+class ImporterPartyStockDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+    delivery_address = fields.Boolean('Delivery Address')
+
+
+class ImporterCustomerDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+    customer = fields.Boolean('Customer')
+
+
+class ImporterSupplierDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+    supplier = fields.Boolean('Supplier')
+
+
+class ImporterPurchaseDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+    supplier_lead_time = fields.Integer('Supplier Lead Time (days)')
+
+
+class ImporterCommissionDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+    agent = fields.Char('Agent (code)')
+
+
+class ImporterAccountDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+    customer_tax_rule = fields.Char('Customer Tax Rule')
+    supplier_tax_rule = fields.Char('Supplier Tax Rule')
+
+
+class ImporterCompanyBankDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+    default_payable_company_bank_account = fields.Char(
+        'Default payable company  Bank Account')
+    default_receivable_company_bank_account = fields.Char(
+        'Default receivable company Bank Account')
+
+
+class ImporterIncotermDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+    incoterm_name = fields.Char('Incoterm Name')
+    incoterm_place = fields.Char('Incoterm Place')
+
+
+class ImporterIncotermPurchaseDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+    incoterm_purchase_name = fields.Char('Incoterm Purchase Name')
+    incoterm_purchase_place = fields.Char('Incoterm Purchase Place')
+
+
+class ImporterAEATSIIDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+    sii_identifier_type = fields.Char('SII Identification Type')
+
+
+class ImporterContactMechanism(ModelView):
+    'Importer Contact Method'
+    __name__ = 'importer.party.contact_mechanism'
+    party = fields.Char("Party")
+    type = fields.Char("Type")
+    value = fields.Char("Value")
+    name = fields.Char("Name")
+    language = fields.Char("Language")
+
+
+class ImporterContactMechanismInvoiceDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party.contact_mechanism'
+    invoice = fields.Boolean("Invoice")
+
+
+class ImporterContactMechanismStockDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party.contact_mechanism'
+    delivery = fields.Boolean("Delivery")
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'party': {
+                    'string': 'Party',
+                    'model': 'importer.party',
+                    'chunked': True,
+                    },
+                'contact_mechanism': {
+                    'string': 'Contact Mechanism',
+                    'model': 'importer.party.contact_mechanism',
+                    'chunked': True,
+                    },
+                'party_configuration': {
+                    'string': 'Party configuration',
+                    'model': 'importer.party.configuration',
+                    'chunked': True,
+                    },
+                })
+        return methods
 
     @classmethod
     def import_contact_mechanism(cls, records):
