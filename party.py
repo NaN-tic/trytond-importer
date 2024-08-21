@@ -80,7 +80,6 @@ class ImporterParty(ImporterModel):
         cache.categories = Cache('party.category', 'name')
         cache.countries = Cache('country.country', 'code')
         cache.subdivisions = Cache('country.subdivision', 'name')
-        cache.parties = Cache('party.party', 'code')
 
     def importer_context(self):
         res = super().importer_context()
