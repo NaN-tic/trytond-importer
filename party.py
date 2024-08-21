@@ -256,8 +256,10 @@ class ImporterParty(ImporterModel):
             if payment_term:
                 party.supplier_payment_term = payment_term
 
-            customer_payment_type = cache.payment_types.get(
-                    (record.customer_payment_type, 'receivable'))
+            customer_payment_type = None
+            if record.customer_payment_type:
+                customer_payment_type = cache.payment_types.get(
+                        (record.customer_payment_type, 'receivable'))
             if (record.customer_payment_type and
                     not customer_payment_type):
                 customer_payment_type = PaymentType(
@@ -271,8 +273,10 @@ class ImporterParty(ImporterModel):
             if customer_payment_type and record.customer_payment_type:
                 party.customer_payment_type = customer_payment_type
 
-            supplier_payment_type = cache.payment_types.get(
-                    (record.supplier_payment_type, 'payable'))
+            supplier_payment_type = None
+            if record.supplier_payment_type:
+                supplier_payment_type = cache.payment_types.get(
+                        (record.supplier_payment_type, 'payable'))
             if (record.supplier_payment_type
                     and not supplier_payment_type):
                 supplier_payment_type = PaymentType(
