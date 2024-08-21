@@ -327,9 +327,10 @@ class ImporterParty(ImporterModel):
 
                 party.categories = cats
 
-            if hasattr(Party, 'customer_tax_rule'):
+            if 'customer_tax_rule' in setup.fields:
                 party.customer_tax_rule = cache.tax_rules.get(
                     record.customer_tax_rule)
+            if 'supplier_tax_rule' in setup.fields:
                 party.supplier_tax_rule = cache.tax_rules.get(
                     record.supplier_tax_rule)
 
@@ -378,7 +379,7 @@ class ImporterParty(ImporterModel):
                 if company_rec_bank_acc:
                     party.receivable_company_bank_account = company_rec_bank_acc.account
 
-            if hasattr(Party, 'agents') and record.agent:
+            if 'agent' in setup.fields and record.agent:
                 new_agents = []
                 CommisionAgentSelection = pool.get('commission.agent.selection')
                 for agent in record.agent.split('|'):
