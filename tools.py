@@ -27,15 +27,17 @@ class Setup(SimpleNamespace):
         super().__init__(**kwargs)
         assert on_error in ('skip', 'log', 'raise'), on_error
         self.on_error = on_error
+        self.limit = 5000
         self.errors = []
         self.fields = []
 
     def error(self, message, record=None, **kwargs):
         if self.on_error == 'raise':
             raise UserError(message.format(**kwargs))
-        self.errors.append((record, message, kwargs))
         if self.on_error == 'log':
             logger.warning(message.format(**kwargs))
+        if len(self.errors) < self.limit:
+            self.errors.append((record, message, kwargs))
 
     @staticmethod
     def get():
