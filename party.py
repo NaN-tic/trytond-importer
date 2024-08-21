@@ -65,6 +65,7 @@ class ImporterParty(ImporterModel):
     def importer_start(cls):
         super().importer_start()
         cache = Setup.get().cache
+        cache.parties = Cache('party.party', 'code', required=False)
         cache.companies = Cache('company.company', key=lambda x: x.party.name)
         cache.banks = Cache('bank', key=lambda x: x.bank_code.zfill(4))
         cache.bank_accounts = Cache('bank.account.number', 'number_compact')
