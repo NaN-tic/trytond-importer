@@ -334,7 +334,7 @@ class ImporterParty(ImporterModel):
                 party.supplier_tax_rule = cache.tax_rules.get(
                     record.supplier_tax_rule)
 
-            if record.bank_account and 'bank_accounts' in party._fields:
+            if record.bank_account and 'bank_accounts' in setup.fields:
                 Currency = pool.get('currency.currency')
                 cache.currencies = dict([(x.code, x) for x in Currency.search([])])
                 party.bank_accounts = []
@@ -369,15 +369,13 @@ class ImporterParty(ImporterModel):
                 to_set_bank_accounts.append(party)
 
 
-            if hasattr(Party, 'payable_company_bank_account'):
-                company_pay_bank_acc = cache.bank_accounts.get(
+            if 'default_payable_company_bank_account' in setup.fields:
+                party.payable_company_bank_account = cache.bank_accounts.get(
                     record.default_payable_company_bank_account)
-                company_rec_bank_acc = cache.bank_accounts.get(
+
+            if 'default_receivable_company_bank_account' in setup.fields:
+                party.receivable_company_bank_account = cache.bank_accounts.get(
                     record.default_receivable_company_bank_account)
-                if company_pay_bank_acc:
-                    party.payable_company_bank_account = company_pay_bank_acc.account
-                if company_rec_bank_acc:
-                    party.receivable_company_bank_account = company_rec_bank_acc.account
 
             if 'agent' in setup.fields and record.agent:
                 new_agents = []
@@ -404,17 +402,17 @@ class ImporterParty(ImporterModel):
                 if record.sii_identifier_type != 'None':
                     party.sii_identifier_type = record.sii_identifier_type
 
-            if hasattr(Party, 'incoterm'):
+            if 'incoterm' in setup.fields:
                 party.incoterm = cache.incoterms.get(record.incoterm_name)
                 party.on_change_incoterm()
                 party.incoterm_place = record.incoterm_place
-            if hasattr(Party, 'purchase_incoterm'):
+            if 'purchase_incoterm' in setup.fields:
                 party.purchase_incoterm = cache.incoterms.get(
                     record.incoterm_purchase_name)
                 party.on_change_purchase_incoterm()
                 party.purchase_incoterm_place = record.incoterm_purchase_place
 
-            if 'relations' in party._fields and record.party_relation:
+            if 'relations' in setup.fields and record.party_relation:
                 related = cache.parties.get(record.party_relation)
                 if related:
                     type_relation = cache.relations.get(record.type_of_relation)
@@ -430,7 +428,6 @@ class ImporterParty(ImporterModel):
                 notes_to_save.append(note)
 
             cls.importer_party(record, party)
-            print('Record', record.code, record.row_number)
 
         PartyCategory.save(categories_to_save)
         Party.save(to_save)
