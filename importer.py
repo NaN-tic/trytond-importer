@@ -7,6 +7,7 @@ import pytz
 import urllib.request
 import decimal
 import tempfile
+import logging
 from types import SimpleNamespace
 from decimal import Decimal
 import openpyxl
@@ -29,6 +30,8 @@ from trytond.rpc import RPC
 from trytond.report import Report
 from trytond.cache import BaseCache
 from . import tools
+
+logger = logging.getLogger(__name__)
 
 # As data_to_records will add 'importer_setup' to the context we want to make
 # sure it is not used by the cache key as the class is not serializable
@@ -713,6 +716,8 @@ class Importer(ModelSQL, ModelView):
                 if call:
                     with Transaction().set_context(previous_context):
                         new_records += Model.importer_import(subrecords)
+                    logger.info('Processed %d new records. Total imported: %d.',
+                        (len(subrecords), len(new_records)))
                     subrecords = []
                     call = False
                     soft_limit = SOFT_LIMIT
@@ -723,6 +728,8 @@ class Importer(ModelSQL, ModelView):
             if subrecords:
                 with Transaction().set_context(previous_context):
                     new_records += Model.importer_import(subrecords)
+                    logger.info('Processed %d new records. Total imported: %d.',
+                        (len(subrecords), len(new_records)))
 
         if setup.errors:
             Error.delete(self.errors)
