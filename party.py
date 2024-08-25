@@ -455,9 +455,9 @@ class ImporterParty(ImporterModel):
 
             cls.importer_party(record, party)
 
-        PartyCategory.save(categories_to_save)
-        Party.save(to_save)
-        Note.save(notes_to_save)
+        cls.importer_save(categories_to_save)
+        cls.importer_save(to_save)
+        cls.importer_save(notes_to_save)
 
         if 'payable_bank_account' in setup.fields:
             # These fields must be set after party has been saved as only
@@ -467,7 +467,7 @@ class ImporterParty(ImporterModel):
                     continue
                 party.payable_bank_account = party.bank_accounts[0]
                 party.receivable_bank_account = party.bank_accounts[0]
-            Party.save(to_save)
+            cls.importer_save(to_save)
 
         if 'relations' in setup.fields:
             new_parties = dict((x.code, x) for x in to_save)
@@ -475,7 +475,7 @@ class ImporterParty(ImporterModel):
             for code, relation in relations_to_save.items():
                 relation.from_ = new_parties.get(code)
                 rel_save.append(relation)
-            Relation.save(rel_save)
+            cls.importer_save(rel_save)
         return to_save
 
 

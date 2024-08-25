@@ -1,3 +1,4 @@
+import itertools
 import logging
 from types import SimpleNamespace
 from trytond.pool import Pool
@@ -73,6 +74,39 @@ class ImporterModel(ModelView):
 
     def importer_error(self, message, **kwargs):
         Setup.get().error(message, self, **kwargs)
+
+    @classmethod
+    def importer_save(cls, records):
+        if not records:
+            return
+        setup = Setup.get()
+        Model = records[0].__class__
+        blocks = [records]
+        while blocks:
+            records = blocks.pop(0)
+            try:
+                print('Saving %d records' % len(records))
+                Model.save(records)
+                print('Saved')
+            except UserError as e:
+                if len(records) == 1:
+                    setup.error(e.message, records[0])
+                    continue
+                # TODO: Use itertools.batched from Python 3.12
+                # for records in itertools.batched(records, len(records) // 10):
+                #     blocks.insert(0, records)
+                acc = []
+                limit = len(records) // 10
+                count = 0
+                for record in records:
+                    acc.append(record)
+                    count += 1
+                    if count >= limit:
+                        blocks.insert(0, acc)
+                        acc = []
+                        count = 0
+                if acc:
+                    blocks.insert(0, acc)
 
 
 class Cache:
