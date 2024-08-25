@@ -967,6 +967,10 @@ class ImporterColumn(ModelSQL, ModelView):
                 if self.format and self.format == 'keep-spaces':
                     return value
                 return value.strip()
+            elif isinstance(value, (float, Decimal)):
+                value = str(value)
+                if value.endswith('.0'):
+                    value = value[:-2]
             else:
                 return str(value)
         elif ttype in ('integer', 'float', 'numeric'):
