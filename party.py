@@ -1,5 +1,3 @@
-from types import SimpleNamespace
-from itertools import groupby
 from datetime import timedelta
 from trytond.tools.email_ import validate_email
 from trytond.model import ModelView, fields
@@ -169,14 +167,29 @@ class ImporterParty(ImporterModel):
                 address.delivery = record.delivery_address
             if hasattr(Address, 'invoice'):
                 address.invoice = record.invoice_address
-            subdivision = record.subdivision and record.subdivision.capitalize()
-            subdivision = cache.subdivisions.get(subdivision)
-            if (subdivision and country):
-                if subdivision in country.subdivisions:
+            subdivision = cache.subdivisions.get(record.subdivision)
+            if subdivision:
+                if country:
+                    if subdivision in country.subdivisions:
+                        address.subdivision = subdivision
+                    else:
+                        setup.error(gettext('importer.subdivision_not_found',
+                                subdivision=subdivision.name,
+                                country=country.name),
+                            record)
+                else:
                     address.subdivision = subdivision
-            if (subdivision and not country):
-                address.subdivision = subdivision
-                address.country = subdivision.country
+                    address.country = subdivision.country
+                if (getattr(address, 'subdivision', None)
+                        and address.subdivision_types
+                        and address.subdivision.type not in
+                        address.subdivision_types):
+                    setup.error(gettext('importer.subdivision_type_not_allowed',
+                            subdivision=subdivision.name,
+                            type=address.subdivision.type),
+                        record)
+                    address.subdivision = None
+
             addresses.append(address)
             if 'language' in setup.fields:
                 party.lang = cache.languages.get(record.language)
@@ -190,15 +203,28 @@ class ImporterParty(ImporterModel):
                 shipment_address.city = record.shipment_city
                 country = cache.countries.get(record.shipment_country)
                 shipment_address.country = country
-                subdivision = (record.shipment_subdivision
-                            and record.shipment_subdivision.capitalize())
-                subdivision = cache.subdivisions.get(subdivision)
-                if (subdivision and country):
-                    if subdivision in country.subdivisions:
+                subdivision = cache.subdivisions.get(record.shipment_subdivision)
+                if subdivision:
+                    if country:
+                        if subdivision in country.subdivisions:
+                            shipment_address.subdivision = subdivision
+                        else:
+                            setup.error(gettext('importer.subdivision_not_found',
+                                    subdivision=subdivision.name,
+                                    country=country.name),
+                                record)
+                    else:
                         shipment_address.subdivision = subdivision
-                if (subdivision and not country):
-                    shipment_address.subdivision = subdivision
-                    shipment_address.country = subdivision.country
+                        shipment_address.country = subdivision.country
+                    if (getattr(shipment_address, 'subdivision', None)
+                            and shipment_address.subdivision_types
+                            and shipment_address.subdivision.type not in
+                            shipment_address.subdivision_types):
+                        setup.error(gettext('importer.subdivision_type_not_allowed',
+                                subdivision=subdivision.name,
+                                type=subdivision.type),
+                            record)
+                        shipment_address.subdivision = None
                 addresses.append(shipment_address)
 
             party.addresses = addresses

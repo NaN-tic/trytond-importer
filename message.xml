@@ -42,6 +42,12 @@
         <record model="ir.message" id="party_not_found">
             <field name="text">Party "%(party)s" not found.</field>
         </record>
+        <record model="ir.message" id="msg_subdivision_not_found">
+            <field name="text">Subdivision "%(subdivision)s" not found in country "%(country)s".</field>
+        </record>
+        <record model="ir.message" id="msg_subdivision_type_not_allowed">
+            <field name="text">Subdivision type "%(type)s" of subdivision "%(subdivision)s" not allowed.</field>
+        </record>
         <record model="ir.message" id="value_not_in_selection">
             <field name="text">Could not find this value in the field selection "%(field)%"</field>
         </record>
