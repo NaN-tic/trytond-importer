@@ -682,6 +682,7 @@ class Importer(ModelSQL, ModelView):
             return self.old_data_to_records(data)
 
         setup = tools.Setup()
+        setup.type = self.type
         setup.on_error = self.on_error
         setup.fields = [x.field.name for x in self.columns if x.name or
             x.value]
