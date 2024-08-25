@@ -717,7 +717,7 @@ class Importer(ModelSQL, ModelView):
                     with Transaction().set_context(previous_context):
                         new_records += Model.importer_import(subrecords)
                     logger.info('Processed %d new records. Total imported: %d.',
-                        (len(subrecords), len(new_records)))
+                        len(subrecords), len(new_records))
                     subrecords = []
                     call = False
                     soft_limit = SOFT_LIMIT
@@ -729,7 +729,7 @@ class Importer(ModelSQL, ModelView):
                 with Transaction().set_context(previous_context):
                     new_records += Model.importer_import(subrecords)
                     logger.info('Processed %d new records. Total imported: %d.',
-                        (len(subrecords), len(new_records)))
+                        len(subrecords), len(new_records))
 
         if setup.errors:
             Error.delete(self.errors)
