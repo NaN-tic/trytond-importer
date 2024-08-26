@@ -160,16 +160,7 @@ class Cache:
         self.values = {}
         with Transaction().set_context(self.context):
             for record in Model.search(self.domain or []):
-                for key in self.keys:
-                    kv = key(record)
-                    if kv in self.values:
-                        if self.duplicates == 'abort-on-load':
-                            Setup.get().error(f'Duplicate key "{kv}" found loading model '
-                                '"{model}"')
-                            continue
-                        elif self.duplicates == 'first':
-                            continue
-                    self.values.setdefault(kv, []).append(record)
+                self.add(record)
 
     def get(self, key):
         if self.values is None:
@@ -218,3 +209,15 @@ class Cache:
         if isinstance(key, str) and not self.case_sensitive:
             key = key.lower()
         return key in self.values
+
+    def add(self, record):
+        for key in self.keys:
+            kv = key(record)
+            if kv in self.values:
+                if self.duplicates == 'abort-on-load':
+                    Setup.get().error(f'Duplicate key "{kv}" found loading model '
+                        '"{model}"')
+                    continue
+                elif self.duplicates == 'first':
+                    continue
+            self.values.setdefault(kv, []).append(record)
