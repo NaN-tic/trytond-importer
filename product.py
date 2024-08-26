@@ -284,9 +284,12 @@ class ImporterProduct(ImporterModel):
                     setattr(template, field, account)
 
             if 'depreciation_percentatge' in setup.fields:
-                template.depreciation_percentatge = Decimal(record.depreciation_percentatge)/100
-                if hasattr(Template, 'depreciation_duration'):
+                if record.depreciation_percentatge:
+                    template.depreciation_percentatge = Decimal(record.depreciation_percentatge)/100
                     template.depreciation_duration = (100/Decimal(record.depreciation_percentatge))*12
+                else:
+                    template.depreciation_percentatge = None
+                    template.depreciation_duration = None
 
             if 'depreciation_duration' in setup.fields:
                 if record.depreciation_duration:
