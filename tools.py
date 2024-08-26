@@ -27,7 +27,7 @@ class Setup(SimpleNamespace):
     def __init__(self, on_error='skip', **kwargs):
         super().__init__(**kwargs)
         assert on_error in ('skip', 'log', 'raise'), on_error
-        self.type = None
+        self.method = None
         self.on_error = on_error
         self.limit = 5000
         self.errors = []
