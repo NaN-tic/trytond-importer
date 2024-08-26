@@ -69,6 +69,9 @@
         <record model="ir.message" id="msg_chart_not_found">
             <field name="text">Chart "%(chart)s" not found.</field>
         </record>
+        <record model="ir.message" id="msg_asset_product_not_found">
+            <field name="text">Asset product "%(product)s" does not exist on the database or it could not be found.</field>
+        </record>
     </data>
 
     <data depends="bank">

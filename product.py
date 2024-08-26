@@ -69,6 +69,7 @@ class ImporterProduct(ImporterModel):
                 ('code', '!=', None),
                 ('code', '!=', ''),
                 ], required=False)
+        cache.accounts = Cache('account.account', 'code')
 
     def importer_context(self):
         res = super().importer_context()
@@ -271,6 +272,26 @@ class ImporterProduct(ImporterModel):
                 else:
                     template.sale_uom = None
 
+            for field in ('account_revenue', 'account_depreciation',
+                          'account_expense', 'account_asset'):
+                if field in setup.fields:
+                    template.type = 'assets'
+                    template.depreciable = True
+                    template.accounts_category = False
+                    template.taxes_category = False
+                    account_code = getattr(record, field)
+                    account = cache.accounts.get(account_code)
+                    setattr(template, field, account)
+
+            if 'depreciation_percentatge' in setup.fields:
+                template.depreciation_percentatge = Decimal(record.depreciation_percentatge)/100
+                if hasattr(Template, 'depreciation_duration'):
+                    template.depreciation_duration = (100/Decimal(record.depreciation_percentatge))*12
+
+            if 'depreciation_duration' in setup.fields:
+                if record.depreciation_duration:
+                    template.depreciation_duration = record.depreciation_duration
+
             if cache.parties and 'supplier' in setup.fields:
                 party = cache.parties.get(record.supplier)
                 supplier = ProductSupplier()
@@ -429,6 +450,27 @@ class ImporterProductSupplierMultipleDepends(metaclass=PoolMeta):
 
     supplier_multiple_quantity = fields.Float('Supplier Multiple Quantity')
 
+class ImporterProductAccountingDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    account_expense = fields.Char('Account Expense')
+    account_revenue = fields.Char('Account Revenue')
+
+class ImporterProductAssetDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    depreciation_duration = fields.Integer('Depreciation Duration')
+
+class ImporterProductAccountingAssetDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    account_depreciation = fields.Char('Account Depreciation')
+    account_asset = fields.Char('Account Asset')
+
+class ImporterProductAccountAssetPercentatgeDepends(metaclass=PoolMeta):
+    __name__ = 'importer.product'
+
+    depreciation_percentatge = fields.Char('Depreciation Percentatge')
 
 class ImporterProductCodes(ModelView):
     'Importer Product'
