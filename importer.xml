@@ -216,6 +216,7 @@
         <record model="ir.action.act_window" id="act_import_open">
             <field name="name">Imported Records</field>
             <field name="res_model">importer</field>
+	    <field name="order" eval="[('id', 'ASC')]" pyson="1"/>
         </record>
         <menuitem parent="menu_importer" action="act_ask_and_import_wizard" id="menu_import_wizard" sequence="30"/>
 

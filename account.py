@@ -1,4 +1,5 @@
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 from types import SimpleNamespace
 from trytond.model import ModelView, fields
@@ -52,6 +53,25 @@ class ImporterFiscalYear(ModelView):
     in_credit_note_sequence_name = fields.Char('In Credit Note Sequence Name')
     out_credit_note_sequence_name = fields.Char('Out Credit Note Sequence Name')
 
+class ImporterAccountAsset(ModelView):
+    'Importer Account Asset'
+    __name__ = 'importer.account.asset'
+    value = fields.Char('Value')
+    product_code = fields.Char('Product Code')
+    product_name = fields.Char('Product Name')
+    depreciated_amount = fields.Char('Depreciated Amount')
+    residual_value = fields.Char('Residual Value')
+    current_value = fields.Char('Current Value')
+    purchase_date = fields.Date('Purchase Date')
+    start_date = fields.Date('Start Date')
+    end_date = fields.Date('End Date')
+    comment = fields.Char('Comment')
+    number = fields.Char('Number')
+
+class ImporterAccountAssetAnalyticDepends(metaclass=PoolMeta):
+    __name__ = 'importer.account.asset'
+
+    analytic_account = fields.Char('Analytic Account')
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -90,6 +110,11 @@ class Importer(metaclass=PoolMeta):
                 'model': 'importer.account.fiscalyear',
                 'chunked': False,
                 },
+            'account_asset': {
+                'string': 'Asset',
+                'model': 'importer.account.asset',
+                'chunked': False,
+                },
         })
         return methods
 
@@ -115,6 +140,9 @@ class Importer(metaclass=PoolMeta):
     def import_account_move_account_party(cls, records):
         return cls._import_account_move(records, create_party=True,
             create_account=True)
+
+    def import_account_asset(cls, records):
+        return cls._import_account_asset(records)
 
     @classmethod
     def get_dict_accounts(cls):
@@ -525,4 +553,67 @@ class Importer(metaclass=PoolMeta):
             fiscalyear.save()
             FiscalYear.create_period([fiscalyear])
             imported.append(fiscalyear)
+        return imported
+
+    @classmethod
+    def _import_account_asset(cls, records):
+        pool = Pool()
+        Asset = pool.get('account.asset')
+        Product = pool.get('product.product')
+        Date = pool.get('ir.date')
+
+        cache = SimpleNamespace()
+        cache.templates = dict((x.code, x) for x in
+                Product.search([
+                ('code', '!=', None),
+                ('code', '!=', ''),
+                ]))
+        try:
+            AnalyticAccount = pool.get('analytic_account.account')
+            AnalyticEntry = pool.get('analytic.account.entry')
+            cache.analytic_accounts = dict((x.code, x) for x in
+                AnalyticAccount.search([]))
+        except:
+            pass
+
+        imported = []
+        for record in records:
+            found_product = []
+            if record.product_code:
+                found_product = Product.search(
+                    [('code', '=', record.product_code )], limit=1)
+            elif record.product_name:
+                found_product = Product.search(
+                    [('name', '=', record.product_name )], limit=1)
+            if not found_product:
+                raise UserError(gettext('importer.msg_asset_product_not_found',
+                    product=record.product_code))
+            product = found_product[0]
+            asset = Asset()
+            asset.number = record.number if record.number else None
+            asset.product = product
+            asset.value = Decimal(record.value)
+            asset.comment = record.comment
+            asset.purchase_date = record.purchase_date
+            asset.start_date = record.start_date or record.purchase_date
+            if record.depreciated_amount:
+                asset.depreciated_amount = Decimal(record.depreciated_amount)
+            elif record.current_value and record.value:
+                asset.depreciated_amount = asset.value - Decimal(record.current_value)
+                asset.start_date = Date.today()
+            asset.residual_value = Decimal(record.residual_value) if record.residual_value else 0.0
+            asset.end_date = (record.end_date or
+                asset.purchase_date + relativedelta(
+                    days=-1, months=product.depreciation_duration))
+            if hasattr(Asset, 'analytic_accounts') and record.analytic_account:
+                account = cache.analytic_accounts.get(record.analytic_account)
+                if account:
+                    root = account.root
+                    entry = AnalyticEntry()
+                    entry.root = root
+                    entry.account = account
+                    asset.analytic_accounts = [entry]
+            imported.append(asset)
+        Asset.save(imported)
+
         return imported

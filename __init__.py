@@ -127,6 +127,7 @@ def register():
         module='importer', type_='model')
     Pool.register(
         account.Importer,
+        account.ImporterAccountAsset,
         account.ImporterAccountMove,
         account.ImporterChart,
         account.ImporterFiscalYear,
@@ -134,6 +135,23 @@ def register():
         depends=['account'],
         module='importer', type_='model')
     Pool.register(
+        product.ImporterProductAccountingDepends,
+        depends=['account_product_accounting'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductAssetDepends,
+        depends=['account_asset'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductAccountingAssetDepends,
+        depends=['account_asset', 'account_product_accounting'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductAccountAssetPercentatgeDepends,
+        depends=['account_asset_percentatge'],
+        module='importer', type_='model')
+    Pool.register(
+        account.ImporterAccountAssetAnalyticDepends,
         account.ImporterAccountMoveDependsAnalytic,
         depends=['analytic_account'],
         module='importer', type_='model')
