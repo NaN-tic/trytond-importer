@@ -595,16 +595,21 @@ class Importer(metaclass=PoolMeta):
             asset.value = Decimal(record.value)
             asset.comment = record.comment
             asset.purchase_date = record.purchase_date
-            asset.start_date = record.start_date or record.purchase_date
+            asset.start_date = record.purchase_date or record.start_date
             if record.depreciated_amount:
                 asset.depreciated_amount = Decimal(record.depreciated_amount)
             elif record.current_value and record.value:
                 asset.depreciated_amount = asset.value - Decimal(record.current_value)
                 asset.start_date = Date.today()
             asset.residual_value = Decimal(record.residual_value) if record.residual_value else 0.0
-            asset.end_date = (record.end_date or
-                asset.purchase_date + relativedelta(
+            if record.end_date:
+                asset.end_date = record.end_date
+            elif product.depreciation_duration:
+                asset.end_date = (asset.purchase_date + relativedelta(
                     days=-1, months=product.depreciation_duration))
+            # Do not import if the end date is in the past
+            if asset.end_date < Date.today():
+                continue
             if hasattr(Asset, 'analytic_accounts') and record.analytic_account:
                 account = cache.analytic_accounts.get(record.analytic_account)
                 if account:
