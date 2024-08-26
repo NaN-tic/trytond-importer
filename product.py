@@ -357,10 +357,10 @@ class ImporterProduct(ImporterModel):
             record.importer_product(product)
             cache.templates[record.template_code] = template
 
-        ProductCategory.save(categories_to_save)
-        Template.save(to_save)
-        Product.save(products_to_save)
-        Note.save(notes_to_save)
+        cls.importer_save(categories_to_save)
+        cls.importer_save(to_save)
+        cls.importer_save(products_to_save)
+        cls.importer_save(notes_to_save)
         return to_save
 
 

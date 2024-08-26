@@ -1,4 +1,3 @@
-import itertools
 import logging
 from types import SimpleNamespace
 from trytond.pool import Pool

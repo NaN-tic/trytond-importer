@@ -41,7 +41,6 @@ class ImporterMeta(ImporterModel):
     def importer_import(cls, records):
         pool = Pool()
         Importer = pool.get('importer')
-        Column = pool.get('importer.column')
 
         super().importer_import(records)
         setup = Setup.get()
@@ -81,8 +80,7 @@ class ImporterMeta(ImporterModel):
                     if 'column_format' in setup.fields:
                         column.format = record.column_format
 
-        if columns_to_save:
-            Column.save(columns_to_save)
+        cls.importer_save(columns_to_save)
         return importers
 
 
