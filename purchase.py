@@ -84,7 +84,6 @@ class ImporterProductSupplier(ImporterModel):
         pool = Pool()
         ProductSupplier = pool.get('purchase.product_supplier')
         Price = pool.get('purchase.product_supplier.price')
-        Template = pool.get('product.template')
 
         setup = Setup.get()
         cache = setup.cache
@@ -184,12 +183,12 @@ class ImporterProductSupplier(ImporterModel):
 
             product_supplier_to_save[key] = product_supplier
 
-        Template.save(templates_to_save)
+        cls.importer_save(templates_to_save)
 
         to_save = list(product_supplier_to_save.values())
-        ProductSupplier.save(to_save)
+        cls.importer_save(to_save)
 
-        Price.save(lines_to_save)
+        cls.importer_save(lines_to_save)
         to_delete = []
         for quantities in lines_to_delete.values():
             to_delete += quantities.values()

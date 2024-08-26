@@ -83,7 +83,7 @@ class ImporterStockMove(ImporterModel):
             if Lot:
                 move.lot = cache.lots.get((record.lot, record.product_code))
             to_save.append(move)
-        Move.save(to_save)
+        cls.importer_save(to_save)
         return to_save
 
 
