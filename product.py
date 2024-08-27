@@ -275,7 +275,6 @@ class ImporterProduct(ImporterModel):
             for field in ('account_revenue', 'account_depreciation',
                           'account_expense', 'account_asset'):
                 if field in setup.fields:
-                    template.type = 'assets'
                     template.depreciable = True
                     template.accounts_category = False
                     template.taxes_category = False
