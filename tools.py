@@ -2,7 +2,7 @@ import logging
 from types import SimpleNamespace
 from trytond.pool import Pool
 from trytond.model import fields, ModelView
-from trytond.model.modelsql import RequiredValidationError
+from trytond.model.modelsql import RequiredValidationError, SQLConstraintError
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError
 
@@ -90,7 +90,7 @@ class ImporterModel(ModelView):
             records = blocks.pop(0)
             try:
                 Model.save(records)
-            except RequiredValidationError:
+            except (RequiredValidationError, SQLConstraintError) as e:
                 raise
             except UserError as e:
                 if len(records) == 1:
