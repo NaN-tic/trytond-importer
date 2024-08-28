@@ -214,6 +214,8 @@ class Cache:
         return key in self.values
 
     def add(self, record):
+        if self.values is None:
+            self.load()
         for key in self.keys:
             kv = key(record)
             if kv in self.values:
