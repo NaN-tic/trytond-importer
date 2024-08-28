@@ -92,6 +92,7 @@ class ImporterProductSupplier(ImporterModel):
         product_supplier_to_save = {}
         templates_to_save = []
         for record in records:
+            setup.current_record = record
             if record.party_code:
                 party = cache.parties_by_code.get(record.party_code)
             elif record.party_name:

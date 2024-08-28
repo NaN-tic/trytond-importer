@@ -136,6 +136,7 @@ class ImporterProduct(ImporterModel):
         categories_to_save = []
 
         for record in records:
+            setup.current_record = record
             product = None
             template = None
             if 'variant_code' in setup.fields and record.variant_code:

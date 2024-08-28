@@ -132,6 +132,7 @@ class ImporterParty(ImporterModel):
         notes_to_save = []
         relations_to_save = {}
         for record in records:
+            setup.current_record = record
             party = None
             if record.code:
                 party = cache.parties.get(record.code)

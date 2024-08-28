@@ -50,6 +50,7 @@ class ImporterMeta(ImporterModel):
         columns_to_save = []
         previous_header = None
         for record in records:
+            setup.current_record = record
             header = cls.importer_header(record)
             if any(header) and header != previous_header:
                 previous_header = header
