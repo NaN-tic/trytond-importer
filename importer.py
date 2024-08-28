@@ -179,13 +179,17 @@ class Data:
                 self.rows = content
                 return
             if all(isinstance(x, dict) for x in content):
-                # TODO: We're considering that all records have all the keys
                 rows = []
-                rows.append([x for x in sorted(content[0].keys())])
+                keys = set()
+                # Pick the first 1000 items to determine the header
+                for item in content[:1000]:
+                    keys.update(item.keys())
+                header = [x for x in sorted(list(keys))]
+                rows.append(header)
                 for item in content:
                     row = []
-                    for key in sorted(item.keys()):
-                        row.append(item[key])
+                    for key in header:
+                        row.append(item.get(key))
                     rows.append(row)
                 self.type = type
                 self.has_header = True
