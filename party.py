@@ -71,8 +71,10 @@ class ImporterParty(ImporterModel):
         cache.payment_types = Cache('account.payment.type', 'name')
         cache.relations = Cache('party.relation.type', 'name')
         cache.tax_rules = Cache('account.tax.rule', 'name')
-        cache.agents = Cache('commission.agent', key=lambda x: (x.party.code, x.plan.name))
-        cache.agents_no_plan = Cache('commission.agent', key=lambda x: x.party.name)
+        cache.agents = Cache('commission.agent', key=lambda x: (x.party.code
+            and x.party.code.lower(), x.plan and x.plan.name))
+        cache.agents_no_plan = Cache('commission.agent', key=lambda x:
+            x.party.name and x.party.name.lower())
         cache.inco_terms = Cache('incoterm', 'code')
         cache.languages = Cache('ir.lang', 'code')
         cache.categories = Cache('party.category', 'name')
@@ -175,8 +177,7 @@ class ImporterParty(ImporterModel):
                     else:
                         setup.error(gettext('importer.subdivision_not_found',
                                 subdivision=subdivision.name,
-                                country=country.name),
-                            record)
+                                country=country.name), record)
                 else:
                     address.subdivision = subdivision
                     address.country = subdivision.country
@@ -186,8 +187,7 @@ class ImporterParty(ImporterModel):
                         address.subdivision_types):
                     setup.error(gettext('importer.subdivision_type_not_allowed',
                             subdivision=subdivision.name,
-                            type=address.subdivision.type),
-                        record)
+                            type=address.subdivision.type), record)
                     address.subdivision = None
 
             addresses.append(address)
@@ -405,7 +405,7 @@ class ImporterParty(ImporterModel):
 
             if 'agent' in setup.fields and record.agent:
                 new_agents = []
-                CommisionAgentSelection = pool.get('commission.agent.selection')
+                CommissionAgentSelection = pool.get('commission.agent.selection')
                 for agent in record.agent.split('|'):
                     if ',' in agent:
                         agent, plan = agent.split(',')
@@ -414,10 +414,12 @@ class ImporterParty(ImporterModel):
                     else:
                         com_a = cache.agents_no_plan.get(agent)
                         plan = None
-                    com_agen_sel = CommisionAgentSelection()
+
                     if not com_a:
-                        raise UserError(gettext('importer.agent_not_found',
-                            agent=agent, plan=plan))
+                        setup.error(gettext('importer.agent_not_found',
+                            agent=agent, plan=plan),
+                            record)
+                    com_agen_sel = CommissionAgentSelection()
                     com_agen_sel.agent = com_a
                     com_agen_sel.company = company
                     new_agents.append(com_agen_sel)
