@@ -89,9 +89,7 @@ class ImporterModel(ModelView):
         while blocks:
             records = blocks.pop(0)
             try:
-                print('Saving %d records' % len(records))
                 Model.save(records)
-                print('Saved')
             except RequiredValidationError:
                 raise
             except UserError as e:
