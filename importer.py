@@ -831,6 +831,8 @@ class Importer(ModelSQL, ModelView):
                 hi[header[pos]] = pos
 
             for column in self.columns:
+                if not column.name:
+                    continue
                 index = hi.get(column.name)
                 if index is None:
                     continue
