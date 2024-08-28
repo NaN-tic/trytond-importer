@@ -432,7 +432,7 @@ class ImporterProductStockProductLocationDepends(metaclass=PoolMeta):
 
         setup = Setup.get()
         cache = setup.cache
-        if 'location' in setup.fields:
+        if 'location' in setup.fields and self.location:
             warehouse = Location.get_default_warehouse()
             product_location = ProductLocation()
             product_location.warehouse = warehouse
