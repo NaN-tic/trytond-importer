@@ -32,12 +32,15 @@ class Setup(SimpleNamespace):
         self.limit = 5000
         self.errors = []
         self.fields = []
+        self.current_record = None
 
     def error(self, message, record=None, **kwargs):
         if self.on_error == 'raise':
             raise UserError(message.format(**kwargs))
         if self.on_error == 'log':
             logger.warning(message.format(**kwargs))
+        if record is None:
+            record = self.current_record
         if len(self.errors) < self.limit:
             self.errors.append((record, message, kwargs))
 

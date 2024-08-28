@@ -53,6 +53,7 @@ class ImporterStockMove(ImporterModel):
 
         to_save = []
         for record in records:
+            setup.current_record = record
             from_location = cache.locations.get(record.from_location)
             to_location = cache.locations.get(record.to_location)
             product = cache.products.get(record.product_code)
