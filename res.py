@@ -117,7 +117,7 @@ class Importer(metaclass=PoolMeta):
                 for role in [x.strip() for x in record.roles.split(',')]:
                     if role.strip() not in roles:
                         raise UserError(gettext('importer.msg_role_not_found',
-                                role=role))
+                                name=role))
                     roles_to_add.append(UserRole(role=roles[role]))
                 user.roles = roles_to_add
 
