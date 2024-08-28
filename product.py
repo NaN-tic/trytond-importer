@@ -371,10 +371,14 @@ class ImporterProductConfiguration(ModelView):
     __name__ = "importer.product.configuration"
 
     cost_price_method = fields.Char("Cost price method")
-    template_sequence_prefix = fields.Char("Sequence prefix")
-    template_sequence_suffix = fields.Char("Sequence suffix")
-    template_sequence_padding = fields.Integer("Sequence padding")
-    template_sequence_number_next = fields.Integer("Sequence number next")
+    template_sequence_prefix = fields.Char("Template Sequence prefix")
+    template_sequence_suffix = fields.Char("Template Sequence suffix")
+    template_sequence_padding = fields.Integer("Template Sequence padding")
+    template_sequence_number_next = fields.Integer("Template Sequence number next")
+    product_sequence_prefix = fields.Char("Variant Sequence prefix")
+    product_sequence_suffix = fields.Char("Variant Sequence suffix")
+    product_sequence_padding = fields.Integer("Variant Sequence padding")
+    product_sequence_number_next = fields.Integer("Variant Sequence number next")
 
 
 class ImporterProductProductionDepends(metaclass=PoolMeta):
@@ -560,15 +564,31 @@ class Importer(metaclass=PoolMeta):
 
                 if not sequence:
                     sequence = Sequence()
-                    sequence.name = "Product"
-                    configuration.product_sequence = sequence
+                    sequence.name = "Product Template"
+                    configuration.template_sequence = sequence
 
-                sequence.sequence_type = ModelData.get_id('product', 'sequence_type_product')
+                sequence.sequence_type = ModelData.get_id('product', 'sequence_type_template')
                 sequence.prefix = record.template_sequence_prefix
                 sequence.suffix = record.template_sequence_suffix
                 sequence.padding = record.template_sequence_padding
                 sequence.number_next = record.template_sequence_number_next
                 sequence.save()
+
+            if record.product_sequence_padding or record.product_sequence_number_next:
+                sequence = configuration.product_sequence
+
+                if not sequence:
+                    sequence = Sequence()
+                    sequence.name = "Product Variant"
+                    configuration.product_sequence = sequence
+
+                sequence.sequence_type = ModelData.get_id('product', 'sequence_type_product')
+                sequence.prefix = record.product_sequence_prefix
+                sequence.suffix = record.product_sequence_suffix
+                sequence.padding = record.product_sequence_padding
+                sequence.number_next = record.product_sequence_number_next
+                sequence.save()
+
 
             configuration.save()
             configs.append(configuration)
