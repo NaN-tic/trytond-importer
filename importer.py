@@ -736,8 +736,9 @@ class Importer(ModelSQL, ModelView):
                     logger.info('Processed %d new records. Total imported: %d.',
                         len(subrecords), len(new_records))
 
-        if setup.errors:
+        if self.errors:
             Error.delete(self.errors)
+        if setup.errors:
             to_save = []
             generics = set()
             for record, message, kwargs in setup.errors:
