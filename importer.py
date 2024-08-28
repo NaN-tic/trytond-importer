@@ -251,7 +251,11 @@ class Importer(ModelSQL, ModelView):
             'invisible': ~Eval('has_header'),
             })
     data_source = fields.Selection(
-        [(None, ''), ] + data_sources, 'Data Source')
+        [(None, ''), ] + data_sources, 'Data Source', states={
+            'invisible': ~Eval('data_source_visible'),
+            })
+    data_source_visible = fields.Function(fields.Boolean('Data Source Visible'),
+        'on_change_with_data_source_visible')
     on_error = fields.Selection([
             ('skip', 'Skip'),
             ('raise', 'Raise Error'),
@@ -301,7 +305,9 @@ class Importer(ModelSQL, ModelView):
             })
     columns = fields.One2Many('importer.column', 'importer', 'Columns')
     source_columns = fields.One2Many('importer.source_column',
-            'importer', 'Source Columns')
+            'importer', 'Source Columns', states={
+                'invisible': ~Eval('data_source_visible'),
+                })
     errors = fields.One2Many('importer.error', 'importer', 'Errors')
 
     @classmethod
@@ -336,6 +342,18 @@ class Importer(ModelSQL, ModelView):
     @classmethod
     def default_on_error(cls):
         return 'skip'
+
+    @fields.depends('method')
+    def on_change_method(self):
+        info = self._get_methods().get(self.method, {})
+        if not info.get('requires_records', True):
+            self.data_source = None
+
+    @fields.depends('method')
+    def on_change_with_data_source_visible(self, name=None):
+        info = self._get_methods().get(self.method, {})
+        if info.get('requires_records', True):
+            return True
 
     @classmethod
     def create(cls, vlist):
