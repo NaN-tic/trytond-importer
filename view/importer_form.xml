@@ -46,10 +46,10 @@
         <field name="where" colspan="5"/>
     </group>
     <notebook colspan="6">
-        <page string="Importer columns" id="columns">
+        <page name="columns">
             <field name="columns" colspan="4" height="500"/>
         </page>
-        <page string="File columns" id="source_columns">
+        <page name="source_columns">
             <field name="source_columns" colspan="4" height="500"/>
         </page>
         <page name="text_data">
