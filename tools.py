@@ -1,3 +1,4 @@
+import base64
 import logging
 from types import SimpleNamespace
 from trytond.pool import Pool
@@ -74,7 +75,10 @@ class ImporterModel(ModelView):
                 if isinstance(f, (fields.Many2One, fields.Many2Many,
                         fields.One2Many, fields.One2One)):
                     continue
-                setattr(record, field, getattr(self, field, None))
+                value = getattr(self, field, None)
+                if value and isinstance(f, fields.Binary):
+                    value = base64.b64decode(value)
+                setattr(record, field, value)
 
     def importer_error(self, message, **kwargs):
         Setup.get().error(message, self, **kwargs)
