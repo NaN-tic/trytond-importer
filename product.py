@@ -170,6 +170,8 @@ class ImporterProduct(ImporterModel):
                 template.code = record.template_code
             if 'sale_price' in setup.fields:
                 template.list_price = record.sale_price or Decimal(0)
+            if 'type_' in setup.fields and record.type_:
+                template.type = record.type_
             uom = None
             if record.uom:
                 uom = cache.uoms.get(record.uom.lower(), 'u')
