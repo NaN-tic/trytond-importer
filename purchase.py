@@ -170,7 +170,7 @@ class ImporterProductSupplier(ImporterModel):
                     if product_supplier.id is None:
                         product_supplier.save()
                     price.product_supplier = product_supplier
-                price.quantity = record.quantity
+                price.quantity = record.quantity or 0
                 price.unit_price = round_price(record.unit_price)
 
                 if ('start_date' in setup.fields and record.start_date):
@@ -188,14 +188,12 @@ class ImporterProductSupplier(ImporterModel):
 
         to_save = list(product_supplier_to_save.values())
         cls.importer_save(to_save)
-
         cls.importer_save(lines_to_save)
         to_delete = []
         for quantities in lines_to_delete.values():
             to_delete += quantities.values()
         Price.delete(to_delete)
         return to_save
-
 
 
 class ImporterProductSupplierStockSupplyMinimum(metaclass=PoolMeta):
