@@ -763,7 +763,7 @@ class Importer(ModelSQL, ModelView):
         if setup.errors:
             to_save = []
             generics = set()
-            for record, message, kwargs in setup.errors:
+            for record, message, kwargs in setup.errors[:setup.limit]:
                 generics.add(message)
                 error = Error()
                 error.importer = self
