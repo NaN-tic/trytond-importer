@@ -334,9 +334,6 @@ class Importer(ModelSQL, ModelView):
                     'icon': 'tryton-clear',
                     'invisible': ~Bool(Eval('errors')),
                     },
-                'export': {
-                    'icon': 'tryton-export',
-                    },
                 })
 
     @classmethod
