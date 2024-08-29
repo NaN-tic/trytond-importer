@@ -409,8 +409,7 @@ class Importer(ModelSQL, ModelView):
         Error.delete(sum([x.errors for x in importers], ()))
 
     @classmethod
-    @ModelView.button
-    def export(cls, importers):
+    def _export(cls, importers):
         res = []
         for importer in importers:
             js = {}
@@ -452,9 +451,7 @@ class Importer(ModelSQL, ModelView):
                         js[key] = None
             else:
                 res.append(js)
-        with open('/tmp/importer.json', 'w') as f:
-            json.dump(res, f)
-        return res
+        return json.dumps(res)
 
     @classmethod
     @ModelView.button
@@ -1299,3 +1296,16 @@ class ExcelTemplate(Report):
             if c:
                 ws.cell(row=1, column=number).comment = Comment(c, "Tryton")
         return ('xlsx', save_virtual_workbook(wb), False, importer.name)
+
+
+class Export(Report):
+    'Export'
+    __name__ = 'importer.export'
+
+    @classmethod
+    def execute(cls, ids, data):
+        if not ids:
+            return
+        Importer = Pool().get('importer')
+        importers = Importer.browse(ids)
+        return ('json', Importer._export(importers), False, 'importers.json')

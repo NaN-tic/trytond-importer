@@ -4,5 +4,4 @@
     <field name="template"/>
     <field name="has_header"/>
     <field name="use_header"/>
-    <button name="export" tree_invisible="1"/>
 </tree>
