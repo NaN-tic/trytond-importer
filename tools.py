@@ -100,6 +100,8 @@ class ImporterModel(ModelView):
                 if len(records) == 1:
                     setup.error(e.message, records[0])
                     continue
+                logger.warning('Error saving a block of %d of %s records (%s). '
+                    'Will split and retry.', len(records), Model.__class__, e)
                 # TODO: Use itertools.batched from Python 3.12
                 # for records in itertools.batched(records, len(records) // 10):
                 #     blocks.insert(0, records)
