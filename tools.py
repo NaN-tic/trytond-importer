@@ -30,7 +30,7 @@ class Setup(SimpleNamespace):
         assert on_error in ('skip', 'log', 'raise'), on_error
         self.method = None
         self.on_error = on_error
-        self.limit = 5000
+        self.limit = 1000
         self.errors = []
         self.fields = []
         self.current_record = None
