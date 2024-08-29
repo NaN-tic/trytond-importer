@@ -83,15 +83,6 @@
             <field name="button" ref="importer_clean_errors_button"/>
             <field name="group" ref="group_importer"/>
         </record>
-        <record model="ir.model.button" id="importer_export_button">
-            <field name="name">export</field>
-            <field name="string">Export</field>
-            <field name="model">importer</field>
-        </record>
-        <record model="ir.model.button-res.group" id="importer_export_button_group_importer">
-            <field name="button" ref="importer_export_button"/>
-            <field name="group" ref="group_importer"/>
-        </record>
         <record model="ir.model.button" id="importer_detect_button">
             <field name="name">detect</field>
             <field name="string">Detect</field>
@@ -220,7 +211,7 @@
         </record>
         <menuitem parent="menu_importer" action="act_ask_and_import_wizard" id="menu_import_wizard" sequence="30"/>
 
-         <record model="ir.action.report" id="report_excel_template">
+        <record model="ir.action.report" id="report_excel_template">
             <field name="name">Excel Template</field>
             <field name="model">importer</field>
             <field name="report_name">importer.excel.template</field>
@@ -232,5 +223,18 @@
             <field name="model">importer,-1</field>
             <field name="action" ref="report_excel_template"/>
         </record>
+
+        <record model="ir.action.report" id="report_importer_export">
+            <field name="name">Export</field>
+            <field name="model">importer</field>
+            <field name="report_name">importer.export</field>
+        </record>
+        <record model="ir.action.keyword" id="report_importer_export_keyword">
+            <field name="keyword">form_print</field>
+            <field name="model">importer,-1</field>
+            <field name="action" ref="report_importer_export"/>
+        </record>
+
+
     </data>
 </tryton>

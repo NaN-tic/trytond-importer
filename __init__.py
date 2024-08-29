@@ -59,6 +59,7 @@ def register():
         module='importer', type_='wizard')
     Pool.register(
         importer.ExcelTemplate,
+        importer.Export,
         module='importer', type_='report')
     Pool.register(
         party_credit.ImporterPartyCredit,
