@@ -4,7 +4,7 @@ import json
 from trytond.tests.test_tryton import ModuleTestCase, with_transaction
 from trytond.transaction import Transaction
 from trytond.pool import Pool
-from trytond.modules.importer.importer import Data
+from trytond.modules.importer.importer import DataExtractor
 from trytond.modules.company.tests import create_company
 
 
@@ -36,7 +36,7 @@ class ImporterTestCase(ModuleTestCase):
                     column.name = column.field.name
                     column.save()
 
-        data = Data('text', None, json.dumps(records), None)
+        data = DataExtractor('text', None, json.dumps(records), None)
         data.load()
         importer.data_to_records(data)
 

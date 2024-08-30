@@ -76,7 +76,7 @@ def grouped_slice(records, count=None):
         yield chunk
 
 
-class Data:
+class DataExtractor:
     def __init__(self, data_source, binary_data, text_data, url_data,
             conn=None, sql=None):
         self.data_source = data_source
@@ -398,6 +398,10 @@ class Importer(ModelSQL, ModelView):
             return sql
 
     @classmethod
+    def extractor(cls):
+        return DataExtractor
+
+    @classmethod
     @ModelView.button
     def clean_errors(cls, importers):
         pool = Pool()
@@ -484,6 +488,7 @@ class Importer(ModelSQL, ModelView):
 
             conn = importer.get_connection()
             sql = importer.get_sql()
+            Data = cls.extractor()
             data = Data(importer.data_source, importer.binary_data,
                 importer.text_data, importer.url_data, conn, sql)
             data.load()
@@ -511,6 +516,7 @@ class Importer(ModelSQL, ModelView):
         for importer in importers:
             conn = importer.get_connection()
             sql = importer.get_sql()
+            Data = cls.extractor()
             data = Data(importer.data_source, importer.binary_data,
                 importer.text_data, importer.url_data, conn, sql)
             data.load()
@@ -780,6 +786,7 @@ class Importer(ModelSQL, ModelView):
         if data is None:
             conn = self.get_connection()
             sql = self.get_sql()
+            Data = self.extractor()
             data = Data(self.data_source, self.binary_data, self.text_data,
                 self.url_data, conn, sql)
             data.load()
@@ -1122,6 +1129,7 @@ class ImporterSourceColumn(ModelSQL, ModelView):
                 continue
             conn = importer.get_connection()
             sql = importer.get_sql()
+            Data = column.importer.extractor()
             data = Data(importer.data_source, importer.binary_data,
                 importer.text_data, importer.url_data, conn, sql)
             data.load()
@@ -1203,8 +1211,11 @@ class AskAndImport(Wizard):
     import_ = StateAction('importer.act_import_open')
 
     def do_import_(self, action):
+        Importer = Pool().get('importer')
+
         conn = self.ask.importer.get_connection()
         sql = self.ask.importer.get_sql()
+        Data = Importer.extractor()
         data = Data(self.ask.data_source, self.ask.binary_data,
             self.ask.text_data, self.ask.url_data, conn, sql)
         data.load()
