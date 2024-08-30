@@ -87,16 +87,20 @@ class ImporterModel(ModelView):
     def importer_save(cls, records):
         if not records:
             return
+        cursor = Transaction().connection.cursor()
         setup = Setup.get()
         Model = records[0].__class__
         blocks = [records]
         while blocks:
             records = blocks.pop(0)
+            cursor.execute('SAVEPOINT importer_save')
             try:
                 Model.save(records)
+                cursor.execute('RELEASE SAVEPOINT importer_save')
             except (RequiredValidationError, SQLConstraintError) as e:
                 raise
             except UserError as e:
+                cursor.execute('ROLLBACK TO SAVEPOINT importer_save')
                 if len(records) == 1:
                     setup.error(e.message, records[0])
                     continue
