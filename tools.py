@@ -97,7 +97,7 @@ class ImporterModel(ModelView):
             try:
                 Model.save(records)
                 cursor.execute('RELEASE SAVEPOINT importer_save')
-            except (RequiredValidationError, SQLConstraintError) as e:
+            except (RequiredValidationError, SQLConstraintError):
                 raise
             except UserError as e:
                 cursor.execute('ROLLBACK TO SAVEPOINT importer_save')
