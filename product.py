@@ -433,16 +433,18 @@ class ImporterProductStockProductLocationDepends(metaclass=PoolMeta):
         Location = pool.get('stock.location')
         ProductLocation = pool.get('stock.product.location')
 
+        warehouse = Location(Location.get_default_warehouse())
         setup = Setup.get()
         cache = setup.cache
         if 'location' in setup.fields and self.location:
-            warehouse = Location.get_default_warehouse()
             product_location = ProductLocation()
             product_location.warehouse = warehouse
             location = cache.locations.get(self.location)
             if not location:
                 location = Location()
                 location.name = self.location
+                location.parent = warehouse.storage_location
+                location.save()
                 cache.locations[self.location] = location
             product_location.location = location
             template.locations = (product_location,)
