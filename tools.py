@@ -1,5 +1,6 @@
 import base64
 import logging
+import unidecode
 from types import SimpleNamespace
 from trytond.pool import Pool
 from trytond.model import fields, ModelView
@@ -125,7 +126,8 @@ class ImporterModel(ModelView):
 
 class Cache:
     def __init__(self, model, key, domain=None, context=None,
-             duplicates='first', case_sensitive=False, required=True):
+             duplicates='first', case_sensitive=False,
+             unaccent=False, required=True):
         '''
         `model` is the name of the model to cache or the model class
 
@@ -149,40 +151,46 @@ class Cache:
             keys = [key]
 
         def mygetter(key, record):
-            value = getattr(record, key)
-            if isinstance(value, str) and not case_sensitive:
-                value = value.lower()
+            value = self.treat(getattr(record, key))
             return value
 
-        self.keys = []
+        self._keys = []
         for key in keys:
             if isinstance(key, str):
                 import functools
                 key = functools.partial(mygetter, key)
-            self.keys.append(key)
+            self._keys.append(key)
         self.domain = domain
         self.context = context
         self.case_sensitive = case_sensitive
+        self.unaccent = unaccent
         self.required = required
         assert duplicates in ('first', 'abort-on-load', 'abort-on-use', 'all'), duplicates
         self.duplicates = duplicates
-        self.values = None
+        self._values = None
 
     def load(self):
         pool = Pool()
         Model = pool.get(self.model)
-        self.values = {}
+        self._values = {}
         with Transaction().set_context(self.context):
             for record in Model.search(self.domain or []):
                 self.add(record)
 
+    def treat(self, value):
+        if isinstance(value, str):
+            if not self.case_sensitive:
+                value = value.lower()
+            if self.unaccent:
+                value = unidecode.unidecode(value)
+        return value
+
     def get(self, key):
-        if self.values is None:
+        if self._values is None:
             self.load()
-        if isinstance(key, str) and not self.case_sensitive:
-            key = key.lower()
+        key = self.treat(key)
         try:
-            values = self.values[key]
+            values = self._values[key]
         except KeyError:
             # If key is None we don't usually want the error to be reported
             if key and self.required:
@@ -195,12 +203,11 @@ class Cache:
         return values[0]
 
     def __getitem__(self, key):
-        if self.values is None:
+        if self._values is None:
             self.load()
-        if isinstance(key, str) and not self.case_sensitive:
-            key = key.lower()
+        key = self.treat(key)
         try:
-            values = self.values[key]
+            values = self._values[key]
         except KeyError:
             Setup.get().error(f'Key "{key}" not found accessing "{self.model}"')
             return
@@ -211,29 +218,37 @@ class Cache:
         return values[0]
 
     def __setitem__(self, key, value):
-        if self.values is None:
+        if self._values is None:
             self.load()
-        if isinstance(key, str) and not self.case_sensitive:
-            key = key.lower()
-        self.values[key] = [value]
+        key = self.treat(key)
+        self._values[key] = [value]
 
     def __contains__(self, key):
-        if self.values is None:
+        if self._values is None:
             self.load()
-        if isinstance(key, str) and not self.case_sensitive:
-            key = key.lower()
-        return key in self.values
+        key = self.treat(key)
+        return key in self._values
 
     def add(self, record):
-        if self.values is None:
+        if self._values is None:
             self.load()
-        for key in self.keys:
+        for key in self._keys:
             kv = key(record)
-            if kv in self.values:
+            if kv in self._values:
                 if self.duplicates == 'abort-on-load':
                     Setup.get().error(f'Duplicate key "{kv}" found loading model '
                         '"{model}"')
                     continue
                 elif self.duplicates == 'first':
                     continue
-            self.values.setdefault(kv, []).append(record)
+            self._values.setdefault(kv, []).append(record)
+
+    def keys(self):
+        return self._values.keys()
+
+    def values(self):
+        return self._values.values()
+
+    def ensure_loaded(self):
+        if self._values is None:
+            self.load()
