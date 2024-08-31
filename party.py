@@ -79,7 +79,7 @@ class ImporterParty(ImporterModel):
         cache.languages = Cache('ir.lang', 'code')
         cache.categories = Cache('party.category', 'name')
         cache.countries = Cache('country.country', 'code')
-        cache.subdivisions = Cache('country.subdivision', 'name')
+        cache.subdivisions = Cache('country.subdivision', 'name', unaccent=True)
 
     def importer_context(self):
         res = super().importer_context()
