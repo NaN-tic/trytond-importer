@@ -162,7 +162,7 @@ class ImporterProduct(ImporterModel):
                 template.products += (product,)
             else:
                 products_to_save.append((product, record))
-            to_save.append(template)
+            to_save.append((template, record))
 
             if 'name' in setup.fields:
                 template.name = record.name
@@ -367,7 +367,7 @@ class ImporterProduct(ImporterModel):
         cls.importer_save(to_save)
         cls.importer_save(products_to_save)
         cls.importer_save(notes_to_save)
-        return to_save
+        return [x[0] for x in to_save]
 
 
 class ImporterProductConfiguration(ModelView):

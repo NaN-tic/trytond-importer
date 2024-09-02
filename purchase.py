@@ -124,7 +124,7 @@ class ImporterProductSupplier(ImporterModel):
 
             key = (party.id, template.id, product and product.id)
             if key in product_supplier_to_save:
-                product_supplier = product_supplier_to_save[key]
+                product_supplier, _ = product_supplier_to_save[key]
             else:
                 product_supplier = cache.product_suppliers.get(key)
                 if product_supplier:
@@ -182,7 +182,7 @@ class ImporterProductSupplier(ImporterModel):
 
                 lines_to_save.append((price, record))
 
-            product_supplier_to_save[key] = product_supplier
+            product_supplier_to_save[key] = (product_supplier, record)
 
         setup.current_record = None
         cls.importer_save(templates_to_save)
@@ -194,7 +194,7 @@ class ImporterProductSupplier(ImporterModel):
         for quantities in lines_to_delete.values():
             to_delete += quantities.values()
         Price.delete(to_delete)
-        return to_save
+        return [x[0] for x in to_save]
 
 
 class ImporterProductSupplierStockSupplyMinimum(metaclass=PoolMeta):
