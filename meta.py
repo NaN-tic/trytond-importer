@@ -73,7 +73,7 @@ class ImporterMeta(ImporterModel):
                         found = True
                         break
                 if found:
-                    columns_to_save.append(column)
+                    columns_to_save.append((column, record))
                     if 'column_name' in setup.fields:
                         column.name = record.column_name
                     if 'column_value' in setup.fields:
@@ -81,6 +81,7 @@ class ImporterMeta(ImporterModel):
                     if 'column_format' in setup.fields:
                         column.format = record.column_format
 
+        setup.current_record = None
         cls.importer_save(columns_to_save)
         return importers
 

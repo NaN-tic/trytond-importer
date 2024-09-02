@@ -161,7 +161,7 @@ class ImporterProduct(ImporterModel):
                 product = Product(**product_default_values)
                 template.products += (product,)
             else:
-                products_to_save.append(product)
+                products_to_save.append((product, record))
             to_save.append(template)
 
             if 'name' in setup.fields:
@@ -198,7 +198,7 @@ class ImporterProduct(ImporterModel):
                     acc_category = ProductCategory()
                     acc_category.name = record.account_category
                     cache.categories[record.account_category] = acc_category
-                    categories_to_save.append(acc_category)
+                    categories_to_save.append((acc_category, record))
                 acc_category.accounting = True
                 template.account_category = acc_category
 
@@ -352,16 +352,17 @@ class ImporterProduct(ImporterModel):
                 note = Note()
                 note.resource = template
                 note.message = record.template_note
-                notes_to_save.append(note)
+                notes_to_save.append((note, record))
             if 'product_note' in setup.fields:
                 note = Note()
                 note.resource = product
                 note.message = record.product_note
-                notes_to_save.append(note)
+                notes_to_save.append((note, record))
             record.importer_template(template)
             record.importer_product(product)
             cache.templates[record.template_code] = template
 
+        setup.current_record = None
         cls.importer_save(categories_to_save)
         cls.importer_save(to_save)
         cls.importer_save(products_to_save)

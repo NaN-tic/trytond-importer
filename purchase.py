@@ -144,7 +144,7 @@ class ImporterProductSupplier(ImporterModel):
                     if not template.purchasable:
                         template.purchasable = True
                         template.purchase_uom = template.default_uom
-                        templates_to_save.append(template)
+                        templates_to_save.append((template, record))
 
             if 'currency' in setup.fields:
                 product_supplier.currency = cache.currencies[record.currency]
@@ -180,10 +180,11 @@ class ImporterProductSupplier(ImporterModel):
 
                 record.importer_price(price)
 
-                lines_to_save.append(price)
+                lines_to_save.append((price, record))
 
             product_supplier_to_save[key] = product_supplier
 
+        setup.current_record = None
         cls.importer_save(templates_to_save)
 
         to_save = list(product_supplier_to_save.values())

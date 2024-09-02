@@ -83,7 +83,9 @@ class ImporterStockMove(ImporterModel):
                 move.currency = cache.currencies.get(record.currency)
             if Lot:
                 move.lot = cache.lots.get((record.lot, record.product_code))
-            to_save.append(move)
+            to_save.append((move, record))
+
+        setup.current_record = None
         cls.importer_save(to_save)
         return to_save
 
