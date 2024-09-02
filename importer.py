@@ -720,7 +720,8 @@ class Importer(ModelSQL, ModelView):
         setup.fields = [x.field.name for x in self.columns if x.name or
             x.value]
         setup.cache = SimpleNamespace()
-        with Transaction().set_context(importer_setup=setup, _no_trigger=True):
+        with Transaction().set_context(importer_setup=setup, _no_trigger=True,
+                _skip_warnings=True):
             Model.importer_start()
             if not self.requires_records:
                 return Model.importer_import(fields, [])
