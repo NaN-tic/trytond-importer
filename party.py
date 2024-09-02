@@ -61,14 +61,18 @@ class ImporterParty(ImporterModel):
 
     @classmethod
     def importer_start(cls):
+        pool = Pool()
+        Type = pool.get('party.address.subdivision_type')
+
         super().importer_start()
+
         cache = Setup.get().cache
         cache.parties = Cache('party.party', 'code', required=False)
         cache.companies = Cache('company.company', key=lambda x: x.party.name)
         cache.banks = Cache('bank', key=lambda x: x.bank_code.zfill(4))
         cache.bank_accounts = Cache('bank.account.number', 'number_compact')
         cache.payment_terms = Cache('account.invoice.payment_term', 'name')
-        cache.payment_types = Cache('account.payment.type', 'name')
+        cache.payment_types = Cache('account.payment.type', key=lambda x: (x.name.lower(), x.kind))
         cache.relations = Cache('party.relation.type', 'name')
         cache.tax_rules = Cache('account.tax.rule', 'name')
         cache.agents = Cache('commission.agent', key=lambda x: (x.party.code
@@ -78,8 +82,15 @@ class ImporterParty(ImporterModel):
         cache.inco_terms = Cache('incoterm', 'code')
         cache.languages = Cache('ir.lang', 'code')
         cache.categories = Cache('party.category', 'name')
-        cache.countries = Cache('country.country', 'code')
-        cache.subdivisions = Cache('country.subdivision', 'name', unaccent=True)
+        cache.countries = Cache('country.country', 'code', unaccent=True)
+        cache.subdivisions = {}
+        for country in cache.countries.values():
+            types = Type.get_types(country)
+            cache.subdivisions[country] = Cache('country.subdivision', 'name', domain=[
+                ('country', '=', country.id),
+                ('type', 'in', types),
+                ], unaccent=True)
+        cache.postal_codes = Cache('country.subdivision', 'code')
 
     def importer_context(self):
         res = super().importer_context()
@@ -165,31 +176,34 @@ class ImporterParty(ImporterModel):
             address.postal_code = record.postal_code
             address.city = record.city
             country = cache.countries.get(record.country)
+            if not country:
+                country = cache.countries.get('ES')
             address.country = country
             if hasattr(Address, 'delivery'):
                 address.delivery = record.delivery_address
             if hasattr(Address, 'invoice'):
                 address.invoice = record.invoice_address
-            subdivision = cache.subdivisions.get(record.subdivision)
-            if subdivision:
-                if country:
-                    if subdivision in country.subdivisions:
-                        address.subdivision = subdivision
-                    else:
-                        setup.error(gettext('importer.subdivision_not_found',
-                                subdivision=subdivision.name,
-                                country=country.name), record)
+
+            subdivision_error = None
+            cs = cache.subdivisions.get(country)
+
+            if cs and record.subdivision:
+                if record.subdivision in cs:
+                    address.subdivision = cs.get(record.subdivision)
                 else:
-                    address.subdivision = subdivision
-                    address.country = subdivision.country
-                if (getattr(address, 'subdivision', None)
-                        and address.subdivision_types
-                        and address.subdivision.type not in
-                        address.subdivision_types):
-                    setup.error(gettext('importer.subdivision_type_not_allowed',
-                            subdivision=subdivision.name,
-                            type=address.subdivision.type), record)
-                    address.subdivision = None
+                    subdivision_error = gettext('importer.msg_subdivision_not_found',
+                        subdivision=record.subdivision,
+                        country=country.name)
+
+            if (not getattr(address, 'subdivision', None)
+                    and country and country.code == 'ES'
+                    and record.postal_code):
+                code = cache.postal_codes.get(record.postal_code)
+                if code:
+                    address.subdivision = code.subdivision
+
+            if not getattr(address, 'subdivision', None) and subdivision_error:
+                setup.error(subdivision_error, record)
 
             addresses.append(address)
             if 'language' in setup.fields:
@@ -204,28 +218,28 @@ class ImporterParty(ImporterModel):
                 shipment_address.city = record.shipment_city
                 country = cache.countries.get(record.shipment_country)
                 shipment_address.country = country
-                subdivision = cache.subdivisions.get(record.shipment_subdivision)
-                if subdivision:
-                    if country:
-                        if subdivision in country.subdivisions:
-                            shipment_address.subdivision = subdivision
-                        else:
-                            setup.error(gettext('importer.subdivision_not_found',
-                                    subdivision=subdivision.name,
-                                    country=country.name),
-                                record)
+
+
+                subdivision_error = None
+                cs = cache.subdivisions.get(country)
+                if cs and record.shipment_subdivision:
+                    if record.subdivision in cs:
+                        shipment_address.subdivision = cs.get(record.subdivision)
                     else:
-                        shipment_address.subdivision = subdivision
-                        shipment_address.country = subdivision.country
-                    if (getattr(shipment_address, 'subdivision', None)
-                            and shipment_address.subdivision_types
-                            and shipment_address.subdivision.type not in
-                            shipment_address.subdivision_types):
-                        setup.error(gettext('importer.subdivision_type_not_allowed',
-                                subdivision=subdivision.name,
-                                type=subdivision.type),
-                            record)
-                        shipment_address.subdivision = None
+                        subdivision_error = gettext('importer.msg_subdivision_not_found',
+                            subdivision=record.subdivision,
+                            country=country.name)
+
+                if (not getattr(shipment_address, 'subdivision', None)
+                        and country and country.code == 'ES'
+                        and record.postal_code):
+                    code = cache.postal_codes.get(record.postal_code)
+                    if code:
+                        shipment_address.subdivision = code.subdivision
+
+                if not getattr(shipment_address, 'subdivision', None) and subdivision_error:
+                    setup.error(subdivision_error, record)
+
                 addresses.append(shipment_address)
 
             party.addresses = addresses
@@ -285,8 +299,11 @@ class ImporterParty(ImporterModel):
 
             customer_payment_type = None
             if record.customer_payment_type:
-                customer_payment_type = cache.payment_types.get(
-                        (record.customer_payment_type, 'receivable'))
+                key = (record.customer_payment_type.lower(), 'receivable')
+                if not key in cache.payment_types:
+                    key = (record.customer_payment_type.lower(), 'both')
+                customer_payment_type = cache.payment_types.get(key)
+
             if (record.customer_payment_type and
                     not customer_payment_type):
                 customer_payment_type = PaymentType(
@@ -302,12 +319,14 @@ class ImporterParty(ImporterModel):
 
             supplier_payment_type = None
             if record.supplier_payment_type:
-                supplier_payment_type = cache.payment_types.get(
-                        (record.supplier_payment_type, 'payable'))
+                key = (record.supplier_payment_type.lower(), 'payable')
+                if not key in cache.payment_types:
+                    key = (record.supplier_payment_type.lower(), 'both')
+                supplier_payment_type = cache.payment_types.get(key)
             if (record.supplier_payment_type
                     and not supplier_payment_type):
                 supplier_payment_type = PaymentType(
-                        name=record.supplier_payment_type)
+                    name=record.supplier_payment_type)
                 supplier_payment_type.kind = 'payable'
                 supplier_payment_type.account_bank = 'none'
                 supplier_payment_type.save()
@@ -461,7 +480,8 @@ class ImporterParty(ImporterModel):
         cache.current_record = None
         cls.importer_save(categories_to_save)
         cls.importer_save(to_save)
-        cls.importer_save(notes_to_save)
+        # If party has not been saved, do not try to save its notes
+        cls.importer_save([x for x in notes_to_save if x[0].resource.id])
 
         if 'payable_bank_account' in setup.fields:
             # These fields must be set after party has been saved as only
