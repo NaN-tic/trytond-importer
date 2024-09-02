@@ -56,6 +56,7 @@ def register():
     Pool.register(
         importer.AskAndImport,
         importer.Import,
+        importer.ImportSample,
         module='importer', type_='wizard')
     Pool.register(
         importer.ExcelTemplate,

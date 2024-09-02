@@ -309,6 +309,12 @@ class Importer(ModelSQL, ModelView):
                 'invisible': ~Eval('data_source_visible'),
                 })
     errors = fields.One2Many('importer.error', 'importer', 'Errors')
+    sample_size = fields.Integer('Sample Size', help="Number of records to "
+        "import with the sample button.")
+
+    @staticmethod
+    def default_sample_size():
+        return 100
 
     @classmethod
     def __setup__(cls):
@@ -323,6 +329,10 @@ class Importer(ModelSQL, ModelView):
                     'invisible': ~Bool(Eval('data_source')),
                     },
                 'import_': {
+                    'icon': 'importer-upload',
+                    'invisible': ~Bool(Eval('data_source')),
+                    },
+                'import_sample': {
                     'icon': 'importer-upload',
                     'invisible': ~Bool(Eval('data_source')),
                     },
@@ -681,6 +691,11 @@ class Importer(ModelSQL, ModelView):
     def import_(cls, importers):
         pass
 
+    @classmethod
+    @ModelView.button_action('importer.act_import_wizard')
+    def import_sample(cls, importers):
+        pass
+
     def old_data_to_records(self, data=None):
         # Records will be an iterator
         method = getattr(self, 'import_' + self.method)
@@ -695,7 +710,7 @@ class Importer(ModelSQL, ModelView):
             new_records = method()
         return new_records
 
-    def data_to_records(self, data=None):
+    def data_to_records(self, data=None, sample=None):
         pool = Pool()
         Model = pool.get(self.model.model)
         Error = pool.get('importer.error')
@@ -751,6 +766,8 @@ class Importer(ModelSQL, ModelView):
                     limit = LIMIT
                 subrecords.append(record)
                 previous_context = context
+                if sample and len(subrecords) >= sample:
+                    break
 
             if subrecords:
                 with Transaction().set_context(previous_context):
@@ -1254,6 +1271,33 @@ class Import(Wizard):
     def do_import_(self, action):
         # TODO: Support importing several importers at once
         records = self.record.data_to_records()
+        if not records:
+            raise UserError(gettext('importer.no_records_imported',
+                importer=self.record.rec_name))
+
+        models = {}
+        for record in records:
+            models.setdefault(record.__name__, []).append(record)
+
+        for model, records in models.items():
+            action['res_model'] = model
+            action['pyson_domain'] = PYSONEncoder().encode(
+                [('id', 'in', [x.id for x in records])],
+                )
+        return action, {}
+
+    def transition_import_(self):
+        return 'end'
+
+
+class ImportSample(Wizard):
+    'Import Sample'
+    __name__ = 'importer.import_sample'
+    start_state = 'import_'
+    import_ = StateAction('importer.act_import_open')
+
+    def do_import_(self, action):
+        records = self.record.data_to_records(sample=self.record.sample_size)
         if not records:
             raise UserError(gettext('importer.no_records_imported',
                 importer=self.record.rec_name))
