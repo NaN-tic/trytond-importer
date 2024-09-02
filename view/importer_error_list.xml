@@ -1,7 +1,7 @@
 <tree>
     <field name="importer"/>
     <field name="type"/>
-    <field name="message" expand="1"/>
+    <field name="message" expand="2"/>
     <field name="on_error"/>
     <field name="row_number"/>
     <field name="record" optional="1" expand="2"/>
