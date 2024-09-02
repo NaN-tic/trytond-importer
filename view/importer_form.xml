@@ -54,14 +54,16 @@
         <page name="text_data">
             <field name="text_data" height="500" colspan="4"/>
         </page>
-        <page name="errors" col="6">
+        <page name="errors" col="8">
             <label name="on_error"/>
             <field name="on_error"/>
             <label name="sample_size"/>
             <field name="sample_size"/>
+            <label name="elapsed"/>
+            <field name="elapsed"/>
             <button name="import_sample"/>
             <button name="clean_errors"/>
-            <field name="errors" height="500" colspan="6"/>
+            <field name="errors" height="500" colspan="8"/>
         </page>
     </notebook>
 </form>
