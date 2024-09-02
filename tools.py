@@ -1,6 +1,8 @@
 import base64
 import logging
-import unidecode
+from unidecode import unidecode
+import textdistance
+import psycopg2
 from types import SimpleNamespace
 from trytond.pool import Pool
 from trytond.model import fields, ModelView
@@ -13,6 +15,27 @@ logger = logging.getLogger(__name__)
 
 class UserKeyError(UserError):
     pass
+
+
+def nearest_text(text, texts):
+    if len(text) == 1:
+        return
+    minimal = 10000
+    best = None
+    text = unidecode(text)
+    text = text.lower()
+    for t in texts:
+        if text in t:
+            minimal = 0
+            best = t
+            continue
+        t = unidecode(t)
+        t = t.lower()
+        d = textdistance.levenshtein(text, t)
+        if d < minimal:
+            minimal = d
+            best = t
+    return best
 
 
 def record_to_str(record, fields=None):
@@ -184,12 +207,17 @@ class Cache:
             if not self.case_sensitive:
                 value = value.lower()
             if self.unaccent:
-                value = unidecode.unidecode(value)
+                value = unidecode(value)
+        elif isinstance(value, (tuple, list)):
+            nvalue = []
+            for v in value:
+                v = self.treat(v)
+                nvalue.append(v)
+            value = tuple(nvalue)
         return value
 
     def get(self, key):
-        if self._values is None:
-            self.load()
+        self.ensure_loaded()
         key = self.treat(key)
         try:
             values = self._values[key]
@@ -205,8 +233,7 @@ class Cache:
         return values[0]
 
     def __getitem__(self, key):
-        if self._values is None:
-            self.load()
+        self.ensure_loaded()
         key = self.treat(key)
         try:
             values = self._values[key]
@@ -220,20 +247,17 @@ class Cache:
         return values[0]
 
     def __setitem__(self, key, value):
-        if self._values is None:
-            self.load()
+        self.ensure_loaded()
         key = self.treat(key)
         self._values[key] = [value]
 
     def __contains__(self, key):
-        if self._values is None:
-            self.load()
+        self.ensure_loaded()
         key = self.treat(key)
         return key in self._values
 
     def add(self, record):
-        if self._values is None:
-            self.load()
+        self.ensure_loaded()
         for key in self._keys:
             kv = key(record)
             if kv in self._values:
