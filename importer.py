@@ -7,6 +7,7 @@ import pytz
 import urllib.request
 import decimal
 import tempfile
+import time
 import logging
 from types import SimpleNamespace
 from decimal import Decimal
@@ -311,6 +312,7 @@ class Importer(ModelSQL, ModelView):
     errors = fields.One2Many('importer.error', 'importer', 'Errors')
     sample_size = fields.Integer('Sample Size', help="Number of records to "
         "import with the sample button.")
+    elapsed = fields.TimeDelta('Elapsed Time', readonly=True)
 
     @staticmethod
     def default_sample_size():
@@ -715,8 +717,12 @@ class Importer(ModelSQL, ModelView):
         Model = pool.get(self.model.model)
         Error = pool.get('importer.error')
 
+        start = time.time()
         if not hasattr(Model, 'importer_start'):
-            return self.old_data_to_records(data)
+            res = self.old_data_to_records(data)
+            self.elapsed = datetime.timedelta(seconds=time.time() - start)
+            self.save()
+            return res
 
         setup = tools.Setup()
         setup.method = self.method
@@ -798,6 +804,8 @@ class Importer(ModelSQL, ModelView):
                 to_save.insert(0, error)
             Error.save(to_save)
 
+        self.elapsed = datetime.timedelta(seconds=time.time() - start)
+        self.save()
         return new_records
 
     def get_records(self, raise_errors=True, data=None):

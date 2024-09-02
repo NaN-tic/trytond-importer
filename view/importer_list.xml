@@ -4,4 +4,5 @@
     <field name="template"/>
     <field name="has_header"/>
     <field name="use_header"/>
+    <field name="elapsed" sum="1" optional="1"/>
 </tree>
