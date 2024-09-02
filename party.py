@@ -142,7 +142,7 @@ class ImporterParty(ImporterModel):
                 party.code = record.code
                 cache.parties[record.code] = party
 
-            to_save.append(party)
+            to_save.append((party, record))
 
             if 'name' in setup.fields:
                 party.name = record.name
@@ -347,7 +347,7 @@ class ImporterParty(ImporterModel):
                     if not category and cat:
                         category = PartyCategory()
                         category.name = cat
-                        categories_to_save.append(category)
+                        categories_to_save.append((category, record))
                     if category:
                         cats += [category]
                         cache.categories[cat] = category
@@ -454,10 +454,11 @@ class ImporterParty(ImporterModel):
                 note = Note()
                 note.resource = party
                 note.message = record.note
-                notes_to_save.append(note)
+                notes_to_save.append((note, record))
 
             cls.importer_party(record, party)
 
+        cache.current_record = None
         cls.importer_save(categories_to_save)
         cls.importer_save(to_save)
         cls.importer_save(notes_to_save)
@@ -479,7 +480,7 @@ class ImporterParty(ImporterModel):
                 relation.from_ = new_parties.get(code)
                 rel_save.append(relation)
             cls.importer_save(rel_save)
-        return to_save
+        return [x[0] for x in to_save]
 
 
 class ImporterPartyInvoiceDepends(metaclass=PoolMeta):

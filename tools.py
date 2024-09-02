@@ -88,25 +88,27 @@ class ImporterModel(ModelView):
     def importer_save(cls, records):
         if not records:
             return
+
         cursor = Transaction().connection.cursor()
         setup = Setup.get()
-        Model = records[0].__class__
+        Model = records[0][0].__class__
         blocks = [records]
         while blocks:
             records = blocks.pop(0)
             cursor.execute('SAVEPOINT importer_save')
             try:
-                Model.save(records)
+                Model.save([x[0] for x in records])
                 cursor.execute('RELEASE SAVEPOINT importer_save')
             except (RequiredValidationError, SQLConstraintError):
                 raise
-            except UserError as e:
+            except (UserError, psycopg2.errors.InvalidTextRepresentation) as e:
                 cursor.execute('ROLLBACK TO SAVEPOINT importer_save')
                 if len(records) == 1:
-                    setup.error(e.message, records[0])
+                    setup.error(Model.__name__ + ': ' + getattr(e, 'message',
+                            str(e)), records[0][1])
                     continue
                 logger.warning('Error saving a block of %d of %s records (%s). '
-                    'Will split and retry.', len(records), Model.__class__, e)
+                    'Will split and retry.', len(records), Model.__name__, e)
                 # TODO: Use itertools.batched from Python 3.12
                 # for records in itertools.batched(records, len(records) // 10):
                 #     blocks.insert(0, records)
@@ -244,10 +246,14 @@ class Cache:
             self._values.setdefault(kv, []).append(record)
 
     def keys(self):
+        self.ensure_loaded()
         return self._values.keys()
 
     def values(self):
-        return self._values.values()
+        self.ensure_loaded()
+        if self.duplicates == 'all':
+            return self._values.values()
+        return [x[0] for x in self._values.values()]
 
     def ensure_loaded(self):
         if self._values is None:
