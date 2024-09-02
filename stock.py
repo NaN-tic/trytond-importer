@@ -87,8 +87,7 @@ class ImporterStockMove(ImporterModel):
 
         setup.current_record = None
         cls.importer_save(to_save)
-        return to_save
-
+        return [x[0] for x in to_save]
 
 
 class ImporterLocation(ModelView):
