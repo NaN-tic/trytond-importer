@@ -113,6 +113,16 @@
             <field name="group" ref="group_importer"/>
         </record>
 
+        <record model="ir.model.button" id="importer_import_sample_button">
+            <field name="name">import_sample</field>
+            <field name="string">Import Sample</field>
+            <field name="model">importer</field>
+        </record>
+        <record model="ir.model.button-res.group" id="importer_import_sample_button_group_importer">
+            <field name="button" ref="importer_import_sample_button"/>
+            <field name="group" ref="group_importer"/>
+        </record>
+
         <record model="ir.ui.view" id="importer_column_view_form">
             <field name="model">importer.column</field>
             <field name="type">form</field>
@@ -235,6 +245,11 @@
 	    <field name="order" eval="[('id', 'ASC')]" pyson="1"/>
         </record>
         <menuitem parent="menu_importer" action="act_ask_and_import_wizard" id="menu_import_wizard" sequence="30"/>
+
+        <record model="ir.action.wizard" id="act_import_sample_wizard">
+            <field name="name">Import Sample</field>
+            <field name="wiz_name">importer.import.sample</field>
+        </record>
 
         <record model="ir.action.report" id="report_excel_template">
             <field name="name">Excel Template</field>
