@@ -34,7 +34,7 @@ class ImporterStockMove(ImporterModel):
         cache.locations = Cache('stock.location', 'name')
         cache.products = Cache('product.product', 'code')
         cache.currencies = Cache('currency.currency', 'code')
-        cache.lots = Cache('stock.lot', ['number', lambda x: x.product.code])
+        cache.lots = Cache('stock.lot', lambda x: (x.number, x.product.code))
         # Cache Product UOMs to prevent cache trashin of if we try to use
         # the value from cache.products
         cache.uoms = {x.id: x.default_uom for x in Product.search([])}
@@ -87,6 +87,9 @@ class ImporterStockMove(ImporterModel):
 
         setup.current_record = None
         cls.importer_save(to_save)
+
+        if setup.method == 'stock_move_and_do':
+            Move.do([x[0] for x in to_save])
         return [x[0] for x in to_save]
 
 
