@@ -1292,7 +1292,7 @@ class ImportSample(Wizard):
     import_ = StateAction('importer.act_import_open')
 
     def do_import_(self, action):
-        records = self.record.data_to_records(sample=self.record.sample_size)
+        records = self.record.data_to_records(sample=self.record.sample_size or 100)
         if not records:
             raise UserError(gettext('importer.no_records_imported',
                 importer=self.record.rec_name))
