@@ -223,7 +223,7 @@
 
         <record model="ir.action.wizard" id="act_import_sample_wizard">
             <field name="name">Import Sample</field>
-            <field name="wiz_name">importer.import.sample</field>
+            <field name="wiz_name">importer.import_sample</field>
         </record>
 
         <record model="ir.action.report" id="report_excel_template">

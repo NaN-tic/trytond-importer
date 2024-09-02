@@ -692,7 +692,7 @@ class Importer(ModelSQL, ModelView):
         pass
 
     @classmethod
-    @ModelView.button_action('importer.act_import_wizard')
+    @ModelView.button_action('importer.act_import_sample_wizard')
     def import_sample(cls, importers):
         pass
 
