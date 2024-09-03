@@ -106,18 +106,12 @@ class ImporterProductSupplier(ImporterModel):
             if record.product_code:
                 product = cache.products.get(record.product_code)
                 if not product:
-                    record.importer_error('Product '
-                        '%(product_code)s not found',
-                        product_code=record.product_code)
                     continue
                 template = product.template
             elif record.template_code:
                 product = None
                 template = cache.templates.get(record.template_code)
                 if not template:
-                    record.importer_error('Template '
-                        '%(template_code)s not found',
-                        template_code=record.template_code)
                     continue
             else:
                 record.importer_error(
