@@ -15,6 +15,7 @@
     <field name="data_source"/>
     <group id="buttons" col="-1" colspan="4">
         <button name="update_columns"/>
+        <button name="update_source_columns"/>
         <button name="detect"/>
         <button name="import_"/>
         <button name="check_connection"/>
