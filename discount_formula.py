@@ -28,7 +28,7 @@ class ImporterProductSupplier(metaclass=PoolMeta):
         if self.discount_formula:
             price.discount_formula = self.discount_formula
             price.on_change_discount_formula()
-        if self.unit_price is None:
+        if price.unit_price is None:
             # If on_change_discount_formula set unit_price to None
             # reset it as it is required
             price.unit_price = round_price(self.unit_price)
