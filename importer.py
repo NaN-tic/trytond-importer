@@ -250,7 +250,8 @@ class Importer(ModelSQL, ModelView):
     has_header = fields.Boolean('Has Header?')
     use_header = fields.Boolean('Use Header?', states={
             'invisible': ~Eval('has_header'),
-            })
+            }, help='If checked, the names of the columns will be used for '
+            'the mapping. Otherwise, the number of the column will be used.')
     data_source = fields.Selection(
         [(None, ''), ] + data_sources, 'Data Source', states={
             'invisible': ~Eval('data_source_visible'),
@@ -326,6 +327,9 @@ class Importer(ModelSQL, ModelView):
                 'update_columns': {
                     'icon': 'tryton-refresh',
                     },
+                'update_source_columns': {
+                    'icon': 'tryton-refresh',
+                    },
                 'detect': {
                     'icon': 'importer-detect',
                     'invisible': ~Bool(Eval('data_source')),
@@ -348,9 +352,17 @@ class Importer(ModelSQL, ModelView):
                     },
                 })
 
-    @classmethod
+    @staticmethod
     def default_on_error(cls):
         return 'skip'
+
+    @staticmethod
+    def default_has_header():
+        return True
+
+    @staticmethod
+    def default_use_header():
+        return True
 
     @fields.depends('method')
     def on_change_method(self):
@@ -519,12 +531,13 @@ class Importer(ModelSQL, ModelView):
 
     @classmethod
     @ModelView.button
-    def detect(cls, importers, distance_threshold=None):
+    def update_source_columns(cls, importers):
         pool = Pool()
         Column = pool.get('importer.column')
         SourceColumn = pool.get('importer.source_column')
 
         columns = []
+        to_detect = []
         for importer in importers:
             conn = importer.get_connection()
             sql = importer.get_sql()
@@ -532,20 +545,46 @@ class Importer(ModelSQL, ModelView):
             data = Data(importer.data_source, importer.binary_data,
                 importer.text_data, importer.url_data, conn, sql)
             data.load()
-            header_reliable = data.header_reliable
-            use_header = data.has_header
-            if data.rows and (data.has_header or not header_reliable):
-                use_header = importer.detect_header(data.rows[0], distance_threshold)
-                columns += importer.columns
-                importer.generate_source_columns(data.rows[0])
-                importer.fill_source_columns()
-                SourceColumn.update_examples(importer.source_columns)
-
-            importer.has_header = use_header
-            importer.use_header = use_header
+            if not data.rows:
+                continue
+            if data.has_header and data.header_reliable:
+                importer.has_header = True
+                importer.use_header = True
+            row = data.rows[0]
+            columns += importer.columns
+            if not importer.source_columns:
+                to_detect.append(importer)
+            importer.generate_source_columns(row)
+            SourceColumn.update_examples(importer.source_columns)
 
         cls.save(importers)
         Column.save(columns)
+        if to_detect:
+            cls.detect(to_detect)
+
+    @classmethod
+    @ModelView.button
+    def detect(cls, importers, distance_threshold=None):
+        pool = Pool()
+        Column = pool.get('importer.column')
+        SourceColumn = pool.get('importer.source_column')
+
+        columns = []
+        source_columns = []
+        for importer in importers:
+            if not importer.has_header or not importer.use_header:
+                continue
+            row = [x.name for x in importer.source_columns]
+            if not row:
+                continue
+            columns += importer.columns
+            importer.detect_header(row, distance_threshold)
+            importer.on_change_columns()
+            source_columns += importer.source_columns
+
+        cls.save(importers)
+        Column.save(columns)
+        SourceColumn.save(source_columns)
 
     def detect_header(self, row, distance_threshold):
         pool = Pool()
@@ -571,7 +610,6 @@ class Importer(ModelSQL, ModelView):
                 for field in Field.browse(field_ids):
                     strings[field].append(field.field_description)
 
-        use_header = False
         lev = textdistance.Levenshtein()
         for column in self.columns:
             row_minimum = (9, None)
@@ -586,21 +624,22 @@ class Importer(ModelSQL, ModelView):
                     row_minimum = (header_minimum, header)
             if row_minimum[0] <= distance_threshold:
                 column.name = row_minimum[1]
-                use_header = True
             else:
                 column.name = None
-        return use_header
 
     def generate_source_columns(self, row):
         pool = Pool()
-        ReverseColumn = pool.get('importer.source_column')
+        SourceColumn = pool.get('importer.source_column')
 
         self.source_columns = ()
-        for header in row:
-            header = str(header)
-            r_column = ReverseColumn()
+        for pos, field in enumerate(row):
+            field = str(field)
+            r_column = SourceColumn()
             r_column.importer = self.id
-            r_column.name = header
+            if self.has_header and self.use_header:
+                r_column.name = field
+            else:
+                r_column.name = str(pos + 1)
             r_column.field = None
             self.source_columns += (r_column,)
 

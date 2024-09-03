@@ -1,4 +1,3 @@
-from decimal import Decimal
 from trytond.model import fields
 from trytond.pool import PoolMeta
 from trytond.modules.product import round_price
