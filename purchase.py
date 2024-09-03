@@ -93,12 +93,14 @@ class ImporterProductSupplier(ImporterModel):
         templates_to_save = []
         for record in records:
             setup.current_record = record
+            party = None
             if record.party_code:
                 party = cache.parties_by_code.get(record.party_code)
             elif record.party_name:
                 party = cache.parties_by_name.get(record.party_name)
 
             if not party:
+                record.importer_error('Party not found')
                 continue
 
             if record.product_code:
