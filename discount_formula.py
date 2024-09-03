@@ -1,6 +1,7 @@
 from decimal import Decimal
 from trytond.model import fields
 from trytond.pool import PoolMeta
+from trytond.modules.product import round_price
 
 
 class ImporterSale(metaclass=PoolMeta):
@@ -23,14 +24,15 @@ class ImporterProductSupplier(metaclass=PoolMeta):
     def importer_price(self, price):
         super().importer_price(price)
 
-        if self.base_price is not None:
-            price.base_price = self.base_price.quantize(Decimal('0.0001'))
-        if self.discount_formula is not None:
+        if self.base_price:
+            price.base_price = round_price(self.base_price)
+        if self.discount_formula:
             price.discount_formula = self.discount_formula
             price.on_change_discount_formula()
-            if not price.unit_price:
-                # TODO: Fix this
-                price.unit_price = Decimal(0)
+        if self.unit_price is None:
+            # If on_change_discount_formula set unit_price to None
+            # reset it as it is required
+            price.unit_price = round_price(self.unit_price)
 
 
 class Importer(metaclass=PoolMeta):
