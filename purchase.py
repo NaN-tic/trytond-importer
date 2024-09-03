@@ -169,9 +169,8 @@ class ImporterProductSupplier(ImporterModel):
                     values = Price.default_get(
                         list(Price._fields.keys()), with_rec_name=False)
                     price = Price(**values)
-                    if product_supplier.id is None:
-                        product_supplier.save()
                     price.product_supplier = product_supplier
+
                 price.quantity = record.quantity or 0
                 price.unit_price = round_price(record.unit_price)
 
