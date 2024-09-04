@@ -782,7 +782,6 @@ class Importer(ModelSQL, ModelView):
             new_records = []
             count = 0
             for record in self.get_records(data=data):
-                count += 1
                 # We do not sort based on context so there can be performance issues
                 # if the context changes often
                 context = record.importer_context()
@@ -810,6 +809,7 @@ class Importer(ModelSQL, ModelView):
                     call = False
                     soft_limit = SOFT_LIMIT
                     limit = LIMIT
+                count += 1
                 subrecords.append(record)
                 previous_context = context
                 if sample and count >= sample:
