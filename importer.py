@@ -781,7 +781,9 @@ class Importer(ModelSQL, ModelView):
             call = False
             subrecords = []
             new_records = []
+            count = 0
             for record in self.get_records(data=data):
+                count += 1
                 # We do not sort based on context so there can be performance issues
                 # if the context changes often
                 context = record.importer_context()
@@ -799,9 +801,11 @@ class Importer(ModelSQL, ModelView):
 
                 if call:
                     with Transaction().set_context(previous_context):
-                        new_records += Model.importer_import(subrecords)
-                    logger.info('Processed %d new records. Total imported: %d.',
-                        len(subrecords), len(new_records))
+                        batch = Model.importer_import(subrecords)
+                    new_records += batch
+                    logger.info('New batch (imported/processed): %d/%d. '
+                        'Total (imported/processed): %d/%d.', len(batch),
+                        len(subrecords), len(new_records), count)
                     subrecords = []
                     call = False
                     soft_limit = SOFT_LIMIT
@@ -813,9 +817,11 @@ class Importer(ModelSQL, ModelView):
 
             if subrecords:
                 with Transaction().set_context(previous_context):
-                    new_records += Model.importer_import(subrecords)
-                    logger.info('Processed %d new records. Total imported: %d.',
-                        len(subrecords), len(new_records))
+                    batch = Model.importer_import(subrecords)
+                new_records += batch
+                logger.info('New batch (imported/processed): %d/%d. '
+                    'Total (imported/processed): %d/%d.', len(batch),
+                    len(subrecords), len(new_records), count)
 
         if self.errors:
             Error.delete(self.errors)
