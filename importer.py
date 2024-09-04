@@ -816,7 +816,7 @@ class Importer(ModelSQL, ModelView):
                     limit = LIMIT
                 subrecords.append(record)
                 previous_context = context
-                if sample and len(subrecords) >= sample:
+                if sample and count >= sample:
                     break
 
             if subrecords:
