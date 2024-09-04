@@ -788,7 +788,7 @@ class Importer(ModelSQL, ModelView):
                 # if the context changes often
                 context = record.importer_context()
                 header = record.importer_header()
-                if header:
+                if header is not None:
                     if any(header) and header != previous_header:
                         previous_header = header
                         if (len(subrecords) >= soft_limit
