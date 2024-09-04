@@ -6,7 +6,6 @@ import psycopg2
 from types import SimpleNamespace
 from trytond.pool import Pool
 from trytond.model import fields, ModelView
-from trytond.model.modelsql import RequiredValidationError, SQLConstraintError
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError
 
