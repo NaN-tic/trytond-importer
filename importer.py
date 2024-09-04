@@ -778,7 +778,6 @@ class Importer(ModelSQL, ModelView):
             limit = LIMIT // 10
             previous_context = {}
             previous_header = None
-            call = False
             subrecords = []
             new_records = []
             count = 0
@@ -788,6 +787,7 @@ class Importer(ModelSQL, ModelView):
                 # if the context changes often
                 context = record.importer_context()
                 header = record.importer_header()
+                call = False
                 if header is not None:
                     if any(header) and header != previous_header:
                         previous_header = header
