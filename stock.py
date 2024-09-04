@@ -1,8 +1,6 @@
 from trytond.model import ModelView, fields
 from trytond.transaction import Transaction
 from trytond.pool import PoolMeta, Pool
-from trytond.exceptions import UserError
-from trytond.i18n import gettext
 from .tools import ImporterModel, Cache, Setup
 
 
