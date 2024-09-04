@@ -122,8 +122,6 @@ class ImporterModel(ModelView):
             try:
                 Model.save([x[0] for x in records])
                 cursor.execute('RELEASE SAVEPOINT importer_save')
-            except (RequiredValidationError, SQLConstraintError):
-                raise
             except (UserError, psycopg2.errors.InvalidTextRepresentation) as e:
                 cursor.execute('ROLLBACK TO SAVEPOINT importer_save')
                 if len(records) == 1:
