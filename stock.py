@@ -62,10 +62,11 @@ class ImporterStockMove(ImporterModel):
                 continue
             if (not from_location or not to_location or not product
                     or not record.quantity):
-                raise UserError(gettext('importer.stock_move_error',
+                record.importer_error('importer.stock_move_error',
                     from_location=record.from_location,
                     to_location=record.to_location,
-                    product=record.product_code))
+                    product=record.product_code)
+                continue
 
             move = Move()
             move.from_location = from_location
