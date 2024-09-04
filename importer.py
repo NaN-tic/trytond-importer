@@ -353,7 +353,7 @@ class Importer(ModelSQL, ModelView):
                 })
 
     @staticmethod
-    def default_on_error(cls):
+    def default_on_error():
         return 'skip'
 
     @staticmethod
