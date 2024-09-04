@@ -898,6 +898,8 @@ class Importer(ModelSQL, ModelView):
                                     importer=self.rec_name))
                         else:
                             value = None
+                    if value is None and column.value:
+                        value = column.cast_value(column.value)
                 try:
                     setattr(record, column.field.name, value)
                 except TypeError:
@@ -969,12 +971,9 @@ class ImporterColumn(ModelSQL, ModelView):
             ('model_ref', '=',
                 Eval('_parent_importer', Eval('context', {})).get('model', -1))
         ])
-    name = fields.Char('Column Name', states={
-            'invisible': Bool(Eval('value')),
-            })
-    value = fields.Char('Value', states={
-            'invisible': Bool(Eval('name')),
-            }, help="Value to be used if no column is specified")
+    name = fields.Char('Column Name')
+    value = fields.Char('Value', help="Value to be used if no column is "
+        "specified or the value found is None.")
     format = fields.Selection('_get_formats', 'Format')
     examples = fields.Function(fields.Char('Examples'),
         'get_examples')
