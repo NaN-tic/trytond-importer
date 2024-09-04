@@ -119,8 +119,10 @@ class ImporterModel(ModelView):
             records = blocks.pop(0)
             cursor.execute('SAVEPOINT importer_save')
             try:
+                logger.info('Saving %d records of %s', len(records), Model.__name__)
                 Model.save([x[0] for x in records])
                 cursor.execute('RELEASE SAVEPOINT importer_save')
+                logger.info('Saved.')
             except (UserError, psycopg2.errors.InvalidTextRepresentation) as e:
                 cursor.execute('ROLLBACK TO SAVEPOINT importer_save')
                 if len(records) == 1:
