@@ -56,14 +56,8 @@ class ImporterStockMove(ImporterModel):
             to_location = cache.locations.get(record.to_location)
             product = cache.products.get(record.product_code)
 
-            if not product:
-                continue
-            if (not from_location or not to_location or not product
-                    or not record.quantity):
-                record.importer_error('importer.stock_move_error',
-                    from_location=record.from_location,
-                    to_location=record.to_location,
-                    product=record.product_code)
+            if (not product or not record.quantity or not from_location
+                    or not to_location):
                 continue
 
             move = Move()
