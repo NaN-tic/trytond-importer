@@ -88,7 +88,7 @@ class ImporterModel(ModelView):
 
     @classmethod
     def importer_import(cls, records):
-        pass
+        raise NotImplementedError
 
     def importer_assign(self, record):
         cls = record.__class__
