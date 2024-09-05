@@ -41,10 +41,6 @@ class ImporterStockMove(ImporterModel):
     def importer_import(cls, records):
         pool = Pool()
         Move = pool.get('stock.move')
-        try:
-            Lot = pool.get('stock.lot')
-        except KeyError:
-            Lot = None
 
         setup = Setup.get()
         cache = setup.cache
@@ -52,6 +48,11 @@ class ImporterStockMove(ImporterModel):
         to_save = []
         for record in records:
             setup.current_record = record
+
+            if 'inverted' in setup.method:
+                record.from_location, record.to_location = (record.to_location,
+                    record.from_location)
+
             from_location = cache.locations.get(record.from_location)
             to_location = cache.locations.get(record.to_location)
             product = cache.products.get(record.product_code)
@@ -78,16 +79,16 @@ class ImporterStockMove(ImporterModel):
             move.unit = cache.uoms[product.id]
             move.effective_date = record.effective_date
             move.planned_date = record.planned_date
-            if 'currency' in setup.fields:
+            if 'currency' in setup.fields and record.currency:
                 move.currency = cache.currencies.get(record.currency)
-            if Lot:
+            if 'lot' in setup.fields and record.lot:
                 move.lot = cache.lots.get((record.lot, record.product_code))
             to_save.append((move, record))
 
         setup.current_record = None
         cls.importer_save(to_save)
 
-        if setup.method == 'stock_move_and_do':
+        if 'and_do' in setup.method:
             Move.do([x[0] for x in to_save])
         return [x[0] for x in to_save]
 
@@ -118,8 +119,18 @@ class Importer(metaclass=PoolMeta):
                     'model': 'importer.stock.move',
                     'chunked': True,
                     },
+                'stock_move_inverted': {
+                    'string': 'Stock Move (Inverted)',
+                    'model': 'importer.stock.move',
+                    'chunked': True,
+                    },
                 'stock_move_and_do': {
                     'string': 'Stock Move (and Do)',
+                    'model': 'importer.stock.move',
+                    'chunked': True,
+                    },
+                'stock_move_and_do_inverted': {
+                    'string': 'Stock Move (Inverted + Do)',
                     'model': 'importer.stock.move',
                     'chunked': True,
                     },
