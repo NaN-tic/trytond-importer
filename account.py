@@ -49,7 +49,7 @@ class ImporterAccountMove(ImporterModel):
         cache.account_party_codes = Chart.get_account_party_codes()
         cache.periods = {}
 
-    def importer_header(self):
+    def importer_header(self, importing=True):
         return (self.number, self.effective_date)
 
     def get_party_code(self):

@@ -34,7 +34,7 @@ class ImporterMeta(ImporterModel):
         cache = Setup.get().cache
         cache.importers = Cache('importer', 'name')
 
-    def importer_header(self):
+    def importer_header(self, importing=True):
         return (self.name,)
 
     @classmethod
