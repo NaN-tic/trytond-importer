@@ -785,7 +785,7 @@ class Importer(ModelSQL, ModelView):
                 # We do not sort based on context so there can be performance issues
                 # if the context changes often
                 context = record.importer_context()
-                header = record.importer_header()
+                header = record.importer_header(importing=False)
                 call = False
                 if header is not None:
                     if any(header) and header != previous_header:

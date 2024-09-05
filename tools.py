@@ -83,7 +83,7 @@ class ImporterModel(ModelView):
     def importer_context(self):
         return {}
 
-    def importer_header(self):
+    def importer_header(self, importing=True):
         pass
 
     @classmethod
