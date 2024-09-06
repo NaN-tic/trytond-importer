@@ -979,7 +979,7 @@ class Importer(ModelSQL, ModelView):
 
     def get_field_indexes(self, rows):
         indexes = {}
-        if self.use_header:
+        if self.has_header and self.use_header:
             header = rows[0]
             hi = {}
             for pos in range(len(header)):
