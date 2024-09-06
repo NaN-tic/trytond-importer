@@ -14,12 +14,6 @@ class ImporterProductSupplier(metaclass=PoolMeta):
     base_price = fields.Numeric('Base Price')
     discount_formula = fields.Char('Discount Formula')
 
-    def importer_product_supplier(self, supplier):
-        super().importer_product_supplier(supplier)
-        if self.unit_price is None:
-            if self.base_price is not None:
-                self.unit_price = self.base_price
-
     def importer_price(self, price):
         super().importer_price(price)
 
