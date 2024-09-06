@@ -1,14 +1,12 @@
 from datetime import datetime
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
-from trytond.exceptions import UserError
-from trytond.i18n import gettext
-from trytond.tools import grouped_slice
 from trytond.transaction import Transaction
 from trytond.modules.product import round_price
+from .tools import ImporterModel, Setup, Cache
 
 
-class ImporterSale(ModelView):
+class ImporterSale(ImporterModel):
     'Importer Sale'
     __name__ = 'importer.sale'
 
@@ -26,6 +24,199 @@ class ImporterSale(ModelView):
     invoice_method = fields.Char('Invoice Method')
     sale_number = fields.Char('Sale Number')
     state = fields.Char('State')
+
+    def import_sale_header(self, record):
+        return (self.sale_number, self.reference, self.date,
+            self.party_code, self.party_name, self.shipment_party_name,
+            self.shipment_address, self.currency)
+
+    def importer_sale(self, sale):
+        pass
+
+    def importer_sale_line(self, line):
+        pass
+
+    @classmethod
+    def importer_start(cls):
+        Product = Pool().get('product.product')
+
+        super().importer_start()
+
+        cache = Setup.get().cache
+        cache.currencies = Cache('currency.currency', ['name', 'symbol'])
+        cache.parties_by_code = Cache('party.party', 'code', context={
+                'active_test': False
+                })
+        cache.parties_by_code = Cache('party.party', 'code', context={
+                'active_test': False
+                })
+        cache.address = Cache('party.address', lambda x: (x.party.id, x.rec_name))
+        product_domain = []
+        if 'force' not in Setup.get().method and 'salable' in Product._fields:
+            product_domain.append(('salable', '=', True))
+        cache.products = Cache('product.product', 'code', context={
+                'active_test': False
+                }, domain=product_domain)
+
+    def importer_create_party(self):
+        Party = Pool().get('party.party')
+
+        values = Party.default_get(
+                list(Party._fields.keys()), with_rec_name=False)
+        party = Party(**values)
+        party.name = self.name or self.code
+        party.code = self.code
+        if 'customer' in Party._fields:
+            party.customer = True
+        return party
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        Sale = pool.get('sale.sale')
+        Line = pool.get('sale.line')
+        Product = pool.get('product.product')
+        Template = pool.get('product.template')
+
+        setup = Setup.get()
+        cache = setup.cache
+
+        force = False
+        if 'force' in setup.method:
+            force = True
+
+        sale = None
+        sales_to_save = []
+        lines_to_save = []
+        previous_header = None
+
+        to_quote = []
+        to_confirm = []
+        to_process = []
+
+        default_line_values = Line.default_get(
+            list(Line._fields.keys()), with_rec_name=False)
+
+        for record in records:
+            setup.current_record = record
+
+            header = record.importer_header()
+            if any(header) and header != previous_header:
+                previous_header = header
+                values = Sale.default_get(
+                    list(Sale._fields.keys()), with_rec_name=False)
+
+                if record.sale_number:
+                    domain = [('number', '=', record.sale_number)]
+                    if record.date:
+                        domain += [('sale_date', '=', record.date)]
+                    sales = Sale.search(domain, limit=1)
+                    if sales:
+                        sale = None
+                        continue
+
+                sale = Sale(**values)
+                sale.party = None
+                if record.shipment_method:
+                    sale.shipment_method = record.shipment_method
+                if record.invoice_method:
+                    sale.invoice_method = record.invoice_method
+                if record.sale_number:
+                    sale.number = record.sale_number
+                sale.reference = record.reference
+                if isinstance(record.date, datetime):
+                    sale.sale_date = record.date.date()
+                else:
+                    sale.sale_date = record.date
+
+                # sale workflow (states)
+                if record.state:
+                    if record.state in ('draft', 'cancelled', 'done'):
+                        sale.state = record.state
+                    elif record.state == 'quote':
+                        to_quote += [sale]
+                    elif record.state == 'confirm':
+                        to_confirm += [sale]
+                    elif record.state == 'process':
+                        to_process += [sale]
+
+                if record.currency:
+                    sale.currency = cache.currencies.get(record.currency)
+
+                party = None
+                if record.party_code:
+                    party = cache.parties_by_code.get(record.party_code)
+                elif record.party_name:
+                    party = cache.parties_by_name.get(record.party_name)
+
+                if not party:
+                    if not force:
+                        continue
+                    party = record.importer_create_party()
+
+                sale.party = party
+                sale.on_change_party()
+                sales_to_save.append((sale, record))
+
+                if record.shipment_party_name:
+                    sale.shipment_party = cache.parties_by_name.get(record.shipment_party_name)
+                    sale.on_change_shipment_party()
+
+                if record.shipment_address:
+                    values = [x.strip() for x in record.shipment_address.split(',')]
+                    addresses = []
+                    for address in (sale.shipment_party or sale.party).addresses:
+                        rec_name = address.rec_name
+                        if all([x in rec_name for x in values]):
+                            addresses.append(address)
+                    if len(addresses) == 1:
+                        sale.shipment_address, = addresses
+
+                record.importer_sale(sale)
+
+            if not sale or not sale.party:
+                continue
+
+            if record.product_code:
+                product = cache.products.get(record.product_code)
+                if not product:
+                    continue
+
+                template = product.template
+                if (force and 'salable' in Product._fields
+                        and not product.salable):
+                    template.salable = True
+                    template.save()
+
+                if (force and 'validated' in Template._fields
+                        and not template.validated):
+                    template.validated = True
+                    template.save()
+
+                line = Line(**default_line_values)
+                line.sale = sale
+                line.product = product
+                line.on_change_product()
+                line.quantity = record.quantity
+                line.on_change_quantity()
+                if 'product_package' in Line._fields:
+                    line.product_package = None
+                    line.package_quantity = None
+                if record.unit_price is not None:
+                    line.unit_price = round_price(record.unit_price)
+                record.importer_sale_line(line)
+                lines_to_save.append((line, record))
+
+        setup.current_record = None
+        cls.importer_save(sales_to_save)
+        cls.importer_save(lines_to_save)
+
+        to_confirm += to_process
+        to_quote += to_confirm
+        Sale.quote(to_quote)
+        Sale.confirm(to_confirm)
+        Sale.process(to_process)
+        return [x[0] for x in sales_to_save]
 
 
 class ImporterSaleConfiguration(ModelView):
@@ -66,205 +257,6 @@ class Importer(metaclass=PoolMeta):
                     },
                 })
         return methods
-
-    @classmethod
-    def import_sale_header(cls, record):
-        return (record.sale_number, record.reference, record.date,
-            record.party_code, record.party_name, record.shipment_party_name,
-            record.shipment_address, record.currency)
-
-    @classmethod
-    def import_sale_force(cls, records):
-        return cls.import_sale(records, force=True)
-
-    @classmethod
-    def _import_sale_hook(cls, record, sale):
-        pass
-
-    @classmethod
-    def _import_sale_line_hook(cls, record, line):
-        pass
-
-    @classmethod
-    def import_sale(cls, records, force=False):
-        pool = Pool()
-        Sale = pool.get('sale.sale')
-        Line = pool.get('sale.line')
-        Party = pool.get('party.party')
-        Product = pool.get('product.product')
-        Template = pool.get('product.template')
-        Address = pool.get('party.address')
-        Currency = pool.get('currency.currency')
-
-        currencies = {x.name: x for x in Currency.search([])}
-        currencies.update({x.symbol: x for x in Currency.search([])})
-
-        def create_party(name, code):
-            values = Party.default_get(
-                    list(Party._fields.keys()), with_rec_name=False)
-            party = Party(**values)
-            party.name = name or code
-            party.code = code
-            if 'customer' in party._fields:
-                party.customer = True
-            party.save()
-            return [party]
-
-        sale = None
-        sales_to_save = []
-        lines_to_save = []
-        previous_header = None
-
-        to_quote = []
-        to_confirm = []
-        to_process = []
-
-        for record in records:
-            header = cls.import_sale_header(record)
-            if any(header) and header != previous_header:
-                previous_header = header
-                values = Sale.default_get(
-                    list(Sale._fields.keys()), with_rec_name=False)
-
-                if record.sale_number:
-                    domain = [('number', '=', record.sale_number)]
-                    if record.date:
-                        domain += [('sale_date', '=', record.date)]
-                    sales = Sale.search(domain, limit=1)
-                    if sales:
-                        sale = None
-                        continue
-
-                sale = Sale(**values)
-                sale.party = None
-                if record.shipment_method:
-                    sale.shipment_method = record.shipment_method
-                if record.invoice_method:
-                    sale.invoice_method = record.invoice_method
-                if record.sale_number:
-                    sale.number = record.sale_number
-                sale.reference = record.reference
-                if isinstance(record.date, datetime):
-                    sale.sale_date = record.date.date()
-                else:
-                    sale.sale_date = record.date
-
-                # sale workflow (states)
-                if record.state:
-                    if record.state in ('draft', 'cancelled', 'done'):
-                        sale.state = record.state
-                    elif record.state == 'quote':
-                        to_quote += [sale]
-                    elif record.state == 'confirm':
-                        to_confirm += [sale]
-                    elif record.state == 'process':
-                        to_process += [sale]
-
-                if record.currency and record.currency in currencies.keys():
-                    sale.currency = currencies.get(record.currency)
-
-                party_domain = []
-                if record.party_name:
-                    party_domain.append(('name', '=', record.party_name))
-                if record.party_code:
-                    party_domain.append(('code', '=', record.party_code))
-                if party_domain and party_domain != []:
-                    with Transaction().set_context(active_test=False):
-                        parties = Party.search(party_domain)
-                    if len(parties) != 1 and not force:
-                        raise UserError(gettext('importer.single_party_error',
-                                party=record.party_code))
-                    elif not parties and force:
-                        parties = create_party(record.party_name,
-                            record.party_code)
-
-                    party = parties[0]
-                    sale.party = party
-                    if (force and 'customer' in Party._fields
-                            and not party.customer):
-                        party.customer = True
-                        party.save()
-                    sale.on_change_party()
-                else:
-                    sale = None
-                    continue
-                sales_to_save.append(sale)
-
-                if record.shipment_party_name:
-                    parties = Party.search([
-                            ('name', '=', record.shipment_party_name),
-                            ])
-                    if len(parties) != 1:
-                        raise UserError(gettext('importer.single_party_error',
-                                party=record.shipment_party_name))
-                    sale.shipment_party = parties[0]
-                    sale.on_change_shipment_party()
-
-                if record.shipment_address:
-                    values = record.shipment_address.split(',')
-                    filter_ = [('party', '=', party)]
-                    for val in values:
-                        value = ('rec_name', 'ilike', '%{}%'.format(val.strip()))
-                        filter_.append(value)
-                    addresses = Address.search(filter_, limit=2)
-                    if addresses and len(addresses)==1:
-                        sale.shipment_address = addresses[0]
-
-                cls._import_sale_hook(record, sale)
-
-            if not sale or not sale.party:
-                continue
-
-            if record.product_code:
-                product_domain = [('code', '=', record.product_code)]
-                if not force:
-                    product_domain += [('salable', '=', 'True')]
-                with Transaction().set_context(active_test=False):
-                    products = Product.search(product_domain)
-                if len(products) != 1:
-                    raise UserError(gettext('importer.single_product_error',
-                            product=record.product_code))
-
-                product = products[0]
-                template = product.template
-                if force and not template.salable:
-                    template.salable = True
-                    template.save()
-                if (force and 'validated' in Template._fields
-                        and not template.validated):
-                    template.validated = True
-                    template.save()
-
-                values = Line.default_get(
-                    list(Line._fields.keys()), with_rec_name=False)
-                line = Line(**values)
-                line.sale = sale
-                line.product = product
-                line.on_change_product()
-                line.quantity = record.quantity
-                line.on_change_quantity()
-                if 'product_package' in Line._fields:
-                    line.product_package = None
-                    line.package_quantity = None
-                if record.unit_price is not None:
-                    line.unit_price = round_price(record.unit_price)
-                cls._import_sale_line_hook(record, line)
-                lines_to_save.append(line)
-
-        for to_save in grouped_slice(sales_to_save):
-            Sale.save(list(to_save))
-
-        for to_save in grouped_slice(lines_to_save):
-            Line.save(list(to_save))
-
-        to_confirm += to_process
-        to_quote += to_confirm
-
-        Sale.quote(to_quote)
-        Sale.confirm(to_confirm)
-        Sale.process(to_process)
-
-        return sales_to_save
 
     @classmethod
     def import_sale_configuration(cls, records):
