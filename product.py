@@ -275,10 +275,12 @@ class ImporterProduct(ImporterModel):
                 else:
                     template.sale_uom = None
 
+            if 'account_depreciation' in setup.fields or 'account_asset' in setup.fields:
+                template.depreciable = True
+
             for field in ('account_revenue', 'account_depreciation',
                           'account_expense', 'account_asset'):
                 if field in setup.fields:
-                    template.depreciable = True
                     template.accounts_category = False
                     template.taxes_category = False
                     account_code = getattr(record, field)
