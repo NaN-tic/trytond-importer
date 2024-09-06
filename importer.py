@@ -243,6 +243,8 @@ class Importer(ModelSQL, ModelView):
     __name__ = 'importer'
     name = fields.Char('Name', required=True)
     method = fields.Selection('get_methods', 'Format', required=True)
+    language = fields.Many2One('ir.lang', 'Language',
+        help='Language to use, if different from the one of the user.')
     model = fields.Function(fields.Many2One('ir.model', 'Model'),
         'on_change_with_model')
     template = fields.Boolean('Template', help="Check to indicate that this "
@@ -318,6 +320,19 @@ class Importer(ModelSQL, ModelView):
     @staticmethod
     def default_sample_size():
         return 100
+
+    @staticmethod
+    def default_language():
+        Lang = Pool().get('ir.lang')
+        language = Transaction().context.get('language', 'en')
+        langs = Lang.search([('code', '=', language)])
+        if langs:
+            return langs[0].id
+
+    def get_language_code(self):
+        if self.language:
+            return self.language.code
+        return Transaction().context.get('language', 'en')
 
     @classmethod
     def __setup__(cls):
@@ -440,6 +455,7 @@ class Importer(ModelSQL, ModelView):
             js = {}
             js['name'] = importer.name
             js['method'] = importer.method
+            js['language'] = importer.language and importer.language.code
             js['data_source'] = importer.data_source
             js['has_header'] = importer.has_header
             js['use_header'] = importer.use_header
@@ -754,7 +770,8 @@ class Importer(ModelSQL, ModelView):
 
         start = time.time()
         if not hasattr(Model, 'importer_start'):
-            res = self.old_data_to_records(data)
+            with Transaction().set_context(language=self.get_language_code()):
+                res = self.old_data_to_records(data)
             self.elapsed = datetime.timedelta(seconds=time.time() - start)
             self.save()
             return res
@@ -766,7 +783,7 @@ class Importer(ModelSQL, ModelView):
             x.value]
         setup.cache = SimpleNamespace()
         with Transaction().set_context(importer_setup=setup, _no_trigger=True,
-                _skip_warnings=True):
+                _skip_warnings=True, language=self.get_language_code()):
             Model.importer_start()
             if not self.requires_records:
                 return Model.importer_import(fields, [])

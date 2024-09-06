@@ -9,6 +9,7 @@ class ImporterMeta(ImporterModel):
 
     name = fields.Char('Name')
     method = fields.Char('Method')
+    language = fields.Char('Language')
     data_source = fields.Char('Data Source')
     has_header = fields.Boolean('Has Header')
     use_header = fields.Boolean('Use Header')
@@ -33,6 +34,7 @@ class ImporterMeta(ImporterModel):
         super().importer_start()
         cache = Setup.get().cache
         cache.importers = Cache('importer', 'name')
+        cache.languages = Cache('ir.lang', 'code')
 
     def importer_header(self, importing=True):
         return (self.name,)
@@ -62,6 +64,7 @@ class ImporterMeta(ImporterModel):
                     importer = Importer(**values)
                     cache.importers[record.name] = importer
                 record.importer_assign(importer)
+                importer.language = cache.languages.get(record.language)
                 importer.save()
                 Importer.update_columns([importer])
                 importers.append(importer)
