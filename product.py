@@ -2,7 +2,6 @@ from decimal import Decimal
 from trytond.model import ModelView, fields
 from trytond.modules.product import price_digits, round_price
 from trytond.pool import PoolMeta, Pool
-from trytond.transaction import Transaction
 from .tools import ImporterModel, Cache, Setup
 
 
