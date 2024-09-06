@@ -70,5 +70,10 @@
             <button name="clean_errors"/>
             <field name="errors" height="500" colspan="8"/>
         </page>
+        <page name="deletes">
+            <field name="deletes" height="500" colspan="4"/>
+            <button name="clean_deletes"/>
+            <button name="delete_imported"/>
+        </page>
     </notebook>
 </form>

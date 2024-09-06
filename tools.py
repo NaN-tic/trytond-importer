@@ -57,6 +57,7 @@ class Setup(SimpleNamespace):
         self.errors = []
         self.fields = []
         self.current_record = None
+        self.saved = {}
 
     def error(self, message, record=None, **kwargs):
         if self.on_error == 'raise':
@@ -71,6 +72,16 @@ class Setup(SimpleNamespace):
     @staticmethod
     def get():
         return Transaction().context.get('importer_setup')
+
+    def deletes(self):
+        pool = Pool()
+
+        res = []
+        for model, ids in self.saved.items():
+            Model = pool.get(model)
+            ids = ', '.join(str(x) for x in ids)
+            res.append(f'DELETE FROM {Model._table} WHERE id IN ({ids});')
+        return '\n'.join(res)
 
 
 class ImporterModel(ModelView):
@@ -120,7 +131,9 @@ class ImporterModel(ModelView):
             cursor.execute('SAVEPOINT importer_save')
             try:
                 logger.info('Saving %d records of %s', len(records), Model.__name__)
-                Model.save([x[0] for x in records])
+                to_save = [x[0] for x in records]
+                Model.save(to_save)
+                setup.saved.setdefault(Model.__name__, []).extend([x.id for x in to_save])
                 cursor.execute('RELEASE SAVEPOINT importer_save')
                 logger.info('Saved.')
             except (UserError, psycopg2.errors.InvalidTextRepresentation) as e:

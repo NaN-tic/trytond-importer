@@ -40,6 +40,7 @@ logger = logging.getLogger(__name__)
 BaseCache.context_ignored_keys.add('importer_setup')
 
 
+DELETES_ENABLED = config.getboolean('importer', 'deletes_enabled', default=False)
 DISTANCE_THRESHOLD = config.getfloat('importer', 'distance_threshold',
     default=0.0)
 SOFT_LIMIT = 800
@@ -316,6 +317,9 @@ class Importer(ModelSQL, ModelView):
     sample_size = fields.Integer('Sample Size', help="Number of records to "
         "import with the sample button.")
     elapsed = fields.TimeDelta('Elapsed Time', readonly=True)
+    deletes = fields.Text('Deletes', readonly=True, states={
+            'invisible': ~Bool(Eval('deletes')),
+            })
 
     @staticmethod
     def default_sample_size():
@@ -364,6 +368,14 @@ class Importer(ModelSQL, ModelView):
                 'clean_errors': {
                     'icon': 'tryton-clear',
                     'invisible': ~Bool(Eval('errors')),
+                    },
+                'clean_deletes': {
+                    'icon': 'tryton-clear',
+                    'invisible': ~Bool(Eval('deletes')),
+                    },
+                'delete_imported': {
+                    'icon': 'tryton-cancel',
+                    'invisible': ~Bool(Eval('deletes')),
                     },
                 })
 
@@ -447,6 +459,24 @@ class Importer(ModelSQL, ModelView):
         Error = pool.get('importer.error')
 
         Error.delete(sum([x.errors for x in importers], ()))
+
+    @classmethod
+    @ModelView.button
+    def clean_deletes(cls, importers):
+        for importer in importers:
+            importer.deletes = None
+        cls.save(importers)
+
+    @classmethod
+    @ModelView.button
+    def delete_imported(cls, importers):
+        if not DELETES_ENABLED:
+            raise UserError(gettext('importer.msg_deletes_disabled'))
+        cursor = Transaction().connection.cursor()
+        for importer in importers:
+            if not importer.deletes:
+                continue
+            cursor.execute(importer.deletes)
 
     @classmethod
     def _export(cls, importers):
@@ -867,6 +897,7 @@ class Importer(ModelSQL, ModelView):
             Error.save(to_save)
 
         self.elapsed = datetime.timedelta(seconds=time.time() - start)
+        self.deletes = setup.deletes()
         self.save()
         return new_records
 
