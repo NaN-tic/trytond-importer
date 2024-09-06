@@ -1,11 +1,16 @@
-<form>
+<form col="6">
     <label name="importer"/>
-    <field name="importer" colspan="3" widget="selection"/>
+    <field name="importer" widget="selection"/>
     <label name="data_source"/>
     <field name="data_source"/>
-    <group id="data" col="1" colspan="2">
-        <field name="binary_data"/>
-        <field name="url_data"/>
-    </group>
-    <field name="text_data" colspan="4" height="300"/>
+    <label name="filename"/>
+    <field name="filename"/>
+    <newline/>
+    <label name="binary_data"/>
+    <field name="binary_data"/>
+    <newline/>
+    <label name="url_data"/>
+    <field name="url_data" colspan="5" widget="url"/>
+    <separator name="text_data" colspan="6"/>
+    <field name="text_data" colspan="6" height="300"/>
 </form>
