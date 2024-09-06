@@ -47,7 +47,12 @@ def record_to_str(record, fields=None):
     return ', '.join(res)
 
 
-class Setup(SimpleNamespace):
+# The reason we inherit from dict is that a Setup instance will be stored in
+# the context which Tryton will try to serialize (convert to json) if it needs to
+# execute a function in the worker. Trying to serialize Setup will crash unless
+# it is from a type JSONEncoder understands by default
+
+class Setup(dict):
     def __init__(self, on_error='skip', **kwargs):
         super().__init__(**kwargs)
         assert on_error in ('skip', 'log', 'raise'), on_error
