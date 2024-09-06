@@ -25,7 +25,7 @@ class ImporterSale(ImporterModel):
     sale_number = fields.Char('Sale Number')
     state = fields.Char('State')
 
-    def import_sale_header(self, record):
+    def importer_header(self, importing=True):
         return (self.sale_number, self.reference, self.date,
             self.party_code, self.party_name, self.shipment_party_name,
             self.shipment_address, self.currency)
@@ -47,7 +47,7 @@ class ImporterSale(ImporterModel):
         cache.parties_by_code = Cache('party.party', 'code', context={
                 'active_test': False
                 })
-        cache.parties_by_code = Cache('party.party', 'code', context={
+        cache.parties_by_name = Cache('party.party', 'name', context={
                 'active_test': False
                 })
         cache.address = Cache('party.address', lambda x: (x.party.id, x.rec_name))
