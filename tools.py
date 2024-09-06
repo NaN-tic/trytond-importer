@@ -164,7 +164,7 @@ class ImporterModel(ModelView):
 class Cache:
     def __init__(self, model, key, domain=None, context=None,
              duplicates='first', case_sensitive=False,
-             unaccent=False, required=True):
+             unaccent=False, required=True, cache_size=None):
         '''
         `model` is the name of the model to cache or the model class
 
@@ -204,13 +204,18 @@ class Cache:
         self.required = required
         assert duplicates in ('first', 'abort-on-load', 'abort-on-use', 'all'), duplicates
         self.duplicates = duplicates
+        self.cache_size = cache_size
         self._values = None
 
     def load(self):
         pool = Pool()
         Model = pool.get(self.model)
         self._values = {}
-        with Transaction().set_context(self.context):
+
+        context = self.context and self.context.copy() or {}
+        if self.cache_size:
+            context['_record_cache_size'] = self.cache_size
+        with Transaction().set_context(context):
             for record in Model.search(self.domain or []):
                 self.add(record)
 
