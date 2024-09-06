@@ -1349,6 +1349,7 @@ class AskAndImport(Wizard):
 
         conn = self.ask.importer.get_connection()
         sql = self.ask.importer.get_sql()
+
         Data = Importer.extractor()
         data = Data(self.ask.data_source, self.ask.binary_data,
             self.ask.text_data, self.ask.url_data, conn, sql)
@@ -1356,6 +1357,7 @@ class AskAndImport(Wizard):
         data.load()
         records = self.ask.importer.data_to_records(data)
         if not records:
+            Transaction().commit()
             raise UserError(gettext('importer.no_records_imported',
                 importer=self.ask.importer.rec_name))
 
@@ -1385,6 +1387,7 @@ class Import(Wizard):
         # TODO: Support importing several importers at once
         records = self.record.data_to_records()
         if not records:
+            Transaction().commit()
             raise UserError(gettext('importer.no_records_imported',
                 importer=self.record.rec_name))
 
