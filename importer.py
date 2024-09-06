@@ -854,7 +854,7 @@ class Importer(ModelSQL, ModelView):
                     with Transaction().set_context(previous_context):
                         batch = Model.importer_import(subrecords)
                     new_records += batch
-                    logger.info('Batch (imported/processed/time): %d/%d. '
+                    logger.info('Batch (imported/processed/time): %d/%d/%.2f. '
                         'Total (imported/processed/time): %d/%d/%.2f.',
                         len(batch), len(subrecords), time.time() - batch_start,
                         len(new_records), count, time.time() - start)
@@ -873,7 +873,7 @@ class Importer(ModelSQL, ModelView):
                 with Transaction().set_context(previous_context):
                     batch = Model.importer_import(subrecords)
                 new_records += batch
-                logger.info('Batch (imported/processed/time): %d/%d. '
+                logger.info('Batch (imported/processed/time): %d/%d/%.2f. '
                     'Total (imported/processed/time): %d/%d/%.2f.',
                     len(batch), len(subrecords), time.time() - batch_start,
                     len(new_records), count, time.time() - start)
