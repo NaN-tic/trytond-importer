@@ -58,6 +58,7 @@ class Setup(SimpleNamespace):
         self.fields = []
         self.current_record = None
         self.saved = {}
+        self.filename = None
 
     def error(self, message, record=None, **kwargs):
         if self.on_error == 'raise':

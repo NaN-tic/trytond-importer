@@ -91,6 +91,7 @@ class DataExtractor:
         self.has_header = None
         self.header_reliable = None
         self.rows = None
+        self.filename = None
 
     @staticmethod
     def to_str(d):
@@ -295,7 +296,7 @@ class Importer(ModelSQL, ModelView):
     binary_data = fields.Binary('Data', states={
             'invisible': Eval('data_source') != 'binary',
             }, filename='binary_file_name')
-    binary_file_name = fields.Char('Binary File Name', readonly=True, states={
+    binary_file_name = fields.Char('Binary File Name', states={
             'invisible': Eval('data_source') != 'binary',
             })
     sql_data = fields.Selection([(None, '')], "SQL Queries", states={
@@ -815,6 +816,10 @@ class Importer(ModelSQL, ModelView):
         setup.on_error = self.on_error
         setup.fields = [x.field.name for x in self.columns if x.name or
             x.value]
+        if data:
+            setup.filename = data.filename
+        else:
+            setup.filename = self.binary_file_name
         setup.cache = SimpleNamespace()
         with Transaction().set_context(importer_setup=setup, _no_trigger=True,
                 _skip_warnings=True, language=self.get_language_code()):
@@ -916,6 +921,7 @@ class Importer(ModelSQL, ModelView):
             Data = self.extractor()
             data = Data(self.data_source, self.binary_data, self.text_data,
                 self.url_data, conn, sql)
+            data.filename = self.binary_file_name
             data.load()
         rows = data.rows
         if not rows:
@@ -1318,7 +1324,8 @@ class ImportAsk(ModelView):
     data_source = fields.Selection(data_sources, 'Data Source', required=True)
     binary_data = fields.Binary('Data', states={
             'invisible': Eval('data_source') != 'binary',
-            })
+            }, filename='filename')
+    filename = fields.Char('Filename')
     text_data = fields.Text('Data', states={
             'invisible': Eval('data_source') != 'text',
             })
@@ -1345,6 +1352,7 @@ class AskAndImport(Wizard):
         Data = Importer.extractor()
         data = Data(self.ask.data_source, self.ask.binary_data,
             self.ask.text_data, self.ask.url_data, conn, sql)
+        data.filename = getattr(self.ask, 'filename', None)
         data.load()
         records = self.ask.importer.data_to_records(data)
         if not records:
