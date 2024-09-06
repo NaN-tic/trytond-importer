@@ -832,6 +832,7 @@ class Importer(ModelSQL, ModelView):
             subrecords = []
             new_records = []
             count = 0
+            batch_start = time.time()
             for record in self.get_records(data=data):
                 # We do not sort based on context so there can be performance issues
                 # if the context changes often
@@ -853,10 +854,12 @@ class Importer(ModelSQL, ModelView):
                     with Transaction().set_context(previous_context):
                         batch = Model.importer_import(subrecords)
                     new_records += batch
-                    logger.info('New batch (imported/processed): %d/%d. '
-                        'Total (imported/processed): %d/%d.', len(batch),
-                        len(subrecords), len(new_records), count)
+                    logger.info('Batch (imported/processed/time): %d/%d. '
+                        'Total (imported/processed/time): %d/%d/%.2f.',
+                        len(batch), len(subrecords), time.time() - batch_start,
+                        len(new_records), count, time.time() - start)
                     subrecords = []
+                    batch_start = time.time()
                     call = False
                     soft_limit = SOFT_LIMIT
                     limit = LIMIT
@@ -870,9 +873,10 @@ class Importer(ModelSQL, ModelView):
                 with Transaction().set_context(previous_context):
                     batch = Model.importer_import(subrecords)
                 new_records += batch
-                logger.info('New batch (imported/processed): %d/%d. '
-                    'Total (imported/processed): %d/%d.', len(batch),
-                    len(subrecords), len(new_records), count)
+                logger.info('Batch (imported/processed/time): %d/%d. '
+                    'Total (imported/processed/time): %d/%d/%.2f.',
+                    len(batch), len(subrecords), time.time() - batch_start,
+                    len(new_records), count, time.time() - start)
 
         if self.errors:
             Error.delete(self.errors)
