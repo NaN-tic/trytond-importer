@@ -11,8 +11,12 @@
         <label name="use_header"/>
         <field name="use_header"/>
     </group>
-    <label name="data_source"/>
-    <field name="data_source"/>
+    <group id="source" colspan="2" col="4">
+        <label name="data_source"/>
+        <field name="data_source"/>
+        <label name="language"/>
+        <field name="language"/>
+    </group>
     <group id="buttons" col="-1" colspan="4">
         <button name="update_columns"/>
         <button name="update_source_columns"/>

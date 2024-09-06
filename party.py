@@ -172,6 +172,8 @@ class ImporterParty(ImporterModel):
 
             addresses = []
             address = Address()
+            if hasattr(Address, 'invoice'):
+                address.invoice = True
             address.street = record.street
             address.postal_code = record.postal_code
             address.city = record.city
@@ -213,6 +215,8 @@ class ImporterParty(ImporterModel):
                     record.shipment_city or record.shipment_subdivision or
                     record.shipment_country):
                 shipment_address = Address()
+                if hasattr(Address, 'shipment'):
+                    shipment_address.shipment = True
                 shipment_address.street = record.shipment_street
                 shipment_address.postal_code = record.shipment_postal_code
                 shipment_address.city = record.shipment_city
