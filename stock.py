@@ -53,6 +53,13 @@ class ImporterStockMove(ImporterModel):
                 record.from_location, record.to_location = (record.to_location,
                     record.from_location)
 
+            if not record.quantity:
+                record.quantity = 0
+            if record.quantity < 0:
+                record.from_location, record.to_location = (record.to_location,
+                    record.from_location)
+                record.quantity = -record.quantity
+
             from_location = cache.locations.get(record.from_location)
             to_location = cache.locations.get(record.to_location)
             product = cache.products.get(record.product_code)
@@ -65,12 +72,6 @@ class ImporterStockMove(ImporterModel):
             move.from_location = from_location
             move.to_location = to_location
             move.product = product
-            if not record.quantity:
-                record.quantity = 0
-            if record.quantity < 0:
-                record.from_location, record.to_location = (record.to_location,
-                    record.from_location)
-                record.quantity = -record.quantity
             move.quantity = round(record.quantity)
             if 'cost_price' in setup.fields:
                 move.cost_price = record.cost_price
