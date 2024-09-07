@@ -3,7 +3,6 @@ import logging
 from unidecode import unidecode
 import textdistance
 import psycopg2
-from types import SimpleNamespace
 from trytond.pool import Pool
 from trytond.model import fields, ModelView
 from trytond.transaction import Transaction
