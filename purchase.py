@@ -81,7 +81,6 @@ class ImporterProductSupplier(ImporterModel):
         cache.default_price_values = Price.default_get(
             list(Price._fields.keys()), with_rec_name=False)
 
-
     def importer_product_supplier(self, record):
         pass
 
@@ -103,6 +102,7 @@ class ImporterProductSupplier(ImporterModel):
         templates_to_save = []
         for record in records:
             setup.current_record = record
+
             party = None
             if record.party_code:
                 party = cache.parties_by_code.get(record.party_code)
@@ -134,7 +134,6 @@ class ImporterProductSupplier(ImporterModel):
             else:
                 product_supplier = cache.product_suppliers.get(key)
                 if product_supplier:
-                    lines_to_delete = {}
                     lines_to_delete[product_supplier] = {}
                     for price in product_supplier.prices:
                         lines_to_delete[product_supplier][price.quantity] = (
@@ -186,14 +185,15 @@ class ImporterProductSupplier(ImporterModel):
             product_supplier_to_save[key] = (product_supplier, record)
 
         setup.current_record = None
-        cls.importer_save(templates_to_save)
-        to_save = list(product_supplier_to_save.values())
-        cls.importer_save(to_save)
         to_delete = []
         for quantities in lines_to_delete.values():
             to_delete += quantities.values()
-        cls.importer_save(lines_to_save)
         Price.delete(to_delete)
+
+        cls.importer_save(templates_to_save)
+        to_save = list(product_supplier_to_save.values())
+        cls.importer_save(to_save)
+        cls.importer_save(lines_to_save)
         return [x[0] for x in to_save]
 
 
