@@ -186,6 +186,7 @@ class ImporterSale(ImporterModel):
                 if (force and 'salable' in Product._fields
                         and not product.salable):
                     template.salable = True
+                    template.sale_uom = template.default_uom
                     template.save()
 
                 if (force and 'validated' in Template._fields
