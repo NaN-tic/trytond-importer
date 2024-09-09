@@ -57,6 +57,10 @@ class ImporterProductSupplier(ImporterModel):
 
     @classmethod
     def importer_start(cls):
+        pool = Pool()
+        ProductSupplier = pool.get('purchase.product_supplier')
+        Price = pool.get('purchase.product_supplier.price')
+
         super().importer_start()
         cache = Setup.get().cache
 
@@ -72,6 +76,11 @@ class ImporterProductSupplier(ImporterModel):
         cache.product_suppliers = Cache('purchase.product_supplier',
             lambda x: (x.party.id, x.template.id, x.product and x.product.id),
             context={'active_test': False}, required=False)
+        cache.default_product_supplier_values = ProductSupplier.default_get(
+            list(ProductSupplier._fields.keys()), with_rec_name=False)
+        cache.default_price_values = Price.default_get(
+            list(Price._fields.keys()), with_rec_name=False)
+
 
     def importer_product_supplier(self, record):
         pass
@@ -87,6 +96,7 @@ class ImporterProductSupplier(ImporterModel):
 
         setup = Setup.get()
         cache = setup.cache
+
         lines_to_delete = {}
         lines_to_save = []
         product_supplier_to_save = {}
@@ -130,9 +140,7 @@ class ImporterProductSupplier(ImporterModel):
                         lines_to_delete[product_supplier][price.quantity] = (
                             price)
                 else:
-                    values = ProductSupplier.default_get(
-                        list(ProductSupplier._fields.keys()), with_rec_name=False)
-                    product_supplier = ProductSupplier(**values)
+                    product_supplier = ProductSupplier(**cache.default_product_supplier_values)
 
                     product_supplier.party = party
                     product_supplier.template = template
@@ -160,18 +168,16 @@ class ImporterProductSupplier(ImporterModel):
                 if price:
                     del lines_to_delete[product_supplier][record.quantity]
                 else:
-                    values = Price.default_get(
-                        list(Price._fields.keys()), with_rec_name=False)
-                    price = Price(**values)
+                    price = Price(**cache.default_price_values)
                     price.product_supplier = product_supplier
 
                 price.quantity = record.quantity or 0
                 price.unit_price = round_price(record.unit_price)
 
                 if ('start_date' in setup.fields and record.start_date):
-                    product_supplier.start_date = record.start_date
+                    price.start_date = record.start_date
                 if ('end_date' in setup.fields and record.end_date):
-                    product_supplier.end_date = record.end_date
+                    price.end_date = record.end_date
 
                 record.importer_price(price)
 
@@ -181,13 +187,12 @@ class ImporterProductSupplier(ImporterModel):
 
         setup.current_record = None
         cls.importer_save(templates_to_save)
-
         to_save = list(product_supplier_to_save.values())
         cls.importer_save(to_save)
-        cls.importer_save(lines_to_save)
         to_delete = []
         for quantities in lines_to_delete.values():
             to_delete += quantities.values()
+        cls.importer_save(lines_to_save)
         Price.delete(to_delete)
         return [x[0] for x in to_save]
 
