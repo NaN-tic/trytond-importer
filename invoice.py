@@ -211,12 +211,8 @@ class Importer(metaclass=PoolMeta):
                     line.product_package = None
                     line.package_quantity = None
                 line.account.company.party.name
-                if 'gross_unit_price' in Line._fields:
-                    line.gross_unit_price = record.unit_price
-                    line.discount = record.discount or Decimal(0)
-                    line.update_prices()
-                elif record.unit_price is not None:
-                    line.unit_price = record.unit_price
+                # TODO base_price
+                line.unit_price = record.unit_price
                 line.quantity = record.quantity
                 line.on_change_quantity()
                 line.on_change_account()
