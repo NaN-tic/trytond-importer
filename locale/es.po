@@ -1,6 +1,17 @@
 #
+# Albert Cervera i Areny <albert@nan-tic.com>, 2024.
 msgid ""
-msgstr "Content-Type: text/plain; charset=utf-8\n"
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Last-Translator: Albert Cervera i Areny <albert@nan-tic.com>\n"
+"PO-Revision-Date: 2024-09-23 11:42+0200\n"
+"Project-Id-Version: \n"
+"Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
+"Language: ca_ES\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 msgctxt "field:importer,binary_data:"
 msgid "Data"
@@ -11,20 +22,40 @@ msgid "Binary File Name"
 msgstr "Nombre campo binario"
 
 msgctxt "field:importer,columns:"
-msgid "Column"
-msgstr "Columna"
+msgid "Columns"
+msgstr "Columnas"
 
 msgctxt "field:importer,data_source:"
 msgid "Data Source"
 msgstr "Fuente de datos"
 
+msgctxt "field:importer,data_source_visible:"
+msgid "Data Source Visible"
+msgstr "Fuente de datos visible"
+
 msgctxt "field:importer,database:"
 msgid "Database"
 msgstr "Base de datos"
 
+msgctxt "field:importer,deletes:"
+msgid "Deletes"
+msgstr "Elimina"
+
+msgctxt "field:importer,elapsed:"
+msgid "Elapsed Time"
+msgstr "Tiempo transcurrido"
+
+msgctxt "field:importer,errors:"
+msgid "Errors"
+msgstr "Errores"
+
 msgctxt "field:importer,has_header:"
 msgid "Has Header?"
 msgstr "Tiene cabecera?"
+
+msgctxt "field:importer,language:"
+msgid "Language"
+msgstr "Idioma"
 
 msgctxt "field:importer,method:"
 msgid "Format"
@@ -38,13 +69,17 @@ msgctxt "field:importer,name:"
 msgid "Name"
 msgstr "Nombre"
 
+msgctxt "field:importer,on_error:"
+msgid "On Error"
+msgstr "En caso de error"
+
 msgctxt "field:importer,password:"
 msgid "Password"
 msgstr "Contraseña"
 
-msgctxt "field:importer,reverse_columns:"
-msgid "Reverse Column"
-msgstr "Columna inversa"
+msgctxt "field:importer,sample_size:"
+msgid "Sample Size"
+msgstr "Tamaño de la muestra"
 
 msgctxt "field:importer,schema:"
 msgid "Schema"
@@ -53,6 +88,10 @@ msgstr "Esquema"
 msgctxt "field:importer,server:"
 msgid "Server"
 msgstr "Servidor"
+
+msgctxt "field:importer,source_columns:"
+msgid "Source Columns"
+msgstr "Columnas de origen"
 
 msgctxt "field:importer,sql_data:"
 msgid "SQL Queries"
@@ -110,6 +149,34 @@ msgctxt "field:importer.column,name:"
 msgid "Column Name"
 msgstr "Nombre Columna"
 
+msgctxt "field:importer.column,value:"
+msgid "Value"
+msgstr "Valor"
+
+msgctxt "field:importer.error,importer:"
+msgid "Importer"
+msgstr "Importador"
+
+msgctxt "field:importer.error,message:"
+msgid "Message"
+msgstr "Mensaje"
+
+msgctxt "field:importer.error,on_error:"
+msgid "On Error"
+msgstr "En caso de error"
+
+msgctxt "field:importer.error,record:"
+msgid "Record"
+msgstr "Registro"
+
+msgctxt "field:importer.error,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.error,type:"
+msgid "Type"
+msgstr "Tipo"
+
 msgctxt "field:importer.import.ask,binary_data:"
 msgid "Data"
 msgstr "Datos"
@@ -117,6 +184,10 @@ msgstr "Datos"
 msgctxt "field:importer.import.ask,data_source:"
 msgid "Data Source"
 msgstr "Fuente de datos"
+
+msgctxt "field:importer.import.ask,filename:"
+msgid "Filename"
+msgstr "Nombre del archivo"
 
 msgctxt "field:importer.import.ask,importer:"
 msgid "Importer"
@@ -154,29 +225,93 @@ msgctxt "field:importer.language,translatable:"
 msgid "Translatable"
 msgstr "Traducible"
 
-msgctxt "field:importer.reverse_column,examples:"
-msgid "Examples"
-msgstr "Ejemplos"
+msgctxt "field:importer.meta,binary_data:"
+msgid "Binary"
+msgstr "Binario"
 
-msgctxt "field:importer.reverse_column,field:"
-msgid "Field"
-msgstr "Campo"
+msgctxt "field:importer.meta,column_field:"
+msgid "Column Field"
+msgstr "Campo de columna"
 
-msgctxt "field:importer.reverse_column,format:"
-msgid "Format"
-msgstr "Formato"
+msgctxt "field:importer.meta,column_format:"
+msgid "Column Format"
+msgstr "Formato de columna"
 
-msgctxt "field:importer.reverse_column,importer:"
-msgid "Importation"
-msgstr "Importación"
-
-msgctxt "field:importer.reverse_column,model:"
-msgid "Model"
-msgstr "Modelo"
-
-msgctxt "field:importer.reverse_column,name:"
+msgctxt "field:importer.meta,column_name:"
 msgid "Column Name"
-msgstr "Nombre de columna"
+msgstr "Nombre de la columna"
+
+msgctxt "field:importer.meta,column_value:"
+msgid "Column Value"
+msgstr "Valor de la columna"
+
+msgctxt "field:importer.meta,data_source:"
+msgid "Data Source"
+msgstr "Fuente de datos"
+
+msgctxt "field:importer.meta,database:"
+msgid "Database"
+msgstr "Base de datos"
+
+msgctxt "field:importer.meta,has_header:"
+msgid "Has Header"
+msgstr "Tiene encabezado"
+
+msgctxt "field:importer.meta,language:"
+msgid "Language"
+msgstr "Idioma"
+
+msgctxt "field:importer.meta,method:"
+msgid "Method"
+msgstr "Método"
+
+msgctxt "field:importer.meta,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.meta,on_error:"
+msgid "On Error"
+msgstr "En caso de error"
+
+msgctxt "field:importer.meta,password:"
+msgid "Password"
+msgstr "Contraseña"
+
+msgctxt "field:importer.meta,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.meta,schema:"
+msgid "Schema"
+msgstr "Esquema"
+
+msgctxt "field:importer.meta,server:"
+msgid "Server"
+msgstr "Servidor"
+
+msgctxt "field:importer.meta,sql_source:"
+msgid "SQL Source"
+msgstr "Fuente SQL"
+
+msgctxt "field:importer.meta,text_data:"
+msgid "Text"
+msgstr "Texto"
+
+msgctxt "field:importer.meta,url_data:"
+msgid "URL"
+msgstr "URL"
+
+msgctxt "field:importer.meta,use_header:"
+msgid "Use Header"
+msgstr "Usar encabezado"
+
+msgctxt "field:importer.meta,user:"
+msgid "User"
+msgstr "Usuario"
+
+msgctxt "field:importer.meta,where:"
+msgid "Where"
+msgstr "Dónde"
 
 msgctxt "field:importer.sequence,company_name:"
 msgid "Company Name"
@@ -209,6 +344,30 @@ msgstr "Estricto"
 msgctxt "field:importer.sequence,suffix:"
 msgid "Sequence suffix"
 msgstr "Sufijo de secuencia"
+
+msgctxt "field:importer.source_column,examples:"
+msgid "Examples"
+msgstr "Ejemplos"
+
+msgctxt "field:importer.source_column,field:"
+msgid "Field"
+msgstr "Campo"
+
+msgctxt "field:importer.source_column,format:"
+msgid "Format"
+msgstr "Formato"
+
+msgctxt "field:importer.source_column,importer:"
+msgid "Importation"
+msgstr "Importación"
+
+msgctxt "field:importer.source_column,model:"
+msgid "Model"
+msgstr "Modelo"
+
+msgctxt "field:importer.source_column,name:"
+msgid "Column Name"
+msgstr "Nombre de la columna"
 
 msgctxt "field:importer.user,companies:"
 msgid "Companies"
@@ -258,6 +417,14 @@ msgctxt "field:importer.user,signature:"
 msgid "Signature"
 msgstr "Firma"
 
+msgctxt "help:importer,language:"
+msgid "Language to use, if different from the one of the user."
+msgstr "Idioma a utilizar, si es diferente al del usuario."
+
+msgctxt "help:importer,sample_size:"
+msgid "Number of records to import with the sample button."
+msgstr "Número de registros a importar con el botón de muestra."
+
 msgctxt "help:importer,template:"
 msgid ""
 "Check to indicate that this importer is a template and thus should appear in"
@@ -265,6 +432,20 @@ msgid ""
 msgstr ""
 "Marque para indicar que este importador es una plantilla y, por lo tanto, "
 "debería aparecer en el asistente de importación."
+
+msgctxt "help:importer,use_header:"
+msgid ""
+"If checked, the names of the columns will be used for the mapping. "
+"Otherwise, the number of the column will be used."
+msgstr ""
+"Si se marca esta opción, se utilizarán los nombres de las columnas para la "
+"asignación. De lo contrario, se utilizará el número de la columna."
+
+msgctxt "help:importer.column,value:"
+msgid "Value to be used if no column is specified or the value found is None."
+msgstr ""
+"Valor a utilizar si no se especifica ninguna columna o el valor encontrado "
+"es Ninguno."
 
 msgctxt "help:importer.user,companies:"
 msgid "Comma separated list of company names"
@@ -290,21 +471,33 @@ msgctxt "model:importer.column,name:"
 msgid "Importer Column"
 msgstr "Importador Columnas"
 
+msgctxt "model:importer.error,name:"
+msgid "Importer Error"
+msgstr "Error del importador"
+
 msgctxt "model:importer.import.ask,name:"
 msgid "Import Ask"
 msgstr "Inicio del Importador"
+
+msgctxt "model:importer.import.ask.error,name:"
+msgid "Import Ask and Import Error"
+msgstr "Importar Pregunta y Error de Importación"
 
 msgctxt "model:importer.language,name:"
 msgid "Importer Language"
 msgstr "Idioma del importador"
 
-msgctxt "model:importer.reverse_column,name:"
-msgid "Importer Reverse Column"
-msgstr "Columna inversa del importador"
+msgctxt "model:importer.meta,name:"
+msgid "Importer Meta"
+msgstr "Meta Importador"
 
 msgctxt "model:importer.sequence,name:"
 msgid "Importer Party Configuration"
 msgstr "Importador de Configuración de Terceros"
+
+msgctxt "model:importer.source_column,name:"
+msgid "Importer Source Column"
+msgstr "Columna de origen del importador"
 
 msgctxt "model:importer.user,name:"
 msgid "Importer User"
@@ -314,9 +507,17 @@ msgctxt "model:ir.action,name:act_ask_and_import_wizard"
 msgid "Import"
 msgstr "Importar"
 
+msgctxt "model:ir.action,name:act_import_errors"
+msgid "Import Errors"
+msgstr "Errores de importación"
+
 msgctxt "model:ir.action,name:act_import_open"
 msgid "Imported Records"
 msgstr "Registros importados"
+
+msgctxt "model:ir.action,name:act_import_sample_wizard"
+msgid "Import Sample"
+msgstr "Importar muestra"
 
 msgctxt "model:ir.action,name:act_import_wizard"
 msgid "Import"
@@ -329,6 +530,10 @@ msgstr "Importadores"
 msgctxt "model:ir.action,name:report_excel_template"
 msgid "Excel Template"
 msgstr "Plantilla Excel"
+
+msgctxt "model:ir.action,name:report_importer_export"
+msgid "Export"
+msgstr "Exportar"
 
 msgctxt "model:ir.message,text:account_not_found"
 msgid "Account %(account)s not found."
@@ -362,6 +567,10 @@ msgctxt "model:ir.message,text:msg_company_not_found"
 msgid "Company %(company)s not found."
 msgstr "Empresa %(company)s no encontrada."
 
+msgctxt "model:ir.message,text:msg_deletes_disable"
+msgid "Deletion of records is disabled."
+msgstr "La eliminación de registros está deshabilitada."
+
 msgctxt "model:ir.message,text:msg_group_not_found"
 msgid "Group with name \"%(name)s\" not found."
 msgstr "No se encontró el grupo con el nombre \"%(name)s\"."
@@ -373,7 +582,8 @@ msgstr ""
 
 msgctxt "model:ir.message,text:msg_invalid_invoice_type"
 msgid "Invoice type must be 'out' or 'in' but \"%(type)s\" was found."
-msgstr "El tipo de facutura debe ser \"out\" o \"in\" y se obtenido \"%(type)s\"."
+msgstr ""
+"El tipo de facutura debe ser \"out\" o \"in\" y se obtenido \"%(type)s\"."
 
 msgctxt "model:ir.message,text:msg_role_not_found"
 msgid "Role with name \"%(name)s\" not found."
@@ -386,6 +596,18 @@ msgstr "Tipo de secuencia \"%(type)s\" no encontrado."
 msgctxt "model:ir.message,text:msg_sequence_type_required"
 msgid "Sequence Type is required"
 msgstr "Se requiere tipo de secuencia"
+
+msgctxt "model:ir.message,text:msg_subdivision_not_found"
+msgid "Subdivision \"%(subdivision)s\" not found in country \"%(country)s\"."
+msgstr ""
+"La subdivisión \"%(subdivision)s\" no se encontró en el país \"%(country)s\"."
+
+msgctxt "model:ir.message,text:msg_subdivision_type_not_allowed"
+msgid ""
+"Subdivision type \"%(type)s\" of subdivision \"%(subdivision)s\" not allowed."
+msgstr ""
+"No se permite el tipo de subdivisión \"%(type)s\" de la subdivisión "
+"\"%(subdivision)s\"."
 
 msgctxt "model:ir.message,text:msg_successful_connection"
 msgid "Successful connection using importer \"%(importer)s\"."
@@ -425,9 +647,25 @@ msgctxt "model:ir.message,text:value_not_in_selection"
 msgid "Could not find this value in the field selection \"%(field)%\""
 msgstr "No se pudo encontrar este valor en la selección de campo \"%(field)%\""
 
+msgctxt "model:ir.model.button,confirm:importer_delete_imported_button"
+msgid "Are you sure you want to delete all imported records?"
+msgstr "¿Está seguro de que desea eliminar todos los registros importados?"
+
 msgctxt "model:ir.model.button,string:importer_check_connection_button"
 msgid "Check Connection"
 msgstr "Comprobar conexión"
+
+msgctxt "model:ir.model.button,string:importer_clean_deletes_button"
+msgid "Clean Deletes"
+msgstr "Limpiar eliminaciones"
+
+msgctxt "model:ir.model.button,string:importer_clean_errors_button"
+msgid "Clean Errors"
+msgstr "Limpiar errores"
+
+msgctxt "model:ir.model.button,string:importer_delete_imported_button"
+msgid "Delete Imported Records"
+msgstr "Eliminar registros importados"
 
 msgctxt "model:ir.model.button,string:importer_detect_button"
 msgid "Detect"
@@ -437,9 +675,17 @@ msgctxt "model:ir.model.button,string:importer_import_button"
 msgid "Import"
 msgstr "Importar"
 
-msgctxt "model:ir.model.button,string:importer_sync_columns_button"
-msgid "Sync Columns"
-msgstr "Sincronizar columnas"
+msgctxt "model:ir.model.button,string:importer_import_sample_button"
+msgid "Import Sample"
+msgstr "Importar muestra"
+
+msgctxt "model:ir.model.button,string:importer_update_columns_button"
+msgid "Update Columns"
+msgstr "Actualizar columnas"
+
+msgctxt "model:ir.model.button,string:importer_update_source_columns_button"
+msgid "Update Source Columns"
+msgstr "Actualizar columnas de origen"
 
 msgctxt "model:ir.ui.menu,name:menu_import_wizard"
 msgid "Import"
@@ -473,6 +719,38 @@ msgctxt "selection:importer,data_source:"
 msgid "URL"
 msgstr "URL"
 
+msgctxt "selection:importer,on_error:"
+msgid "Log"
+msgstr "Registro"
+
+msgctxt "selection:importer,on_error:"
+msgid "Raise Error"
+msgstr "Lanzar error"
+
+msgctxt "selection:importer,on_error:"
+msgid "Skip"
+msgstr "Saltar"
+
+msgctxt "selection:importer.error,on_error:"
+msgid "Log"
+msgstr "Registrar"
+
+msgctxt "selection:importer.error,on_error:"
+msgid "Raise Error"
+msgstr "Lanzar error"
+
+msgctxt "selection:importer.error,on_error:"
+msgid "Skip"
+msgstr "Saltar"
+
+msgctxt "selection:importer.error,type:"
+msgid "Generic"
+msgstr "Genérico"
+
+msgctxt "selection:importer.error,type:"
+msgid "Specific"
+msgstr "Específico"
+
 msgctxt "selection:importer.import.ask,data_source:"
 msgid "Copy & Paste"
 msgstr "Copiar y Pegar"
@@ -489,6 +767,15 @@ msgctxt "selection:importer.import.ask,data_source:"
 msgid "URL"
 msgstr "URL"
 
+msgctxt "view:importer.import.ask.error:"
+msgid ""
+"Some records may have been imported but several errors occurred. See the "
+"\"Import Errors\" window for details."
+msgstr ""
+"Es posible que se hayan importado algunos registros, pero se produjeron "
+"varios errores. Consulte la ventana \"Errores de importación\" para obtener "
+"más detalles."
+
 msgctxt "view:importer:"
 msgid "File columns"
 msgstr "Fichero columnas"
@@ -504,3 +791,7 @@ msgstr "Cancel·lar"
 msgctxt "wizard_button:importer.ask_and_import,ask,import_:"
 msgid "Import"
 msgstr "Importar"
+
+msgctxt "wizard_button:importer.ask_and_import,error_form,end:"
+msgid "Ok"
+msgstr "Aceptar"
