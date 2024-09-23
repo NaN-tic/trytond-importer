@@ -892,7 +892,10 @@ class Importer(ModelSQL, ModelView):
                 generics.add(message)
                 error = Error()
                 error.importer = self
-                error.message = message % kwargs
+                if kwargs:
+                    error.message = message % kwargs
+                else:
+                    error.message = message
                 error.row_number = record and record.row_number
                 error.record = tools.record_to_str(record, fields=setup.fields)
                 error.type = 'specific'
