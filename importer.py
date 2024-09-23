@@ -1337,6 +1337,11 @@ class ImportAsk(ModelView):
             })
 
 
+class AskAndImportError(ModelView):
+    'Import Ask and Import Error'
+    __name__ = 'importer.import.ask.error'
+
+
 class AskAndImport(Wizard):
     'Import'
     __name__ = 'importer.ask_and_import'
@@ -1346,6 +1351,10 @@ class AskAndImport(Wizard):
             Button('Import', 'import_', 'importer-upload', default=True),
             ])
     import_ = StateAction('importer.act_import_open')
+    errors = StateAction('importer.act_import_errors')
+    error_form = StateView('importer.import.ask.error', 'importer.import_ask_error_view_form', [
+            Button('Ok', 'end', 'tryton-ok'),
+            ])
 
     def do_import_(self, action):
         Importer = Pool().get('importer')
@@ -1377,7 +1386,23 @@ class AskAndImport(Wizard):
         return action, {}
 
     def transition_import_(self):
+        if self.ask.importer.errors:
+            return 'errors'
         return 'end'
+
+    def transition_errors(self):
+        return 'error_form'
+
+    def default_errors(self, data):
+        return {
+            'errors': [x.id for x in self.ask.importer.errors],
+            }
+
+    def do_errors(self, action):
+        action['pyson_domain'] = PYSONEncoder().encode(
+                [('importer', '=', self.ask.importer.id)],
+                )
+        return action, {}
 
 
 class Import(Wizard):

@@ -1,0 +1,4 @@
+<form col="2">
+    <image name="tryton-warning" xexpand="0" xfill="0"/>
+    <label string='Some records may have been imported but several errors occurred. See the "Import Errors" window for details.' id="label" yalign="0.0" xalign="0.0" xexpand="1"/>
+</form>

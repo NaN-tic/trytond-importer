@@ -235,6 +235,11 @@
             <field name="type">form</field>
             <field name="name">import_ask</field>
         </record>
+        <record model="ir.ui.view" id="import_ask_error_view_form">
+            <field name="model">importer.import.ask.error</field>
+            <field name="type">form</field>
+            <field name="name">import_ask_error</field>
+        </record>
         <record model="ir.action.wizard" id="act_import_wizard">
             <field name="name">Import</field>
             <field name="wiz_name">importer.import</field>
@@ -246,7 +251,11 @@
         <record model="ir.action.act_window" id="act_import_open">
             <field name="name">Imported Records</field>
             <field name="res_model">importer</field>
-	    <field name="order" eval="[('id', 'ASC')]" pyson="1"/>
+	        <field name="order" eval="[('id', 'ASC')]" pyson="1"/>
+        </record>
+        <record model="ir.action.act_window" id="act_import_errors">
+            <field name="name">Import Errors</field>
+            <field name="res_model">importer.error</field>
         </record>
         <menuitem parent="menu_importer" action="act_ask_and_import_wizard" id="menu_import_wizard" sequence="30"/>
 
