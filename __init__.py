@@ -45,6 +45,7 @@ def register():
         importer.ImporterSourceColumn,
         importer.ImporterError,
         importer.ImportAsk,
+        importer.AskAndImportError,
         ir.Importer,
         ir.ImporterLanguage,
         ir.ImporterSequence,
