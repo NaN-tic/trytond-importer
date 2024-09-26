@@ -4,6 +4,7 @@ from trytond.model import ModelView
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
 from trytond.config import config
+from trytond import backend
 
 
 class ImporterCountry(ModelView):
@@ -47,6 +48,11 @@ class Importer(metaclass=PoolMeta):
         command = ('python ./trytond/trytond/modules/country/scripts/'
             'import_countries.py -d %s' % Transaction().database.name)
 
+        if backend.name == 'sqlite':
+            # We commit the transaction to free the database
+            # for the import script to work
+            Transaction().connection.commit()
+
         subprocess.check_call(command, shell=True, env=env)
 
         # We commit the transaction to access to all the created countries
@@ -63,6 +69,10 @@ class Importer(metaclass=PoolMeta):
         command = ('python ./trytond/trytond/modules/country/scripts/'
             'import_postal_codes.py -d %s ES' % Transaction().database.name)
 
+        if backend.name == 'sqlite':
+            # We commit the transaction to free the database
+            # for the import script to work
+            Transaction().connection.commit()
         subprocess.check_call(command, shell=True, env=env)
 
         # We commit the transaction to access to all the created postal codes
