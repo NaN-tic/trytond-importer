@@ -4,6 +4,7 @@ from trytond.model import ModelView
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
 from trytond.config import config
+from trytond import backend
 
 class ImporterCurrency(ModelView):
     'Importer Currency'
@@ -34,6 +35,11 @@ class Importer(metaclass=PoolMeta):
             default='sqlite:///')
         command = ('python ./trytond/trytond/modules/currency/scripts/'
             'import_currencies.py -d %s' % Transaction().database.name)
+
+        if backend.name == 'sqlite':
+            # We commit the transaction to free the database
+            # for the import script to work
+            Transaction().connection.commit()
 
         subprocess.check_call(command, shell=True, env=env)
 
