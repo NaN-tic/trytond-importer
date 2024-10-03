@@ -527,7 +527,7 @@ class Importer(metaclass=PoolMeta):
             if found_product:
                 found_product = found_product[0]
                 found_asset = Asset.search([('number', '=', record.number)])
-                asset = asset()
+                asset = Asset()
                 if found_asset:
                     asset = found_asset[0]
                 asset.number = record.number if record.number else None
