@@ -59,8 +59,6 @@ def save_virtual_workbook(workbook):
         with open(tmp.name, 'rb') as f:
             return f.read()
 
-
-
 def grouped_slice(records, count=None):
     'grouped_slice implementation that works with iterators'
     if count is None:
