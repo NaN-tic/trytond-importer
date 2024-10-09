@@ -18,6 +18,7 @@ class ImporterProductionBom(ModelView):
     output_quantity = fields.Float('Product Output Quantity')
     output_uom = fields.Char('Product Output UoM')
 
+
 class ImporterProductionConfiguration(ModelView):
     'Importer Production Configuration'
     __name__ = 'importer.production.configuration'
@@ -26,6 +27,7 @@ class ImporterProductionConfiguration(ModelView):
     sequence_suffix = fields.Char("Sequence suffix")
     sequence_padding = fields.Integer("Sequence padding")
     sequence_number_next = fields.Integer("Sequence number next")
+
 
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
@@ -117,14 +119,13 @@ class Importer(metaclass=PoolMeta):
                     else:
                         values = BomOutput.default_get(BomOutput._fields.keys(), with_rec_name=False)
                         line = BomOutput(**values)
-                    line.bom = bom
                     line.product = product
                     uom = getattr(record, type_+'_uom')
                     if uom:
                         uom = uoms.get(uom.lower() or product.default_uom)
                     else:
                         uom = product.default_uom
-                    line.uom = uom
+                    line.unit = uom
                     line.quantity = getattr(record, type_+'_quantity')
                     import_hook = getattr(cls, '_import_production_bom_%s_hook' % type_)
                     import_hook(record, line)
