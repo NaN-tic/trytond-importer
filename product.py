@@ -314,7 +314,7 @@ class ImporterProduct(ImporterModel):
                     supplier_price = ProductSupplierPrice()
                     supplier_price.quantity = 0
                     supplier_price.unit_price = round_price(record.supplier_unit_price)
-                    supplier.prices.append(supplier_price)
+                    supplier.prices = (supplier_price,)
                 template.product_suppliers = [supplier]
                 cache.templates[record.template_code] = template
 
