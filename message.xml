@@ -63,7 +63,7 @@
         <record model="ir.message" id="msg_role_not_found">
             <field name="text">Role with name "%(name)s" not found.</field>
         </record>
-        <record model="ir.message" id="msg_deletes_disable">
+        <record model="ir.message" id="msg_deletes_disabled">
             <field name="text">Deletion of records is disabled.</field>
         </record>
     </data>
