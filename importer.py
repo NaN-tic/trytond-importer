@@ -1292,6 +1292,7 @@ class ImporterSourceColumn(ModelSQL, ModelView):
 class ImporterError(ModelSQL, ModelView):
     'Importer Error'
     __name__ = 'importer.error'
+    _rec_name = 'message'
     importer = fields.Many2One('importer', 'Importer', required=True,
         readonly=True, ondelete='CASCADE')
     message = fields.Text('Message', required=True, readonly=True)
