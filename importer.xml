@@ -288,6 +288,18 @@
             <field name="action" ref="report_importer_export"/>
         </record>
 
+        <record model="ir.action.act_window" id="act_error">
+            <field name="name">Errors</field>
+            <field name="res_model">importer.error</field>
+            <field name="domain"
+                eval="[If(Eval('active_ids', []) == [Eval('active_id')], ('importer', '=', Eval('active_id')), ('importer', 'in', Eval('active_ids')))]"
+                pyson="1"/>
+        </record>
+        <record model="ir.action.keyword" id="act_open_errors_keyword">
+            <field name="keyword">form_relate</field>
+            <field name="model">importer,-1</field>
+            <field name="action" ref="act_error"/>
+        </record>
 
     </data>
 </tryton>
