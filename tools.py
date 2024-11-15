@@ -91,6 +91,9 @@ class ImporterModel(ModelView):
         res = []
         if fields is None:
             fields = sorted(record._fields.keys())
+            fields.remove('id')
+            fields.remove('row_number')
+            fields.remove('metadata')
         for field in fields:
             if hasattr(record, field):
                 res.append(f'{field}: {getattr(record, field)}')
