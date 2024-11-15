@@ -900,6 +900,8 @@ class Importer(ModelSQL, ModelView):
 
         if self.logs:
             Log.delete(self.logs)
+
+        importer_records = set(importer_records)
         if setup.errors:
             to_save = []
             generics = set()
@@ -915,6 +917,7 @@ class Importer(ModelSQL, ModelView):
                     log.row_number = record.row_number
                     log.metadata = record.metadata
                     log.source_record = record.to_str(fields=setup.fields)
+                    importer_records.discard(record)
                 log.type = 'specific'
                 to_save.append(log)
             for message in generics:
@@ -926,7 +929,6 @@ class Importer(ModelSQL, ModelView):
             Log.save(to_save)
         if self.log_success:
             to_save = []
-            importer_records = set(importer_records)
             for model, pairs in setup._saved.items():
                 for pair in pairs:
                     record_id = pair[0]
