@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Last-Translator: Albert Cervera i Areny <albert@nan-tic.com>\n"
-"PO-Revision-Date: 2024-09-23 11:46+0200\n"
+"PO-Revision-Date: 2024-11-15 01:28+0100\n"
 "Project-Id-Version: \n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca_ES\n"
@@ -56,6 +56,14 @@ msgstr "Té capçalera?"
 msgctxt "field:importer,language:"
 msgid "Language"
 msgstr "Idioma"
+
+msgctxt "field:importer,log_success:"
+msgid "Log Success"
+msgstr "Registrar l'èxit"
+
+msgctxt "field:importer,logs:"
+msgid "Log"
+msgstr "Bitàcola"
 
 msgctxt "field:importer,method:"
 msgid "Format"
@@ -153,31 +161,6 @@ msgctxt "field:importer.column,value:"
 msgid "Value"
 msgstr "Valor"
 
-msgctxt "field:importer.error,importer:"
-msgid "Importer"
-msgstr "Importador"
-
-#, fuzzy
-msgctxt "field:importer.error,message:"
-msgid "Message"
-msgstr "Missatge"
-
-msgctxt "field:importer.error,on_error:"
-msgid "On Error"
-msgstr "En cas d'error"
-
-msgctxt "field:importer.error,record:"
-msgid "Record"
-msgstr "Registra"
-
-msgctxt "field:importer.error,row_number:"
-msgid "Row Number"
-msgstr "Número de fila"
-
-msgctxt "field:importer.error,type:"
-msgid "Type"
-msgstr "Tipus"
-
 msgctxt "field:importer.import.ask,binary_data:"
 msgid "Data"
 msgstr "Dades"
@@ -225,6 +208,34 @@ msgstr "Pare"
 msgctxt "field:importer.language,translatable:"
 msgid "Translatable"
 msgstr "Traduïble"
+
+msgctxt "field:importer.log,importer:"
+msgid "Importer"
+msgstr "Importador"
+
+msgctxt "field:importer.log,message:"
+msgid "Message"
+msgstr "Missatge"
+
+msgctxt "field:importer.log,on_error:"
+msgid "On Error"
+msgstr "En cas d'error"
+
+msgctxt "field:importer.log,record:"
+msgid "Record"
+msgstr "Registre"
+
+msgctxt "field:importer.log,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.log,source_record:"
+msgid "Source Record"
+msgstr "Registre d'origen"
+
+msgctxt "field:importer.log,type:"
+msgid "Type"
+msgstr "Tipus"
 
 msgctxt "field:importer.meta,binary_data:"
 msgid "Binary"
@@ -472,10 +483,6 @@ msgctxt "model:importer.column,name:"
 msgid "Importer Column"
 msgstr "Columna Importador"
 
-msgctxt "model:importer.error,name:"
-msgid "Importer Error"
-msgstr "Error d'importació"
-
 msgctxt "model:importer.import.ask,name:"
 msgid "Import Ask"
 msgstr "Importador Inici"
@@ -487,6 +494,10 @@ msgstr "Importa pregunta i error d'importació"
 msgctxt "model:importer.language,name:"
 msgid "Importer Language"
 msgstr "Importador d'idiomes"
+
+msgctxt "model:importer.log,name:"
+msgid "Importer Log"
+msgstr "Bitàcola de l'importador"
 
 msgctxt "model:importer.meta,name:"
 msgid "Importer Meta"
@@ -504,13 +515,17 @@ msgctxt "model:importer.user,name:"
 msgid "Importer User"
 msgstr "Importador d'usuaris"
 
+msgctxt "model:ir.action,name:"
+msgid "Import Errors"
+msgstr "Errors d'importació"
+
 msgctxt "model:ir.action,name:act_ask_and_import_wizard"
 msgid "Import"
 msgstr "Importar"
 
-msgctxt "model:ir.action,name:act_import_errors"
-msgid "Import Errors"
-msgstr "Errors d'importació"
+msgctxt "model:ir.action,name:act_import_log"
+msgid "Import Log"
+msgstr "Registre d'importació"
 
 msgctxt "model:ir.action,name:act_import_open"
 msgid "Imported Records"
@@ -527,6 +542,10 @@ msgstr "Importar"
 msgctxt "model:ir.action,name:act_importer"
 msgid "Importers"
 msgstr "Importadors"
+
+msgctxt "model:ir.action,name:act_log"
+msgid "Log"
+msgstr "Bitàcola"
 
 msgctxt "model:ir.action,name:report_excel_template"
 msgid "Excel Template"
@@ -568,7 +587,7 @@ msgctxt "model:ir.message,text:msg_company_not_found"
 msgid "Company %(company)s not found."
 msgstr "No s'ha trobat l'empresa %(company)s."
 
-msgctxt "model:ir.message,text:msg_deletes_disable"
+msgctxt "model:ir.message,text:msg_deletes_disabled"
 msgid "Deletion of records is disabled."
 msgstr "La supressió de registres està desactivada."
 
@@ -658,9 +677,9 @@ msgctxt "model:ir.model.button,string:importer_clean_deletes_button"
 msgid "Clean Deletes"
 msgstr "Neteja les eliminacions"
 
-msgctxt "model:ir.model.button,string:importer_clean_errors_button"
-msgid "Clean Errors"
-msgstr "Neteja els errors"
+msgctxt "model:ir.model.button,string:importer_clean_log_button"
+msgid "Clean Log"
+msgstr "Neteja la bitàcola"
 
 msgctxt "model:ir.model.button,string:importer_delete_imported_button"
 msgid "Delete Imported Records"
@@ -730,26 +749,6 @@ msgctxt "selection:importer,on_error:"
 msgid "Skip"
 msgstr "Salta"
 
-msgctxt "selection:importer.error,on_error:"
-msgid "Log"
-msgstr "Registra"
-
-msgctxt "selection:importer.error,on_error:"
-msgid "Raise Error"
-msgstr "Llança l'error"
-
-msgctxt "selection:importer.error,on_error:"
-msgid "Skip"
-msgstr "Salta"
-
-msgctxt "selection:importer.error,type:"
-msgid "Generic"
-msgstr "Genèric"
-
-msgctxt "selection:importer.error,type:"
-msgid "Specific"
-msgstr "Específic"
-
 msgctxt "selection:importer.import.ask,data_source:"
 msgid "Copy & Paste"
 msgstr "Copiar i enganxar"
@@ -765,6 +764,30 @@ msgstr "SQL"
 msgctxt "selection:importer.import.ask,data_source:"
 msgid "URL"
 msgstr "URL"
+
+msgctxt "selection:importer.log,on_error:"
+msgid "Log"
+msgstr "Bitàcola"
+
+msgctxt "selection:importer.log,on_error:"
+msgid "Raise Error"
+msgstr "Mostra l'error"
+
+msgctxt "selection:importer.log,on_error:"
+msgid "Skip"
+msgstr "Saltar"
+
+msgctxt "selection:importer.log,type:"
+msgid "Generic"
+msgstr "Genèric"
+
+msgctxt "selection:importer.log,type:"
+msgid "Specific"
+msgstr "Específic"
+
+msgctxt "selection:importer.log,type:"
+msgid "Success"
+msgstr "Èxit"
 
 msgctxt "view:importer.import.ask.error:"
 msgid ""
