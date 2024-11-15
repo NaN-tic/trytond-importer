@@ -911,8 +911,10 @@ class Importer(ModelSQL, ModelView):
                     log.message = message % kwargs
                 else:
                     log.message = message
-                log.row_number = record and record.row_number
-                log.source_record = record.to_str(fields=setup.fields)
+                if record:
+                    log.row_number = record.row_number
+                    log.metadata = record.metadata
+                    log.source_record = record.to_str(fields=setup.fields)
                 log.type = 'specific'
                 to_save.append(log)
             for message in generics:
