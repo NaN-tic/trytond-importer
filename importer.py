@@ -850,7 +850,10 @@ class Importer(ModelSQL, ModelView):
             new_records = []
             count = 0
             batch_start = time.time()
+            importer_records = []
             for record in self.get_records(data=data):
+                if self.log_success:
+                    importer_records.append(record)
                 # We do not sort based on context so there can be performance issues
                 # if the context changes often
                 context = record.importer_context()
@@ -921,16 +924,32 @@ class Importer(ModelSQL, ModelView):
             Log.save(to_save)
         if self.log_success:
             to_save = []
+            importer_records = set(importer_records)
             for model, pairs in setup._saved.items():
                 for pair in pairs:
+                    record_id = pair[0]
+                    importer_record = pair[1]
+                    importer_records.discard(importer_record)
+
                     log = Log()
                     log.importer = self
-                    log.message = pair[1].metadata
-                    log.row_number = pair[1] and pair[1].row_number
-                    log.record = (model, pair[0])
-                    log.source_record = pair[1].to_str(fields=setup.fields)
+                    if importer_record:
+                        log.row_number = importer_record.row_number
+                        log.metadata = importer_record.metadata
+                        log.source_record = importer_record.to_str(
+                            fields=setup.fields)
+                    log.record = (model, record_id)
                     log.type = 'success'
                     to_save.append(log)
+
+            for importer_record in importer_records:
+                log = Log()
+                log.importer = self
+                log.row_number = importer_record.row_number
+                log.metadata = importer_record.metadata
+                log.source_record = importer_record.to_str(fields=setup.fields)
+                log.type = 'success'
+                to_save.append(log)
             Log.save(to_save)
 
         self.elapsed = datetime.timedelta(seconds=time.time() - start)
@@ -1326,6 +1345,7 @@ class ImporterLog(ModelSQL, ModelView):
     message = fields.Text('Message', readonly=True, states={
             'required': Eval('type') != 'success',
             })
+    metadata = fields.Text('Metadata', readonly=True)
     row_number = fields.Integer('Row Number', readonly=True, states={
             'invisible': Eval('type') == 'generic',
             })

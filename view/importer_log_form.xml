@@ -12,4 +12,6 @@
     <field name="message" colspan="6"/>
     <separator name="record" colspan="6"/>
     <field name="record" colspan="6" height="200"/>
+    <separator name="metadata" colspan="6"/>
+    <field name="metadata" colspan="6"/>
 </form>

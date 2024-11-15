@@ -1,9 +1,10 @@
 <tree>
     <field name="importer"/>
     <field name="type"/>
-    <field name="message" expand="2"/>
-    <field name="on_error"/>
+    <field name="message" expand="2" optional="0"/>
+    <field name="on_error" optional="0"/>
     <field name="row_number"/>
-    <field name="source_record" optional="1" expand="2"/>
-    <field name="record" optional="1" expand="2"/>
+    <field name="metadata" expand="2" optional="1"/>
+    <field name="source_record" expand="2" optional="1"/>
+    <field name="record" expand="2" optional="1"/>
 </tree>
