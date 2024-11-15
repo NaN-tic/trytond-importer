@@ -312,7 +312,11 @@ class Importer(ModelSQL, ModelView):
             'importer', 'Source Columns', states={
                 'invisible': ~Eval('data_source_visible'),
                 })
-    errors = fields.One2Many('importer.error', 'importer', 'Errors')
+    logs = fields.One2Many('importer.log', 'importer', 'Log')
+    errors = fields.One2Many('importer.log', 'importer', 'Errors', domain=[
+            ('type', '!=', 'success'),
+            ])
+    log_success = fields.Boolean('Log Success')
     sample_size = fields.Integer('Sample Size', help="Number of records to "
         "import with the sample button.")
     elapsed = fields.TimeDelta('Elapsed Time', readonly=True)
@@ -364,7 +368,7 @@ class Importer(ModelSQL, ModelView):
                     'icon': 'importer-upload',
                     'invisible': ~Bool(Eval('data_source').in_(['sql'])),
                     },
-                'clean_errors': {
+                'clean_log': {
                     'icon': 'tryton-clear',
                     'invisible': ~Bool(Eval('errors')),
                     },
@@ -453,11 +457,10 @@ class Importer(ModelSQL, ModelView):
 
     @classmethod
     @ModelView.button
-    def clean_errors(cls, importers):
+    def clean_log(cls, importers):
         pool = Pool()
-        Error = pool.get('importer.error')
-
-        Error.delete(sum([x.errors for x in importers], ()))
+        Log = pool.get('importer.log')
+        Log.delete(sum([x.logs for x in importers], ()))
 
     @classmethod
     @ModelView.button
@@ -799,7 +802,7 @@ class Importer(ModelSQL, ModelView):
     def data_to_records(self, data=None, sample=None):
         pool = Pool()
         Model = pool.get(self.model.model)
-        Error = pool.get('importer.error')
+        Log = pool.get('importer.log')
 
         start = time.time()
         if not hasattr(Model, 'importer_start'):
@@ -881,30 +884,42 @@ class Importer(ModelSQL, ModelView):
                     len(batch), len(subrecords), time.time() - batch_start,
                     len(new_records), count, time.time() - start)
 
-        if self.errors:
-            Error.delete(self.errors)
+        if self.logs:
+            Log.delete(self.logs)
         if setup.errors:
             to_save = []
             generics = set()
             for record, message, kwargs in setup.errors[:setup.limit]:
                 generics.add(message)
-                error = Error()
-                error.importer = self
+                log = Log()
+                log.importer = self
                 if kwargs:
-                    error.message = message % kwargs
+                    log.message = message % kwargs
                 else:
-                    error.message = message
-                error.row_number = record and record.row_number
-                error.record = tools.record_to_str(record, fields=setup.fields)
-                error.type = 'specific'
-                to_save.append(error)
+                    log.message = message
+                log.row_number = record and record.row_number
+                log.source_record = tools.record_to_str(record, fields=setup.fields)
+                log.type = 'specific'
+                to_save.append(log)
             for message in generics:
-                error = Error()
-                error.importer = self
-                error.message = message
-                error.type = 'generic'
-                to_save.insert(0, error)
-            Error.save(to_save)
+                log = Log()
+                log.importer = self
+                log.message = message
+                log.type = 'generic'
+                to_save.insert(0, log)
+            Log.save(to_save)
+        if self.log_success:
+            to_save = []
+            for model, pairs in setup._saved.items():
+                for pair in pairs:
+                    log = Log()
+                    log.importer = self
+                    log.row_number = pair[1] and pair[1].row_number
+                    log.record = (model, pair[0])
+                    log.source_record = tools.record_to_str(pair[1], fields=setup.fields)
+                    log.type = 'success'
+                    to_save.append(log)
+            Log.save(to_save)
 
         self.elapsed = datetime.timedelta(seconds=time.time() - start)
         self.deletes = setup.deletes()
@@ -1289,25 +1304,36 @@ class ImporterSourceColumn(ModelSQL, ModelView):
                 column.examples = ' | '.join([value_to_str(x) for x in values])
 
 
-class ImporterError(ModelSQL, ModelView):
-    'Importer Error'
-    __name__ = 'importer.error'
+class ImporterLog(ModelSQL, ModelView):
+    'Importer Log'
+    __name__ = 'importer.log'
     _rec_name = 'message'
     importer = fields.Many2One('importer', 'Importer', required=True,
         readonly=True, ondelete='CASCADE')
-    message = fields.Text('Message', required=True, readonly=True)
+    message = fields.Text('Message', readonly=True, states={
+            'required': Eval('type') != 'success',
+            })
     row_number = fields.Integer('Row Number', readonly=True, states={
             'invisible': Eval('type') == 'generic',
             })
-    record = fields.Text('Record', readonly=True, states={
+    source_record = fields.Text('Source Record', readonly=True, states={
             'invisible': Eval('type') == 'generic',
             })
+    record = fields.Reference('Record', selection='get_models', readonly=True,
+        states={
+            'invisible': Eval('type') != 'success',
+            })
     on_error = fields.Selection([
+            (None, ''),
             ('skip', 'Skip'),
             ('raise', 'Raise Error'),
             ('log', 'Log'),
-            ], 'On Error', required=True)
+            ], 'On Error', states={
+            'invisible': Eval('type') == 'success',
+            'required': Eval('type') != 'success',
+            })
     type = fields.Selection([
+            ('success', 'Success'),
             ('generic', 'Generic'),
             ('specific', 'Specific'),
             ], 'Type', required=True, readonly=True)
@@ -1315,6 +1341,23 @@ class ImporterError(ModelSQL, ModelView):
     @staticmethod
     def default_on_error():
         return 'skip'
+
+    @classmethod
+    def __setup__(cls):
+        super().__setup__()
+        cls._order.insert(0, ('importer', 'ASC'))
+        cls._order.insert(1, ('row_number', 'ASC'))
+
+    @staticmethod
+    def get_models():
+        pool = Pool()
+        Model = pool.get('ir.model')
+        ModelAccess = pool.get('ir.model.access')
+        models = Model.get_name_items()
+        if Transaction().check_access:
+            access = ModelAccess.get_access([m for m, _ in models])
+            models = [(m, n) for m, n in models if access[m]['read']]
+        return [(None, '')] + models
 
 
 class ImportAsk(ModelView):
@@ -1350,7 +1393,7 @@ class AskAndImport(Wizard):
             Button('Import', 'import_', 'importer-upload', default=True),
             ])
     import_ = StateAction('importer.act_import_open')
-    errors = StateAction('importer.act_import_errors')
+    errors = StateAction('importer.act_import_log')
     error_form = StateView('importer.import.ask.error', 'importer.import_ask_error_view_form', [
             Button('Ok', 'end', 'tryton-ok'),
             ])

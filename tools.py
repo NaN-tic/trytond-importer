@@ -61,7 +61,7 @@ class Setup(dict):
         self.errors = []
         self.fields = []
         self.current_record = None
-        self.saved = {}
+        self._saved = {}
         self.filename = None
 
     def error(self, message, record=None, **kwargs):
@@ -78,13 +78,17 @@ class Setup(dict):
     def get():
         return Transaction().context.get('importer_setup')
 
+    def saved(self, model, pairs):
+        self._saved.setdefault(model, []).extend(
+            [(x[0].id, x[1]) for x in pairs])
+
     def deletes(self):
         pool = Pool()
 
         res = []
-        for model, ids in self.saved.items():
+        for model, to_save in self._saved.items():
             Model = pool.get(model)
-            ids = ', '.join(str(x) for x in ids)
+            ids = ', '.join(str(x[0]) for x in to_save)
             res.append(f'DELETE FROM {Model._table} WHERE id IN ({ids});')
         return '\n'.join(res)
 
@@ -138,7 +142,7 @@ class ImporterModel(ModelView):
                 logger.info('Saving %d records of %s', len(records), Model.__name__)
                 to_save = [x[0] for x in records]
                 Model.save(to_save)
-                setup.saved.setdefault(Model.__name__, []).extend([x.id for x in to_save])
+                setup.saved(Model.__name__, records)
                 cursor.execute('RELEASE SAVEPOINT importer_save')
                 logger.info('Saved.')
             except (UserError, psycopg2.errors.InvalidTextRepresentation) as e:
