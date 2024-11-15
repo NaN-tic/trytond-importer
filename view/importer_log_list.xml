@@ -4,5 +4,6 @@
     <field name="message" expand="2"/>
     <field name="on_error"/>
     <field name="row_number"/>
+    <field name="source_record" optional="1" expand="2"/>
     <field name="record" optional="1" expand="2"/>
 </tree>

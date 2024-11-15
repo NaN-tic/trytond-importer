@@ -43,7 +43,7 @@ def register():
         importer.Importer,
         importer.ImporterColumn,
         importer.ImporterSourceColumn,
-        importer.ImporterError,
+        importer.ImporterLog,
         importer.ImportAsk,
         importer.AskAndImportError,
         ir.Importer,

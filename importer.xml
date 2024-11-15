@@ -83,13 +83,13 @@
             <field name="button" ref="importer_update_source_columns_button"/>
             <field name="group" ref="group_importer"/>
         </record>
-        <record model="ir.model.button" id="importer_clean_errors_button">
-            <field name="name">clean_errors</field>
-            <field name="string">Clean Errors</field>
+        <record model="ir.model.button" id="importer_clean_log_button">
+            <field name="name">clean_log</field>
+            <field name="string">Clean Log</field>
             <field name="model">importer</field>
         </record>
-        <record model="ir.model.button-res.group" id="importer_clean_errors_button_group_importer">
-            <field name="button" ref="importer_clean_errors_button"/>
+        <record model="ir.model.button-res.group" id="importer_clean_log_button_group_importer">
+            <field name="button" ref="importer_clean_log_button"/>
             <field name="group" ref="group_importer"/>
         </record>
         <record model="ir.model.button" id="importer_detect_button">
@@ -204,25 +204,25 @@
             <field name="perm_delete" eval="True"/>
         </record>
 
-        <record model="ir.ui.view" id="importer_error_view_list">
-            <field name="model">importer.error</field>
+        <record model="ir.ui.view" id="importer_log_view_list">
+            <field name="model">importer.log</field>
             <field name="type">tree</field>
-            <field name="name">importer_error_list</field>
+            <field name="name">importer_log_list</field>
         </record>
-        <record model="ir.ui.view" id="importer_error_view_form">
-            <field name="model">importer.error</field>
+        <record model="ir.ui.view" id="importer_log_view_form">
+            <field name="model">importer.log</field>
             <field name="type">form</field>
-            <field name="name">importer_error_form</field>
+            <field name="name">importer_log_form</field>
         </record>
-        <record model="ir.model.access" id="access_importer_error">
-            <field name="model">importer.error</field>
+        <record model="ir.model.access" id="access_importer_log">
+            <field name="model">importer.log</field>
             <field name="perm_read" eval="False"/>
             <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>
             <field name="perm_delete" eval="False"/>
         </record>
-        <record model="ir.model.access" id="access_importer_error_importer">
-            <field name="model">importer.error</field>
+        <record model="ir.model.access" id="access_importer_log_importer">
+            <field name="model">importer.log</field>
             <field name="group" ref="group_importer"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
@@ -252,10 +252,6 @@
             <field name="name">Imported Records</field>
             <field name="res_model">importer</field>
 	        <field name="order" eval="[('id', 'ASC')]" pyson="1"/>
-        </record>
-        <record model="ir.action.act_window" id="act_import_errors">
-            <field name="name">Import Errors</field>
-            <field name="res_model">importer.error</field>
         </record>
         <menuitem parent="menu_importer" action="act_ask_and_import_wizard" id="menu_import_wizard" sequence="30"/>
 
@@ -288,17 +284,24 @@
             <field name="action" ref="report_importer_export"/>
         </record>
 
-        <record model="ir.action.act_window" id="act_error">
-            <field name="name">Errors</field>
-            <field name="res_model">importer.error</field>
+        <record model="ir.action.act_window" id="act_import_log">
+            <field name="name">Import Log</field>
+            <field name="res_model">importer.log</field>
+        </record>
+
+
+        <record model="ir.action.act_window" id="act_log">
+            <field name="name">Log</field>
+            <field name="res_model">importer.log</field>
             <field name="domain"
                 eval="[If(Eval('active_ids', []) == [Eval('active_id')], ('importer', '=', Eval('active_id')), ('importer', 'in', Eval('active_ids')))]"
                 pyson="1"/>
+            <field name="search_value" eval="[('type', '!=', 'success')]" pyson="1"/>
         </record>
-        <record model="ir.action.keyword" id="act_open_errors_keyword">
+        <record model="ir.action.keyword" id="act_open_log_keyword">
             <field name="keyword">form_relate</field>
             <field name="model">importer,-1</field>
-            <field name="action" ref="act_error"/>
+            <field name="action" ref="act_log"/>
         </record>
 
     </data>
