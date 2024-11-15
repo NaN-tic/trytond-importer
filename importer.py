@@ -313,9 +313,7 @@ class Importer(ModelSQL, ModelView):
                 'invisible': ~Eval('data_source_visible'),
                 })
     logs = fields.One2Many('importer.log', 'importer', 'Log')
-    errors = fields.One2Many('importer.log', 'importer', 'Errors', domain=[
-            ('type', '!=', 'success'),
-            ])
+    errors = fields.Function(fields.One2Many('importer.log', 'importer', 'Errors'), 'get_errors')
     log_success = fields.Boolean('Log Success')
     sample_size = fields.Integer('Sample Size', help="Number of records to "
         "import with the sample button.")
@@ -336,10 +334,17 @@ class Importer(ModelSQL, ModelView):
         if langs:
             return langs[0].id
 
-    def get_language_code(self):
-        if self.language:
-            return self.language.code
-        return Transaction().context.get('language', 'en')
+    @staticmethod
+    def default_on_error():
+        return 'skip'
+
+    @staticmethod
+    def default_has_header():
+        return True
+
+    @staticmethod
+    def default_use_header():
+        return True
 
     @classmethod
     def __setup__(cls):
@@ -382,17 +387,23 @@ class Importer(ModelSQL, ModelView):
                     },
                 })
 
-    @staticmethod
-    def default_on_error():
-        return 'skip'
+    def get_language_code(self):
+        if self.language:
+            return self.language.code
+        return Transaction().context.get('language', 'en')
 
-    @staticmethod
-    def default_has_header():
-        return True
+    @classmethod
+    def get_errors(cls, importers, name):
+        Log = Pool().get('importer.log')
 
-    @staticmethod
-    def default_use_header():
-        return True
+        errors = Log.search([
+                ('importer', 'in', importers),
+                ('type', '!=', 'success'),
+                ])
+        res = {x.id: [] for x in importers}
+        for error in errors:
+            res[error.importer.id].append(error.id)
+        return res
 
     @fields.depends('method')
     def on_change_method(self):
