@@ -36,16 +36,6 @@ def nearest_text(text, texts):
     return best
 
 
-def record_to_str(record, fields=None):
-    res = []
-    if fields is None:
-        fields = sorted(record._fields.keys())
-    for field in fields:
-        if hasattr(record, field):
-            res.append(f'{field}: {getattr(record, field)}')
-    return ', '.join(res)
-
-
 # The reason we inherit from dict is that a Setup instance will be stored in
 # the context which Tryton will try to serialize (convert to json) if it needs to
 # execute a function in the worker. Trying to serialize Setup will crash unless
@@ -95,6 +85,16 @@ class Setup(dict):
 
 class ImporterModel(ModelView):
     row_number = fields.Integer('Row Number', readonly=True)
+    metadata = fields.Text('Metadata')
+
+    def to_str(record, fields=None):
+        res = []
+        if fields is None:
+            fields = sorted(record._fields.keys())
+        for field in fields:
+            if hasattr(record, field):
+                res.append(f'{field}: {getattr(record, field)}')
+        return ', '.join(res)
 
     @classmethod
     def importer_start(cls):

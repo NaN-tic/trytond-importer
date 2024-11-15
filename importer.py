@@ -552,7 +552,7 @@ class Importer(ModelSQL, ModelView):
                     to_delete.append(column)
 
             for name, field in needed.items():
-                if name in ('id', 'row_number'):
+                if name in ('id', 'row_number', 'metadata'):
                     continue
                 column = Column()
                 column.importer = importer
@@ -898,7 +898,7 @@ class Importer(ModelSQL, ModelView):
                 else:
                     log.message = message
                 log.row_number = record and record.row_number
-                log.source_record = tools.record_to_str(record, fields=setup.fields)
+                log.source_record = record.to_str(fields=setup.fields)
                 log.type = 'specific'
                 to_save.append(log)
             for message in generics:
@@ -914,9 +914,10 @@ class Importer(ModelSQL, ModelView):
                 for pair in pairs:
                     log = Log()
                     log.importer = self
+                    log.message = pair[1].metadata
                     log.row_number = pair[1] and pair[1].row_number
                     log.record = (model, pair[0])
-                    log.source_record = tools.record_to_str(pair[1], fields=setup.fields)
+                    log.source_record = pair[1].to_str(fields=setup.fields)
                     log.type = 'success'
                     to_save.append(log)
             Log.save(to_save)
@@ -990,6 +991,7 @@ class Importer(ModelSQL, ModelView):
 
             if update_row_number:
                 record.row_number = row_number
+                record.metadata = None
 
             yield record
 
