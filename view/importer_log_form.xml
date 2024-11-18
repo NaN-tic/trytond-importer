@@ -8,10 +8,12 @@
     <field name="on_error"/>
     <label name="row_number"/>
     <field name="row_number"/>
+    <label name="record" colspan="6"/>
+    <field name="record" colspan="6" height="200"/>
     <separator name="message" colspan="6"/>
     <field name="message" colspan="6"/>
-    <separator name="record" colspan="6"/>
-    <field name="record" colspan="6" height="200"/>
+    <separator name="source_record" colspan="6"/>
+    <field name="source_record" colspan="6" height="200"/>
     <separator name="metadata" colspan="6"/>
     <field name="metadata" colspan="6"/>
 </form>
