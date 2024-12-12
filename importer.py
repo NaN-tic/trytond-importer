@@ -243,6 +243,8 @@ class Importer(ModelSQL, ModelView):
     __name__ = 'importer'
     name = fields.Char('Name', required=True)
     method = fields.Selection('get_methods', 'Format', required=True)
+    requires_records = fields.Function(fields.Boolean('Requires Records'),
+        'get_requires_records')
     language = fields.Many2One('ir.lang', 'Language',
         help='Language to use, if different from the one of the user.')
     model = fields.Function(fields.Many2One('ir.model', 'Model'),
@@ -353,9 +355,11 @@ class Importer(ModelSQL, ModelView):
         cls._buttons.update({
                 'update_columns': {
                     'icon': 'tryton-refresh',
+                    'invisible': ~Bool(Eval('requires_records')),
                     },
                 'update_source_columns': {
                     'icon': 'tryton-refresh',
+                    'invisible': ~Bool(Eval('requires_records')),
                     },
                 'detect': {
                     'icon': 'importer-detect',
@@ -363,7 +367,7 @@ class Importer(ModelSQL, ModelView):
                     },
                 'import_': {
                     'icon': 'importer-upload',
-                    'invisible': ~Bool(Eval('data_source')),
+                    'invisible': ~Bool(Eval('data_source')) & Bool(Eval('requires_records')),
                     },
                 'import_sample': {
                     'icon': 'importer-upload',
@@ -768,8 +772,7 @@ class Importer(ModelSQL, ModelView):
         info = self._get_methods()
         return info[self.method]['chunked']
 
-    @property
-    def requires_records(self):
+    def get_requires_records(self, name):
         # Some importers (such as country) don't really require records as
         # input
         info = self._get_methods()
