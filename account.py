@@ -21,14 +21,15 @@ class ImporterAccountMove(ImporterModel):
     account_name = fields.Char('Account Name')
     party_code = fields.Char('Party Code')
     party_name = fields.Char('Party Name')
-    debit = fields.Float('Debit')
-    credit = fields.Float('Credit')
+    debit = fields.Numeric('Debit')
+    credit = fields.Numeric('Credit')
     description = fields.Char('Description')
 
     @classmethod
     def importer_start(cls):
         pool = Pool()
         Chart = pool.get('importer.account.chart')
+        Company = pool.get('company.company')
 
         setup = Setup.get()
         cache = setup.cache
@@ -48,6 +49,7 @@ class ImporterAccountMove(ImporterModel):
                 ])
         cache.account_party_codes = Chart.get_account_party_codes()
         cache.periods = {}
+        cache.currency = Company(company_id).currency
 
     def importer_header(self, importing=True):
         return (self.number, self.effective_date)
@@ -95,6 +97,7 @@ class ImporterAccountMove(ImporterModel):
 
         setup = Setup.get()
         cache = setup.cache
+        currency = cache.currency
 
         create_party = False
         create_account = False
@@ -233,8 +236,8 @@ class ImporterAccountMove(ImporterModel):
             line.move = move
             line.account = account
             line.description = record.description
-            line.debit = Decimal("%.2f" % (debit or 0))
-            line.credit = Decimal("%.2f" % (credit or 0))
+            line.debit = currency.round(debit)
+            line.credit = currency.round(credit)
             if account.party_required:
                 line.party = party
             if account.id is not None and account.second_currency:
