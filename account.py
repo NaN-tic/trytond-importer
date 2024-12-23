@@ -24,6 +24,7 @@ class ImporterAccountMove(ImporterModel):
     debit = fields.Numeric('Debit')
     credit = fields.Numeric('Credit')
     description = fields.Char('Description')
+    maturity_date = fields.Date('Maturity Date')
 
     @classmethod
     def importer_start(cls):
@@ -236,6 +237,7 @@ class ImporterAccountMove(ImporterModel):
             line.move = move
             line.account = account
             line.description = record.description
+            line.maturity_date = record.maturity_date
             line.debit = currency.round(debit)
             line.credit = currency.round(credit)
             if account.party_required:
@@ -647,4 +649,3 @@ class Importer(metaclass=PoolMeta):
             FiscalYear.create_period([fiscalyear])
             imported.append(fiscalyear)
         return imported
-
