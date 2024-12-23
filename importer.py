@@ -356,10 +356,12 @@ class Importer(ModelSQL, ModelView):
                 'update_columns': {
                     'icon': 'tryton-refresh',
                     'invisible': ~Bool(Eval('requires_records')),
+                    'depends': ['requires_records'],
                     },
                 'update_source_columns': {
                     'icon': 'tryton-refresh',
                     'invisible': ~Bool(Eval('requires_records')),
+                    'depends': ['requires_records'],
                     },
                 'detect': {
                     'icon': 'importer-detect',
@@ -368,6 +370,7 @@ class Importer(ModelSQL, ModelView):
                 'import_': {
                     'icon': 'importer-upload',
                     'invisible': ~Bool(Eval('data_source')) & Bool(Eval('requires_records')),
+                    'depends': ['data_source', 'requires_records'],
                     },
                 'import_sample': {
                     'icon': 'importer-upload',
