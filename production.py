@@ -119,6 +119,7 @@ class Importer(metaclass=PoolMeta):
                     else:
                         values = BomOutput.default_get(BomOutput._fields.keys(), with_rec_name=False)
                         line = BomOutput(**values)
+                    line.bom = bom
                     line.product = product
                     uom = getattr(record, type_+'_uom')
                     if uom:
