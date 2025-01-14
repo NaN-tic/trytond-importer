@@ -810,7 +810,7 @@ msgstr "Columnas de importador"
 
 msgctxt "wizard_button:importer.ask_and_import,ask,end:"
 msgid "Cancel"
-msgstr "Cancel·lar"
+msgstr "Cancelar"
 
 msgctxt "wizard_button:importer.ask_and_import,ask,import_:"
 msgid "Import"
