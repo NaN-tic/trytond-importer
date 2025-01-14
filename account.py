@@ -580,7 +580,7 @@ class Importer(metaclass=PoolMeta):
             create_chart.transition_create_account()
             create_chart.properties.company = company
             create_chart.properties.account_receivable = None
-            domain = [('type.receivable', '=', True)]
+            domain = [('type.receivable', '=', True), ('party_required', '=', True)]
             if record.receivable_code:
                 domain.append(('code', '=', record.receivable_code))
 
@@ -588,7 +588,7 @@ class Importer(metaclass=PoolMeta):
             if accounts:
                 create_chart.properties.account_receivable, = accounts
             create_chart.properties.account_payable = None
-            domain = [('type.payable', '=', True)]
+            domain = [('type.payable', '=', True), ('party_required', '=', True)]
             if record.payable_code:
                 domain.append(('code', '=', record.payable_code))
             accounts = Account.search(domain, limit=1)

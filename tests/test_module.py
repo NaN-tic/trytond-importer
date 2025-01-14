@@ -118,7 +118,7 @@ class ImporterTestCase(ModuleTestCase):
 
         self.import_('account_create_chart', [{
                 'company_name': company.party.name,
-                'chart_name': 'Minimal Account Chart',
+                'chart_name': 'Universal Chart of Accounts',
                 }])
 
         Account = pool.get('account.account')
