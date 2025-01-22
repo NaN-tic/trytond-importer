@@ -213,7 +213,8 @@ class Importer(metaclass=PoolMeta):
                 # TODO base_price
                 line.unit_price = record.unit_price
                 line.quantity = record.quantity
-                line.on_change_quantity()
+                if hasattr(Line, 'on_change_quantity'):
+                    line.on_change_quantity()
                 line.on_change_account()
                 line.amount = line.on_change_with_amount()
                 lines_to_save.append(line)
