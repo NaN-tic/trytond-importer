@@ -4,6 +4,7 @@ from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.tools import grouped_slice
 from trytond.transaction import Transaction
+from trytond.modules.product import round_price
 from datetime import datetime
 
 
@@ -204,18 +205,18 @@ class Importer(metaclass=PoolMeta):
                         template.active = True
                         template.validated = True
                         template.save()
-                line.product = product
-                line.on_change_product()
+                if record.product is not None:
+                    line.product = product
+                    line.on_change_product()
                 if 'product_package' in Line._fields:
                     line.product_package = None
                     line.package_quantity = None
-                line.account.company.party.name
                 # TODO base_price
-                line.unit_price = record.unit_price
-                line.quantity = record.quantity
-                if hasattr(Line, 'on_change_quantity'):
+                if record.quantity is not None:
+                    line.quantity = record.quantity
                     line.on_change_quantity()
-                line.on_change_account()
+                if record.unit_price is not None:
+                    line.unit_price = round_price(record.unit_price)
                 line.amount = line.on_change_with_amount()
                 lines_to_save.append(line)
                 invoice.lines += (line,)
