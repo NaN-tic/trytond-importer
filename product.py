@@ -486,7 +486,8 @@ class ImporterProductAccountAssetPercentatgeDepends(metaclass=PoolMeta):
 
     depreciation_percentatge = fields.Char('Depreciation Percentatge')
 
-class ImporterProductAttributes(metaclass=PoolMeta):
+class ImporterProductAttributes(ImporterModel):
+    'Importer Product Attributes'
     __name__ = 'importer.product.attributes'
 
     product_code = fields.Char('Product Code')
@@ -496,7 +497,6 @@ class ImporterProductAttributes(metaclass=PoolMeta):
 
     @classmethod
     def importer_start(cls):
-        super().importer_start()
         cache = Setup.get().cache
         cache.attribute_sets = Cache('product.attribute.set', 'name')
         cache.attributes = Cache('product.attribute', 'name')
@@ -508,6 +508,102 @@ class ImporterProductAttributes(metaclass=PoolMeta):
                 ('code', '!=', None),
                 ('code', '!=', ''),
                 ], required=False)
+
+    def importer_context(self):
+        res = super().importer_context()
+        setup = Setup.get()
+        if 'company' in setup.fields and self.company:
+            company = setup.cache.companies.get(self.company)
+            if company:
+                res['company'] = company.id
+        return res
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        Product = pool.get('product.product')
+        Template = pool.get('product.template')
+        ProductAttribute = pool.get('product.product.attribute')
+        UOM = pool.get('product.uom')
+        setup = Setup.get()
+        cache = setup.cache
+
+        template_default_values = Template.default_get(Template._fields.keys(),
+                with_rec_name=False)
+        product_default_values = Product.default_get(Product._fields.keys(),
+                with_rec_name=False)
+        default_uom = UOM.search([('symbol', '=', 'u')])[0]
+
+        to_save = []
+        checked_codes = []
+        for record in records:
+            setup.current_record = record
+            # if not record.product_code:
+            #     continue
+            product = None
+            template = None
+            code = record.product_code
+            product = cache.products.get(code)
+
+            if product:
+                template = product.template
+            if not template:
+                template = Template(**template_default_values)
+                template.name = code
+                template.code = code
+                template.default_uom = default_uom
+                template.products = []
+                product = Product(**product_default_values)
+                template.products += (product,)
+                cache.products[code] = product
+            if code not in checked_codes:
+                to_save.append((template, record))
+            checked_codes.append(code)
+            if 'attribute_set' in setup.fields and record.attribute_set:
+                attribute_set = cache.attribute_sets.get(record.attribute_set)
+                attribute = cache.attributes.get(record.attribute)
+                # if not attribute_set or not attribute:
+                #     continue
+                template.attribute_set = attribute_set
+                attr_type =  attribute.type_
+                value = record.attribute_value
+                if value:
+                    match attr_type:
+                        case 'char' | 'selection':
+                            pass
+                        case 'numeric':
+                            value = Decimal(value)
+                        case 'float':
+                            value = float(value)
+                        case 'boolean':
+                            value = bool(value)
+                        case 'integer':
+                            value = int(value)
+                        case 'date':
+                            value = datetime.strptime(value,
+                                                        '%Y-%m-%d').date()
+                        case 'datetime':
+                            value = datetime.strptime(value,
+                                                        '%Y-%m-%d %H:%M:%S')
+                        case _:
+                            value = None
+
+                product_attribute = None
+                product_attributes = list(getattr(template, 'attributes', []))
+                for attribute_item in product_attributes:
+                    if attribute_item.attribute == attribute:
+                        product_attribute = attribute_item
+                        break
+                if not product_attribute:
+                    product_attribute = ProductAttribute()
+                    product_attribute.attribute = attribute
+                setattr(product_attribute, 'value_%s' % attr_type, value)
+                product_attributes.append(product_attribute)
+                template.attributes = product_attributes
+
+        cls.importer_save(to_save)
+        return [x[0] for x in to_save]
+
 
 class ImporterProductCodes(ModelView):
     'Importer Product'
@@ -626,79 +722,6 @@ class Importer(metaclass=PoolMeta):
 
         return configs
 
-    @classmethod
-    def import_product_atrributes(cls, records):
-        pool = Pool()
-        Product = pool.get('product.product')
-        Template = pool.get('product.template')
-        ProductAttribute = pool.get('product.product.attribute')
-        setup = Setup.get()
-        cache = setup.cache
-
-        template_default_values = Template.default_get(Template._fieldss.keys(),
-                with_rec_name=False)
-        product_default_values = Product.default_get(Product._fields.keys(),
-                with_rec_name=False)
-
-        to_save = []
-        for record in records:
-            if not record.product_code:
-                continue
-            product = None
-            template = None
-            product = cache.products.get(record.code)
-
-            if product:
-                template = product.template
-            if not template:
-                template = Template(**template_default_values)
-                template.products = []
-                product = Product(**product_default_values)
-                template.products += (product,)
-
-            to_save.append((template, record))
-
-            if 'attribute_set' in setup.field:
-                if record.attribute_set:
-                    attribute_set = cache.attribute_sets.get(record.attribute_set)
-                    attribute = cache.attributes.get(record.attribute)
-                    if not attribute_set or not attribute:
-                        continue
-                    template.attribute_set = attribute_set
-                    attr_type =  attribute.type_
-                    value = record.attribute_value
-                    if value:
-                        match attr_type:
-                            case 'char' | 'selection':
-                                pass
-                            case 'numeric':
-                                value = Decimal(value)
-                            case 'float':
-                                value = float(value)
-                            case 'boolean':
-                                value = bool(value)
-                            case 'integer':
-                                value = int(value)
-                            case 'date':
-                                value = datetime.strptime(value,
-                                                          '%Y-%m-%d').date()
-                            case 'datetime':
-                                value = datetime.strptime(value,
-                                                          '%Y-%m-%d %H:%M:%S')
-                            case _:
-                                value = None
-                    product_attribute = None
-                    for attribute_item in template.attributes:
-                        if attribute_item.attribute == attribute:
-                            product_attribute = attribute_item
-                            break
-                    if not product_attribute:
-                        product_attribute = ProductAttribute()
-                        product_attribute.attribute = attribute
-                        template.attributes.append(product_attribute)
-                    setattr(product_attribute, 'value_%s' % attr_type, value)
-        Template.save(to_save)
-
 class ImporterProductAttributeStrictDepends(metaclass=PoolMeta):
     __name__ = 'importer'
 
@@ -711,3 +734,4 @@ class ImporterProductAttributeStrictDepends(metaclass=PoolMeta):
                     'model': 'importer.product.attributes',
                     'chunked': True,
                     }})
+        return methods
