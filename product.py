@@ -2,6 +2,7 @@ from decimal import Decimal
 from trytond.model import ModelView, fields
 from trytond.modules.product import price_digits, round_price
 from trytond.pool import PoolMeta, Pool
+from trytond.i18n import gettext
 from datetime import datetime
 from .tools import ImporterModel, Cache, Setup
 
@@ -538,13 +539,11 @@ class ImporterProductAttributes(ImporterModel):
         checked_codes = []
         for record in records:
             setup.current_record = record
-            # if not record.product_code:
-            #     continue
+
             product = None
             template = None
             code = record.product_code
             product = cache.products.get(code)
-
             if product:
                 template = product.template
             if not template:
@@ -561,32 +560,46 @@ class ImporterProductAttributes(ImporterModel):
             checked_codes.append(code)
             if 'attribute_set' in setup.fields and record.attribute_set:
                 attribute_set = cache.attribute_sets.get(record.attribute_set)
+                if not attribute_set:
+                    setup.error(gettext('importer.msg_product_attribute_set_not_found',
+                        set=record.attribute_set, code=code), record)
+                    continue
+
                 attribute = cache.attributes.get(record.attribute)
-                # if not attribute_set or not attribute:
-                #     continue
+                if not attribute:
+                    setup.error(gettext('importer.msg_product_attribute_not_found',
+                        attribute=record.attribute, code=code), record)
+                    continue
+
                 template.attribute_set = attribute_set
                 attr_type =  attribute.type_
                 value = record.attribute_value
                 if value:
-                    match attr_type:
-                        case 'char' | 'selection':
-                            pass
-                        case 'numeric':
-                            value = Decimal(value)
-                        case 'float':
-                            value = float(value)
-                        case 'boolean':
-                            value = bool(value)
-                        case 'integer':
-                            value = int(value)
-                        case 'date':
-                            value = datetime.strptime(value,
-                                                        '%Y-%m-%d').date()
-                        case 'datetime':
-                            value = datetime.strptime(value,
-                                                        '%Y-%m-%d %H:%M:%S')
-                        case _:
-                            value = None
+                    try:
+                        match attr_type:
+                            case 'char' | 'selection':
+                                pass
+                            case 'numeric':
+                                value = Decimal(value)
+                            case 'float':
+                                value = float(value)
+                            case 'boolean':
+                                value = bool(value)
+                            case 'integer':
+                                value = int(value)
+                            case 'date':
+                                value = datetime.strptime(value,
+                                                            '%Y-%m-%d').date()
+                            case 'datetime':
+                                value = datetime.strptime(value,
+                                                            '%Y-%m-%d %H:%M:%S')
+                            case _:
+                                value = None
+                    except:
+                        setup.error(gettext('importer.msg_product_attribute_incorrect_cast',
+                            value=value, attribute=attribute, type=attr_type, code=code),
+                            record)
+                        continue
 
                 product_attribute = None
                 product_attributes = list(getattr(template, 'attributes', []))
