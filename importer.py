@@ -788,7 +788,7 @@ class Importer(ModelSQL, ModelView):
         item = self._get_methods().get(self.method)
         if not item:
             return
-        models = Model.search([('model', '=', item['model'])], limit=1)
+        models = Model.search([('name', '=', item['model'])], limit=1)
         if models:
             return models[0].id
 
