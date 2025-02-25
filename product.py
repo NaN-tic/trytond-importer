@@ -38,6 +38,8 @@ class ImporterProduct(ImporterModel):
     template_note = fields.Text('Template Note')
     product_note = fields.Text('Product Note')
     location = fields.Char('Location')
+    customer = fields.Char('Customer')
+    customer_code = fields.Char('Customer Code')
 
     @classmethod
     def importer_template(self, template):
@@ -52,8 +54,8 @@ class ImporterProduct(ImporterModel):
         super().importer_start()
         cache = Setup.get().cache
         cache.companies = Cache('company.company', key=lambda x: x.party.name)
-        cache.parties = Cache('party.party', 'code', context={'active_test': False},
-            duplicates='abort-on-use')
+        cache.parties = Cache('party.party', ['code', 'name'],
+            context={'active_test': False}, duplicates='abort-on-use')
         cache.customs = Cache('customs.tariff.code', 'code')
         cache.brands = Cache('product.brand', 'name')
         cache.boms = Cache('production.bom', 'name')
@@ -101,6 +103,10 @@ class ImporterProduct(ImporterModel):
         try:
             ProductSupplier = pool.get('purchase.product_supplier')
             ProductSupplierPrice = pool.get('purchase.product_supplier.price')
+        except:
+            pass
+        try:
+            ProductCustomer = pool.get('sale.product_customer')
         except:
             pass
         try:
@@ -328,6 +334,13 @@ class ImporterProduct(ImporterModel):
                     else:
                         brand = None
                     template.brand = brand
+
+            if cache.parties and 'customer' in setup.fields:
+                party = cache.parties.get(record.customer)
+                customer = ProductCustomer()
+                customer.party = party
+                customer.code = record.customer_code
+                template.product_customers = [customer]
 
             if 'variant_suffix_code' in setup.fields:
                 product.suffix_code = record.variant_suffix_code
