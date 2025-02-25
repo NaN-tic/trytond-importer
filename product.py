@@ -363,16 +363,10 @@ class ImporterProduct(ImporterModel):
                     packages.append(ppackage)
                 template.packages = packages
 
-            if 'template_note' in setup.fields:
-                note = Note()
-                note.resource = template
-                note.message = record.template_note
-                notes.append((record, template, note))
-            if 'product_note' in setup.fields:
-                note = Note()
-                note.resource = product
-                note.message = record.product_note
-                notes.append((record, product, note))
+            if 'template_note' in setup.fields and record.template_note:
+                notes.append((record, template, record.template_note))
+            if 'product_note' in setup.fields and record.product_note:
+                notes.append((record, product, record.product_note))
             record.importer_template(template)
             record.importer_product(product)
             cache.templates[record.template_code] = template
@@ -384,6 +378,9 @@ class ImporterProduct(ImporterModel):
 
         notes_to_save = []
         for record, resource, text in notes:
+            if not resource.id:
+                # Continue in case the resource failed to be saved
+                continue
             note = Note()
             note.resource = resource
             note.message = text
