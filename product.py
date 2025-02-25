@@ -132,7 +132,7 @@ class ImporterProduct(ImporterModel):
 
         to_save = []
         products_to_save = []
-        notes_to_save = []
+        notes = []
         categories_to_save = []
 
         for record in records:
@@ -354,12 +354,12 @@ class ImporterProduct(ImporterModel):
                 note = Note()
                 note.resource = template
                 note.message = record.template_note
-                notes_to_save.append((note, record))
+                notes.append((record, template, note))
             if 'product_note' in setup.fields:
                 note = Note()
                 note.resource = product
                 note.message = record.product_note
-                notes_to_save.append((note, record))
+                notes.append((record, product, note))
             record.importer_template(template)
             record.importer_product(product)
             cache.templates[record.template_code] = template
@@ -368,6 +368,13 @@ class ImporterProduct(ImporterModel):
         cls.importer_save(categories_to_save)
         cls.importer_save(to_save)
         cls.importer_save(products_to_save)
+
+        notes_to_save = []
+        for record, resource, text in notes:
+            note = Note()
+            note.resource = resource
+            note.message = text
+            notes_to_save.append((note, record))
         cls.importer_save(notes_to_save)
         return [x[0] for x in to_save]
 
