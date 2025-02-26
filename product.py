@@ -522,39 +522,21 @@ class ImporterProductAttributes(ImporterModel):
     @classmethod
     def importer_import(cls, records):
         pool = Pool()
-        Product = pool.get('product.product')
-        Template = pool.get('product.template')
         ProductAttribute = pool.get('product.product.attribute')
-        UOM = pool.get('product.uom')
         setup = Setup.get()
         cache = setup.cache
-
-        template_default_values = Template.default_get(Template._fields.keys(),
-                with_rec_name=False)
-        product_default_values = Product.default_get(Product._fields.keys(),
-                with_rec_name=False)
-        default_uom = UOM.search([('symbol', '=', 'u')])[0]
 
         to_save = []
         checked_codes = []
         for record in records:
             setup.current_record = record
-
             product = None
             template = None
             code = record.product_code
             product = cache.products.get(code)
-            if product:
-                template = product.template
-            if not template:
-                template = Template(**template_default_values)
-                template.name = code
-                template.code = code
-                template.default_uom = default_uom
-                template.products = []
-                product = Product(**product_default_values)
-                template.products += (product,)
-                cache.products[code] = product
+            if not product:
+                continue
+            template = product.template
             if code not in checked_codes:
                 to_save.append((template, record))
             checked_codes.append(code)
@@ -577,8 +559,19 @@ class ImporterProductAttributes(ImporterModel):
                 if value:
                     try:
                         match attr_type:
-                            case 'char' | 'selection':
+                            case 'char':
                                 pass
+                            case 'selection':
+                                value_selection = None
+                                for selection in attribute.selection:
+                                    if selection.name == value:
+                                        value_selection = selection
+                                        break
+                                if not value_selection:
+                                    setup.error(gettext('importer.msg_product_attribute_selection_not_found',
+                                        set=attribute_set, attribute=attribute, selection=value), record)
+                                    continue
+                                value = value_selection
                             case 'numeric':
                                 value = Decimal(value)
                             case 'float':
