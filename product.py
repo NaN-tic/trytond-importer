@@ -582,7 +582,8 @@ class ImporterProductAttributes(ImporterModel):
                                 value = int(value)
                             case 'date':
                                 value = datetime.strptime(value,
-                                                            '%Y-%m-%d').date()
+                                                            '%Y-%m-%d %H:%M:%S'
+                                                            ).date()
                             case 'datetime':
                                 value = datetime.strptime(value,
                                                             '%Y-%m-%d %H:%M:%S')
