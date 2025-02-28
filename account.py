@@ -7,7 +7,6 @@ from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.transaction import Transaction
-from trytond.modules.product import round_price
 from .tools import ImporterModel, Cache, Setup
 
 
@@ -482,6 +481,7 @@ class Importer(metaclass=PoolMeta):
         Asset = pool.get('account.asset')
         Product = pool.get('product.product')
         Date = pool.get('ir.date')
+        Company = pool.get('company.company')
 
         cache = SimpleNamespace()
         cache.templates = dict((x.code, x) for x in
@@ -496,6 +496,9 @@ class Importer(metaclass=PoolMeta):
                 AnalyticAccount.search([]))
         except:
             pass
+
+        company = Company(Transaction().context.get('company'))
+        currency = company.currency
 
         imported = []
         for record in records:
@@ -513,18 +516,18 @@ class Importer(metaclass=PoolMeta):
             asset = Asset()
             asset.number = record.number if record.number else None
             asset.product = product
-            asset.value = Decimal(record.value)
+            asset.value = Decimal(record.value or 0)
             asset.comment = record.comment
             asset.purchase_date = record.purchase_date
             asset.start_date = record.purchase_date or record.start_date
             depreciated_amount = 0.0
             if record.depreciated_amount is not None:
-                depreciated_amount = round_price(Decimal(record.depreciated_amount))
-            elif record.current_value and record.value:
-                depreciated_amount = round_price(asset.value - Decimal(record.current_value))
+                depreciated_amount = currency.round(Decimal(record.depreciated_amount))
+            elif record.current_value is not None and asset.value is not None:
+                depreciated_amount = currency.round(asset.value - Decimal(record.current_value))
                 asset.start_date = Date.today()
             asset.depreciated_amount = depreciated_amount
-            asset.residual_value = round_price(Decimal(record.residual_value)
+            asset.residual_value = currency.round(Decimal(record.residual_value)
                 if record.residual_value is not None else 0.0)
             if record.end_date:
                 asset.end_date = record.end_date
