@@ -543,18 +543,13 @@ class ImporterProductAttributes(ImporterModel):
             if 'attribute_set' in setup.fields and record.attribute_set:
                 attribute_set = cache.attribute_sets.get(record.attribute_set)
                 if not attribute_set:
-                    setup.error(gettext('importer.msg_product_attribute_set_not_found',
-                        set=record.attribute_set, code=code), record)
                     continue
-
                 attribute = cache.attributes.get(record.attribute)
                 if not attribute:
-                    setup.error(gettext('importer.msg_product_attribute_not_found',
-                        attribute=record.attribute, code=code), record)
                     continue
-
                 template.attribute_set = attribute_set
                 attr_type =  attribute.type_
+
                 value = record.attribute_value
                 if value:
                     try:
