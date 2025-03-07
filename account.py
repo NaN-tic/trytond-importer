@@ -519,7 +519,7 @@ class Importer(metaclass=PoolMeta):
             asset.value = Decimal(record.value or 0)
             asset.comment = record.comment
             asset.purchase_date = record.purchase_date
-            asset.start_date = record.purchase_date or record.start_date
+            asset.start_date = record.start_date or record.purchase_date
             depreciated_amount = 0.0
             if record.depreciated_amount is not None:
                 depreciated_amount = currency.round(Decimal(record.depreciated_amount))
