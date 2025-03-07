@@ -140,10 +140,11 @@ class ImporterModel(ModelView):
         blocks = [records]
         while blocks:
             records = blocks.pop(0)
+            to_save = [x[0] for x in records]
+            save_values = [x._values._copy() for x in to_save]
             cursor.execute('SAVEPOINT importer_save')
             try:
                 logger.info('Saving %d records of %s', len(records), Model.__name__)
-                to_save = [x[0] for x in records]
                 Model.save(to_save)
                 setup.saved(Model.__name__, records)
                 cursor.execute('RELEASE SAVEPOINT importer_save')
@@ -154,6 +155,10 @@ class ImporterModel(ModelView):
                     setup.error(Model.__name__ + ': ' + getattr(e, 'message',
                             str(e)), records[0][1])
                     continue
+                for record, sv in zip(to_save, save_values):
+                    if not record._values:
+                        record._values = sv
+
                 logger.warning('Error saving a block of %d of %s records (%s). '
                     'Will split and retry.', len(records), Model.__name__, e)
                 # TODO: Use itertools.batched from Python 3.12
