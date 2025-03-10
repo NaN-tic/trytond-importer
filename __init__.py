@@ -154,6 +154,11 @@ def register():
         depends=['account_asset_percentatge'],
         module='importer', type_='model')
     Pool.register(
+        product.ImporterProductAttributes,
+        product.ImporterProductAttributeStrictDepends,
+        depends=['product_attribute_strict'],
+        module='importer', type_='model')
+    Pool.register(
         account.ImporterAccountAssetAnalyticDepends,
         account.ImporterAccountMoveDependsAnalytic,
         depends=['analytic_account'],
@@ -308,4 +313,3 @@ def register():
         bank_es.ImporterSpanishBank,
         depends=['bank_es'],
         module='importer', type_='model')
-
