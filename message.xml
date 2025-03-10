@@ -144,4 +144,19 @@
             <field name="text">The bank name is required.</field>
         </record>
     </data>
+
+    <data depends="product_attribute_strict">
+        <record model="ir.message" id="msg_product_attribute_not_found">
+            <field name="text">Attribute %(attribute)s for product of code %(code)s could not be found.</field>
+        </record>
+        <record model="ir.message" id="msg_product_attribute_set_not_found">
+            <field name="text">Attribute set %(set)s for product of code %(code)s could not be found.</field>
+        </record>
+        <record model="ir.message" id="msg_product_attribute_selection_not_found">
+            <field name="text">Attribute set %(set)s attribute %(attribute)s of type "Selection" has no selection option value %(selection)s.</field>
+        </record>
+        <record model="ir.message" id="msg_product_attribute_incorrect_cast">
+            <field name="text">Value %(value)s is incorrect for attribute %(attribute)s expected type %(type)s, with product code %(code)s</field>
+        </record>
+    </data>
 </tryton>
