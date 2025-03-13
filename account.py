@@ -516,7 +516,8 @@ class Importer(metaclass=PoolMeta):
             asset = Asset()
             asset.number = record.number if record.number else None
             asset.product = product
-            asset.value = currency.round(Decimal(record.value or 0))
+            asset.value = (currency.round(Decimal(record.value))
+                if record.value is not None else 0.0)
             asset.comment = record.comment
             asset.purchase_date = record.purchase_date
             asset.start_date = record.start_date or record.purchase_date
