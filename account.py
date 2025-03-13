@@ -527,7 +527,7 @@ class Importer(metaclass=PoolMeta):
                 depreciated_amount = currency.round(asset.value - Decimal(record.current_value))
                 asset.start_date = Date.today()
             asset.depreciated_amount = depreciated_amount
-            asset.residual_value = currency.round(Decimal(record.residual_value)
+            asset.residual_value = (currency.round(Decimal(record.residual_value))
                 if record.residual_value is not None else 0.0)
             if record.end_date:
                 asset.end_date = record.end_date
