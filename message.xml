@@ -3,6 +3,11 @@
         <record model="ir.message" id="invalid_index">
             <field name="text">Column "%(column)s" does not exist importing data with importer "%(importer)s".</field>
         </record>
+        <record model="ir.message" id="msg_invalid_value">
+            <field name="text">Invalid value "%(value)s" for column "%(column)s" in row "%(row)s" importing data with importer "%(importer)s":
+
+%(error)s.</field>
+        </record>
         <record model="ir.message" id="invalid_column_name">
             <field name="text">Name "%(name)s" is not valid for column "%(column)s" in importer "%(importer)s".</field>
         </record>
