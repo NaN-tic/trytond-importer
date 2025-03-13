@@ -1019,6 +1019,16 @@ class Importer(ModelSQL, ModelView):
                                     importer=self.rec_name))
                         else:
                             value = None
+                    except Exception as e:
+                        if raise_errors:
+                            raise UserError(gettext('importer.msg_invalid_value',
+                                    row=row_number,
+                                    column=column.rec_name,
+                                    importer=self.rec_name,
+                                    value=row[index],
+                                    error=e))
+                        else:
+                            value = None
                     if value is None and column.value:
                         value = column.cast_value(column.value)
                 try:
