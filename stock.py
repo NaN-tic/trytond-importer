@@ -91,7 +91,7 @@ class ImporterStockMove(ImporterModel):
         cls.importer_save(to_save)
 
         if 'and_do' in setup.method:
-            Move.do([x[0] for x in to_save])
+            Move.do([x[0] for x in to_save if x[0].id and x[0].id > 0])
         return [x[0] for x in to_save]
 
 
