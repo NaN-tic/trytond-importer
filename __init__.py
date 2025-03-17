@@ -159,6 +159,12 @@ def register():
         depends=['analytic_account'],
         module='importer', type_='model')
     Pool.register(
+        account.ImporterAccountPaymentGroup,
+        account.ImporterAccountPaymentGroupSEPA,
+        account.ImporterAccountPaymentSEPAESDepends,
+        depends=['account_payment_sepa_es'],
+        module='importer', type_='model')
+    Pool.register(
         farm.Importer,
         farm.ImporterFarmMoveEvent,
         farm.ImporterFarmRemovalEvent,
@@ -308,4 +314,3 @@ def register():
         bank_es.ImporterSpanishBank,
         depends=['bank_es'],
         module='importer', type_='model')
-
