@@ -20,6 +20,7 @@ from . import meta
 from . import order_point
 from . import party
 from . import party_credit
+from . import payment
 from . import price_list
 from . import product
 from . import production
@@ -159,8 +160,8 @@ def register():
         depends=['analytic_account'],
         module='importer', type_='model')
     Pool.register(
-        account.ImporterAccountPaymentGroup,
-        account.ImporterAccountPaymentSEPAESDepends,
+        payment.ImporterAccountPaymentGroup,
+        payment.ImporterAccountPaymentSEPAESDepends,
         depends=['account_payment_sepa_es'],
         module='importer', type_='model')
     Pool.register(
