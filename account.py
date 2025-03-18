@@ -429,111 +429,109 @@ class ImporterAccountAssetAnalyticDepends(metaclass=PoolMeta):
     __name__ = 'importer.account.asset'
     analytic_account = fields.Char('Analytic Account')
 
+# class ImporterAccountPaymentGroup(ImporterModel):
+#     'Importer Account Payment Group'
+#     __name__ = 'importer.account.payment.group'
+#     payment_type = fields.Char('Payment Type')
+#     invoice_number = fields.Char('Invoice Number')
+#     vat = fields.Char('VAT Number')
+#     party_name = fields.Char('Account Name')
+#     amount = fields.Numeric('Amount')
+#     payment_date = fields.Date('Payment Date')
+#     journal = fields.Char('Journal')
+
+#     @classmethod
+#     def importer_start(cls):
+#         setup = Setup.get()
+#         cache = setup.cache
+#         transaction = Transaction()
+
+#         company_id = transaction.context.get('company')
+#         cache.parties = Cache('party.party', lambda x: (x.name.lower(),
+#                             (x.identifiers[0].code.lower() if
+#                              x.identifiers else None)))
+#         cache.payment_types = Cache('account.payment.type', 'name',
+#                                 domain=[('company', '=', company_id),
+#                                         ('kind', '=', 'payable'),])
+#         cache.invoices = Cache('account.invoice', 'number',
+#                                 domain=[('company', '=', company_id),])
+#         cache.journals = Cache('account.payment.journal',
+#                                lambda x: (x.name.lower(),
+#                                           x.payment_type.name.lower()),
+#                                domain=[('company', '=', company_id),])
+
+#     @classmethod
+#     def importer_import(cls, records):
+#         pool = Pool()
+#         Payment = pool.get('account.payment')
+#         Group = pool.get('account.payment.group')
+#         MoveLine = pool.get('account.move.line')
+#         Message = pool.get('account.payment.sepa.message')
+#         CreatePaymentGroup = pool.get('account.move.line.create_payment_group',
+#                                       type='wizard')
+
+#         transaction = Transaction()
+#         setup = Setup.get()
+#         cache = setup.cache
+
+#         group_set = defaultdict(list)
+#         for record in records:
+#             group_set[(record.payment_type, record.payment_date,
+#                        record.journal)].append(record)
+#         new_groups = []
+#         line_amounts = {}
+#         for (type_name, payment_date, journal), payments in group_set.items():
+#             move_lines = []
+#             for payment in payments:
+#                 invoice = cache.invoices.get(payment.invoice_number)
+#                 if not invoice or invoice.state != 'posted':
+#                     continue
+#                 payment_type = cache.payment_types.get(type_name)
+#                 if not payment_type:
+#                     continue
+#                 party = cache.parties.get((payment.party_name, payment.vat))
+#                 if not party:
+#                     continue
+#                 bank_account = (party.receivable_bank_account or
+#                                 (party.bank_accounts[0]
+#                                  if party.bank_accounts else None))
+#                 for line in invoice.move.lines:
+#                     if (line.party and line.party == party and
+#                         line.payment_type == payment_type):
+#                         if not line.bank_account:
+#                             line.bank_account = bank_account
+#                         move_lines.append(line)
+#                         line_amounts[line.id] = payment.amount
+#             if not move_lines:
+#                 continue
+#             MoveLine.save(move_lines)
+#             with transaction.set_context(active_id = None,
+#                     active_ids=[l.id for l in move_lines],
+#                     active_model='account.move.line'):
+#                 session_id, _, _ = CreatePaymentGroup.create()
+#                 create_group = CreatePaymentGroup(session_id)
+#                 create_group.start.journal = cache.journals.get((journal, type_name))
+#                 create_group.start.planned_date = payment_date
+#                 create_group.start.join = False
+#                 action, data = create_group.do_create_(action=None)
+#                 CreatePaymentGroup.delete(session_id)
+#                 new_groups.extend(Group.browse(data['res_id']))
+#         for group in new_groups:
+#             for payment in group.payments:
+#                 payment.amount = line_amounts[payment.line.id]
+#             Payment.save(group.payments)
+#             to_cancel_messages = []
+#             for message in group.sepa_messages:
+#                 to_cancel_messages.append(message)
+#             Message.cancel(to_cancel_messages)
+#             group.sepa_generate_message([group])
+#         return new_groups
+
+
+
 class ImporterAccountPaymentGroup(ImporterModel):
     'Importer Account Payment Group'
     __name__ = 'importer.account.payment.group'
-    payment_type = fields.Char('Payment Type')
-    invoice_number = fields.Char('Invoice Number')
-    vat = fields.Char('VAT Number')
-    party_name = fields.Char('Account Name')
-    amount = fields.Numeric('Amount')
-    payment_date = fields.Date('Payment Date')
-    journal = fields.Char('Journal')
-
-    @classmethod
-    def importer_start(cls):
-        setup = Setup.get()
-        cache = setup.cache
-        transaction = Transaction()
-
-        company_id = transaction.context.get('company')
-        cache.parties = Cache('party.party', lambda x: (x.name.lower(),
-                            (x.identifiers[0].code.lower() if
-                             x.identifiers else None)))
-        cache.payment_types = Cache('account.payment.type', 'name',
-                                domain=[('company', '=', company_id),
-                                        ('kind', '=', 'payable'),])
-        cache.invoices = Cache('account.invoice', 'number',
-                                domain=[('company', '=', company_id),])
-        cache.journals = Cache('account.payment.journal',
-                               lambda x: (x.name.lower(),
-                                          x.payment_type.name.lower()),
-                               domain=[('company', '=', company_id),])
-
-    @classmethod
-    def importer_import(cls, records):
-        pool = Pool()
-        Payment = pool.get('account.payment')
-        Group = pool.get('account.payment.group')
-        MoveLine = pool.get('account.move.line')
-        Message = pool.get('account.payment.sepa.message')
-        CreatePaymentGroup = pool.get('account.move.line.create_payment_group',
-                                      type='wizard')
-        Date = Pool().get('ir.date')
-        today = Date.today()
-
-        transaction = Transaction()
-        setup = Setup.get()
-        cache = setup.cache
-
-        group_set = defaultdict(list)
-        for record in records:
-            group_set[(record.payment_type, record.payment_date,
-                       record.journal)].append(record)
-        new_groups = []
-        line_amounts = {}
-        for (type_name, payment_date, journal), payments in group_set.items():
-            move_lines = []
-            for payment in payments:
-                invoice = cache.invoices.get(payment.invoice_number)
-                if not invoice or invoice.state != 'posted':
-                    continue
-                payment_type = cache.payment_types.get(type_name)
-                if not payment_type:
-                    continue
-                party = cache.parties.get((payment.party_name, payment.vat))
-                if not party:
-                    continue
-                bank_account = (party.receivable_bank_account or
-                                (party.bank_accounts[0]
-                                 if party.bank_accounts else None))
-                for line in invoice.move.lines:
-                    if (line.party and line.party == party and
-                        line.payment_type == payment_type):
-                        if not line.bank_account:
-                            line.bank_account = bank_account
-                        move_lines.append(line)
-                        line_amounts[line.id] = payment.amount
-            if not move_lines:
-                continue
-            MoveLine.save(move_lines)
-            with transaction.set_context(active_id = None,
-                    active_ids=[l.id for l in move_lines],
-                    active_model='account.move.line'):
-                session_id, _, _ = CreatePaymentGroup.create()
-                create_group = CreatePaymentGroup(session_id)
-                create_group.start.journal = cache.journals.get((journal, type_name))
-                create_group.start.planned_date = payment_date
-                create_group.start.join = False
-                action, data = create_group.do_create_(action=None)
-                CreatePaymentGroup.delete(session_id)
-                new_groups.extend(Group.browse(data['res_id']))
-        for group in new_groups:
-            for payment in group.payments:
-                payment.amount = line_amounts[payment.line.id]
-            Payment.save(group.payments)
-            to_cancel_messages = []
-            for message in group.sepa_messages:
-                to_cancel_messages.append(message)
-            Message.cancel(to_cancel_messages)
-            group.sepa_generate_message([group])
-        return new_groups
-
-
-
-class ImporterAccountPaymentGroupSEPA(ImporterModel):
-    'Importer Account Payment Group'
-    __name__ = 'importer.account.payment.group.sepa'
     payment_type = fields.Char('Payment Type')
     invoice_number = fields.Char('Invoice Number')
     vat = fields.Char('VAT Number')
@@ -576,8 +574,7 @@ class ImporterAccountPaymentGroupSEPA(ImporterModel):
         Mandate = pool.get('account.payment.sepa.mandate')
         CreatePaymentGroup = pool.get('account.move.line.create_payment_group',
                                       type='wizard')
-
-        Date = Pool().get('ir.date')
+        Date = pool.get('ir.date')
         today = Date.today()
 
         transaction = Transaction()
@@ -609,7 +606,7 @@ class ImporterAccountPaymentGroupSEPA(ImporterModel):
                 bank_number = (bank_account.numbers[0]
                                if bank_account and bank_account.numbers else None)
                 mandate = cache.sepa_mandates.get((party.id, bank_number.id))
-                if not mandate:
+                if 'sepa' in setup.method and not mandate:
                     mandate = Mandate()
                     mandate.party = party
                     mandate.account_number = bank_number
@@ -896,7 +893,7 @@ class ImporterAccountPaymentSEPAESDepends(metaclass=PoolMeta):
             },
             'account_payment_group_sepa': {
                 'string': 'Payment Group SEPA',
-                'model': 'importer.account.payment.group.sepa',
+                'model': 'importer.account.payment.group',
                 'chunked': False,
             }})
         return methods

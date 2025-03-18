@@ -160,7 +160,6 @@ def register():
         module='importer', type_='model')
     Pool.register(
         account.ImporterAccountPaymentGroup,
-        account.ImporterAccountPaymentGroupSEPA,
         account.ImporterAccountPaymentSEPAESDepends,
         depends=['account_payment_sepa_es'],
         module='importer', type_='model')
