@@ -141,7 +141,10 @@ class ImporterModel(ModelView):
         while blocks:
             records = blocks.pop(0)
             to_save = [x[0] for x in records]
-            save_values = [x._values._copy() for x in to_save]
+            # In some cases _values may be None (I think it is when the record
+            # already existed and has not been modified)
+            save_values = [x._values and x._values._copy() or None for x in
+                to_save]
             cursor.execute('SAVEPOINT importer_save')
             try:
                 logger.info('Saving %d records of %s', len(records), Model.__name__)
