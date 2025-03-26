@@ -344,6 +344,7 @@ class Importer(metaclass=PoolMeta):
                 with Transaction().set_context(active_test=False):
                     products = Product.search([
                         ('code', '=', record.product_code),
+                        ('purchasable', '=', True),
                         ])
                 if len(products) != 1:
                     active_products = []
