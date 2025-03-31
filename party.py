@@ -384,7 +384,7 @@ class ImporterParty(ImporterModel):
                 party.supplier_tax_rule = cache.tax_rules.get(
                     record.supplier_tax_rule)
 
-            if record.bank_account and 'bank_accounts' in setup.fields:
+            if record.bank_account and 'bank_account' in setup.fields:
                 Currency = pool.get('currency.currency')
                 cache.currencies = dict([(x.code, x) for x in Currency.search([])])
                 party.bank_accounts = []
