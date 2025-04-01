@@ -482,7 +482,7 @@ class Importer(ModelSQL, ModelView):
         try:
             psycopg2.connect(database = self.database, host=self.server,
                 user=self.user, password=self.password, port=5432)
-        except Exception as e:
+        except psycopg2.OperationalError:
             raise UserError(gettext('importer.msg_invalid_connection'))
         raise UserError(gettext('importer.msg_successful_connecion'))
 
