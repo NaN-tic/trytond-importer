@@ -24,6 +24,10 @@ class ImporterStockMove(ImporterModel):
     def importer_start(cls):
         pool = Pool()
         Product = pool.get('product.product')
+        try:
+            Lot = pool.get('stock.lot')
+        except KeyError:
+            Lot = None
 
         super().importer_start()
         setup = Setup().get()
@@ -32,8 +36,9 @@ class ImporterStockMove(ImporterModel):
         cache.locations = Cache('stock.location', 'name')
         cache.products = Cache('product.product', 'code')
         cache.currencies = Cache('currency.currency', 'code')
-        cache.lots = Cache('stock.lot', lambda x: (x.number
-            and x.number.lower(), x.product.code and x.product.code.lower()))
+        if Lot:
+            cache.lots = Cache('stock.lot', lambda x: (x.number
+                and x.number.lower(), x.product.code and x.product.code.lower()))
         # Cache Product UOMs to prevent cache trashin of if we try to use
         # the value from cache.products
         cache.uoms = {x.id: x.default_uom for x in Product.search([])}
@@ -42,6 +47,10 @@ class ImporterStockMove(ImporterModel):
     def importer_import(cls, records):
         pool = Pool()
         Move = pool.get('stock.move')
+        try:
+            Lot = pool.get('stock.lot')
+        except KeyError:
+            Lot = None
 
         setup = Setup.get()
         cache = setup.cache
@@ -83,7 +92,7 @@ class ImporterStockMove(ImporterModel):
             move.planned_date = record.planned_date
             if 'currency' in setup.fields and record.currency:
                 move.currency = cache.currencies.get(record.currency)
-            if 'lot' in setup.fields and record.lot:
+            if Lot and 'lot' in setup.fields and record.lot:
                 move.lot = cache.lots.get((record.lot, record.product_code))
             to_save.append((move, record))
 
