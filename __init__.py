@@ -32,7 +32,6 @@ from . import res
 from . import route
 from . import user_role
 from . import vacancy
-from . import psql
 
 from . import tools
 
@@ -54,7 +53,6 @@ def register():
         res.ImporterUser,
         meta.Importer,
         meta.ImporterMeta,
-        psql.Importer,
         module='importer', type_='model')
     Pool.register(
         importer.AskAndImport,
