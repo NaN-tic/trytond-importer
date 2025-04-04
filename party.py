@@ -255,14 +255,14 @@ class ImporterParty(ImporterModel):
                 contact.value = record.website
                 contacts.append(contact)
             if record.phone:
-                phones = [x.strip() for x in record.phone.split('/')]
+                phones = [x.strip() for x in record.phone.split('/') if x.strip()]
                 for phone in phones:
                     contact = ContactMechanism()
                     contact.type = 'phone'
                     contact.value = phone
                     contacts.append(contact)
             if record.email:
-                emails = [x.strip().lower() for x in record.email.split('/')]
+                emails = [x.strip().lower() for x in record.email.split('/') if x.strip()]
                 for email in emails:
                     contact = ContactMechanism()
                     try:
@@ -273,7 +273,7 @@ class ImporterParty(ImporterModel):
                     contact.value = email
                     contacts.append(contact)
             if record.fax:
-                faxes = [x.strip() for x in record.fax.split('/')]
+                faxes = [x.strip() for x in record.fax.split('/') if x.strip()]
                 for fax in faxes:
                     contact = ContactMechanism()
                     contact.type = 'fax'
