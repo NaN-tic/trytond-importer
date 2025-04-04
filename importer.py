@@ -453,6 +453,7 @@ class Importer(ModelSQL, ModelView):
             default = default.copy()
         default.setdefault('logs')
         default.setdefault('deletes')
+        default.setdefault('elapsed')
         return super().copy(importers, default=default)
 
     @classmethod
