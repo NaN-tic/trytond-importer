@@ -71,6 +71,7 @@ def register():
     Pool.register(
         party.Importer,
         party.ImporterParty,
+        party.ImporterPartyAddress,
         party.ImporterPartyConfiguration,
         party.ImporterContactMechanism,
         depends=['party'],

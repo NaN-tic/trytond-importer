@@ -506,6 +506,52 @@ class ImporterParty(ImporterModel):
             cls.importer_save(rel_save)
         return [x[0] for x in to_save]
 
+class ImporterPartyAddress(ImporterModel):
+    'Importer Address'
+    __name__ = 'importer.party.address'
+
+    city = fields.Char('City')
+    country = fields.Char('Country')
+    name = fields.Char('Name')
+    subdivision = fields.Char('Address Subdivision')
+    street = fields.Char('Street Address')
+
+    @classmethod
+    def importer_start(cls):
+        pass
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        Country = pool.get('country.country')
+        Subdivision = pool.get('country.subdivision')
+        Address = pool.get('party.address')
+        to_save = []
+        for record in records:
+            address = Address()
+            found_countries = None
+            if record.country.isnumeric():
+                found_countries = Country.search([('id', '=', record.country)], limit=1)
+            else:
+                found_countries = Country.search([('name', '=', record.country)], limit=1)
+            if  found_countries:
+                address.country = found_countries[0]
+            found_subdivision = None
+            if record.subdivision.isnumeric():
+                found_subdivision = Subdivision.search([('id', '=', record.subdivision)], limit=1)
+            else:
+                Subdivision.search([('code', '=', record.subdivision)], limit=1)
+                if not found_subdivision:
+                    Subdivision.search([('name', '=', record.subdivision)], limit =1)
+            if found_subdivision:
+                address.subdivision = found_subdivision[0]
+            address.street = record.street
+            address.name = record.name
+            to_save.append((address, record))
+        cls.importer_save(to_save)
+        return [x[0] for x in to_save]
+
+
 
 class ImporterPartyInvoiceDepends(metaclass=PoolMeta):
     __name__ = 'importer.party'
@@ -610,6 +656,11 @@ class Importer(metaclass=PoolMeta):
                     'model': 'importer.party.configuration',
                     'chunked': True,
                     },
+                'party_address': {
+                    'string': 'Address',
+                    'model': 'importer.party.address',
+                    'chunked': True,
+                },
                 })
         return methods
 
