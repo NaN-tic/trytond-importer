@@ -511,42 +511,44 @@ class ImporterPartyAddress(ImporterModel):
     __name__ = 'importer.party.address'
 
     city = fields.Char('City')
-    country = fields.Char('Country')
+    country_name = fields.Char('Country')
     name = fields.Char('Name')
     subdivision = fields.Char('Address Subdivision')
     street = fields.Char('Street Address')
+    party_code = fields.Char('Party Code')
 
     @classmethod
     def importer_start(cls):
-        pass
+        setup = Setup.get()
+        cache = setup.cache
+        cache.countries = Cache('country.country', 'name', required=False, unaccent=True)
+        cache.subdivisions = Cache('country.subdivision','subdivision', required=False)
+        cache.parties = Cache('party.party', 'code')
+        cache.names = Cache('party.address', 'name')
+        cache.cities = Cache('party.address', 'city')
+        cache.subdivisions = {}
 
     @classmethod
     def importer_import(cls, records):
         pool = Pool()
-        Country = pool.get('country.country')
-        Subdivision = pool.get('country.subdivision')
-        Address = pool.get('party.address')
         to_save = []
+        setup = Setup.get()
+        cache = setup.cache
+        Address = pool.get('party.address')
         for record in records:
             address = Address()
-            found_countries = None
-            if record.country.isnumeric():
-                found_countries = Country.search([('id', '=', record.country)], limit=1)
-            else:
-                found_countries = Country.search([('name', '=', record.country)], limit=1)
-            if  found_countries:
-                address.country = found_countries[0]
-            found_subdivision = None
-            if record.subdivision.isnumeric():
-                found_subdivision = Subdivision.search([('id', '=', record.subdivision)], limit=1)
-            else:
-                Subdivision.search([('code', '=', record.subdivision)], limit=1)
-                if not found_subdivision:
-                    Subdivision.search([('name', '=', record.subdivision)], limit =1)
-            if found_subdivision:
-                address.subdivision = found_subdivision[0]
-            address.street = record.street
-            address.name = record.name
+            if 'party_code' in setup.fields:
+                address.party = cache.parties.get(record.party_code)
+            if 'name' in setup.fields:
+                address.name = record.name
+            if 'street' in setup.fields:
+                address.street = record.street
+            if 'country_name' in setup.fields:
+                address.country = cache.countries.get(record.country_name)
+            if 'subdivision' in setup.fields:
+                address.subdivision = cache.subdivisions.get(record.subdivision)
+
+
             to_save.append((address, record))
         cls.importer_save(to_save)
         return [x[0] for x in to_save]

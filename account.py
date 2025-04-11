@@ -642,7 +642,6 @@ class Importer(metaclass=PoolMeta):
             fiscalyear.start_date = record.start_date
             fiscalyear.end_date = record.end_date
             fiscalyear.company = companies.get(record.company_name)
-
             fiscalyear.post_move_sequence = move_sequences.get(
                 record.post_move_sequence_name)
             seq.out_invoice_sequence = invoice_sequences.get(
