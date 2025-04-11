@@ -1570,11 +1570,15 @@ class ExcelTemplate(Report):
 
     @classmethod
     def execute(cls, ids, data):
-        if not ids:
-            return
-        cls.check_access()
         pool = Pool()
         Importer = pool.get('importer')
+
+        if not ids:
+            return
+
+        action, model = cls.get_action(data)
+        cls.check_access(action, model, ids)
+
         importer = Importer(ids[0])
         wb = Workbook()
         ws = wb.active
