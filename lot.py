@@ -17,8 +17,10 @@ class ImporterLot(ImporterModel):
         super().importer_start()
         cache = Setup.get().cache
         cache.products = Cache('product.product', 'code')
-        cache.lots = Cache('stock.lot', lambda x: (x.product.code,
-                x.number), required=False)
+        cache.lots = Cache('stock.lot', lambda x: (
+                x.product.code and x.product.code.lower(),
+                x.number.lower()),
+                required=False)
 
     @classmethod
     def importer_import(cls, records):
