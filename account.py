@@ -50,7 +50,8 @@ class ImporterAccountMove(ImporterModel):
                 ])
         cache.account_party_codes = Chart.get_account_party_codes()
         cache.periods = {}
-        cache.currency = Company(company_id).currency
+        cache.currency = (Company(company_id).currency
+            if company_id is not None and company_id >= 0 else None)
 
     def importer_header(self, importing=True):
         return (self.number, self.effective_date)
