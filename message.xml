@@ -144,4 +144,9 @@
             <field name="text">The bank name is required.</field>
         </record>
     </data>
+    <data depends="account_payment_sepa_es">
+        <record model="ir.message" id="payment_sepa_no_bank_number">
+            <field name="text">No bank account number could be found for party %(party)s</field>
+        </record>
+    </data>
 </tryton>

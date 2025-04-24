@@ -3,7 +3,8 @@ from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
 from .tools import ImporterModel, Cache, Setup
 from collections import defaultdict
-
+from trytond.exceptions import UserError
+from trytond.i18n import gettext
 
 class ImporterAccountPaymentGroup(ImporterModel):
     'Importer Account Payment Group'
@@ -26,14 +27,14 @@ class ImporterAccountPaymentGroup(ImporterModel):
         cache.parties = Cache('party.party', lambda x: (x.name.lower(),
                             (x.identifiers[0].code.lower() if
                              x.identifiers else None)))
-        cache.payment_types = Cache('account.payment.type', 'name',
+        cache.payment_types = Cache('account.payment.type', 'code',
                                 domain=[('company', '=', company_id),
                                         ('kind', '=', 'payable'),])
         cache.invoices = Cache('account.invoice', 'number',
                                 domain=[('company', '=', company_id),])
         cache.journals = Cache('account.payment.journal',
                                lambda x: (x.name.lower(),
-                                          x.payment_type.name.lower()),
+                                          x.payment_type.code.lower()),
                                domain=[('company', '=', company_id),])
         cache.sepa_mandates = Cache('account.payment.sepa.mandate',
                                     lambda x: (x.party.id, x.account_number.id),
@@ -64,25 +65,34 @@ class ImporterAccountPaymentGroup(ImporterModel):
 
         new_groups = []
         line_amounts = {}
-        for (type_name, payment_date, journal), payments in group_set.items():
+        for (payment_code, payment_date, journal_name), payments in group_set.items():
             move_lines = []
             for payment in payments:
                 invoice = cache.invoices.get(payment.invoice_number)
                 if not invoice or invoice.state != 'posted':
                     continue
-                payment_type = cache.payment_types.get(type_name)
+                payment_type = cache.payment_types.get(payment_code)
                 if not payment_type:
                     continue
                 party = cache.parties.get((payment.party_name, payment.vat))
                 if not party:
                     continue
+                journal = cache.journals.get((journal_name, payment_code))
+                if not journal:
+                    continue
                 bank_account = (party.receivable_bank_account or
                                 (party.bank_accounts[0]
-                                 if party.bank_accounts else None))
+                                if party.bank_accounts else None))
                 bank_number = (bank_account.numbers[0]
-                               if bank_account and bank_account.numbers else None)
-                mandate = cache.sepa_mandates.get((party.id, bank_number.id))
-                if 'sepa' in setup.method and not mandate:
+                        if bank_account and bank_account.numbers else None)
+                if 'sepa' in setup.method:
+                    if not bank_number:
+                        raise UserError(gettext(
+                            'importer.payment_sepa_no_bank_number',
+                            party=payment.party_name))
+                    mandate = cache.sepa_mandates.get((party.id, bank_number.id))
+                    if mandate:
+                        continue
                     mandate = Mandate()
                     mandate.party = party
                     mandate.account_number = bank_number
@@ -97,8 +107,11 @@ class ImporterAccountPaymentGroup(ImporterModel):
                 for line in invoice.move.lines:
                     if (line.party and line.party == party and
                         line.payment_type == payment_type):
-                        if not line.bank_account:
-                            line.bank_account = bank_account
+                        used_line = Payment.search([
+                            ('line', '=', line.id),
+                            ('state', '!=', 'failed')], limit=1)
+                        if used_line:
+                            continue
                         move_lines.append(line)
                         line_amounts[line.id] = payment.amount
             if not move_lines:
@@ -109,7 +122,7 @@ class ImporterAccountPaymentGroup(ImporterModel):
                     active_model='account.move.line'):
                 session_id, _, _ = CreatePaymentGroup.create()
                 create_group = CreatePaymentGroup(session_id)
-                create_group.start.journal = cache.journals.get((journal, type_name))
+                create_group.start.journal = journal
                 create_group.start.planned_date = payment_date
                 create_group.start.join = False
                 action, data = create_group.do_create_(action=None)
