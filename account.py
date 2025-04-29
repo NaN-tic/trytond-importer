@@ -43,10 +43,10 @@ class ImporterAccountMove(ImporterModel):
                 ])
         cache.parties = Cache('party.party', 'code', context={'active_test': False})
         cache.journals = Cache('account.journal', 'code')
-        cache.moves = Cache('account.move', lambda x: (x.post_number, x.date), domain=[
+        cache.moves = Cache('account.move', lambda x: (x.number, x.date), domain=[
                 ('company', '=', company_id),
                 ('period.state', '=', 'open'),
-                ('post_number', '!=', None),
+                ('number', '!=', None),
                 ])
         cache.account_party_codes = Chart.get_account_party_codes()
         cache.periods = {}
@@ -211,7 +211,6 @@ class ImporterAccountMove(ImporterModel):
                 date = record.effective_date
                 move = Move(**values)
                 move.date = date
-                move.post_number = record.number
                 move.number = record.number
                 move.period = period
                 move.journal = cache.journals.get(record.journal_code)

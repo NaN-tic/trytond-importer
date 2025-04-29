@@ -173,7 +173,7 @@ class Importer(metaclass=PoolMeta):
                             ], limit=1)
                     moves = Move.search([
                         ('period.fiscalyear', '=', period[0].fiscalyear.id),
-                        ('post_number', '=', record.account_move_number)])
+                        ('number', '=', record.account_move_number)])
                     move = None
                     if moves:
                         move = moves[0]
