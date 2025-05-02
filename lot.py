@@ -21,6 +21,10 @@ class ImporterLot(ImporterModel):
                 x.number), required=False)
 
     @classmethod
+    def importer_lot(cls, record, lot):
+        pass
+
+    @classmethod
     def importer_import(cls, records):
         Lot = Pool().get('stock.lot')
 
@@ -44,6 +48,7 @@ class ImporterLot(ImporterModel):
             if 'shelf_life_expiration_date' in setup.fields:
                 lot.shelf_life_expiration_date = (
                     record.shelf_life_expiration_date)
+            cls.importer_lot(record, lot)
             to_save.append((lot, record))
 
         cls.importer_save(to_save)
