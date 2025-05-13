@@ -680,7 +680,7 @@ class Importer(ModelSQL, ModelView):
         for column in self.columns:
             field_ids.append(column.field.id)
             strings[column.field] = [column.field.name,
-                column.field.field_description]
+                column.field.string]
 
         langs = Lang.search([
                 ('translatable', '=', True),
@@ -689,7 +689,7 @@ class Importer(ModelSQL, ModelView):
         for lang in langs:
             with Transaction().set_context(language=lang.code):
                 for field in Field.browse(field_ids):
-                    strings[field].append(field.field_description)
+                    strings[field].append(field.string)
 
         lev = textdistance.Levenshtein()
         for column in self.columns:
@@ -829,7 +829,7 @@ class Importer(ModelSQL, ModelView):
 
     def data_to_records(self, data=None, sample=None):
         pool = Pool()
-        Model = pool.get(self.model.model)
+        Model = pool.get(self.model.name)
         Log = pool.get('importer.log')
 
         start = time.time()
@@ -1129,7 +1129,7 @@ class ImporterColumn(ModelSQL, ModelView):
     @classmethod
     def __setup__(cls):
         super().__setup__()
-        cls._order.insert(0, ('field.field_description', 'ASC'))
+        cls._order.insert(0, ('field.string', 'ASC'))
         cls.__rpc__.update(
             autocomplete_name=RPC(instantiate=0),
             )
@@ -1584,7 +1584,7 @@ class ExcelTemplate(Report):
         ws = wb.active
         header = []
         for column in importer.columns:
-            header.append(column.field.field_description)
+            header.append(column.field.string)
         header = tuple(header)
         ws.append(header)
 

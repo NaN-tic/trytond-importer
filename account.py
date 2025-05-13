@@ -402,7 +402,7 @@ class ImporterFiscalYear(ModelView):
     company_name = fields.Char('Company Name')
     start_date = fields.Date('Start Date')
     end_date = fields.Date('End Date')
-    post_move_sequence_name = fields.Char('Post Move Sequence Name')
+    move_sequence_name = fields.Char('Move Sequence Name')
     in_invoice_sequence_name = fields.Char('In Invoice Sequence Name')
     out_invoice_sequence_name = fields.Char('Out Invoice Sequence Name')
     in_credit_note_sequence_name = fields.Char('In Credit Note Sequence Name')
@@ -624,7 +624,7 @@ class Importer(metaclass=PoolMeta):
         invoice_sequences = {x.name: x for x in
             SequenceStrict.search([('sequence_type', '=', type_invoice_id)])}
         move_sequences = {x.name: x for x in
-            Sequence.search([('sequence_type', '=', type_accont_move_id)])}
+            SequenceStrict.search([('sequence_type', '=', type_accont_move_id)])}
         companies = {x.party.name: x for x in Company.search([])}
         fiscalyears = {x.name: x for x in FiscalYear.search([])}
 
@@ -642,9 +642,8 @@ class Importer(metaclass=PoolMeta):
             fiscalyear.start_date = record.start_date
             fiscalyear.end_date = record.end_date
             fiscalyear.company = companies.get(record.company_name)
-
-            fiscalyear.post_move_sequence = move_sequences.get(
-                record.post_move_sequence_name)
+            fiscalyear.move_sequence = move_sequences.get(
+                record.move_sequence_name)
             seq.out_invoice_sequence = invoice_sequences.get(
                 record.out_invoice_sequence_name)
             seq.in_invoice_sequence = invoice_sequences.get(

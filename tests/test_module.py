@@ -64,7 +64,8 @@ class ImporterTestCase(ModuleTestCase):
     @with_transaction()
     def test_product(self):
         pool = Pool()
-        Date = Pool().get('ir.date')
+        Date = pool.get('ir.date')
+
         today = Date.today()
 
         self.import_('language', [{
@@ -95,7 +96,6 @@ class ImporterTestCase(ModuleTestCase):
             order=[('party.name', 'ASC')])]
         self.assertEqual(employees, ['Supervised', 'Supervisor'])
 
-
         self.import_('role', [{
                 'name': 'Test',
                 'groups': 'Sales,Purchase',
@@ -121,11 +121,15 @@ class ImporterTestCase(ModuleTestCase):
                 'chart_name': 'Universal Chart of Accounts',
                 }])
 
+        AccountConfiguration = pool.get('account.configuration')
+        config = AccountConfiguration(1)
+        account_code_digits = config.default_account_code_digits or 4
+
         Account = pool.get('account.account')
         accounts = Account.search([])
 
         for index, account in enumerate(accounts):
-                account.code = '000' + str(index + 1)
+            account.code = str(index + 1).zfill(account_code_digits)
         Account.save(accounts)
         Transaction().set_context(company=company.id)
 
@@ -210,6 +214,7 @@ class ImporterTestCase(ModuleTestCase):
         self.import_('sequence', [{
                 'name': 'Account Move',
                 'sequence_type': 'Account Move',
+                'strict': '1',
                 }])
         self.import_('sequence', [{
                 'name': 'Invoice',
@@ -222,7 +227,7 @@ class ImporterTestCase(ModuleTestCase):
                 'company_name': company.party.name,
                 'start_date': str(year) + '-01-01',
                 'end_date': str(year) + '-12-31',
-                'post_move_sequence_name': 'Account Move',
+                'move_sequence_name': 'Account Move',
                 'out_invoice_sequence_name': 'Invoice',
                 'in_invoice_sequence_name': 'Invoice',
                 'out_credit_note_sequence_name': 'Invoice',
