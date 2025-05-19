@@ -164,4 +164,18 @@
             <field name="text">Value %(value)s is incorrect for attribute %(attribute)s expected type %(type)s, with product code %(code)s</field>
         </record>
     </data>
+
+    <data depends="product_attribute_strict">
+        <record model="ir.message" id="msg_carrier_product_not_found">
+            <field name="text">Product code %(product)s not found.</field>
+        </record>
+        <record model="ir.message" id="msg_carrier_party_not_found">
+            <field name="text">Party code %(party)s not found.</field>
+        </record>
+    </data>
+    <data depends="account_payment_holidays">
+        <record model="ir.message" id="msg_holidays_party_not_found">
+            <field name="text">Party code %(party)s not found.</field>
+        </record>
+    </data>
 </tryton>

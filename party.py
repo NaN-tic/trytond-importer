@@ -106,6 +106,10 @@ class ImporterParty(ImporterModel):
         pass
 
     @classmethod
+    def import_party_party_hook(cls, record, party):
+        pass
+
+    @classmethod
     def importer_import(cls, records):
         pool = Pool()
         Party = pool.get('party.party')
@@ -383,8 +387,7 @@ class ImporterParty(ImporterModel):
             if 'supplier_tax_rule' in setup.fields:
                 party.supplier_tax_rule = cache.tax_rules.get(
                     record.supplier_tax_rule)
-
-            if record.bank_account and 'bank_accounts' in setup.fields:
+            if record.bank_account and 'bank_account' in setup.fields:
                 Currency = pool.get('currency.currency')
                 cache.currencies = dict([(x.code, x) for x in Currency.search([])])
                 party.bank_accounts = []
@@ -403,10 +406,11 @@ class ImporterParty(ImporterModel):
                     bank_code = iban[4:8]
                     bank = cache.banks.get(bank_code)
                     if not bank:
-                        raise UserError(gettext('importer.bank_not_found',
+                        setup.error(gettext('importer.bank_not_found',
                             iban=iban))
                     bank_account = BankAccount()
-                    bank_account.bank = bank
+                    if bank:
+                        bank_account.bank = bank
                     bank_account.currency = currency
                     account_number = AccountNumber()
                     account_number.account = bank_account
@@ -479,6 +483,7 @@ class ImporterParty(ImporterModel):
                 note.message = record.note
                 notes_to_save.append((note, record))
 
+            cls.import_party_party_hook(record, party)
             cls.importer_party(record, party)
 
         cache.current_record = None
@@ -616,24 +621,96 @@ class ImporterAEATSIIDepends(metaclass=PoolMeta):
     sii_identifier_type = fields.Char('SII Identification Type')
 
 
-class ImporterContactMechanism(ModelView):
+class ImporterContactMechanism(ImporterModel):
     'Importer Contact Method'
     __name__ = 'importer.party.contact_mechanism'
+
     party = fields.Char("Party")
     type = fields.Char("Type")
     value = fields.Char("Value")
     name = fields.Char("Name")
     language = fields.Char("Language")
+    comment = fields.Char("Comment")
+
+    @classmethod
+    def importer_start(cls):
+        super().importer_start()
+        cache = Setup.get().cache
+        cache.parties = Cache('party.party', 'code')
+        cache.languages = Cache('ir.lang', 'code')
+
+    @classmethod
+    def import_contact_mechanism_hook(cls, record, contact_mechanism):
+        pass
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        ContactMechanism = pool.get('party.contact_mechanism')
+        ContactMechanismLanguage = pool.get('party.contact_mechanism.language')
+
+        company = Transaction().context.get('company')
+
+        setup = Setup.get()
+        cache = setup.cache
+
+        to_save = []
+        to_save_contact_mechanism_language = []
+        for record in records:
+            if 'party' in setup.fields:
+                party = cache.parties.get(record.party)
+                if not party:
+                    setup.error(gettext('importer.party_not_found',
+                        party=record.party))
+                    continue
+            contact_mechanism = ContactMechanism()
+            contact_mechanism.party = party
+            contact_mechanism.name = record.name
+            contact_mechanism.type = record.type
+            contact_mechanism.value = record.value
+            contact_mechanism.comment = record.comment
+
+            cls.import_contact_mechanism_hook(record, contact_mechanism)
+            to_save.append((contact_mechanism, record))
+
+            if 'language' in setup.fields and record.language:
+                contact_mechanism_language = ContactMechanismLanguage()
+                contact_mechanism_language.contact_mechanism = (
+                    contact_mechanism)
+                contact_mechanism_language.language = cache.languages.get(
+                    record.language)
+                if not contact_mechanism_language.language:
+                    setup.error(gettext('importer.language_not_found',
+                        language=record.language))
+                    continue
+                contact_mechanism_language.company = company
+                to_save_contact_mechanism_language.append(
+                    (contact_mechanism_language, record))
+        cls.importer_save(to_save)
+        cls.importer_save(to_save_contact_mechanism_language)
+        return [x[0] for x in to_save]
 
 
 class ImporterContactMechanismInvoiceDepends(metaclass=PoolMeta):
     __name__ = 'importer.party.contact_mechanism'
     invoice = fields.Boolean("Invoice")
 
+    @classmethod
+    def import_contact_mechanism_hook(cls, record, contact_mechanism):
+        super().import_contact_mechanism_hook(record, contact_mechanism)
+        if hasattr(record, 'invoice'):
+            contact_mechanism.invoice = record.invoice
+
 
 class ImporterContactMechanismStockDepends(metaclass=PoolMeta):
     __name__ = 'importer.party.contact_mechanism'
     delivery = fields.Boolean("Delivery")
+
+    @classmethod
+    def import_contact_mechanism_hook(cls, record, contact_mechanism):
+        super().import_contact_mechanism_hook(record, contact_mechanism)
+        if hasattr(record, 'delivery'):
+            contact_mechanism.delivery = record.delivery
 
 
 class Importer(metaclass=PoolMeta):
@@ -665,53 +742,6 @@ class Importer(metaclass=PoolMeta):
                 },
                 })
         return methods
-
-    @classmethod
-    def import_contact_mechanism(cls, records):
-        pool = Pool()
-        Party = pool.get('party.party')
-        Lang = pool.get('ir.lang')
-        ContactMechanism = pool.get('party.contact_mechanism')
-        ContactMechanismLanguage = pool.get('party.contact_mechanism.language')
-
-        company = Transaction().context.get('company')
-        languages = dict([(x.code, x) for x in Lang.search([])])
-        parties = dict([(x.code, x) for x in Party.search([])])
-
-        to_save_cm = []
-        to_save_cml = []
-        for record in records:
-            if not record.party in parties:
-                raise UserError(
-                    gettext('importer.party_not_found',
-                        party=record.party))
-            cm = ContactMechanism()
-            cm.party = parties[record.party]
-            cm.name = record.name
-            cm.type = record.type
-            cm.value = record.value
-
-            if hasattr(ContactMechanism, 'invoice'):
-                cm.invoice = False
-                if record.invoice:
-                    cm.invoice = record.invoice
-
-            if hasattr(ContactMechanism, 'delivery'):
-                cm.delivery = False
-                if record.delivery:
-                    cm.delivery = record.delivery
-
-            to_save_cm.append(cm)
-            if record.language:
-                cml = ContactMechanismLanguage()
-                cml.contact_mechanism = cm
-                cml.language = languages.get(record.language)
-                cml.company = company
-                to_save_cml.append(cml)
-
-        ContactMechanism.save(to_save_cm)
-        ContactMechanismLanguage.save(to_save_cml)
-        return to_save_cm
 
     @classmethod
     def import_party_configuration(cls, records):
@@ -748,3 +778,72 @@ class Importer(metaclass=PoolMeta):
 
         Configuration.save(to_save)
         return [Configuration(1)]
+
+
+class ImporterHolidaysParty(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'party_holidays': {
+                    'string': 'Party Holidays',
+                    'model': 'importer.party.holidays',
+                    'chunked': True,
+                },
+                })
+        return methods
+
+
+class ImpoterPartyHolidays(ImporterModel):
+    'Importer Party Holidays'
+    __name__ = 'importer.party.holidays'
+
+    party_code = fields.Char('Party Code')
+    from_month = fields.Char('From Month')
+    from_day = fields.Char('From Day')
+    thru_month = fields.Char('Thru Month')
+    thru_day = fields.Char('Thru Day')
+
+    @classmethod
+    def importer_start(cls):
+        super().importer_start()
+        cache = Setup.get().cache
+        cache.parties = Cache('party.party', 'code')
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        PartyHolidays = pool.get('party.payment.holidays')
+
+        setup = Setup.get()
+        cache = setup.cache
+
+        to_save = []
+        for record in records:
+            if 'party_code' in setup.fields:
+                party = cache.parties.get(record.party_code)
+                if not party:
+                    setup.error(gettext('msg_party_holidays_party_not_found',
+                        party=record.party_code))
+                    continue
+            party_holidays = PartyHolidays()
+            party_holidays.party = party
+            if 'from_month' in setup.fields:
+                from_month = record.from_month
+                if len(record.from_month) == 1:
+                    from_month = '0' + record.from_month
+                party_holidays.from_month = from_month
+            if 'from_day' in setup.fields:
+                party_holidays.from_day = record.from_day
+            if 'thru_month' in setup.fields:
+                thru_month = record.thru_month
+                if len(record.thru_month) == 1:
+                    thru_month = '0' + record.thru_month
+                party_holidays.thru_month = thru_month
+            if 'thru_day' in setup.fields:
+                party_holidays.thru_day = record.thru_day
+            to_save.append((party_holidays, record))
+        cls.importer_save(to_save)
+        return [x[0] for x in to_save]
