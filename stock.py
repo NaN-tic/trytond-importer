@@ -1,6 +1,7 @@
 from trytond.model import ModelView, fields
 from trytond.transaction import Transaction
 from trytond.pool import PoolMeta, Pool
+from trytond.modules.product import round_price
 from .tools import ImporterModel, Cache, Setup
 
 
@@ -84,9 +85,9 @@ class ImporterStockMove(ImporterModel):
             move.product = product
             move.quantity = round(record.quantity)
             if 'cost_price' in setup.fields:
-                move.cost_price = record.cost_price
+                move.cost_price = round_price(record.cost_price)
             if 'unit_price' in setup.fields:
-                move.unit_price = record.unit_price
+                move.unit_price = round_price(record.unit_price)
             move.unit = cache.uoms[product.id]
             move.effective_date = record.effective_date
             move.planned_date = record.planned_date
