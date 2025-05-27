@@ -847,3 +847,74 @@ class ImpoterPartyHolidays(ImporterModel):
             to_save.append((party_holidays, record))
         cls.importer_save(to_save)
         return [x[0] for x in to_save]
+
+
+class ImportFacturaeAddress(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'party_facturae': {
+                    'string': 'Party Facutra-e',
+                    'model': 'importer.address.facturae',
+                    'chunked': True,
+                },
+                })
+        return methods
+
+
+class ImportAddressFacturae(ImporterModel):
+    'Importer Address Factura-e'
+    __name__ = 'importer.address.facturae'
+
+    party = fields.Char('Party')
+    facturae_person_type = fields.Char('Facturae Person Type')
+    facturae_residence_type = fields.Char('Facturae Residence Type')
+    oficina_contable = fields.Char('Oficina Contable')
+    organo_gestor = fields.Char('Organo Gestor')
+    unidad_tramitadora = fields.Char('Unidad Tramitadora')
+
+    @classmethod
+    def importer_start(cls):
+        setup = Setup.get()
+        cache = setup.cache
+        cache.parties = Cache('party.party', 'code')
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        Address = pool.get('party.address')
+        to_save = []
+
+        setup = Setup.get()
+        cache = setup.cache
+
+        for record in records:
+            if 'party' in setup.fields:
+                party = cache.parties.get(record.party)
+                if not party:
+                    setup.error(gettext('importer.msg_party_not_found',
+                        party=record.party))
+                    continue
+
+            if len(party.addresses) == 0:
+                address = Address()
+                address.party = party
+            else:
+                address = party.addresses[0]
+
+            if 'facturae_person_type' in setup.fields:
+                address.facturae_person_type = record.facturae_person_type
+            if 'facturae_residence_type' in setup.fields:
+                address.facturae_residence_type = record.facturae_residence_type
+            if 'oficina_contable' in setup.fields:
+                address.oficina_contable = record.oficina_contable
+            if 'organo_gestor' in setup.fields:
+                address.organo_gestor = record.organo_gestor
+            if 'unidad_tramitadora' in setup.fields:
+                address.unidad_tramitadora = record.unidad_tramitadora
+            to_save.append((address, record))
+        cls.importer_save(to_save)
+        return [x[0] for x in to_save]

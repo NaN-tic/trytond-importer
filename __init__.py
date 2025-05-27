@@ -329,3 +329,8 @@ def register():
         party.ImpoterPartyHolidays,
         depends=['account_payment_holidays'],
         module='importer', type_='model')
+    Pool.register(
+        party.ImportFacturaeAddress,
+        party.ImportAddressFacturae,
+        depends=['account_invoice_facturae'],
+        module='importer', type_='model')
