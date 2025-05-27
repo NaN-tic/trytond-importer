@@ -101,7 +101,9 @@ class ImporterStockMove(ImporterModel):
         cls.importer_save(to_save)
 
         if 'and_do' in setup.method:
-            Move.do([x[0] for x in to_save if x[0].id and x[0].id > 0])
+            # Avoid warnings because of missing origin
+            with Transaction().set_context(_skip_warnings=True):
+                Move.do([x[0] for x in to_save if x[0].id and x[0].id > 0])
         return [x[0] for x in to_save]
 
 
@@ -193,6 +195,6 @@ class Importer(metaclass=PoolMeta):
 
         moves = cls.import_stock_move(records)
         # Avoid warnings because of missing origin
-        with Transaction().set_context({'_skip_warnings': True}):
+        with Transaction().set_context(_skip_warnings=True):
             Move.do(moves)
         return moves
