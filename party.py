@@ -521,25 +521,37 @@ class ImporterPartyAddress(ImporterModel):
     subdivision = fields.Char('Address Subdivision')
     street = fields.Char('Street Address')
     party_code = fields.Char('Party Code')
+    contact_value = fields.Char('Value')
+    contact_type = fields.Char('Type')
 
     @classmethod
     def importer_start(cls):
         setup = Setup.get()
         cache = setup.cache
-        cache.countries = Cache('country.country', 'name', required=False, unaccent=True)
-        cache.subdivisions = Cache('country.subdivision','subdivision', required=False)
+        cache.countries = Cache('country.country', 'code', required=False,
+            unaccent=True)
+        cache.subdivisions = Cache('country.subdivision','subdivision',
+        required=False)
         cache.parties = Cache('party.party', 'code')
         cache.names = Cache('party.address', 'name')
         cache.cities = Cache('party.address', 'city')
         cache.subdivisions = {}
 
     @classmethod
+    def importer_address(cls, record, address):
+        pass
+
+    @classmethod
     def importer_import(cls, records):
         pool = Pool()
-        to_save = []
+
         setup = Setup.get()
         cache = setup.cache
         Address = pool.get('party.address')
+        ContactMechanism = pool.get('party.contact_mechanism')
+
+        to_save = []
+        to_save_contact_mechanism = []
         for record in records:
             address = Address()
             if 'party_code' in setup.fields:
@@ -552,10 +564,19 @@ class ImporterPartyAddress(ImporterModel):
                 address.country = cache.countries.get(record.country_name)
             if 'subdivision' in setup.fields:
                 address.subdivision = cache.subdivisions.get(record.subdivision)
-
-
+            if ('contact_value' in setup.fields and record.contact_value and
+                    'contact_type' in setup.fields and record.contact_type):
+                contact_mechanism = ContactMechanism()
+                contact_mechanism.party = cache.parties.get(record.party_code)
+                contact_mechanism.type = record.contact_type
+                contact_mechanism.value = record.contact_value
+                contact_mechanism.address = address
+                to_save_contact_mechanism.append((contact_mechanism, record))
+            cls.importer_address(record, address)
             to_save.append((address, record))
         cls.importer_save(to_save)
+        if to_save_contact_mechanism:
+            cls.importer_save(to_save_contact_mechanism)
         return [x[0] for x in to_save]
 
 
