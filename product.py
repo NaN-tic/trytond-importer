@@ -51,6 +51,14 @@ class ImporterProduct(ImporterModel):
         pass
 
     @classmethod
+    def importer_template_hook(cls, record, template):
+        pass
+
+    @classmethod
+    def importer_product_hook(cls, record, product):
+        pass
+
+    @classmethod
     def importer_start(cls):
         super().importer_start()
         cache = Setup.get().cache
@@ -368,6 +376,8 @@ class ImporterProduct(ImporterModel):
                 notes.append((record, template, record.template_note))
             if 'product_note' in setup.fields and record.product_note:
                 notes.append((record, product, record.product_note))
+            cls.importer_template_hook(record, template)
+            cls.importer_product_hook(record, product)
             record.importer_template(template)
             record.importer_product(product)
             cache.templates[record.template_code] = template
