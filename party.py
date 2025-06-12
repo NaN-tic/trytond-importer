@@ -520,22 +520,33 @@ class ImporterPartyAddress(ImporterModel):
     name = fields.Char('Name')
     subdivision = fields.Char('Address Subdivision')
     street = fields.Char('Street Address')
+    postal_code = fields.Char('Postal Code')
     party_code = fields.Char('Party Code')
     contact_value = fields.Char('Value')
     contact_type = fields.Char('Type')
+    sequence = fields.Integer('Sequence')
 
     @classmethod
     def importer_start(cls):
-        setup = Setup.get()
-        cache = setup.cache
-        cache.countries = Cache('country.country', 'code', required=False,
-            unaccent=True)
-        cache.subdivisions = Cache('country.subdivision','subdivision',
-        required=False)
+        pool = Pool()
+        Type = pool.get('party.address.subdivision_type')
+
+        super().importer_start()
+
+        cache = Setup.get().cache
+        cache.countries = Cache('country.country', 'code', unaccent=True)
+        cache.subdivisions = {}
+        cache.subdivisions = {}
+        for country in cache.countries.values():
+            types = Type.get_types(country)
+            cache.subdivisions[country] = Cache('country.subdivision', 'name',
+                domain=[
+                    ('country', '=', country.id),
+                    ('type', 'in', types),
+                ], unaccent=True)
         cache.parties = Cache('party.party', 'code')
         cache.names = Cache('party.address', 'name')
         cache.cities = Cache('party.address', 'city')
-        cache.subdivisions = {}
 
     @classmethod
     def importer_address(cls, record, address):
@@ -562,8 +573,17 @@ class ImporterPartyAddress(ImporterModel):
                 address.street = record.street
             if 'country_name' in setup.fields:
                 address.country = cache.countries.get(record.country_name)
+            if 'city' in setup.fields:
+                address.city = record.city
             if 'subdivision' in setup.fields:
-                address.subdivision = cache.subdivisions.get(record.subdivision)
+                cs = cache.subdivisions.get(cache.countries.get(
+                    record.country_name))
+                if cs:
+                    address.subdivision = cs.get(record.subdivision)
+            if 'sequence' in setup.fields:
+                address.sequence = record.sequence
+            if 'postal_code' in setup.fields:
+                address.postal_code = record.postal_code
             if ('contact_value' in setup.fields and record.contact_value and
                     'contact_type' in setup.fields and record.contact_type):
                 contact_mechanism = ContactMechanism()
@@ -578,7 +598,6 @@ class ImporterPartyAddress(ImporterModel):
         if to_save_contact_mechanism:
             cls.importer_save(to_save_contact_mechanism)
         return [x[0] for x in to_save]
-
 
 
 class ImporterPartyInvoiceDepends(metaclass=PoolMeta):
