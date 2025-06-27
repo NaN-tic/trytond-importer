@@ -54,13 +54,15 @@ class ImporterCarrier(ImporterModel):
             if 'product' in setup.fields:
                 product = cache.products.get(record.product)
                 if not product:
-                    setup.error(gettext('msg_carrier_product_not_found',
+                    setup.error(gettext(
+                        'importer.msg_carrier_product_not_found',
                         product=record.product))
                     continue
             if 'party' in setup.fields:
                 party = cache.parties.get(record.party)
                 if not party:
-                    setup.error(gettext('msg_carrier_party_not_found',
+                    setup.error(gettext(
+                        'importer.msg_carrier_party_not_found',
                         party=record.party))
                     continue
 

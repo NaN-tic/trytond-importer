@@ -334,3 +334,7 @@ def register():
         party.ImportAddressFacturae,
         depends=['account_invoice_facturae'],
         module='importer', type_='model')
+    Pool.register(
+        party.ImporterCarrierDepends,
+        depends=['sale_carrier'],
+        module='importer', type_='model')

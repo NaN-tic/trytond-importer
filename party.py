@@ -91,6 +91,7 @@ class ImporterParty(ImporterModel):
                 ('type', 'in', types),
                 ], unaccent=True)
         cache.postal_codes = Cache('country.subdivision', 'code')
+        cache.carriers = Cache('carrier', key=lambda x:x.party.code )
 
     def importer_context(self):
         res = super().importer_context()
@@ -458,6 +459,14 @@ class ImporterParty(ImporterModel):
                 if record.sii_identifier_type != 'None':
                     party.sii_identifier_type = record.sii_identifier_type
 
+            if hasattr(record, 'carrier'):
+                carrier = cache.carriers.get(record.carrier)
+                if not carrier:
+                    setup.error(gettext('importer.msg_carrier_not_found',
+                        carrier=record.carrier))
+                else:
+                    party.carrier = carrier
+
             if 'incoterm' in setup.fields:
                 party.incoterm = cache.incoterms.get(record.incoterm_name)
                 party.on_change_incoterm()
@@ -659,6 +668,11 @@ class ImporterIncotermPurchaseDepends(metaclass=PoolMeta):
 class ImporterAEATSIIDepends(metaclass=PoolMeta):
     __name__ = 'importer.party'
     sii_identifier_type = fields.Char('SII Identification Type')
+
+
+class ImporterCarrierDepends(metaclass=PoolMeta):
+    __name__ = 'importer.party'
+    carrier = fields.Char('Carrier')
 
 
 class ImporterContactMechanism(ImporterModel):
