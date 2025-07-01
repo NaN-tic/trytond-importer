@@ -118,6 +118,7 @@ class ImporterAccountMove(ImporterModel):
             account_type, = AccountType.search([('company', '=', company)],
                 limit=1)
 
+        move = None
         moves_to_save = []
         lines_to_save = []
         analytic_lines_to_save = []
@@ -216,6 +217,9 @@ class ImporterAccountMove(ImporterModel):
                 move.journal = cache.journals.get(record.journal_code)
                 move.lines = []
                 moves_to_save.append((move, record))
+
+            if not move:
+                continue
 
             party_code = record.get_party_code()
             party = cache.parties.get(party_code)
