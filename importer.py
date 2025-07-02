@@ -551,6 +551,7 @@ class Importer(ModelSQL, ModelView):
             # URL
             js['url_data'] = importer.url_data
             # SQL
+            js['sql_data'] = importer.sql_data
             js['sql_source'] = importer.sql_source
             js['server'] = importer.server
             js['user'] = importer.user
