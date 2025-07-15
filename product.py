@@ -62,7 +62,8 @@ class ImporterProduct(ImporterModel):
     def importer_start(cls):
         super().importer_start()
         cache = Setup.get().cache
-        cache.companies = Cache('company.company', key=lambda x: x.party.name)
+        cache.companies = Cache('company.company',
+            key=lambda x: x.party.name.lower())
         cache.parties = Cache('party.party', ['code', 'name'],
             context={'active_test': False}, duplicates='abort-on-use')
         cache.customs = Cache('customs.tariff.code', 'code')
@@ -80,7 +81,8 @@ class ImporterProduct(ImporterModel):
                 ('code', '!=', None),
                 ('code', '!=', ''),
                 ], required=False)
-        cache.accounts = Cache('account.account', 'code')
+        cache.accounts = Cache('account.account',
+            lambda x: (x.company.id, x.code))
 
     def importer_context(self):
         res = super().importer_context()
@@ -152,6 +154,11 @@ class ImporterProduct(ImporterModel):
 
         for record in records:
             setup.current_record = record
+
+            company = None
+            if cache.companies.get(record.company):
+                company = setup.cache.companies.get(record.company)
+
             product = None
             template = None
             if 'variant_code' in setup.fields and record.variant_code:
@@ -299,7 +306,7 @@ class ImporterProduct(ImporterModel):
                     template.accounts_category = False
                     template.taxes_category = False
                     account_code = getattr(record, field)
-                    account = cache.accounts.get(account_code)
+                    account = cache.accounts.get((company.id, account_code))
                     setattr(template, field, account)
 
             if 'depreciation_percentatge' in setup.fields:

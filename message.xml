@@ -32,7 +32,7 @@
         <record model="ir.message" id="change_method_warning">
             <field name="text">Changing the format on importer "%(name)s" may cause your settings to be lost. Are you sure to proceed?</field>
         </record>
-        <record model="ir.message" id="account_not_found">
+        <record model="ir.message" id="msg_account_not_found">
             <field name="text">Account %(account)s not found.</field>
         </record>
         <record model="ir.message" id="party_required_for_account">

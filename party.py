@@ -68,15 +68,17 @@ class ImporterParty(ImporterModel):
 
         cache = Setup.get().cache
         cache.parties = Cache('party.party', 'code', required=False)
-        cache.companies = Cache('company.company', key=lambda x: x.party.name)
+        cache.companies = Cache('company.company',
+            key=lambda x: x.party.name.lower())
         cache.banks = Cache('bank', key=lambda x: x.bank_code.zfill(4))
         cache.bank_accounts = Cache('bank.account.number', 'number_compact')
         cache.payment_terms = Cache('account.invoice.payment_term', 'name')
-        cache.payment_types = Cache('account.payment.type', key=lambda x: (x.name.lower(), x.kind))
+        cache.payment_types = Cache('account.payment.type',
+            key=lambda x: (x.name.lower(), x.kind))
         cache.relations = Cache('party.relation.type', 'name')
         cache.tax_rules = Cache('account.tax.rule', 'name')
         cache.agents = Cache('commission.agent', key=lambda x: (x.party.code
-            and x.party.code.lower(), x.plan and x.plan.name))
+            and x.party.code.lower(), x.plan and x.plan.name.lower()))
         cache.agents_no_plan = Cache('commission.agent', key=lambda x:
             x.party.name and x.party.name.lower())
         cache.inco_terms = Cache('incoterm', 'code')
@@ -86,12 +88,13 @@ class ImporterParty(ImporterModel):
         cache.subdivisions = {}
         for country in cache.countries.values():
             types = Type.get_types(country)
-            cache.subdivisions[country] = Cache('country.subdivision', 'name', domain=[
-                ('country', '=', country.id),
-                ('type', 'in', types),
+            cache.subdivisions[country] = Cache('country.subdivision', 'name',
+                domain=[
+                    ('country', '=', country.id),
+                    ('type', 'in', types),
                 ], unaccent=True)
         cache.postal_codes = Cache('country.subdivision', 'code')
-        cache.carriers = Cache('carrier', key=lambda x:x.party.code )
+        cache.carriers = Cache('carrier', key=lambda x:x.party.code.lower())
 
     def importer_context(self):
         res = super().importer_context()
@@ -319,6 +322,8 @@ class ImporterParty(ImporterModel):
                     name=record.customer_payment_type)
                 customer_payment_type.kind = 'receivable'
                 customer_payment_type.account_bank = 'none'
+                if company:
+                    customer_payment_type.company = company
                 customer_payment_type.save()
                 cache.payment_types[(record.customer_payment_type,
                     'receivable')]=customer_payment_type
@@ -338,6 +343,8 @@ class ImporterParty(ImporterModel):
                     name=record.supplier_payment_type)
                 supplier_payment_type.kind = 'payable'
                 supplier_payment_type.account_bank = 'none'
+                if company:
+                    supplier_payment_type.company = company
                 supplier_payment_type.save()
                 cache.payment_types[(record.supplier_payment_type,
                     'payable')] = supplier_payment_type
