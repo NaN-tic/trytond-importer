@@ -1,6 +1,7 @@
 from trytond.model import ModelView, fields
 from trytond.transaction import Transaction
 from trytond.pool import PoolMeta, Pool
+from trytond.modules.product import round_price
 from .tools import ImporterModel, Cache, Setup
 
 
@@ -24,6 +25,10 @@ class ImporterStockMove(ImporterModel):
     def importer_start(cls):
         pool = Pool()
         Product = pool.get('product.product')
+        try:
+            Lot = pool.get('stock.lot')
+        except KeyError:
+            Lot = None
 
         super().importer_start()
         setup = Setup().get()
@@ -32,8 +37,9 @@ class ImporterStockMove(ImporterModel):
         cache.locations = Cache('stock.location', 'name')
         cache.products = Cache('product.product', 'code')
         cache.currencies = Cache('currency.currency', 'code')
-        cache.lots = Cache('stock.lot', lambda x: (x.number
-            and x.number.lower(), x.product.code and x.product.code.lower()))
+        if Lot:
+            cache.lots = Cache('stock.lot', lambda x: (x.number
+                and x.number.lower(), x.product.code and x.product.code.lower()))
         # Cache Product UOMs to prevent cache trashin of if we try to use
         # the value from cache.products
         cache.uoms = {x.id: x.default_uom for x in Product.search([])}
@@ -42,6 +48,10 @@ class ImporterStockMove(ImporterModel):
     def importer_import(cls, records):
         pool = Pool()
         Move = pool.get('stock.move')
+        try:
+            Lot = pool.get('stock.lot')
+        except KeyError:
+            Lot = None
 
         setup = Setup.get()
         cache = setup.cache
@@ -75,15 +85,15 @@ class ImporterStockMove(ImporterModel):
             move.product = product
             move.quantity = round(record.quantity)
             if 'cost_price' in setup.fields:
-                move.cost_price = record.cost_price
+                move.cost_price = round_price(record.cost_price)
             if 'unit_price' in setup.fields:
-                move.unit_price = record.unit_price
+                move.unit_price = round_price(record.unit_price)
             move.unit = cache.uoms[product.id]
             move.effective_date = record.effective_date
             move.planned_date = record.planned_date
             if 'currency' in setup.fields and record.currency:
                 move.currency = cache.currencies.get(record.currency)
-            if 'lot' in setup.fields and record.lot:
+            if Lot and 'lot' in setup.fields and record.lot:
                 move.lot = cache.lots.get((record.lot, record.product_code))
             to_save.append((move, record))
 
@@ -91,7 +101,9 @@ class ImporterStockMove(ImporterModel):
         cls.importer_save(to_save)
 
         if 'and_do' in setup.method:
-            Move.do([x[0] for x in to_save if x[0].id and x[0].id > 0])
+            # Avoid warnings because of missing origin
+            with Transaction().set_context(_skip_warnings=True):
+                Move.do([x[0] for x in to_save if x[0].id and x[0].id > 0])
         return [x[0] for x in to_save]
 
 
@@ -183,6 +195,6 @@ class Importer(metaclass=PoolMeta):
 
         moves = cls.import_stock_move(records)
         # Avoid warnings because of missing origin
-        with Transaction().set_context({'_skip_warnings': True}):
+        with Transaction().set_context(_skip_warnings=True):
             Move.do(moves)
         return moves

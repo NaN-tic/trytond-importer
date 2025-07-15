@@ -450,6 +450,17 @@ class Importer(ModelSQL, ModelView):
         super().write(*args)
 
     @classmethod
+    def copy(cls, importers, default=None):
+        if default is None:
+            default = {}
+        else:
+            default = default.copy()
+        default.setdefault('logs')
+        default.setdefault('deletes')
+        default.setdefault('elapsed')
+        return super().copy(importers, default=default)
+
+    @classmethod
     @ModelView.button
     def check_connection(cls, importers):
         for importer in importers:

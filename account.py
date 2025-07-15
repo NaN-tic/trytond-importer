@@ -123,6 +123,7 @@ class ImporterAccountMove(ImporterModel):
             create_party = True
             create_account = True
 
+        move = None
         moves_to_save = []
         lines_to_save = []
         analytic_lines_to_save = []
@@ -534,11 +535,17 @@ class Importer(metaclass=PoolMeta):
         for record in records:
             found_product = []
             if record.product_code:
-                found_product = Product.search(
-                    [('code', '=', record.product_code )], limit=1)
+                found_product = Product.search([
+                    ('code', '=', record.product_code ),
+                    ('type', '=', 'assets'),
+                    ('depreciable', '=', True),
+                    ], limit=1)
             elif record.product_name:
-                found_product = Product.search(
-                    [('name', '=', record.product_name )], limit=1)
+                found_product = Product.search([
+                    ('name', '=', record.product_name ),
+                    ('type', '=', 'assets'),
+                    ('depreciable', '=', True),
+                    ], limit=1)
             if not found_product:
                 raise UserError(gettext('importer.msg_asset_product_not_found',
                     product=record.product_code))
@@ -563,7 +570,7 @@ class Importer(metaclass=PoolMeta):
             if record.end_date:
                 asset.end_date = record.end_date
             elif product.depreciation_duration:
-                asset.end_date = (asset.purchase_date + relativedelta(
+                asset.end_date = ((asset.purchase_date or asset.start_date) + relativedelta(
                     days=-1, months=product.depreciation_duration))
             # Do not import if the end date is in the past
             if asset.end_date < Date.today():
