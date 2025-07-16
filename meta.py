@@ -28,6 +28,7 @@ class ImporterMeta(ImporterModel):
     column_name = fields.Char('Column Name')
     column_value = fields.Char('Column Value')
     column_format = fields.Char('Column Format')
+    sql_data = fields.Char('Sql Data')
 
     @classmethod
     def importer_start(cls):
@@ -44,7 +45,6 @@ class ImporterMeta(ImporterModel):
         pool = Pool()
         Importer = pool.get('importer')
 
-        super().importer_import(records)
         setup = Setup.get()
         cache = setup.cache
 

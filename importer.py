@@ -19,6 +19,9 @@ import textdistance
 import datetime
 import charset_normalizer
 from io import StringIO, BytesIO
+import psycopg2
+import pathlib
+import os
 from trytond.model import ModelSQL, ModelView, fields
 from trytond.wizard import Wizard, StateView, StateAction, Button
 from trytond.pool import Pool
@@ -393,6 +396,7 @@ class Importer(ModelSQL, ModelView):
                     'invisible': ~Bool(Eval('deletes')),
                     },
                 })
+        cls.sql_source.selection.append(('psql', 'PSQL'))
 
     def get_language_code(self):
         if self.language:
@@ -480,6 +484,33 @@ class Importer(ModelSQL, ModelView):
             sql = sql.format(schema=self.schema, domain=self.where)
             return sql
 
+    def get_url_file(self):
+
+        return os.path.join(pathlib.Path(__file__).parent.resolve(),
+            'queries', self.sql_data)
+
+    def check_connection_psql(self):
+        try:
+            psycopg2.connect(database = self.database, host=self.server,
+                user=self.user, password=self.password, port=5432)
+        except psycopg2.OperationalError:
+            raise UserError(gettext('importer.msg_invalid_connection',
+                    importer=self.name))
+        raise UserError(gettext('importer.msg_successful_connection',
+                importer=self.name))
+
+    def get_connection_psql(self, fail=True):
+        try:
+            conn = psycopg2.connect(database = self.database, host=self.server,
+                user=self.user, password=self.password, port=5432)
+        except psycopg2.OperationalError as e:
+            if fail:
+                raise UserError(e)
+            else:
+                return None
+        return conn
+
+
     @classmethod
     def extractor(cls):
         return DataExtractor
@@ -531,6 +562,7 @@ class Importer(ModelSQL, ModelView):
             # URL
             js['url_data'] = importer.url_data
             # SQL
+            js['sql_data'] = importer.sql_data
             js['sql_source'] = importer.sql_source
             js['server'] = importer.server
             js['user'] = importer.user
