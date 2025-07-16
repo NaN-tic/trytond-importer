@@ -121,16 +121,6 @@ class ImporterTestCase(ModuleTestCase):
                 'chart_name': 'Universal Chart of Accounts',
                 }])
 
-        AccountConfiguration = pool.get('account.configuration')
-        config = AccountConfiguration(1)
-        account_code_digits = config.default_account_code_digits or 4
-
-        Account = pool.get('account.account')
-        accounts = Account.search([])
-
-        for index, account in enumerate(accounts):
-            account.code = str(index + 1).zfill(account_code_digits)
-        Account.save(accounts)
         Transaction().set_context(company=company.id)
 
         Party = pool.get('party.party')
@@ -243,7 +233,7 @@ class ImporterTestCase(ModuleTestCase):
                 'account_name': 'Despeses Desembre Maria Eugenia',
                 'party_name': company.party.name,
                 'state': 'draft',
-                'account_code': '000501',
+                'account_code': '5.1.5000',
                 'debit': 10000,
                 'credit': 0,
                 'effective_date': today.strftime('%Y-%m-%d'),
