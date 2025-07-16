@@ -32,7 +32,7 @@
         <record model="ir.message" id="change_method_warning">
             <field name="text">Changing the format on importer "%(name)s" may cause your settings to be lost. Are you sure to proceed?</field>
         </record>
-        <record model="ir.message" id="account_not_found">
+        <record model="ir.message" id="msg_account_not_found">
             <field name="text">Account %(account)s not found.</field>
         </record>
         <record model="ir.message" id="party_required_for_account">
@@ -162,6 +162,20 @@
         </record>
         <record model="ir.message" id="msg_product_attribute_incorrect_cast">
             <field name="text">Value %(value)s is incorrect for attribute %(attribute)s expected type %(type)s, with product code %(code)s</field>
+        </record>
+    </data>
+
+    <data depends="product_attribute_strict">
+        <record model="ir.message" id="msg_carrier_product_not_found">
+            <field name="text">Product code %(product)s not found.</field>
+        </record>
+        <record model="ir.message" id="msg_carrier_party_not_found">
+            <field name="text">Party code %(party)s not found.</field>
+        </record>
+    </data>
+    <data depends="account_payment_holidays">
+        <record model="ir.message" id="msg_holidays_party_not_found">
+            <field name="text">Party code %(party)s not found.</field>
         </record>
     </data>
 </tryton>

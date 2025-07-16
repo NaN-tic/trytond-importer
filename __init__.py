@@ -6,6 +6,7 @@ from . import agronomics
 from . import account
 from . import bank
 from . import bank_es
+from . import carrier
 from . import company
 from . import country
 from . import crop
@@ -71,6 +72,7 @@ def register():
     Pool.register(
         party.Importer,
         party.ImporterParty,
+        party.ImporterPartyAddress,
         party.ImporterPartyConfiguration,
         party.ImporterContactMechanism,
         depends=['party'],
@@ -312,4 +314,27 @@ def register():
         bank_es.Importer,
         bank_es.ImporterSpanishBank,
         depends=['bank_es'],
+        module='importer', type_='model')
+    Pool.register(
+        carrier.Importer,
+        carrier.ImporterCarrier,
+        depends=['carrier'],
+        module='importer', type_='model')
+    Pool.register(
+        carrier.ImporterCarrierShipmentCost,
+        depends=['carrier', 'stock_shipment_cost'],
+        module='importer', type_='model')
+    Pool.register(
+        party.ImporterHolidaysParty,
+        party.ImpoterPartyHolidays,
+        depends=['account_payment_holidays'],
+        module='importer', type_='model')
+    Pool.register(
+        party.ImportFacturaeAddress,
+        party.ImportAddressFacturae,
+        depends=['account_invoice_facturae'],
+        module='importer', type_='model')
+    Pool.register(
+        party.ImporterCarrierDepends,
+        depends=['sale_carrier'],
         module='importer', type_='model')

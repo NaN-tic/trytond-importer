@@ -555,7 +555,7 @@ msgctxt "model:ir.action,name:report_importer_export"
 msgid "Export"
 msgstr "Exporta"
 
-msgctxt "model:ir.message,text:account_not_found"
+msgctxt "model:ir.message,text:msg_account_not_found"
 msgid "Account %(account)s not found."
 msgstr "No s'ha trobat el compte %(account)s."
 
