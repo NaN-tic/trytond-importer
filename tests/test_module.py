@@ -229,11 +229,16 @@ class ImporterTestCase(ModuleTestCase):
                 'in_credit_note_sequence_name': 'Invoice',
                 }])
 
+        # In this test, we dont have the spansih account tree, we cant use
+        # accounts like '43000001', so we adapt the code to use the same
+        # structure
+        # TODO: in 7.4 and above, change the account code to adapt to the new
+        # core defaults accounts
         self.import_('account_move_account_party', [{
                 'account_name': 'Despeses Desembre Maria Eugenia',
                 'party_name': company.party.name,
                 'state': 'draft',
-                'account_code': '43000001',
+                'account_code': '000501',
                 'debit': 10000,
                 'credit': 0,
                 'effective_date': today.strftime('%Y-%m-%d'),

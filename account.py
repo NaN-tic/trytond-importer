@@ -95,6 +95,7 @@ class ImporterAccountMove(ImporterModel):
         Chart = pool.get('importer.account.chart')
         JournalPeriod = pool.get('account.journal.period')
         Party = pool.get('party.party')
+        Company = pool.get('company.company')
 
         try:
             AnalyticLine = pool.get('analytic_account.line')
@@ -140,6 +141,9 @@ class ImporterAccountMove(ImporterModel):
             company = None
             if cache.companies.get(record.company_name):
                 company = setup.cache.companies.get(record.company_name)
+            elif Transaction().context.get('company'):
+                company = Company(Transaction().context.get('company'))
+
 
             if not company:
                 setup.error(gettext('importer.msg_company_not_found',
@@ -219,7 +223,7 @@ class ImporterAccountMove(ImporterModel):
                             continue
                         account.company = company
                         accounts_to_save.append((account, record))
-                        cache.accounts.add((company.id, str(acc_code)))
+                        cache.accounts.add(account)
 
                 if not account:
                     continue
@@ -240,6 +244,9 @@ class ImporterAccountMove(ImporterModel):
                     move.journal = cache.journals.get(record.journal_code)
                     move.lines = []
                     moves_to_save.append((move, record))
+
+                if not move:
+                    continue
 
                 party_code = record.get_party_code()
                 party = cache.parties.get(party_code)
