@@ -1,12 +1,12 @@
 #
-# Albert Cervera i Areny <albert@nan-tic.com>, 2024.
+# albert, 2025.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: Albert Cervera i Areny <albert@nan-tic.com>\n"
-"PO-Revision-Date: 2024-11-15 01:27+0100\n"
+"Last-Translator: albert\n"
+"PO-Revision-Date: 2025-07-22 00:42+0200\n"
 "Project-Id-Version: \n"
-"Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
+"Language-Team: Catalan <>\n"
 "Language: ca_ES\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
@@ -24,6 +24,10 @@ msgstr "Nombre campo binario"
 msgctxt "field:importer,columns:"
 msgid "Columns"
 msgstr "Columnas"
+
+msgctxt "field:importer,commit_chunks:"
+msgid "Commit Chunks"
+msgstr "Commit por bloques"
 
 msgctxt "field:importer,data_source:"
 msgid "Data Source"
@@ -85,6 +89,10 @@ msgctxt "field:importer,password:"
 msgid "Password"
 msgstr "Contraseña"
 
+msgctxt "field:importer,requires_records:"
+msgid "Requires Records"
+msgstr "Requiere registros"
+
 msgctxt "field:importer,sample_size:"
 msgid "Sample Size"
 msgstr "Tamaño de la muestra"
@@ -125,6 +133,10 @@ msgctxt "field:importer,use_header:"
 msgid "Use Header?"
 msgstr "¿Usar encabezado?"
 
+msgctxt "field:importer,use_subtransactions:"
+msgid "Use Subtransactions"
+msgstr "Utilizar subtransacciones"
+
 msgctxt "field:importer,user:"
 msgid "User"
 msgstr "Usuario"
@@ -132,6 +144,226 @@ msgstr "Usuario"
 msgctxt "field:importer,where:"
 msgid "Where"
 msgstr "Condición"
+
+msgctxt "field:importer.account.asset,analytic_account:"
+msgid "Analytic Account"
+msgstr "Cuenta analítica"
+
+msgctxt "field:importer.account.asset,comment:"
+msgid "Comment"
+msgstr "Comentario"
+
+msgctxt "field:importer.account.asset,current_value:"
+msgid "Current Value"
+msgstr "Valor actual"
+
+msgctxt "field:importer.account.asset,depreciated_amount:"
+msgid "Depreciated Amount"
+msgstr "Importe depreciado"
+
+msgctxt "field:importer.account.asset,end_date:"
+msgid "End Date"
+msgstr "Fecha de finalización"
+
+msgctxt "field:importer.account.asset,number:"
+msgid "Number"
+msgstr "Número"
+
+msgctxt "field:importer.account.asset,product_code:"
+msgid "Product Code"
+msgstr "Código de producto"
+
+msgctxt "field:importer.account.asset,product_name:"
+msgid "Product Name"
+msgstr "Nombre del producto"
+
+msgctxt "field:importer.account.asset,purchase_date:"
+msgid "Purchase Date"
+msgstr "Fecha de compra"
+
+msgctxt "field:importer.account.asset,residual_value:"
+msgid "Residual Value"
+msgstr "Valor residual"
+
+msgctxt "field:importer.account.asset,start_date:"
+msgid "Start Date"
+msgstr "Fecha de inicio"
+
+msgctxt "field:importer.account.asset,value:"
+msgid "Value"
+msgstr "Valor"
+
+msgctxt "field:importer.account.chart,chart_name:"
+msgid "Chart Name"
+msgstr "Nombre del gráfico"
+
+msgctxt "field:importer.account.chart,company_name:"
+msgid "Company Name"
+msgstr "nombre de empresa"
+
+msgctxt "field:importer.account.chart,digits:"
+msgid "Digits"
+msgstr "Dígitos"
+
+msgctxt "field:importer.account.chart,payable_code:"
+msgid "Payable Code"
+msgstr "Código de pago"
+
+msgctxt "field:importer.account.chart,receivable_code:"
+msgid "Receivable Code"
+msgstr "Código de cuenta por cobrar"
+
+msgctxt "field:importer.account.fiscalyear,company_name:"
+msgid "Company Name"
+msgstr "nombre de empresa"
+
+msgctxt "field:importer.account.fiscalyear,end_date:"
+msgid "End Date"
+msgstr "Fecha de finalización"
+
+msgctxt "field:importer.account.fiscalyear,in_credit_note_sequence_name:"
+msgid "In Credit Note Sequence Name"
+msgstr "En el nombre de la secuencia de la nota de crédito"
+
+msgctxt "field:importer.account.fiscalyear,in_invoice_sequence_name:"
+msgid "In Invoice Sequence Name"
+msgstr "En el nombre de la secuencia de factura"
+
+msgctxt "field:importer.account.fiscalyear,move_sequence_name:"
+msgid "Move Sequence Name"
+msgstr "Nombre de la secuencia de movimiento"
+
+msgctxt "field:importer.account.fiscalyear,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.account.fiscalyear,out_credit_note_sequence_name:"
+msgid "Out Credit Note Sequence Name"
+msgstr "Nombre de secuencia de nota de crédito de salida"
+
+msgctxt "field:importer.account.fiscalyear,out_invoice_sequence_name:"
+msgid "Out Invoice Sequence Name"
+msgstr "Nombre de secuencia de factura de salida"
+
+msgctxt "field:importer.account.fiscalyear,start_date:"
+msgid "Start Date"
+msgstr "Fecha de inicio"
+
+msgctxt "field:importer.account.move,account_code:"
+msgid "Account Code"
+msgstr "Código de cuenta"
+
+msgctxt "field:importer.account.move,account_name:"
+msgid "Account Name"
+msgstr "Nombre de la cuenta"
+
+msgctxt "field:importer.account.move,analytic_account:"
+msgid "Analytic Account"
+msgstr "Cuenta analítica"
+
+msgctxt "field:importer.account.move,company_name:"
+msgid "Company Name"
+msgstr "nombre de empresa"
+
+msgctxt "field:importer.account.move,credit:"
+msgid "Credit"
+msgstr "Crédito"
+
+msgctxt "field:importer.account.move,debit:"
+msgid "Debit"
+msgstr "Débito"
+
+msgctxt "field:importer.account.move,description:"
+msgid "Description"
+msgstr "Descripción"
+
+msgctxt "field:importer.account.move,effective_date:"
+msgid "Effecive Date"
+msgstr "Fecha de entrada en vigor"
+
+msgctxt "field:importer.account.move,journal_code:"
+msgid "Journal Code"
+msgstr "Código de la revista"
+
+msgctxt "field:importer.account.move,maturity_date:"
+msgid "Maturity Date"
+msgstr "Fecha de vencimiento"
+
+msgctxt "field:importer.account.move,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.account.move,number:"
+msgid "Move Number"
+msgstr "Número de movimiento"
+
+msgctxt "field:importer.account.move,party_code:"
+msgid "Party Code"
+msgstr "Código del Partido"
+
+msgctxt "field:importer.account.move,party_name:"
+msgid "Party Name"
+msgstr "Nombre del partido"
+
+msgctxt "field:importer.account.move,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.address.facturae,facturae_person_type:"
+msgid "Facturae Person Type"
+msgstr "Tipo de persona de factura"
+
+msgctxt "field:importer.address.facturae,facturae_residence_type:"
+msgid "Facturae Residence Type"
+msgstr "Tipo de residencia de Facturae"
+
+msgctxt "field:importer.address.facturae,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.address.facturae,oficina_contable:"
+msgid "Oficina Contable"
+msgstr "Oficina contable"
+
+msgctxt "field:importer.address.facturae,organo_gestor:"
+msgid "Organo Gestor"
+msgstr "Órgano gestor"
+
+msgctxt "field:importer.address.facturae,party:"
+msgid "Party"
+msgstr "Fiesta"
+
+msgctxt "field:importer.address.facturae,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.address.facturae,unidad_tramitadora:"
+msgid "Unidad Tramitadora"
+msgstr "Unidad Tramitadora"
+
+msgctxt "field:importer.carrier,carrier_cost_method:"
+msgid "Carrier Cost Method"
+msgstr "Método de costo del transportista"
+
+msgctxt "field:importer.carrier,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.carrier,party:"
+msgid "Party"
+msgstr "Fiesta"
+
+msgctxt "field:importer.carrier,product:"
+msgid "Product"
+msgstr "Producto"
+
+msgctxt "field:importer.carrier,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.carrier,shipment_cost_allocation_method:"
+msgid "Shipment Cost Allocation Method"
+msgstr "Método de asignación de costos de envío"
 
 msgctxt "field:importer.column,examples:"
 msgid "Examples"
@@ -161,6 +393,302 @@ msgctxt "field:importer.column,value:"
 msgid "Value"
 msgstr "Valor"
 
+msgctxt "field:importer.company,currency:"
+msgid "Currency"
+msgstr "Divisa"
+
+msgctxt "field:importer.company,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.company,timezone:"
+msgid "timezone"
+msgstr "zona horaria"
+
+msgctxt "field:importer.employee,company:"
+msgid "Company"
+msgstr "Compañía"
+
+msgctxt "field:importer.employee,end_date:"
+msgid "End Date"
+msgstr "Fecha de finalización"
+
+msgctxt "field:importer.employee,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.employee,start_date:"
+msgid "Start Date"
+msgstr "Fecha de inicio"
+
+msgctxt "field:importer.employee,supervisor:"
+msgid "Supervisor"
+msgstr "Supervisor"
+
+msgctxt "field:importer.farm.abort.event,animal:"
+msgid "Animal"
+msgstr "Animal"
+
+msgctxt "field:importer.farm.abort.event,farm:"
+msgid "Farm"
+msgstr "Granja"
+
+msgctxt "field:importer.farm.abort.event,notes:"
+msgid "Notes"
+msgstr "Notas"
+
+msgctxt "field:importer.farm.abort.event,timestamp:"
+msgid "Timestamp"
+msgstr "Marca de tiempo"
+
+msgctxt "field:importer.farm.animal,animal_type:"
+msgid "Animal Type"
+msgstr "Tipo de animal"
+
+msgctxt "field:importer.farm.animal,arrival_date:"
+msgid "Arrival Date"
+msgstr "Fecha de llegada"
+
+msgctxt "field:importer.farm.animal,breed:"
+msgid "Breed"
+msgstr "Criar"
+
+msgctxt "field:importer.farm.animal,initial_location:"
+msgid "Initial Location"
+msgstr "Ubicación inicial"
+
+msgctxt "field:importer.farm.animal,number:"
+msgid "Number"
+msgstr "Número"
+
+msgctxt "field:importer.farm.animal,origin:"
+msgid "Origin"
+msgstr "Origen"
+
+msgctxt "field:importer.farm.animal,sex:"
+msgid "Sex"
+msgstr "Sexo"
+
+msgctxt "field:importer.farm.farrowing.event,animal:"
+msgid "Animal"
+msgstr "Animal"
+
+msgctxt "field:importer.farm.farrowing.event,child_birthdate:"
+msgid "Child Birthdate"
+msgstr "Fecha de nacimiento del niño"
+
+msgctxt "field:importer.farm.farrowing.event,child_number:"
+msgid "Child Number"
+msgstr "Número de niño"
+
+msgctxt "field:importer.farm.farrowing.event,child_sex:"
+msgid "Child Sex"
+msgstr "Sexo infantil"
+
+msgctxt "field:importer.farm.farrowing.event,child_tags:"
+msgid "Child Tags"
+msgstr "Etiquetas para niños"
+
+msgctxt "field:importer.farm.farrowing.event,child_weight:"
+msgid "Child Weight"
+msgstr "Peso del niño"
+
+msgctxt "field:importer.farm.farrowing.event,farm:"
+msgid "Farm"
+msgstr "Granja"
+
+msgctxt "field:importer.farm.farrowing.event,live:"
+msgid "Live"
+msgstr "Vivir"
+
+msgctxt "field:importer.farm.farrowing.event,problem:"
+msgid "Problem"
+msgstr "Problema"
+
+msgctxt "field:importer.farm.farrowing.event,timestamp:"
+msgid "Timestamp"
+msgstr "Marca de tiempo"
+
+msgctxt "field:importer.farm.insemination.event,animal:"
+msgid "Animal"
+msgstr "Animal"
+
+msgctxt "field:importer.farm.insemination.event,dose_bom:"
+msgid "Dose BOM"
+msgstr "Dosis BOM"
+
+msgctxt "field:importer.farm.insemination.event,farm:"
+msgid "Farm"
+msgstr "Granja"
+
+msgctxt "field:importer.farm.insemination.event,timestamp:"
+msgid "Timestamp"
+msgstr "Marca de tiempo"
+
+msgctxt "field:importer.farm.medication.event,animal:"
+msgid "Animal"
+msgstr "Animal"
+
+msgctxt "field:importer.farm.medication.event,end_date:"
+msgid "End Date"
+msgstr "Fecha de finalización"
+
+msgctxt "field:importer.farm.medication.event,feed_location:"
+msgid "Feed Location"
+msgstr "Ubicación del feed"
+
+msgctxt "field:importer.farm.medication.event,feed_lot:"
+msgid "Feed Lot"
+msgstr "corral de engorde"
+
+msgctxt "field:importer.farm.medication.event,feed_product:"
+msgid "Feed Product"
+msgstr "Producto alimenticio"
+
+msgctxt "field:importer.farm.medication.event,feed_quantity:"
+msgid "Feed Quantity"
+msgstr "Cantidad de alimento"
+
+msgctxt "field:importer.farm.medication.event,timestamp:"
+msgid "Timestamp"
+msgstr "Marca de tiempo"
+
+msgctxt "field:importer.farm.move.event,animal:"
+msgid "Animal"
+msgstr "Animal"
+
+msgctxt "field:importer.farm.move.event,farm:"
+msgid "Farm"
+msgstr "Granja"
+
+msgctxt "field:importer.farm.move.event,notes:"
+msgid "Notes"
+msgstr "Notas"
+
+msgctxt "field:importer.farm.move.event,timestamp:"
+msgid "Date & Time"
+msgstr "Fecha y hora"
+
+msgctxt "field:importer.farm.move.event,to_location:"
+msgid "To Location"
+msgstr "A la ubicación"
+
+msgctxt "field:importer.farm.move.event,weight:"
+msgid "Weight"
+msgstr "Peso"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,animal:"
+msgid "Animal"
+msgstr "Animal"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,farm:"
+msgid "Farm"
+msgstr "Granja"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,notes:"
+msgid "Notes"
+msgstr "Notas"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,result:"
+msgid "Result"
+msgstr "Resultado"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,timestamp:"
+msgid "Timestamp"
+msgstr "Marca de tiempo"
+
+msgctxt "field:importer.farm.reclassification.event,animal:"
+msgid "Animal"
+msgstr "Animal"
+
+msgctxt "field:importer.farm.reclassification.event,farm:"
+msgid "Farm"
+msgstr "Granja"
+
+msgctxt "field:importer.farm.reclassification.event,reclassification_product:"
+msgid "Reclasification Product"
+msgstr "Producto de reclasificación"
+
+msgctxt "field:importer.farm.reclassification.event,timestamp:"
+msgid "Timestamp"
+msgstr "Marca de tiempo"
+
+msgctxt "field:importer.farm.reclassification.event,to_location:"
+msgid "To Location"
+msgstr "A la ubicación"
+
+msgctxt "field:importer.farm.reclassification.event,weight:"
+msgid "Weight"
+msgstr "Peso"
+
+msgctxt "field:importer.farm.removal.event,animal:"
+msgid "Animal"
+msgstr "Animal"
+
+msgctxt "field:importer.farm.removal.event,farm:"
+msgid "Farm"
+msgstr "Granja"
+
+msgctxt "field:importer.farm.removal.event,removal_reason:"
+msgid "Reason"
+msgstr "Razón"
+
+msgctxt "field:importer.farm.removal.event,removal_type:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:importer.farm.removal.event,timestamp:"
+msgid "Date & Time"
+msgstr "Fecha y hora"
+
+msgctxt "field:importer.farm.transformation.event,animal:"
+msgid "Animal"
+msgstr "Animal"
+
+msgctxt "field:importer.farm.transformation.event,farm:"
+msgid "Farm"
+msgstr "Granja"
+
+msgctxt "field:importer.farm.transformation.event,from_location:"
+msgid "From Location"
+msgstr "Desde la ubicación"
+
+msgctxt "field:importer.farm.transformation.event,timestamp:"
+msgid "Timestamp"
+msgstr "Marca de tiempo"
+
+msgctxt "field:importer.farm.transformation.event,to_animal_type:"
+msgid "To Animal Type"
+msgstr "Al tipo de animal"
+
+msgctxt "field:importer.farm.transformation.event,to_location:"
+msgid "To Location"
+msgstr "A la ubicación"
+
+msgctxt "field:importer.farm.weaning.event,animal:"
+msgid "Animal"
+msgstr "Animal"
+
+msgctxt "field:importer.farm.weaning.event,farm:"
+msgid "Farm"
+msgstr "Granja"
+
+msgctxt "field:importer.farm.weaning.event,female_to_location:"
+msgid "Female To Location"
+msgstr "Mujer a Ubicación"
+
+msgctxt "field:importer.farm.weaning.event,quantity:"
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgctxt "field:importer.farm.weaning.event,timestamp:"
+msgid "Timestamp"
+msgstr "Marca de tiempo"
+
+msgctxt "field:importer.farm.weaning.event,weaned_to_location:"
+msgid "Weaned To Location"
+msgstr "Destetado a la ubicación"
+
 msgctxt "field:importer.import.ask,binary_data:"
 msgid "Data"
 msgstr "Datos"
@@ -184,6 +712,58 @@ msgstr "Datos"
 msgctxt "field:importer.import.ask,url_data:"
 msgid "Data URL"
 msgstr "URL de Datos "
+
+msgctxt "field:importer.invoice,account_move_number:"
+msgid "Account Move number"
+msgstr "Número de movimiento de cuenta"
+
+msgctxt "field:importer.invoice,currency:"
+msgid "Currency"
+msgstr "Divisa"
+
+msgctxt "field:importer.invoice,discount:"
+msgid "Discount"
+msgstr "Descuento"
+
+msgctxt "field:importer.invoice,invoice_date:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "field:importer.invoice,invoice_number:"
+msgid "Invoice Number"
+msgstr "Número de factura"
+
+msgctxt "field:importer.invoice,invoice_type:"
+msgid "Invoice Type"
+msgstr "Tipo de factura"
+
+msgctxt "field:importer.invoice,journal:"
+msgid "Journal"
+msgstr "Diario"
+
+msgctxt "field:importer.invoice,party_code:"
+msgid "Party Code"
+msgstr "Código del Partido"
+
+msgctxt "field:importer.invoice,party_name:"
+msgid "Party Name"
+msgstr "Nombre del partido"
+
+msgctxt "field:importer.invoice,product_code:"
+msgid "Product Code"
+msgstr "Código de producto"
+
+msgctxt "field:importer.invoice,quantity:"
+msgid "Product Quantity"
+msgstr "Cantidad de producto"
+
+msgctxt "field:importer.invoice,reference:"
+msgid "Reference"
+msgstr "Referencia"
+
+msgctxt "field:importer.invoice,unit_price:"
+msgid "Unit Price"
+msgstr "Precio unitario"
 
 msgctxt "field:importer.language,code:"
 msgid "Code"
@@ -209,6 +789,22 @@ msgctxt "field:importer.language,translatable:"
 msgid "Translatable"
 msgstr "Traducible"
 
+msgctxt "field:importer.location,code:"
+msgid "Code"
+msgstr "Código"
+
+msgctxt "field:importer.location,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.location,parent:"
+msgid "Parent"
+msgstr "Padre"
+
+msgctxt "field:importer.location,type:"
+msgid "Type"
+msgstr "Tipo"
+
 msgctxt "field:importer.log,importer:"
 msgid "Importer"
 msgstr "Importador"
@@ -216,6 +812,10 @@ msgstr "Importador"
 msgctxt "field:importer.log,message:"
 msgid "Message"
 msgstr "Mensaje"
+
+msgctxt "field:importer.log,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
 
 msgctxt "field:importer.log,on_error:"
 msgid "On Error"
@@ -237,6 +837,46 @@ msgctxt "field:importer.log,type:"
 msgid "Type"
 msgstr "Tipo"
 
+msgctxt "field:importer.lot,date:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "field:importer.lot,expiration_date:"
+msgid "Expiry Date"
+msgstr "Fecha de caducidad"
+
+msgctxt "field:importer.lot,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.lot,number:"
+msgid "Number"
+msgstr "Número"
+
+msgctxt "field:importer.lot,product_code:"
+msgid "Product Code"
+msgstr "Código de producto"
+
+msgctxt "field:importer.lot,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.lot,shelf_life_expiration_date:"
+msgid "Shelf Life Expiration Date"
+msgstr "Fecha de caducidad"
+
+msgctxt "field:importer.marketing.email,active:"
+msgid "Active"
+msgstr "Activo"
+
+msgctxt "field:importer.marketing.email,email:"
+msgid "Email"
+msgstr "Correo electrónico"
+
+msgctxt "field:importer.marketing.email,mailing_list:"
+msgid "Mailing List"
+msgstr "Lista de correo"
+
 msgctxt "field:importer.meta,binary_data:"
 msgid "Binary"
 msgstr "Binario"
@@ -257,6 +897,10 @@ msgctxt "field:importer.meta,column_value:"
 msgid "Column Value"
 msgstr "Valor de la columna"
 
+msgctxt "field:importer.meta,commit_chunks:"
+msgid "Commit Chunks"
+msgstr "Fragmentos de confirmación"
+
 msgctxt "field:importer.meta,data_source:"
 msgid "Data Source"
 msgstr "Fuente de datos"
@@ -272,6 +916,10 @@ msgstr "Tiene encabezado"
 msgctxt "field:importer.meta,language:"
 msgid "Language"
 msgstr "Idioma"
+
+msgctxt "field:importer.meta,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
 
 msgctxt "field:importer.meta,method:"
 msgid "Method"
@@ -301,6 +949,10 @@ msgctxt "field:importer.meta,server:"
 msgid "Server"
 msgstr "Servidor"
 
+msgctxt "field:importer.meta,sql_data:"
+msgid "Sql Data"
+msgstr "Datos SQL"
+
 msgctxt "field:importer.meta,sql_source:"
 msgid "SQL Source"
 msgstr "Fuente SQL"
@@ -317,6 +969,10 @@ msgctxt "field:importer.meta,use_header:"
 msgid "Use Header"
 msgstr "Usar encabezado"
 
+msgctxt "field:importer.meta,use_subtransactions:"
+msgid "Use Subtransactions"
+msgstr "Utilizar subtransacciones"
+
 msgctxt "field:importer.meta,user:"
 msgid "User"
 msgstr "Usuario"
@@ -324,6 +980,1014 @@ msgstr "Usuario"
 msgctxt "field:importer.meta,where:"
 msgid "Where"
 msgstr "Dónde"
+
+msgctxt "field:importer.order_point,min_quantity:"
+msgid "Minimum Quantity"
+msgstr "Cantidad mínima"
+
+msgctxt "field:importer.order_point,product_code:"
+msgid "Product Code"
+msgstr "Código de producto"
+
+msgctxt "field:importer.order_point,target_quantity:"
+msgid "Target Quantity"
+msgstr "Cantidad objetivo"
+
+msgctxt "field:importer.order_point,type_:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:importer.order_point,warehouse_location:"
+msgid "Warehouse Location"
+msgstr "Ubicación del almacén"
+
+msgctxt "field:importer.parcel,crop:"
+msgid "Crop"
+msgstr "Cultivo"
+
+msgctxt "field:importer.parcel,plant_number:"
+msgid "Plant Number"
+msgstr "Número de planta"
+
+msgctxt "field:importer.parcel,plantation_code:"
+msgid "Plantation Code"
+msgstr "Código de Plantación"
+
+msgctxt "field:importer.parcel,species:"
+msgid "Species"
+msgstr "Especies"
+
+msgctxt "field:importer.parcel,surface:"
+msgid "Surface"
+msgstr "Superficie"
+
+msgctxt "field:importer.parcel,variety:"
+msgid "Variety"
+msgstr "Variedad"
+
+msgctxt "field:importer.party,bank_account:"
+msgid "Iban"
+msgstr "Iban"
+
+msgctxt "field:importer.party,carrier:"
+msgid "Carrier"
+msgstr "Transportador"
+
+msgctxt "field:importer.party,categories:"
+msgid "Categories"
+msgstr "Categorías"
+
+msgctxt "field:importer.party,city:"
+msgid "City"
+msgstr "Ciudad"
+
+msgctxt "field:importer.party,code:"
+msgid "Code"
+msgstr "Código"
+
+msgctxt "field:importer.party,company:"
+msgid "Company"
+msgstr "Compañía"
+
+msgctxt "field:importer.party,country:"
+msgid "Country"
+msgstr "País"
+
+msgctxt "field:importer.party,customer_payment_days:"
+msgid "Customer Payment days"
+msgstr "Días de pago del cliente"
+
+msgctxt "field:importer.party,customer_payment_term:"
+msgid "Customer Payment Term"
+msgstr "Plazo de pago del cliente"
+
+msgctxt "field:importer.party,customer_payment_type:"
+msgid "Customer Payment Type"
+msgstr "Tipo de pago del cliente"
+
+msgctxt "field:importer.party,customer_tax_rule:"
+msgid "Customer Tax Rule"
+msgstr "Regla de Impuesto al Cliente"
+
+msgctxt "field:importer.party,delivery_address:"
+msgid "Delivery Address"
+msgstr "Dirección de entrega"
+
+msgctxt "field:importer.party,email:"
+msgid "E-Mail"
+msgstr "Correo electrónico"
+
+msgctxt "field:importer.party,fax:"
+msgid "Fax"
+msgstr "Fax"
+
+msgctxt "field:importer.party,invoice_address:"
+msgid "Invoice Address"
+msgstr "Dirección de facturación"
+
+msgctxt "field:importer.party,language:"
+msgid "Language"
+msgstr "Idioma"
+
+msgctxt "field:importer.party,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.party,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.party,note:"
+msgid "Note"
+msgstr "Nota"
+
+msgctxt "field:importer.party,party_relation:"
+msgid "Party Relation"
+msgstr "Relación entre partidos"
+
+msgctxt "field:importer.party,phone:"
+msgid "Phone"
+msgstr "Teléfono"
+
+msgctxt "field:importer.party,postal_code:"
+msgid "Postal Code"
+msgstr "Código Postal"
+
+msgctxt "field:importer.party,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.party,shipment_city:"
+msgid "Shipment City"
+msgstr "Ciudad de envío"
+
+msgctxt "field:importer.party,shipment_country:"
+msgid "Shipment Country"
+msgstr "País de envío"
+
+msgctxt "field:importer.party,shipment_postal_code:"
+msgid "Shipment Postal Code"
+msgstr "Código postal del envío"
+
+msgctxt "field:importer.party,shipment_street:"
+msgid "Shipment Street"
+msgstr "Calle de envíos"
+
+msgctxt "field:importer.party,shipment_subdivision:"
+msgid "Shipment Subdivision"
+msgstr "Subdivisión de Envíos"
+
+msgctxt "field:importer.party,street:"
+msgid "Street"
+msgstr "Calle"
+
+msgctxt "field:importer.party,subdivision:"
+msgid "Subdivision"
+msgstr "Subdivisión"
+
+msgctxt "field:importer.party,supplier_lead_time:"
+msgid "Supplier Lead Time (days)"
+msgstr "Plazo de entrega del proveedor (días)"
+
+msgctxt "field:importer.party,supplier_payment_days:"
+msgid "Supplier Payment days"
+msgstr "Días de pago a proveedores"
+
+msgctxt "field:importer.party,supplier_payment_term:"
+msgid "Supplier Payment Term"
+msgstr "Plazo de pago al proveedor"
+
+msgctxt "field:importer.party,supplier_payment_type:"
+msgid "Supplier Payment Type"
+msgstr "Tipo de pago del proveedor"
+
+msgctxt "field:importer.party,supplier_tax_rule:"
+msgid "Supplier Tax Rule"
+msgstr "Regla de Impuestos para Proveedores"
+
+msgctxt "field:importer.party,trade_name:"
+msgid "Trade Name"
+msgstr "Nombre comercial"
+
+msgctxt "field:importer.party,type_of_relation:"
+msgid "Type of relation"
+msgstr "Tipo de relación"
+
+msgctxt "field:importer.party,vat:"
+msgid "Vat"
+msgstr "Tina"
+
+msgctxt "field:importer.party,website:"
+msgid "Website"
+msgstr "Sitio web"
+
+msgctxt "field:importer.party.address,city:"
+msgid "City"
+msgstr "Ciudad"
+
+msgctxt "field:importer.party.address,contact_type:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:importer.party.address,contact_value:"
+msgid "Value"
+msgstr "Valor"
+
+msgctxt "field:importer.party.address,country_name:"
+msgid "Country"
+msgstr "País"
+
+msgctxt "field:importer.party.address,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.party.address,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.party.address,party_code:"
+msgid "Party Code"
+msgstr "Código del Partido"
+
+msgctxt "field:importer.party.address,postal_code:"
+msgid "Postal Code"
+msgstr "Código Postal"
+
+msgctxt "field:importer.party.address,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.party.address,sequence:"
+msgid "Sequence"
+msgstr "Secuencia"
+
+msgctxt "field:importer.party.address,street:"
+msgid "Street Address"
+msgstr "Dirección de la calle"
+
+msgctxt "field:importer.party.address,subdivision:"
+msgid "Address Subdivision"
+msgstr "Subdivisión de direcciones"
+
+msgctxt "field:importer.party.configuration,language_code:"
+msgid "Language Code"
+msgstr "Código de idioma"
+
+msgctxt "field:importer.party.configuration,sequence_number_next:"
+msgid "Sequence Number Next"
+msgstr "Número de secuencia siguiente"
+
+msgctxt "field:importer.party.configuration,sequence_padding:"
+msgid "Sequence Padding"
+msgstr "Relleno de secuencia"
+
+msgctxt "field:importer.party.configuration,sequence_prefix:"
+msgid "Sequence prefix"
+msgstr "Prefijo de secuencia"
+
+msgctxt "field:importer.party.configuration,sequence_suffix:"
+msgid "Sequence suffix"
+msgstr "Sufijo de secuencia"
+
+msgctxt "field:importer.party.contact_mechanism,comment:"
+msgid "Comment"
+msgstr "Comentario"
+
+msgctxt "field:importer.party.contact_mechanism,delivery:"
+msgid "Delivery"
+msgstr "Entrega"
+
+msgctxt "field:importer.party.contact_mechanism,invoice:"
+msgid "Invoice"
+msgstr "Factura"
+
+msgctxt "field:importer.party.contact_mechanism,language:"
+msgid "Language"
+msgstr "Idioma"
+
+msgctxt "field:importer.party.contact_mechanism,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.party.contact_mechanism,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.party.contact_mechanism,party:"
+msgid "Party"
+msgstr "Fiesta"
+
+msgctxt "field:importer.party.contact_mechanism,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.party.contact_mechanism,type:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:importer.party.contact_mechanism,value:"
+msgid "Value"
+msgstr "Valor"
+
+msgctxt "field:importer.party.credit,date:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "field:importer.party.credit,end_date:"
+msgid "End Date"
+msgstr "Fecha de finalización"
+
+msgctxt "field:importer.party.credit,first_approved_credit_limit:"
+msgid "First Approved Credit Limit"
+msgstr "Primer límite de crédito aprobado"
+
+msgctxt "field:importer.party.credit,party:"
+msgid "Party"
+msgstr "Fiesta"
+
+msgctxt "field:importer.party.credit,requested_credit_limit:"
+msgid "Requested Credit Limit"
+msgstr "Límite de crédito solicitado"
+
+msgctxt "field:importer.party.credit,start_date:"
+msgid "Start Date"
+msgstr "Fecha de inicio"
+
+msgctxt "field:importer.plantation,parcel_sigpac:"
+msgid "Parcel Sigpac"
+msgstr "Parcel Sigpac"
+
+msgctxt "field:importer.plantation,party:"
+msgid "Party"
+msgstr "Fiesta"
+
+msgctxt "field:importer.plantation,plantation_code:"
+msgid "Plantation Code"
+msgstr "Código de Plantación"
+
+msgctxt "field:importer.plantation,polygon_sigpac:"
+msgid "Polygon Sigpac"
+msgstr "Polígono Sigpac"
+
+msgctxt "field:importer.plantation,province_sigpac:"
+msgid "Province Sigpac"
+msgstr "Sigpac provincial"
+
+msgctxt "field:importer.plantation,recinte_sigpac:"
+msgid "Recinte Sigpac"
+msgstr "Recinte Sigpac"
+
+msgctxt "field:importer.plantation,zone_sigpac:"
+msgid "Zone Sigpac"
+msgstr "Zona Sigpac"
+
+msgctxt "field:importer.price_list,category:"
+msgid "Category"
+msgstr "Categoría"
+
+msgctxt "field:importer.price_list,company_name:"
+msgid "Company Name"
+msgstr "nombre de empresa"
+
+msgctxt "field:importer.price_list,formula:"
+msgid "Formula"
+msgstr "Fórmula"
+
+msgctxt "field:importer.price_list,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.price_list,product_code:"
+msgid "Product Code"
+msgstr "Código de producto"
+
+msgctxt "field:importer.price_list,quantity:"
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgctxt "field:importer.price_list,tax_included:"
+msgid "Tax Included"
+msgstr "Impuestos incluidos"
+
+msgctxt "field:importer.product,account_asset:"
+msgid "Account Asset"
+msgstr "Activo de la cuenta"
+
+msgctxt "field:importer.product,account_category:"
+msgid "Account Category"
+msgstr "Categoría de cuenta"
+
+msgctxt "field:importer.product,account_depreciation:"
+msgid "Account Depreciation"
+msgstr "Depreciación de la cuenta"
+
+msgctxt "field:importer.product,account_expense:"
+msgid "Account Expense"
+msgstr "Gastos de cuenta"
+
+msgctxt "field:importer.product,account_revenue:"
+msgid "Account Revenue"
+msgstr "Ingresos de la cuenta"
+
+msgctxt "field:importer.product,aranzel:"
+msgid "Aranzel"
+msgstr "Aranzel"
+
+msgctxt "field:importer.product,bom_name:"
+msgid "BOM Name"
+msgstr "Nombre de la lista de materiales"
+
+msgctxt "field:importer.product,brand:"
+msgid "Brand"
+msgstr "Marca"
+
+msgctxt "field:importer.product,categories:"
+msgid "Categories"
+msgstr "Categorías"
+
+msgctxt "field:importer.product,company:"
+msgid "Company"
+msgstr "Compañía"
+
+msgctxt "field:importer.product,consumable:"
+msgid "Consumable"
+msgstr "Consumible"
+
+msgctxt "field:importer.product,cost_price:"
+msgid "Cost Price"
+msgstr "Precio de costo"
+
+msgctxt "field:importer.product,cost_price_method:"
+msgid "Cost Price Method"
+msgstr "Método del precio de costo"
+
+msgctxt "field:importer.product,customer:"
+msgid "Customer"
+msgstr "Cliente"
+
+msgctxt "field:importer.product,customer_code:"
+msgid "Customer Code"
+msgstr "Código de cliente"
+
+msgctxt "field:importer.product,depreciation_duration:"
+msgid "Depreciation Duration"
+msgstr "Duración de la depreciación"
+
+msgctxt "field:importer.product,depreciation_percentatge:"
+msgid "Depreciation Percentatge"
+msgstr "Porcentaje de depreciación"
+
+msgctxt "field:importer.product,description:"
+msgid "Description"
+msgstr "Descripción"
+
+msgctxt "field:importer.product,location:"
+msgid "Location"
+msgstr "Ubicación"
+
+msgctxt "field:importer.product,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.product,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.product,producible:"
+msgid "Producible"
+msgstr "Producible"
+
+msgctxt "field:importer.product,product_note:"
+msgid "Product Note"
+msgstr "Nota del producto"
+
+msgctxt "field:importer.product,purchasable:"
+msgid "Purchasable"
+msgstr "Comprable"
+
+msgctxt "field:importer.product,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.product,salable:"
+msgid "Salable"
+msgstr "Vendible"
+
+msgctxt "field:importer.product,sale_price:"
+msgid "Sale Price"
+msgstr "Precio de venta"
+
+msgctxt "field:importer.product,supplier:"
+msgid "Supplier"
+msgstr "Proveedor"
+
+msgctxt "field:importer.product,supplier_code:"
+msgid "Supplier Code"
+msgstr "Código de proveedor"
+
+msgctxt "field:importer.product,supplier_currency:"
+msgid "Supplier Currency"
+msgstr "Moneda del proveedor"
+
+msgctxt "field:importer.product,supplier_minimum_quantity:"
+msgid "Supplier Minimum Quantity"
+msgstr "Cantidad mínima del proveedor"
+
+msgctxt "field:importer.product,supplier_multiple_quantity:"
+msgid "Supplier Multiple Quantity"
+msgstr "Proveedor de cantidad múltiple"
+
+msgctxt "field:importer.product,supplier_unit_price:"
+msgid "Supplier Unit Price"
+msgstr "Precio unitario del proveedor"
+
+msgctxt "field:importer.product,template_code:"
+msgid "Template Code"
+msgstr "Código de plantilla"
+
+msgctxt "field:importer.product,template_note:"
+msgid "Template Note"
+msgstr "Nota de plantilla"
+
+msgctxt "field:importer.product,type_:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:importer.product,uom:"
+msgid "UoM"
+msgstr "Universidad de Michigan"
+
+msgctxt "field:importer.product,variant_code:"
+msgid "Variant Code"
+msgstr "Código de variante"
+
+msgctxt "field:importer.product,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "Código de sufijo variante"
+
+msgctxt "field:importer.product.agronomics,account_category:"
+msgid "Account Category"
+msgstr "Categoría de cuenta"
+
+msgctxt "field:importer.product.agronomics,alcohol_content:"
+msgid "Alcohol Content"
+msgstr "Contenido de alcohol"
+
+msgctxt "field:importer.product.agronomics,aranzel:"
+msgid "Aranzel"
+msgstr "Aranzel"
+
+msgctxt "field:importer.product.agronomics,brand:"
+msgid "Brand"
+msgstr "Marca"
+
+msgctxt "field:importer.product.agronomics,categories:"
+msgid "Categories"
+msgstr "Categorías"
+
+msgctxt "field:importer.product.agronomics,cost_price:"
+msgid "Cost Price"
+msgstr "Precio de costo"
+
+msgctxt "field:importer.product.agronomics,cost_price_method:"
+msgid "Cost Price Method"
+msgstr "Método del precio de costo"
+
+msgctxt "field:importer.product.agronomics,description:"
+msgid "Description"
+msgstr "Descripción"
+
+msgctxt "field:importer.product.agronomics,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.product.agronomics,purchasable:"
+msgid "Purchasable"
+msgstr "Comprable"
+
+msgctxt "field:importer.product.agronomics,salable:"
+msgid "Salable"
+msgstr "Vendible"
+
+msgctxt "field:importer.product.agronomics,sale_price:"
+msgid "Sale Price"
+msgstr "Precio de venta"
+
+msgctxt "field:importer.product.agronomics,supplier:"
+msgid "Supplier"
+msgstr "Proveedor"
+
+msgctxt "field:importer.product.agronomics,supplier_code:"
+msgid "Supplier Code"
+msgstr "Código de proveedor"
+
+msgctxt "field:importer.product.agronomics,template_code:"
+msgid "Template Code"
+msgstr "Código de plantilla"
+
+msgctxt "field:importer.product.agronomics,type_:"
+msgid "Type"
+msgstr "Tipo"
+
+msgctxt "field:importer.product.agronomics,uom:"
+msgid "UoM"
+msgstr "Universidad de Michigan"
+
+msgctxt "field:importer.product.agronomics,variant_code:"
+msgid "Variant Code"
+msgstr "Código de variante"
+
+msgctxt "field:importer.product.agronomics,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "Código de sufijo variante"
+
+msgctxt "field:importer.product.agronomics,volume:"
+msgid "Volume (m3)"
+msgstr "Volumen (m3)"
+
+msgctxt "field:importer.product.agronomics,weight:"
+msgid "Weight (kg)"
+msgstr "Peso (kg)"
+
+msgctxt "field:importer.product.attributes,attribute:"
+msgid "Attribute"
+msgstr "Atributo"
+
+msgctxt "field:importer.product.attributes,attribute_set:"
+msgid "Attribute Set"
+msgstr "Conjunto de atributos"
+
+msgctxt "field:importer.product.attributes,attribute_value:"
+msgid "Attribute Value"
+msgstr "Valor del atributo"
+
+msgctxt "field:importer.product.attributes,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.product.attributes,product_code:"
+msgid "Product Code"
+msgstr "Código de producto"
+
+msgctxt "field:importer.product.attributes,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.product.configuration,cost_price_method:"
+msgid "Cost price method"
+msgstr "Método del precio de costo"
+
+msgctxt "field:importer.product.configuration,product_sequence_number_next:"
+msgid "Variant Sequence number next"
+msgstr "Número de secuencia de variante siguiente"
+
+msgctxt "field:importer.product.configuration,product_sequence_padding:"
+msgid "Variant Sequence padding"
+msgstr "Relleno de secuencia de variantes"
+
+msgctxt "field:importer.product.configuration,product_sequence_prefix:"
+msgid "Variant Sequence prefix"
+msgstr "Prefijo de secuencia variante"
+
+msgctxt "field:importer.product.configuration,product_sequence_suffix:"
+msgid "Variant Sequence suffix"
+msgstr "Sufijo de secuencia variante"
+
+msgctxt "field:importer.product.configuration,template_sequence_number_next:"
+msgid "Template Sequence number next"
+msgstr "Número de secuencia de plantilla siguiente"
+
+msgctxt "field:importer.product.configuration,template_sequence_padding:"
+msgid "Template Sequence padding"
+msgstr "Relleno de secuencia de plantilla"
+
+msgctxt "field:importer.product.configuration,template_sequence_prefix:"
+msgid "Template Sequence prefix"
+msgstr "Prefijo de secuencia de plantilla"
+
+msgctxt "field:importer.product.configuration,template_sequence_suffix:"
+msgid "Template Sequence suffix"
+msgstr "Sufijo de secuencia de plantilla"
+
+msgctxt "field:importer.product.supplier,base_price:"
+msgid "Base Price"
+msgstr "Precio base"
+
+msgctxt "field:importer.product.supplier,code:"
+msgid "Code"
+msgstr "Código"
+
+msgctxt "field:importer.product.supplier,currency:"
+msgid "Currency"
+msgstr "Divisa"
+
+msgctxt "field:importer.product.supplier,discount_formula:"
+msgid "Discount Formula"
+msgstr "Fórmula de descuento"
+
+msgctxt "field:importer.product.supplier,end_date:"
+msgid "End Date"
+msgstr "Fecha de finalización"
+
+msgctxt "field:importer.product.supplier,lead_time:"
+msgid "Lead Time (days)"
+msgstr "Plazo de entrega (días)"
+
+msgctxt "field:importer.product.supplier,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.product.supplier,minimum_quantity:"
+msgid "Minimum Quantity"
+msgstr "Cantidad mínima"
+
+msgctxt "field:importer.product.supplier,multiple_quantity:"
+msgid "Multiple Quantity"
+msgstr "Cantidad múltiple"
+
+msgctxt "field:importer.product.supplier,party_code:"
+msgid "Party Code"
+msgstr "Código del Partido"
+
+msgctxt "field:importer.product.supplier,party_name:"
+msgid "Party Name"
+msgstr "Nombre del partido"
+
+msgctxt "field:importer.product.supplier,product_code:"
+msgid "Product Code"
+msgstr "Código de producto"
+
+msgctxt "field:importer.product.supplier,quantity:"
+msgid "Product Quantity"
+msgstr "Cantidad de producto"
+
+msgctxt "field:importer.product.supplier,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.product.supplier,start_date:"
+msgid "Start Date"
+msgstr "Fecha de inicio"
+
+msgctxt "field:importer.product.supplier,template_code:"
+msgid "Template Code"
+msgstr "Código de plantilla"
+
+msgctxt "field:importer.product.supplier,unit_price:"
+msgid "Unit Price"
+msgstr "Precio unitario"
+
+msgctxt "field:importer.product_codes,code:"
+msgid "Code"
+msgstr "Código"
+
+msgctxt "field:importer.product_codes,template_code:"
+msgid "Template Code"
+msgstr "Código de plantilla"
+
+msgctxt "field:importer.product_codes,type_:"
+msgid "type"
+msgstr "tipo"
+
+msgctxt "field:importer.product_codes,variant_code:"
+msgid "Variant Code"
+msgstr "Código de variante"
+
+msgctxt "field:importer.product_codes,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "Código de sufijo variante"
+
+msgctxt "field:importer.production.bom,input_product:"
+msgid "Product Input"
+msgstr "Entrada del producto"
+
+msgctxt "field:importer.production.bom,input_quantity:"
+msgid "Product Input Quantity"
+msgstr "Cantidad de entrada del producto"
+
+msgctxt "field:importer.production.bom,input_uom:"
+msgid "Product Input UoM"
+msgstr "Unidad de medida de entrada del producto"
+
+msgctxt "field:importer.production.bom,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.production.bom,output_product:"
+msgid "Product Output"
+msgstr "Salida del producto"
+
+msgctxt "field:importer.production.bom,output_quantity:"
+msgid "Product Output Quantity"
+msgstr "Cantidad de salida del producto"
+
+msgctxt "field:importer.production.bom,output_uom:"
+msgid "Product Output UoM"
+msgstr "Unidad de medida de salida del producto"
+
+msgctxt "field:importer.production.configuration,sequence_number_next:"
+msgid "Sequence number next"
+msgstr "Número de secuencia siguiente"
+
+msgctxt "field:importer.production.configuration,sequence_padding:"
+msgid "Sequence padding"
+msgstr "Relleno de secuencia"
+
+msgctxt "field:importer.production.configuration,sequence_prefix:"
+msgid "Sequence prefix"
+msgstr "Prefijo de secuencia"
+
+msgctxt "field:importer.production.configuration,sequence_suffix:"
+msgid "Sequence suffix"
+msgstr "Sufijo de secuencia"
+
+msgctxt "field:importer.purchase,currency:"
+msgid "Currency"
+msgstr "Divisa"
+
+msgctxt "field:importer.purchase,date:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "field:importer.purchase,discount:"
+msgid "Discount"
+msgstr "Descuento"
+
+msgctxt "field:importer.purchase,invoice_method:"
+msgid "Invoice Method"
+msgstr "Método de facturación"
+
+msgctxt "field:importer.purchase,party_code:"
+msgid "Party Code"
+msgstr "Código del Partido"
+
+msgctxt "field:importer.purchase,party_name:"
+msgid "Party Name"
+msgstr "Nombre del partido"
+
+msgctxt "field:importer.purchase,product_code:"
+msgid "Product Code"
+msgstr "Código de producto"
+
+msgctxt "field:importer.purchase,purchase_number:"
+msgid "Purchase Number"
+msgstr "Número de compra"
+
+msgctxt "field:importer.purchase,quantity:"
+msgid "Product Quantity"
+msgstr "Cantidad de producto"
+
+msgctxt "field:importer.purchase,reference:"
+msgid "Reference"
+msgstr "Referencia"
+
+msgctxt "field:importer.purchase,state:"
+msgid "State"
+msgstr "Estado"
+
+msgctxt "field:importer.purchase,unit_price:"
+msgid "Unit Price"
+msgstr "Precio unitario"
+
+msgctxt "field:importer.purchase.configuration,company:"
+msgid "Company"
+msgstr "Compañía"
+
+msgctxt "field:importer.purchase.configuration,invoice_method:"
+msgid "Purchase invoice method"
+msgstr "Método de factura de compra"
+
+msgctxt "field:importer.purchase.configuration,process_after:"
+msgid "Purchase process after"
+msgstr "Proceso de compra posterior"
+
+msgctxt "field:importer.purchase.configuration,sequence_number_next:"
+msgid "Purchase sequence number next"
+msgstr "Número de secuencia de compra siguiente"
+
+msgctxt "field:importer.purchase.configuration,sequence_padding:"
+msgid "Purchase sequence padding"
+msgstr "Relleno de secuencia de compra"
+
+msgctxt "field:importer.purchase.configuration,sequence_prefix:"
+msgid "Purchase sequence prefix"
+msgstr "Prefijo de secuencia de compra"
+
+msgctxt "field:importer.purchase.configuration,sequence_suffix:"
+msgid "Purchase sequence suffix"
+msgstr "Sufijo de secuencia de compra"
+
+msgctxt "field:importer.sale,base_price:"
+msgid "Base Price"
+msgstr "Precio base"
+
+msgctxt "field:importer.sale,currency:"
+msgid "Currency"
+msgstr "Divisa"
+
+msgctxt "field:importer.sale,date:"
+msgid "Date"
+msgstr "Fecha"
+
+msgctxt "field:importer.sale,discount_amount:"
+msgid "Discount Amount"
+msgstr "Monto del descuento"
+
+msgctxt "field:importer.sale,discount_formula:"
+msgid "Discount Formula"
+msgstr "Fórmula de descuento"
+
+msgctxt "field:importer.sale,discount_rate:"
+msgid "Discount Rate"
+msgstr "Tasa de descuento"
+
+msgctxt "field:importer.sale,invoice_method:"
+msgid "Invoice Method"
+msgstr "Método de facturación"
+
+msgctxt "field:importer.sale,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.sale,party_code:"
+msgid "Party Code"
+msgstr "Código del Partido"
+
+msgctxt "field:importer.sale,party_name:"
+msgid "Party Name"
+msgstr "Nombre del partido"
+
+msgctxt "field:importer.sale,product_code:"
+msgid "Product Code"
+msgstr "Código de producto"
+
+msgctxt "field:importer.sale,quantity:"
+msgid "Product Quantity"
+msgstr "Cantidad de producto"
+
+msgctxt "field:importer.sale,reference:"
+msgid "Reference"
+msgstr "Referencia"
+
+msgctxt "field:importer.sale,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.sale,sale_number:"
+msgid "Sale Number"
+msgstr "Número de venta"
+
+msgctxt "field:importer.sale,shipment_address:"
+msgid "Shipment Address Name"
+msgstr "Nombre de la dirección de envío"
+
+msgctxt "field:importer.sale,shipment_method:"
+msgid "Shipment Method"
+msgstr "Método de envío"
+
+msgctxt "field:importer.sale,shipment_party_name:"
+msgid "Shipment Party Name"
+msgstr "Nombre de la parte del envío"
+
+msgctxt "field:importer.sale,state:"
+msgid "State"
+msgstr "Estado"
+
+msgctxt "field:importer.sale,unit_price:"
+msgid "Unit Price"
+msgstr "Precio unitario"
+
+msgctxt "field:importer.sale.configuration,company:"
+msgid "Company"
+msgstr "Compañía"
+
+msgctxt "field:importer.sale.configuration,sale_invoice_method:"
+msgid "Sale invoice method"
+msgstr "Método de factura de venta"
+
+msgctxt "field:importer.sale.configuration,sale_process_after:"
+msgid "Sale process after"
+msgstr "Proceso de venta posterior"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_number_next:"
+msgid "Sale sequence number next"
+msgstr "Número de secuencia de venta siguiente"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_padding:"
+msgid "Sale sequence padding"
+msgstr "Relleno de secuencia de venta"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_prefix:"
+msgid "Sale sequence prefix"
+msgstr "Prefijo de secuencia de venta"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_suffix:"
+msgid "Sale sequence suffix"
+msgstr "Sufijo de secuencia de venta"
+
+msgctxt "field:importer.sale.configuration,sale_shipment_method:"
+msgid "Sale shipment method"
+msgstr "Método de envío de venta"
 
 msgctxt "field:importer.sequence,company_name:"
 msgid "Company Name"
@@ -381,6 +2045,54 @@ msgctxt "field:importer.source_column,name:"
 msgid "Column Name"
 msgstr "Nombre de la columna"
 
+msgctxt "field:importer.stock.move,cost_price:"
+msgid "Cost Price"
+msgstr "Precio de costo"
+
+msgctxt "field:importer.stock.move,currency:"
+msgid "Currency"
+msgstr "Divisa"
+
+msgctxt "field:importer.stock.move,effective_date:"
+msgid "Effective Date"
+msgstr "Fecha de entrada en vigor"
+
+msgctxt "field:importer.stock.move,from_location:"
+msgid "From Location"
+msgstr "Desde la ubicación"
+
+msgctxt "field:importer.stock.move,lot:"
+msgid "Lot"
+msgstr "Lote"
+
+msgctxt "field:importer.stock.move,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.stock.move,planned_date:"
+msgid "Planned Date"
+msgstr "Fecha planificada"
+
+msgctxt "field:importer.stock.move,product_code:"
+msgid "Product Code"
+msgstr "Código de producto"
+
+msgctxt "field:importer.stock.move,quantity:"
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgctxt "field:importer.stock.move,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.stock.move,to_location:"
+msgid "To Location"
+msgstr "A la ubicación"
+
+msgctxt "field:importer.stock.move,unit_price:"
+msgid "Unit Price"
+msgstr "Precio unitario"
+
 msgctxt "field:importer.user,companies:"
 msgid "Companies"
 msgstr "Empresas"
@@ -429,6 +2141,15 @@ msgctxt "field:importer.user,signature:"
 msgid "Signature"
 msgstr "Firma"
 
+msgctxt "help:importer,commit_chunks:"
+msgid ""
+"By default, data is committed at the very end of the process. However, for "
+"very large imports, committing can improve performance."
+msgstr ""
+"De forma predeterminada, los datos se confirman al final del proceso. Sin "
+"embargo, para importaciones muy grandes, la confirmación puede mejorar el "
+"rendimiento."
+
 msgctxt "help:importer,language:"
 msgid "Language to use, if different from the one of the user."
 msgstr "Idioma a utilizar, si es diferente al del usuario."
@@ -453,11 +2174,56 @@ msgstr ""
 "Si se marca esta opción, se utilizarán los nombres de las columnas para la "
 "asignación. De lo contrario, se utilizará el número de la columna."
 
+msgctxt "help:importer,use_subtransactions:"
+msgid ""
+"Subtransactions make the import process more robust, allowing it to recover "
+"from database errors but can be slower when importing many thousands of "
+"records."
+msgstr ""
+"Las subtransacciones hacen que el proceso de importación sea más sólido, lo "
+"que le permite recuperarse de errores de base de datos, pero pueden ser más "
+"lentos cuando se importan miles de registros."
+
+msgctxt "help:importer.account.move,company_name:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort "
+"records by company prior to import for better performance."
+msgstr ""
+"El campo Empresa se puede utilizar para configurar campos dependientes de la"
+" empresa. Ordene mejor los registros por empresa antes de importar para "
+"obtener un mejor rendimiento."
+
 msgctxt "help:importer.column,value:"
 msgid "Value to be used if no column is specified or the value found is None."
 msgstr ""
 "Valor a utilizar si no se especifica ninguna columna o el valor encontrado "
 "es Ninguno."
+
+msgctxt "help:importer.party,company:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort "
+"records by company prior to import for better performance."
+msgstr ""
+"El campo Empresa se puede utilizar para configurar campos dependientes de la"
+" empresa. Ordene mejor los registros por empresa antes de importar para "
+"obtener un mejor rendimiento."
+
+msgctxt "help:importer.product,company:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort "
+"records by company prior to import for better performance."
+msgstr ""
+"El campo Empresa se puede utilizar para configurar campos dependientes de la"
+" empresa. Ordene mejor los registros por empresa antes de importar para "
+"obtener un mejor rendimiento."
+
+msgctxt "help:importer.sale.configuration,sale_invoice_method:"
+msgid "selection|sale.sale|invoice_method"
+msgstr "selección|venta.venta|método_de_factura"
+
+msgctxt "help:importer.sale.configuration,sale_shipment_method:"
+msgid "selection|sale.sale|shipment_method"
+msgstr "selección|venta.venta|método_de_envío"
 
 msgctxt "help:importer.user,companies:"
 msgid "Comma separated list of company names"
@@ -475,49 +2241,237 @@ msgctxt "help:importer.user,roles:"
 msgid "Comma separated list of role names"
 msgstr "Lista separada por comas de nombres de roles"
 
-msgctxt "model:importer,name:"
+msgctxt "model:importer,string:"
 msgid "Importer"
 msgstr "Importador"
 
-msgctxt "model:importer.column,name:"
+msgctxt "model:importer.account.asset,string:"
+msgid "Importer Account Asset"
+msgstr "Activo de la cuenta del importador"
+
+msgctxt "model:importer.account.chart,string:"
+msgid "Importer Account Chart"
+msgstr "Cuadro de cuentas del importador"
+
+msgctxt "model:importer.account.fiscalyear,string:"
+msgid "Importer Account Fiscalyear"
+msgstr "Cuenta de Importador Año Fiscal"
+
+msgctxt "model:importer.account.move,string:"
+msgid "Importer Account Move"
+msgstr "Movimiento de cuenta de importador"
+
+msgctxt "model:importer.address.facturae,string:"
+msgid "Importer Address Facturae"
+msgstr "Factura de dirección del importador"
+
+msgctxt "model:importer.carrier,string:"
+msgid "Importer Carrier"
+msgstr "Transportista importador"
+
+msgctxt "model:importer.column,string:"
 msgid "Importer Column"
-msgstr "Importador Columnas"
+msgstr "Columna de importador"
 
-msgctxt "model:importer.import.ask,name:"
-msgid "Import Ask"
-msgstr "Inicio del Importador"
+msgctxt "model:importer.company,string:"
+msgid "Importer Company"
+msgstr "Empresa importadora"
 
-msgctxt "model:importer.import.ask.error,name:"
-msgid "Import Ask and Import Error"
-msgstr "Importar Pregunta y Error de Importación"
+msgctxt "model:importer.country,string:"
+msgid "Importer Country"
+msgstr "País importador"
 
-msgctxt "model:importer.language,name:"
+msgctxt "model:importer.country.postal_codes,string:"
+msgid "Importer Country Postal Codes"
+msgstr "Códigos postales del país importador"
+
+msgctxt "model:importer.currency,string:"
+msgid "Importer Currency"
+msgstr "Moneda del importador"
+
+msgctxt "model:importer.employee,string:"
+msgid "Importer Employee"
+msgstr "Empleado importador"
+
+msgctxt "model:importer.farm.abort.event,string:"
+msgid "Importer Farm Abort Event"
+msgstr "Evento de aborto de la granja importadora"
+
+msgctxt "model:importer.farm.animal,string:"
+msgid "Importer Farm Animal"
+msgstr "Importador de animales de granja"
+
+msgctxt "model:importer.farm.farrowing.event,string:"
+msgid "Importer Farm Farrowing Event"
+msgstr "Evento de partos en granjas importadoras"
+
+msgctxt "model:importer.farm.insemination.event,string:"
+msgid "Importer Farm Insemination Event"
+msgstr "Evento de inseminación en granjas importadoras"
+
+msgctxt "model:importer.farm.medication.event,string:"
+msgid "Importer Farm Medication Event"
+msgstr "Evento de medicamentos agrícolas para importadores"
+
+msgctxt "model:importer.farm.move.event,string:"
+msgid "Importer Farm Move Event"
+msgstr "Evento de traslado de granjas importadoras"
+
+msgctxt "model:importer.farm.pregnancy_diagnosis.event,string:"
+msgid "Importer Farm Pregnancy Diagnosis Event"
+msgstr "Evento de diagnóstico de gestación en granjas importadoras"
+
+msgctxt "model:importer.farm.reclassification.event,string:"
+msgid "Importer Farm Reclassification Event"
+msgstr "Evento de reclasificación de fincas importadoras"
+
+msgctxt "model:importer.farm.removal.event,string:"
+msgid "Importer Farm Removal Event"
+msgstr "Evento de eliminación de granjas importadoras"
+
+msgctxt "model:importer.farm.transformation.event,string:"
+msgid "Importer Farm Transformation Event"
+msgstr "Evento de transformación de granjas importadoras"
+
+msgctxt "model:importer.farm.weaning.event,string:"
+msgid "Importer Farm Weaning Event"
+msgstr "Evento de destete de la granja importadora"
+
+msgctxt "model:importer.import.ask,string:"
+msgid "Importer Import Ask"
+msgstr "Importador Importar Preguntar"
+
+msgctxt "model:importer.import.ask.error,string:"
+msgid "Importer Import Ask Error"
+msgstr "Error de solicitud de importación del importador"
+
+msgctxt "model:importer.invoice,string:"
+msgid "Importer Invoice"
+msgstr "Factura del importador"
+
+msgctxt "model:importer.language,string:"
 msgid "Importer Language"
 msgstr "Idioma del importador"
 
-msgctxt "model:importer.log,name:"
+msgctxt "model:importer.location,string:"
+msgid "Importer Location"
+msgstr "Ubicación del importador"
+
+msgctxt "model:importer.log,string:"
 msgid "Importer Log"
-msgstr "Bitácora del importador"
+msgstr "Registro del importador"
 
-msgctxt "model:importer.meta,name:"
+msgctxt "model:importer.lot,string:"
+msgid "Importer Lot"
+msgstr "Lote del importador"
+
+msgctxt "model:importer.marketing.email,string:"
+msgid "Importer Marketing Email"
+msgstr "Correo electrónico de marketing para importadores"
+
+msgctxt "model:importer.meta,string:"
 msgid "Importer Meta"
-msgstr "Meta Importador"
+msgstr "Importador Meta"
 
-msgctxt "model:importer.sequence,name:"
+msgctxt "model:importer.order_point,string:"
+msgid "Importer Order Point"
+msgstr "Punto de pedido del importador"
+
+msgctxt "model:importer.parcel,string:"
+msgid "Importer Parcel"
+msgstr "Paquete de importador"
+
+msgctxt "model:importer.party,string:"
+msgid "Importer Party"
+msgstr "Parte importadora"
+
+msgctxt "model:importer.party.address,string:"
+msgid "Importer Party Address"
+msgstr "Dirección de la parte importadora"
+
+msgctxt "model:importer.party.configuration,string:"
 msgid "Importer Party Configuration"
-msgstr "Importador de Configuración de Terceros"
+msgstr "Configuración de la parte importadora"
 
-msgctxt "model:importer.source_column,name:"
+msgctxt "model:importer.party.contact_mechanism,string:"
+msgid "Importer Party Contact Mechanism"
+msgstr "Mecanismo de contacto de la parte importadora"
+
+msgctxt "model:importer.party.credit,string:"
+msgid "Importer Party Credit"
+msgstr "Crédito de la parte importadora"
+
+msgctxt "model:importer.plantation,string:"
+msgid "Importer Plantation"
+msgstr "Plantación importadora"
+
+msgctxt "model:importer.price_list,string:"
+msgid "Importer Price List"
+msgstr "Lista de precios del importador"
+
+msgctxt "model:importer.product,string:"
+msgid "Importer Product"
+msgstr "Producto importador"
+
+msgctxt "model:importer.product.agronomics,string:"
+msgid "Importer Product Agronomics"
+msgstr "Importador Producto Agronomía"
+
+msgctxt "model:importer.product.attributes,string:"
+msgid "Importer Product Attributes"
+msgstr "Atributos del producto del importador"
+
+msgctxt "model:importer.product.configuration,string:"
+msgid "Importer Product Configuration"
+msgstr "Configuración del producto importador"
+
+msgctxt "model:importer.product.supplier,string:"
+msgid "Importer Product Supplier"
+msgstr "Proveedor de productos importadores"
+
+msgctxt "model:importer.product_codes,string:"
+msgid "Importer Product Codes"
+msgstr "Códigos de productos del importador"
+
+msgctxt "model:importer.production.bom,string:"
+msgid "Importer Production Bom"
+msgstr "Importador Producción Bom"
+
+msgctxt "model:importer.production.configuration,string:"
+msgid "Importer Production Configuration"
+msgstr "Configuración de producción del importador"
+
+msgctxt "model:importer.purchase,string:"
+msgid "Importer Purchase"
+msgstr "Compra del importador"
+
+msgctxt "model:importer.purchase.configuration,string:"
+msgid "Importer Purchase Configuration"
+msgstr "Configuración de compra del importador"
+
+msgctxt "model:importer.sale,string:"
+msgid "Importer Sale"
+msgstr "Venta de Importadores"
+
+msgctxt "model:importer.sale.configuration,string:"
+msgid "Importer Sale Configuration"
+msgstr "Configuración de venta del importador"
+
+msgctxt "model:importer.sequence,string:"
+msgid "Importer Sequence"
+msgstr "Secuencia del importador"
+
+msgctxt "model:importer.source_column,string:"
 msgid "Importer Source Column"
 msgstr "Columna de origen del importador"
 
-msgctxt "model:importer.user,name:"
-msgid "Importer User"
-msgstr "Importador de usuarios"
+msgctxt "model:importer.stock.move,string:"
+msgid "Importer Stock Move"
+msgstr "Movimiento de existencias del importador"
 
-msgctxt "model:ir.action,name:"
-msgid "Import Errors"
-msgstr "Errores de importación"
+msgctxt "model:importer.user,string:"
+msgid "Importer User"
+msgstr "Usuario importador"
 
 msgctxt "model:ir.action,name:act_ask_and_import_wizard"
 msgid "Import"
@@ -555,9 +2509,9 @@ msgctxt "model:ir.action,name:report_importer_export"
 msgid "Export"
 msgstr "Exportar"
 
-msgctxt "model:ir.message,text:msg_account_not_found"
-msgid "Account %(account)s not found."
-msgstr "Account %(account)s no encontrada."
+msgctxt "model:ir.message,text:animal_not_found"
+msgid "Animal %(animal)s not found."
+msgstr "Animal %(animal)s no encontrado."
 
 msgctxt "model:ir.message,text:change_method_warning"
 msgid ""
@@ -566,6 +2520,10 @@ msgid ""
 msgstr ""
 "Cambiar el formato del importador \"%(name)s\" puede causar la pérdida de "
 "las configuraciones. ¿Quieres proceeder?"
+
+msgctxt "model:ir.message,text:farm_not_found"
+msgid "Farm %(farm)s not found."
+msgstr "No se encontró la granja %(farm)s."
 
 msgctxt "model:ir.message,text:invalid_column_name"
 msgid ""
@@ -583,13 +2541,49 @@ msgstr ""
 " La columna \"%(column)s\" no existe importando datos con el importador "
 "\"%(importer)s\"."
 
+msgctxt "model:ir.message,text:location_not_found"
+msgid "Location %(location)s not found."
+msgstr "Ubicación %(location)s no encontrada."
+
+msgctxt "model:ir.message,text:msg_account_not_found"
+msgid "Account %(account)s not found."
+msgstr "Account %(account)s no encontrada."
+
+msgctxt "model:ir.message,text:msg_asset_product_not_found"
+msgid ""
+"Asset product \"%(product)s\" does not exist on the database or it could not"
+" be found."
+msgstr ""
+"El producto activo \"%(product)s\" no existe en la base de datos o no se "
+"pudo encontrar."
+
+msgctxt "model:ir.message,text:msg_carrier_party_not_found"
+msgid "Party code %(party)s not found."
+msgstr "Código de fiesta %(party)s no encontrado."
+
+msgctxt "model:ir.message,text:msg_carrier_product_not_found"
+msgid "Product code %(product)s not found."
+msgstr "Código de producto %(product)s no encontrado."
+
+msgctxt "model:ir.message,text:msg_chart_not_found"
+msgid "Chart \"%(chart)s\" not found."
+msgstr "No se encontró el gráfico \"%(chart)s\"."
+
 msgctxt "model:ir.message,text:msg_company_not_found"
 msgid "Company %(company)s not found."
 msgstr "Empresa %(company)s no encontrada."
 
+msgctxt "model:ir.message,text:msg_currency_not_found"
+msgid "Currency %(currency)s not found."
+msgstr "Moneda %(currency)s no encontrada."
+
 msgctxt "model:ir.message,text:msg_deletes_disabled"
 msgid "Deletion of records is disabled."
 msgstr "La eliminación de registros está deshabilitada."
+
+msgctxt "model:ir.message,text:msg_employee_not_found"
+msgid "Employee %(employee)s not found."
+msgstr "No se encontró el empleado %(empleado)."
 
 msgctxt "model:ir.message,text:msg_group_not_found"
 msgid "Group with name \"%(name)s\" not found."
@@ -604,6 +2598,49 @@ msgctxt "model:ir.message,text:msg_invalid_invoice_type"
 msgid "Invoice type must be 'out' or 'in' but \"%(type)s\" was found."
 msgstr ""
 "El tipo de facutura debe ser \"out\" o \"in\" y se obtenido \"%(type)s\"."
+
+msgctxt "model:ir.message,text:msg_invalid_value"
+msgid ""
+"Invalid value \"%(value)s\" for column \"%(column)s\" in row \"%(row)s\""
+" importing data with importer \"%(importer)s\":\n"
+"\n"
+"%(error)s."
+msgstr ""
+"Valor no válido \"%(value)s\" para la columna \"%(column)s\" en la fila "
+"\"%(row)s\" al importar datos con el importador \"%(importer)s\": %(error)s."
+
+msgctxt "model:ir.message,text:msg_name_required"
+msgid "Missing company name."
+msgstr "Falta el nombre de la empresa."
+
+msgctxt "model:ir.message,text:msg_product_attribute_incorrect_cast"
+msgid ""
+"Value %(value)s is incorrect for attribute %(attribute)s expected type "
+"%(type)s, with product code %(code)s"
+msgstr ""
+"El valor %(value)s es incorrecto para el atributo %(attribute)s, se esperaba"
+" el tipo %(type)s, con el código de producto %(code)s"
+
+msgctxt "model:ir.message,text:msg_product_attribute_not_found"
+msgid ""
+"Attribute %(attribute)s for product of code %(code)s could not be found."
+msgstr ""
+"No se pudo encontrar el atributo %(attribute)s para el producto de código "
+"%(code)s."
+
+msgctxt "model:ir.message,text:msg_product_attribute_selection_not_found"
+msgid ""
+"Attribute set %(set)s attribute %(attribute)s of type \"Selection\" has no "
+"selection option value %(selection)s."
+msgstr ""
+"El conjunto de atributos %(set)s atributo %(attribute)s del tipo "
+"\"Selection\" no tiene ningún valor de opción de selección %(selection)s."
+
+msgctxt "model:ir.message,text:msg_product_attribute_set_not_found"
+msgid "Attribute set %(set)s for product of code %(code)s could not be found."
+msgstr ""
+"No se pudo encontrar el conjunto de atributos %(set)s para el producto de "
+"código %(code)s."
 
 msgctxt "model:ir.message,text:msg_role_not_found"
 msgid "Role with name \"%(name)s\" not found."
@@ -633,11 +2670,27 @@ msgctxt "model:ir.message,text:msg_successful_connection"
 msgid "Successful connection using importer \"%(importer)s\"."
 msgstr "Conexión exitosa usando el importador \"%(importer)s\"."
 
+msgctxt "model:ir.message,text:msg_supervisor_not_found"
+msgid "Supervisor \"%(supervisor)s\" not found."
+msgstr "No se encontró el supervisor \"%(supervisor)s\"."
+
 msgctxt "model:ir.message,text:no_records_imported"
 msgid "No records where imported using importer \"%(importer)s\"."
 msgstr ""
 "No hay registros en los que se importó utilizando el importador "
 "\"%(importer)s\"."
+
+msgctxt "model:ir.message,text:order_point_not_value"
+msgid ""
+"Order point not fount a value for Warehouse:  %(warehouse)s or Product "
+"%(product)s ."
+msgstr ""
+"El punto de pedido no encontró un valor para el Almacén: %(warehouse)s o el "
+"Producto %(product)s."
+
+msgctxt "model:ir.message,text:order_point_type_not_supported"
+msgid "Type %(type_)s not supported for orderpoint."
+msgstr "El tipo %(type_)s no es compatible con orderpoint."
 
 msgctxt "model:ir.message,text:party_not_found"
 msgid "Party \"%(party)s\" not found."
@@ -651,6 +2704,10 @@ msgstr ""
 "Account \"%(account)s\" requiere un tercero pero no hay ningun tercero en el"
 " movimeinto \"%(move)s\"."
 
+msgctxt "model:ir.message,text:produced_animals_not_found"
+msgid "No produced animals found."
+msgstr "No se encontraron animales producidos."
+
 msgctxt "model:ir.message,text:product_category_not_found"
 msgid "Product category \"%(category)s\" not found."
 msgstr "Categoría de producto \"%(category)s\" no encontrada."
@@ -662,6 +2719,20 @@ msgstr "Debe haber un y solo un Tercero con \"%(party)s\"."
 msgctxt "model:ir.message,text:single_product_error"
 msgid "There must be one and only one product with \"%(product)s\"."
 msgstr "Debe haber un y solo un Producto con \"%(product)s\"."
+
+msgctxt "model:ir.message,text:stock_move_error"
+msgid ""
+"Coud not create move, could not find some info: from_location: "
+"\"%(from_location)s\", to_location: \"%(to_location)s\", product: "
+"\"%(product)s\"."
+msgstr ""
+"No se pudo crear el movimiento, no se pudo encontrar información: "
+"from_location: \"%(from_location)s\", to_location: \"%(to_location)s\", "
+"product: \"%(product)s\"."
+
+msgctxt "model:ir.message,text:tag_not_found"
+msgid "Can't find tag \"%(tag)s\"."
+msgstr "No se puede encontrar la etiqueta \"%(tag)s\"."
 
 msgctxt "model:ir.message,text:value_not_in_selection"
 msgid "Could not find this value in the field selection \"%(field)%\""
@@ -750,6 +2821,10 @@ msgstr "Lanzar error"
 msgctxt "selection:importer,on_error:"
 msgid "Skip"
 msgstr "Saltar"
+
+msgctxt "selection:importer,sql_source:"
+msgid "PSQL"
+msgstr "PSQL"
 
 msgctxt "selection:importer.import.ask,data_source:"
 msgid "Copy & Paste"
