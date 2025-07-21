@@ -1162,6 +1162,7 @@ class ImporterColumn(ModelSQL, ModelView):
     def __setup__(cls):
         super().__setup__()
         cls._order.insert(0, ('field.field_description', 'ASC'))
+        cls.__access__.add('importer')
         cls.__rpc__.update(
             autocomplete_name=RPC(instantiate=0),
             )
@@ -1339,6 +1340,11 @@ class ImporterSourceColumn(ModelSQL, ModelView):
     format = fields.Selection('_get_formats', 'Format')
     examples = fields.Char('Examples', readonly=True)
 
+    @classmethod
+    def __setup__(cls):
+        super().__setup__()
+        cls.__access__.add('importer')
+
     @fields.depends('importer', '_parent_importer.model')
     def on_change_with_model(self, name=None):
         if self.importer and self.importer.model:
@@ -1441,6 +1447,7 @@ class ImporterLog(ModelSQL, ModelView):
     @classmethod
     def __setup__(cls):
         super().__setup__()
+        cls.__access__.add('importer')
         cls._order.insert(0, ('importer', 'ASC'))
         cls._order.insert(1, ('row_number', 'ASC'))
 
