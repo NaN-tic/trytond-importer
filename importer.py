@@ -326,6 +326,13 @@ class Importer(ModelSQL, ModelView):
     deletes = fields.Text('Deletes', readonly=True, states={
             'invisible': ~Bool(Eval('deletes')),
             })
+    use_subtransactions = fields.Boolean('Use Subtransactions',
+        help="Subtransactions make the import process more robust, allowing "
+        "it to recover from database errors but can be slower when importing "
+        "many thousands of records.")
+    commit_chunks = fields.Boolean('Commit Chunks', help="By default, "
+        "data is committed at the very end of the process. However, for very "
+        "large imports, committing can improve performance.")
 
     @staticmethod
     def default_sample_size():
@@ -349,6 +356,10 @@ class Importer(ModelSQL, ModelView):
 
     @staticmethod
     def default_use_header():
+        return True
+
+    @staticmethod
+    def default_use_subtransactions():
         return True
 
     @classmethod
@@ -552,6 +563,8 @@ class Importer(ModelSQL, ModelView):
             js['has_header'] = importer.has_header
             js['use_header'] = importer.use_header
             js['on_error'] = importer.on_error
+            js['use_subtransactions'] = importer.use_subtransactions
+            js['commit_chunks'] = importer.commit_chunks
             # Text
             js['text_data'] = importer.text_data
             # Binary
@@ -883,7 +896,8 @@ class Importer(ModelSQL, ModelView):
             setup.filename = self.binary_file_name
         setup.cache = SimpleNamespace()
         with Transaction().set_context(importer_setup=setup, _no_trigger=True,
-                _skip_warnings=True, language=self.get_language_code()):
+                _skip_warnings=True, language=self.get_language_code(),
+                use_subtransactions=self.use_subtransactions):
             Model.importer_start()
             if not self.requires_records:
                 return Model.importer_import(fields, [])
@@ -922,6 +936,8 @@ class Importer(ModelSQL, ModelView):
                 if call:
                     with Transaction().set_context(previous_context):
                         batch = Model.importer_import(subrecords)
+                    if self.commit_chunks:
+                        Transaction().commit()
                     new_records += batch
                     logger.info('Batch (imported/processed/time): %d/%d/%.2f. '
                         'Total (imported/processed/time): %d/%d/%.2f.',

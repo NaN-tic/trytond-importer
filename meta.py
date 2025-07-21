@@ -29,6 +29,8 @@ class ImporterMeta(ImporterModel):
     column_value = fields.Char('Column Value')
     column_format = fields.Char('Column Format')
     sql_data = fields.Char('Sql Data')
+    use_subtransactions = fields.Boolean('Use Subtransactions')
+    commit_chunks = fields.Boolean('Commit Chunks')
 
     @classmethod
     def importer_start(cls):
