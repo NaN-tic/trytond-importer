@@ -134,7 +134,9 @@ class ImporterModel(ModelView):
         if not records:
             return
 
-        cursor = Transaction().connection.cursor()
+        transaction = Transaction()
+        use_subtransactions = transaction.context.get('use_subtransactions', True)
+        cursor = transaction.connection.cursor()
         setup = Setup.get()
         Model = records[0][0].__class__
         blocks = [records]
@@ -145,15 +147,18 @@ class ImporterModel(ModelView):
             # already existed and has not been modified)
             save_values = [x._values and x._values._copy() or None for x in
                 to_save]
-            cursor.execute('SAVEPOINT importer_save')
+            if use_subtransactions:
+                cursor.execute('SAVEPOINT importer_save')
             try:
                 logger.info('Saving %d records of %s', len(records), Model.__name__)
                 Model.save(to_save)
                 setup.saved(Model.__name__, records)
-                cursor.execute('RELEASE SAVEPOINT importer_save')
+                if use_subtransactions:
+                    cursor.execute('RELEASE SAVEPOINT importer_save')
                 logger.info('Saved.')
             except (UserError, psycopg2.errors.InvalidTextRepresentation) as e:
-                cursor.execute('ROLLBACK TO SAVEPOINT importer_save')
+                if use_subtransactions:
+                    cursor.execute('ROLLBACK TO SAVEPOINT importer_save')
                 if len(records) == 1:
                     setup.error(Model.__name__ + ': ' + getattr(e, 'message',
                             str(e)), records[0][1])

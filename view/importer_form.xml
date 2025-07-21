@@ -62,15 +62,23 @@
         <page name="errors" col="10">
             <label name="on_error"/>
             <field name="on_error"/>
-            <label name="log_success"/>
-            <field name="log_success"/>
+            <label name="elapsed"/>
+            <field name="elapsed" xexpand="0" xfill="0"/>
+            <group id="checkboxes" colspan="5" col="-1">
+                <label name="log_success"/>
+                <field name="log_success"/>
+                <label name="use_subtransactions"/>
+                <field name="use_subtransactions"/>
+                <label name="commit_chunks"/>
+                <field name="commit_chunks"/>
+            </group>
+            <button name="clean_log" colspan="1"/>
+            <newline/>
             <label name="sample_size"/>
             <field name="sample_size"/>
-            <label name="elapsed"/>
-            <field name="elapsed"/>
-            <button name="import_sample"/>
-            <button name="clean_log"/>
-            <field name="errors" height="500" colspan="10"/>
+            <button name="import_sample" colspan="2"/>
+            <newline/>
+            <field name="errors" height="400" colspan="10"/>
         </page>
         <page name="deletes">
             <field name="deletes" height="500" colspan="4"/>
