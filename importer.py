@@ -206,7 +206,7 @@ class DataExtractor:
             data = self.get_data_file(force_text=True)
             rows = []
             sniffer = csv.Sniffer()
-            chunk = data.read(1024)
+            chunk = data.read(2048)
             dialect = sniffer.sniff(chunk)
             has_header = sniffer.has_header(chunk)
             data.seek(0)
