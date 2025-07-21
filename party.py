@@ -121,10 +121,14 @@ class ImporterParty(ImporterModel):
         ContactMechanism = pool.get('party.contact_mechanism')
         PartyIdentifier = pool.get('party.identifier')
         PartyCategory = pool.get('party.category')
-        BankAccount = pool.get('bank.account')
-        AccountNumber = pool.get('bank.account.number')
         Note = pool.get('ir.note')
 
+        try:
+            BankAccount = pool.get('bank.account')
+            AccountNumber = pool.get('bank.account.number')
+        except KeyError:
+            BankAccount = None
+            AccountNumber = None
         try:
             PaymentTerm = pool.get('account.invoice.payment_term')
             PaymentTermLine = pool.get('account.invoice.payment_term.line')
