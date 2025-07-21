@@ -153,7 +153,7 @@ class ImporterProductSupplier(ImporterModel):
                 product_supplier.currency = cache.currencies[record.currency]
 
             # TODO allow days, hours... cast_value format
-            if 'lead_time' in setup.fields:
+            if 'lead_time' in setup.fields and record.lead_time is not None:
                 product_supplier.lead_time = timedelta(
                     days=record.lead_time)
 
