@@ -4,6 +4,7 @@
 from trytond.pool import Pool
 from . import agronomics
 from . import account
+from . import activity
 from . import bank
 from . import bank_es
 from . import carrier
@@ -24,6 +25,7 @@ from . import party_credit
 from . import price_list
 from . import product
 from . import production
+from . import project
 from . import purchase
 from . import sale
 from . import sale_discount
@@ -33,6 +35,7 @@ from . import res
 from . import route
 from . import user_role
 from . import vacancy
+
 
 from . import tools
 
@@ -337,4 +340,20 @@ def register():
     Pool.register(
         party.ImporterCarrierDepends,
         depends=['sale_carrier'],
+        module='importer', type_='model')
+    Pool.register(
+        project.ImporterProjectStatus,
+        project.ImporterProjectWorkflow,
+        project.Importer,
+        depends=['project'],
+        module='importer', type_='model')
+    Pool.register(
+        project.ImporterProjectTracker,
+        project.ProjectTrackerImporter,
+        depends=['project_tracker'],
+        module='importer', type_='model')
+    Pool.register(
+        activity.ImporterActivityType,
+        activity.Importer,
+        depends=['activity'],
         module='importer', type_='model')
