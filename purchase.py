@@ -45,6 +45,10 @@ class ImporterProductSupplier(ImporterModel):
     'Importer Product Supplier'
     __name__ = 'importer.product.supplier'
 
+    company = fields.Char('Company',
+        help="Company field can be used to set company-dependent fields."
+        "Better sort records by company prior to import for better "
+        "performance.")
     template_code = fields.Char('Template Code')
     product_code = fields.Char('Product Code')
     party_name = fields.Char('Party Name')
@@ -65,14 +69,16 @@ class ImporterProductSupplier(ImporterModel):
         cache = Setup.get().cache
 
         cache.currencies = Cache('currency.currency', ('name', 'symbol'))
-        cache.parties_by_code = Cache('party.party', 'code', context={'active_test': False},
-            duplicates='abort-on-use')
-        cache.parties_by_name = Cache('party.party', 'name', context={'active_test': False},
-            duplicates='abort-on-use')
-        cache.products = Cache('product.product', 'code', context={'active_test': False},
-            duplicates='abort-on-use')
-        cache.templates = Cache('product.template', 'code', context={'active_test': False},
-            duplicates='abort-on-use')
+        cache.companies = Cache('company.company',
+            key=lambda x: x.party.name.lower())
+        cache.parties_by_code = Cache('party.party', 'code',
+            context={'active_test': False}, duplicates='abort-on-use')
+        cache.parties_by_name = Cache('party.party', 'name',
+            context={'active_test': False}, duplicates='abort-on-use')
+        cache.products = Cache('product.product', 'code',
+            context={'active_test': False}, duplicates='abort-on-use')
+        cache.templates = Cache('product.template', 'code',
+            context={'active_test': False}, duplicates='abort-on-use')
         cache.product_suppliers = Cache('purchase.product_supplier',
             lambda x: (x.party.id, x.template.id, x.product and x.product.id),
             context={'active_test': False}, required=False)
@@ -80,6 +86,15 @@ class ImporterProductSupplier(ImporterModel):
             list(ProductSupplier._fields.keys()), with_rec_name=False)
         cache.default_price_values = Price.default_get(
             list(Price._fields.keys()), with_rec_name=False)
+
+    def importer_context(self):
+        res = super().importer_context()
+        setup = Setup.get()
+        if 'company' in setup.fields and self.company:
+            company = setup.cache.companies.get(self.company)
+            if company:
+                res['company'] = company.id
+        return res
 
     def importer_product_supplier(self, record):
         pass

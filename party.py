@@ -471,7 +471,7 @@ class ImporterParty(ImporterModel):
                 if record.sii_identifier_type != 'None':
                     party.sii_identifier_type = record.sii_identifier_type
 
-            if hasattr(record, 'carrier'):
+            if 'carrier' in setup.fields and record.carrier:
                 carrier = cache.carriers.get(record.carrier)
                 if not carrier:
                     setup.error(gettext('importer.msg_carrier_not_found',
@@ -589,7 +589,7 @@ class ImporterPartyAddress(ImporterModel):
             if 'party_code' in setup.fields:
                 address.party = cache.parties.get(record.party_code)
             if 'name' in setup.fields:
-                address.name = record.name
+                address.party_name = record.name
             if 'street' in setup.fields:
                 address.street = record.street
             if 'country_name' in setup.fields:

@@ -178,4 +178,17 @@
             <field name="text">Party code %(party)s not found.</field>
         </record>
     </data>
+    <data depends="project">
+        <record model="ir.message" id="msg_status_not_found">
+            <field name="text">Status %(status)s not found.</field>
+        </record>
+    </data>
+    <data depends="project_tracker">
+        <record model="ir.message" id="msg_project_workflow_not_found">
+            <field name="text">Project workflow %(workflow)s not found.</field>
+        </record>
+        <record model="ir.message" id="msg_project_group_not_found">
+            <field name="text">Project group %(group)s not found.</field>
+        </record>
+    </data>
 </tryton>
