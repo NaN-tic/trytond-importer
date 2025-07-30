@@ -598,7 +598,7 @@ class Importer(ModelSQL, ModelView):
                         js[key] = None
             else:
                 res.append(js)
-        return json.dumps(res)
+        return json.dumps(res, indent=4, sort_keys=True)
 
     @classmethod
     @ModelView.button
