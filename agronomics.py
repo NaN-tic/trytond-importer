@@ -288,7 +288,7 @@ class ImporterMunicipality(ImporterModel):
         cls.importer_save(to_save)
         return [x[0] for x in to_save]
 
-# TODO: Manually create the importer or create it on 'carviresa' module¿?
+
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
 
