@@ -159,6 +159,9 @@ class ImporterProductSupplier(ImporterModel):
                     product_supplier.party = party
                     product_supplier.template = template
                     product_supplier.product = product
+                    if 'company' in setup.fields and record.company:
+                        product_supplier.company = cache.companies.get(record.company)
+                        product_supplier.currency = product_supplier.company.currency
                     if not template.purchasable:
                         template.purchasable = True
                         template.purchase_uom = template.default_uom

@@ -196,7 +196,7 @@ class ImporterProduct(ImporterModel):
                 template.type = record.type_
             uom = None
             if record.uom:
-                uom = cache.uoms.get(record.uom.lower()) or 'u'
+                uom = cache.uoms.get(record.uom.lower()) or cache.uoms.get('u')
             else:
                 uom = cache.uoms.get('u')
                 # If we update a product, we dont need to change the uom

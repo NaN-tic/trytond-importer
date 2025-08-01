@@ -1,17 +1,17 @@
 #
-# albert, 2025.
+# SPDX-FileCopyrightText: 2025 juanjo <juanjo.garcia@nan-tic.com>
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: albert\n"
-"PO-Revision-Date: 2025-07-22 00:42+0200\n"
+"Last-Translator: juanjo <juanjo.garcia@nan-tic.com>\n"
+"PO-Revision-Date: 2025-08-01 09:31+0200\n"
 "Project-Id-Version: \n"
-"Language-Team: Catalan <>\n"
+"Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca_ES\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.12.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Lokalize 25.04.3\n"
 
 msgctxt "field:importer,binary_data:"
 msgid "Data"
@@ -1677,6 +1677,10 @@ msgctxt "field:importer.product.supplier,code:"
 msgid "Code"
 msgstr "Código"
 
+msgctxt "field:importer.product.supplier,company:"
+msgid "Company"
+msgstr "Compañía"
+
 msgctxt "field:importer.product.supplier,currency:"
 msgid "Currency"
 msgstr "Divisa"
@@ -1769,6 +1773,10 @@ msgctxt "field:importer.production.bom,input_uom:"
 msgid "Product Input UoM"
 msgstr "Unidad de medida de entrada del producto"
 
+msgctxt "field:importer.production.bom,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
 msgctxt "field:importer.production.bom,name:"
 msgid "Name"
 msgstr "Nombre"
@@ -1785,6 +1793,18 @@ msgctxt "field:importer.production.bom,output_uom:"
 msgid "Product Output UoM"
 msgstr "Unidad de medida de salida del producto"
 
+msgctxt "field:importer.production.bom,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.production.configuration,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.production.configuration,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
 msgctxt "field:importer.production.configuration,sequence_number_next:"
 msgid "Sequence number next"
 msgstr "Número de secuencia siguiente"
@@ -1800,6 +1820,90 @@ msgstr "Prefijo de secuencia"
 msgctxt "field:importer.production.configuration,sequence_suffix:"
 msgid "Sequence suffix"
 msgstr "Sufijo de secuencia"
+
+msgctxt "field:importer.project.work.status,active:"
+msgid "Active"
+msgstr "Activo"
+
+msgctxt "field:importer.project.work.status,count:"
+msgid "Count"
+msgstr "Contar"
+
+msgctxt "field:importer.project.work.status,default:"
+msgid "Default"
+msgstr "Por defecto"
+
+msgctxt "field:importer.project.work.status,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.project.work.status,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.project.work.status,progress:"
+msgid "Progress"
+msgstr "Progreso"
+
+msgctxt "field:importer.project.work.status,project:"
+msgid "Project"
+msgstr "Proyecto"
+
+msgctxt "field:importer.project.work.status,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.project.work.status,sequence:"
+msgid "Sequence"
+msgstr "Secuencia"
+
+msgctxt "field:importer.project.work.status,task:"
+msgid "Task"
+msgstr "Tarea"
+
+msgctxt "field:importer.project.work.tracker,active:"
+msgid "Active"
+msgstr "Activo"
+
+msgctxt "field:importer.project.work.tracker,group:"
+msgid "Group"
+msgstr "Grupo"
+
+msgctxt "field:importer.project.work.tracker,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.project.work.tracker,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.project.work.tracker,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.project.work.tracker,workflow:"
+msgid "Workflow"
+msgstr "Flujo de trabajo"
+
+msgctxt "field:importer.project.work.workflow,metadata:"
+msgid "Metadata"
+msgstr "Metadatos"
+
+msgctxt "field:importer.project.work.workflow,name:"
+msgid "Name"
+msgstr "Nombre"
+
+msgctxt "field:importer.project.work.workflow,row_number:"
+msgid "Row Number"
+msgstr "Número de fila"
+
+msgctxt "field:importer.project.work.workflow,sequence:"
+msgid "Sequence"
+msgstr "Secuencia"
+
+msgctxt "field:importer.project.work.workflow,status:"
+msgid "Status"
+msgstr "Estado"
 
 msgctxt "field:importer.purchase,currency:"
 msgid "Currency"
@@ -2217,6 +2321,15 @@ msgstr ""
 " empresa. Ordene mejor los registros por empresa antes de importar para "
 "obtener un mejor rendimiento."
 
+msgctxt "help:importer.product.supplier,company:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort "
+"records by company prior to import for better performance."
+msgstr ""
+"El campo Empresa se puede utilizar para configurar campos dependientes de la"
+" empresa. Ordene mejor los registros por empresa antes de importar para "
+"obtener un mejor rendimiento."
+
 msgctxt "help:importer.sale.configuration,sale_invoice_method:"
 msgid "selection|sale.sale|invoice_method"
 msgstr "selección|venta.venta|método_de_factura"
@@ -2441,6 +2554,18 @@ msgctxt "model:importer.production.configuration,string:"
 msgid "Importer Production Configuration"
 msgstr "Configuración de producción del importador"
 
+msgctxt "model:importer.project.work.status,string:"
+msgid "Importer Project Work Status"
+msgstr "Importador del Estado del trabajo del proyecto"
+
+msgctxt "model:importer.project.work.tracker,string:"
+msgid "Importer Project Work Tracker"
+msgstr "Importador del Seguimiento de trabajo del proyecto"
+
+msgctxt "model:importer.project.work.workflow,string:"
+msgid "Importer Project Work Workflow"
+msgstr "Importador del Flujo de trabajo del proyecto"
+
 msgctxt "model:importer.purchase,string:"
 msgid "Importer Purchase"
 msgstr "Compra del importador"
@@ -2509,10 +2634,12 @@ msgctxt "model:ir.action,name:report_importer_export"
 msgid "Export"
 msgstr "Exportar"
 
+#, python-format
 msgctxt "model:ir.message,text:animal_not_found"
 msgid "Animal %(animal)s not found."
 msgstr "Animal %(animal)s no encontrado."
 
+#, python-format
 msgctxt "model:ir.message,text:change_method_warning"
 msgid ""
 "Changing the format on importer \"%(name)s\" may cause your settings to be "
@@ -2521,10 +2648,12 @@ msgstr ""
 "Cambiar el formato del importador \"%(name)s\" puede causar la pérdida de "
 "las configuraciones. ¿Quieres proceeder?"
 
+#, python-format
 msgctxt "model:ir.message,text:farm_not_found"
 msgid "Farm %(farm)s not found."
 msgstr "No se encontró la granja %(farm)s."
 
+#, python-format
 msgctxt "model:ir.message,text:invalid_column_name"
 msgid ""
 "Name \"%(name)s\" is not valid for column \"%(column)s\" in importer "
@@ -2533,6 +2662,7 @@ msgstr ""
 "El nombre \"%(name)s\" no es válido para la columna \"%(column)s\" del "
 "importador \"%(importer)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:invalid_index"
 msgid ""
 "Column \"%(column)s\" does not exist importing data with importer "
@@ -2541,14 +2671,17 @@ msgstr ""
 " La columna \"%(column)s\" no existe importando datos con el importador "
 "\"%(importer)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:location_not_found"
 msgid "Location %(location)s not found."
 msgstr "Ubicación %(location)s no encontrada."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_account_not_found"
 msgid "Account %(account)s not found."
 msgstr "Account %(account)s no encontrada."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_asset_product_not_found"
 msgid ""
 "Asset product \"%(product)s\" does not exist on the database or it could not"
@@ -2557,22 +2690,27 @@ msgstr ""
 "El producto activo \"%(product)s\" no existe en la base de datos o no se "
 "pudo encontrar."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_carrier_party_not_found"
 msgid "Party code %(party)s not found."
 msgstr "Código de fiesta %(party)s no encontrado."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_carrier_product_not_found"
 msgid "Product code %(product)s not found."
 msgstr "Código de producto %(product)s no encontrado."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_chart_not_found"
 msgid "Chart \"%(chart)s\" not found."
 msgstr "No se encontró el gráfico \"%(chart)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_company_not_found"
 msgid "Company %(company)s not found."
 msgstr "Empresa %(company)s no encontrada."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_currency_not_found"
 msgid "Currency %(currency)s not found."
 msgstr "Moneda %(currency)s no encontrada."
@@ -2581,28 +2719,33 @@ msgctxt "model:ir.message,text:msg_deletes_disabled"
 msgid "Deletion of records is disabled."
 msgstr "La eliminación de registros está deshabilitada."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_employee_not_found"
 msgid "Employee %(employee)s not found."
 msgstr "No se encontró el empleado %(empleado)."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_group_not_found"
 msgid "Group with name \"%(name)s\" not found."
 msgstr "No se encontró el grupo con el nombre \"%(name)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_invalid_connection"
 msgid "Could not establish connection using importer \"%(importer)s\"."
 msgstr ""
 "No se pudo establecer la conexión utilizando el importador \"%(importer)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_invalid_invoice_type"
 msgid "Invoice type must be 'out' or 'in' but \"%(type)s\" was found."
 msgstr ""
 "El tipo de facutura debe ser \"out\" o \"in\" y se obtenido \"%(type)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_invalid_value"
 msgid ""
-"Invalid value \"%(value)s\" for column \"%(column)s\" in row \"%(row)s\""
-" importing data with importer \"%(importer)s\":\n"
+"Invalid value \"%(value)s\" for column \"%(column)s\" in row \"%(row)s\" impor"
+"ting data with importer \"%(importer)s\":\n"
 "\n"
 "%(error)s."
 msgstr ""
@@ -2613,6 +2756,7 @@ msgctxt "model:ir.message,text:msg_name_required"
 msgid "Missing company name."
 msgstr "Falta el nombre de la empresa."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_product_attribute_incorrect_cast"
 msgid ""
 "Value %(value)s is incorrect for attribute %(attribute)s expected type "
@@ -2621,6 +2765,7 @@ msgstr ""
 "El valor %(value)s es incorrecto para el atributo %(attribute)s, se esperaba"
 " el tipo %(type)s, con el código de producto %(code)s"
 
+#, python-format
 msgctxt "model:ir.message,text:msg_product_attribute_not_found"
 msgid ""
 "Attribute %(attribute)s for product of code %(code)s could not be found."
@@ -2628,6 +2773,7 @@ msgstr ""
 "No se pudo encontrar el atributo %(attribute)s para el producto de código "
 "%(code)s."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_product_attribute_selection_not_found"
 msgid ""
 "Attribute set %(set)s attribute %(attribute)s of type \"Selection\" has no "
@@ -2636,16 +2782,29 @@ msgstr ""
 "El conjunto de atributos %(set)s atributo %(attribute)s del tipo "
 "\"Selection\" no tiene ningún valor de opción de selección %(selection)s."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_product_attribute_set_not_found"
 msgid "Attribute set %(set)s for product of code %(code)s could not be found."
 msgstr ""
 "No se pudo encontrar el conjunto de atributos %(set)s para el producto de "
 "código %(code)s."
 
+#, python-format
+msgctxt "model:ir.message,text:msg_project_group_not_found"
+msgid "Project group %(group)s not found."
+msgstr "No se encontró el grupo de proyecto %(group)s."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_project_workflow_not_found"
+msgid "Project workflow %(workflow)s not found."
+msgstr "No se encontró el flujo de trabajo del proyecto %(workflow)s."
+
+#, python-format
 msgctxt "model:ir.message,text:msg_role_not_found"
 msgid "Role with name \"%(name)s\" not found."
 msgstr "Rol con nombre \"%(name)s\" no encontrado."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_sequence_type_not_found"
 msgid "Sequence Type \"%(type)s\" not found."
 msgstr "Tipo de secuencia \"%(type)s\" no encontrado."
@@ -2654,11 +2813,18 @@ msgctxt "model:ir.message,text:msg_sequence_type_required"
 msgid "Sequence Type is required"
 msgstr "Se requiere tipo de secuencia"
 
+#, python-format
+msgctxt "model:ir.message,text:msg_status_not_found"
+msgid "Status %(status)s not found."
+msgstr "Estado %(status)s no encontrado."
+
+#, python-format
 msgctxt "model:ir.message,text:msg_subdivision_not_found"
 msgid "Subdivision \"%(subdivision)s\" not found in country \"%(country)s\"."
 msgstr ""
 "La subdivisión \"%(subdivision)s\" no se encontró en el país \"%(country)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_subdivision_type_not_allowed"
 msgid ""
 "Subdivision type \"%(type)s\" of subdivision \"%(subdivision)s\" not allowed."
@@ -2666,20 +2832,24 @@ msgstr ""
 "No se permite el tipo de subdivisión \"%(type)s\" de la subdivisión "
 "\"%(subdivision)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_successful_connection"
 msgid "Successful connection using importer \"%(importer)s\"."
 msgstr "Conexión exitosa usando el importador \"%(importer)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:msg_supervisor_not_found"
 msgid "Supervisor \"%(supervisor)s\" not found."
 msgstr "No se encontró el supervisor \"%(supervisor)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:no_records_imported"
 msgid "No records where imported using importer \"%(importer)s\"."
 msgstr ""
 "No hay registros en los que se importó utilizando el importador "
 "\"%(importer)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:order_point_not_value"
 msgid ""
 "Order point not fount a value for Warehouse:  %(warehouse)s or Product "
@@ -2688,14 +2858,17 @@ msgstr ""
 "El punto de pedido no encontró un valor para el Almacén: %(warehouse)s o el "
 "Producto %(product)s."
 
+#, python-format
 msgctxt "model:ir.message,text:order_point_type_not_supported"
 msgid "Type %(type_)s not supported for orderpoint."
 msgstr "El tipo %(type_)s no es compatible con orderpoint."
 
+#, python-format
 msgctxt "model:ir.message,text:party_not_found"
 msgid "Party \"%(party)s\" not found."
 msgstr "No se ha encontrado el tercero \"%(party)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:party_required_for_account"
 msgid ""
 "Account \"%(account)s\" requires a party but no party was supplied in move "
@@ -2708,18 +2881,22 @@ msgctxt "model:ir.message,text:produced_animals_not_found"
 msgid "No produced animals found."
 msgstr "No se encontraron animales producidos."
 
+#, python-format
 msgctxt "model:ir.message,text:product_category_not_found"
 msgid "Product category \"%(category)s\" not found."
 msgstr "Categoría de producto \"%(category)s\" no encontrada."
 
+#, python-format
 msgctxt "model:ir.message,text:single_party_error"
 msgid "There must be one and only one party with \"%(party)s\"."
 msgstr "Debe haber un y solo un Tercero con \"%(party)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:single_product_error"
 msgid "There must be one and only one product with \"%(product)s\"."
 msgstr "Debe haber un y solo un Producto con \"%(product)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:stock_move_error"
 msgid ""
 "Coud not create move, could not find some info: from_location: "
@@ -2730,10 +2907,12 @@ msgstr ""
 "from_location: \"%(from_location)s\", to_location: \"%(to_location)s\", "
 "product: \"%(product)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:tag_not_found"
 msgid "Can't find tag \"%(tag)s\"."
 msgstr "No se puede encontrar la etiqueta \"%(tag)s\"."
 
+#, python-format
 msgctxt "model:ir.message,text:value_not_in_selection"
 msgid "Could not find this value in the field selection \"%(field)%\""
 msgstr "No se pudo encontrar este valor en la selección de campo \"%(field)%\""
