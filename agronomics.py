@@ -264,7 +264,8 @@ class ImporterMunicipality(ImporterModel):
     def importer_start(cls):
         super().importer_start()
         cache = Setup.get().cache
-        cache.municipalities = Cache('agronomics.sigpac.municipality', 'code')
+        cache.municipalities = Cache('agronomics.sigpac.municipality', 'code',
+            required=False)
 
     @classmethod
     def importer_import(cls, records):
@@ -283,10 +284,8 @@ class ImporterMunicipality(ImporterModel):
                 setup.error(gettext('importer.msg_cadastral_code_required'))
                 continue
 
-            if cache.municipalities.get(record.code):
-                municipality = cache.municipalities.get(record.code)
-            else:
-                municipality = Municipality(code=record.code)
+            municipality = (cache.municipalities.get(record.code)
+                or Municipality(code=record.code))
 
             if 'region' in setup.fields and record.region:
                 municipality.region = record.region.title()
@@ -295,6 +294,7 @@ class ImporterMunicipality(ImporterModel):
             if 'municipality' in setup.fields and record.municipality:
                 municipality.municipality = record.municipality.title()
 
+            cache.municipalities.add(municipality)
             to_save.append((municipality, record))
 
         setup.current_record = None
