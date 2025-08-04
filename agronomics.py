@@ -1,12 +1,9 @@
-import re
 from decimal import Decimal
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from trytond.modules.importer.tools import ImporterModel, Setup, Cache
 from trytond.i18n import gettext
 from trytond.transaction import Transaction
-
-DNI_REGEX = r'[0-9]+[A-Z]'
 
 
 class ImporterProductAgronomics(ModelView):
@@ -152,7 +149,7 @@ class ImporterParcel(ImporterModel):
                     continue
                 parties[identifier.party] = Decimal(percentage)
             if not parties:
-                dnis = re.findall(DNI_REGEX, record.drawers)
+                dnis = [x.split('#')[0] for x in record.drawers.split('|')]
                 setup.error(gettext('importer.msg_drawers_not_found',
                         dni=', '.join(dnis)))
                 continue
