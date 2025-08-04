@@ -64,17 +64,24 @@ class ImporterParcel(ImporterModel):
         year = today.year
 
         cache = Setup.get().cache
-        cache.plantations = Cache('agronomics.plantation', 'code')
-        cache.parcels = Cache('agronomics.parcel', 'plantation')
-        cache.identifiers = Cache('party.identifier', 'code', domain=[
-            ('type', '=', 'eu_vat'),
-            ('code', 'like', 'ES%')])
-        cache.varieties = Cache('product.taxon', 'name',
+        cache.plantations = Cache('agronomics.plantation', 'code',
+            required=False)
+        cache.parcels = Cache('agronomics.parcel', 'plantation', required=False)
+        cache.identifiers = Cache('party.identifier', 'code',
+            domain=[('type', '=', 'eu_vat'), ('code', 'like', 'ES%')])
+        # We cannot use 'name' as key because it can contain spaces
+        cache.varieties = Cache('product.taxon',
+            key=lambda taxon: taxon.name.lower().strip(), required=False,
             domain=[('rank', '=', 'variety')])
         cache.ecologicals = Cache('agronomics.ecological', 'name')
-        cache.irrigations = Cache('agronomics.irrigation', 'name')
-        cache.denominations = Cache('agronomics.denomination_of_origin', 'name')
-        cache.beneficiaries = Cache('agronomics.beneficiary', key=lambda x: (x.party, x.parcel))
+        cache.irrigations = Cache('agronomics.irrigation', 'name',
+            required=False)
+        cache.denominations = Cache('agronomics.denomination_of_origin', 'name',
+            required=False)
+        cache.beneficiaries = Cache('agronomics.beneficiary',
+            key=lambda x: (x.party, x.parcel), required=False)
+        cache.max_productions = Cache('agronomics.max.production.allowed',
+            'variety')
 
         crops = Crop.search([('code', '=', str(year))])
         if not crops:
@@ -128,7 +135,7 @@ class ImporterParcel(ImporterModel):
                         or getattr(cls, field_name).string
                     for field_name in missing]
                 setup.error(gettext('importer.msg_field_required',
-                        label=', '.join(fields_names)))
+                        label='", "'.join(fields_names)))
                 continue
 
             ## Plantation
@@ -146,7 +153,7 @@ class ImporterParcel(ImporterModel):
                 parties[identifier.party] = Decimal(percentage)
             if not parties:
                 dnis = re.findall(DNI_REGEX, record.drawers)
-                setup.error(gettext('importer.msg_parties_not_found',
+                setup.error(gettext('importer.msg_drawers_not_found',
                         dni=', '.join(dnis)))
                 continue
             plantation.party = list(parties.keys())[0]
@@ -163,14 +170,23 @@ class ImporterParcel(ImporterModel):
             parcel.surface = Decimal(record.area.replace(',', '.'))
             cache.parcels.add(parcel)
 
-            for variety in record.variety.split(','):
-                variety = variety.strip()
-                if cache.varieties.get(variety):
+            varieties = [label.strip() for label in record.variety.split(',')]
+            for variety in varieties:
+                variety = cache.varieties.get(variety)
+                if variety:
                     break
             else:
-                setup.error(gettext('importer.msg_no_varieties_found'))
+                setup.error(gettext('importer.msg_no_varieties_found',
+                        taxon='", "'.join(varieties)))
                 continue
-            parcel.variety = cache.varieties.get(variety)
+            parcel.variety = variety
+
+            max_production = cache.max_productions.get(variety)
+            if not max_production or not max_production.product:
+                setup.error(gettext('importer.msg_no_max_production_found',
+                        variety=variety.rec_name))
+                continue
+            parcel.product = max_production.product.template
 
             if 'reg_type' in setup.fields and record.reg_type:
                 irrigation = (cache.irrigations.get(record.reg_type)

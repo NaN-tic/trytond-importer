@@ -187,10 +187,13 @@
             <field name="text">No taxon with rank “species” found. Please create at least one "species" taxon before importing.</field>
         </record>
         <record model="ir.message" id="msg_no_varieties_found">
-            <field name="text">No taxon with rank "variety" found. Please create at least one "variety" taxon before importing.</field>
+            <field name="text">No taxon with rank "variety" and name "%(taxon)s" found.</field>
         </record>
         <record model="ir.message" id="msg_drawers_not_found">
-            <field name="text">No drawers (alias parties) found with DNI(s): %(dni)s</field>
+            <field name="text">No parties found with DNI(s): %(dni)s</field>
+        </record>
+        <record model="ir.message" id="msg_no_max_production_found">
+            <field name="text">No Maximum Allowed Production found. Please create one record for the variety "%(variety)s".</field>
         </record>
     </data>
 </tryton>
