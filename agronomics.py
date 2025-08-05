@@ -65,7 +65,8 @@ class ImporterParcel(ImporterModel):
             required=False)
         cache.parcels = Cache('agronomics.parcel', 'plantation', required=False)
         cache.identifiers = Cache('party.identifier', 'code',
-            domain=[('type', '=', 'eu_vat'), ('code', 'like', 'ES%')])
+            domain=[('type', '=', 'eu_vat'), ('code', 'like', 'ES%')],
+            required=False)
         # We cannot use 'name' as key because it can contain spaces and special chars
         cache.varieties = Cache('product.taxon',
             key=lambda taxon: taxon.name.lower().strip().replace('·', '.'),
