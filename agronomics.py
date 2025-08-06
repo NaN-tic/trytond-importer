@@ -1,4 +1,5 @@
 from decimal import Decimal
+from unidecode import unidecode
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from trytond.modules.importer.tools import ImporterModel, Setup, Cache
@@ -48,6 +49,7 @@ class ImporterParcel(ImporterModel):
     tenure_regime = fields.Char('Tenure Regime')
     dos_name = fields.Char('DOs Name')
     sigpac_data = fields.Char('SIGPAC Data')
+    state = fields.Char('State')
 
     @classmethod
     def importer_start(cls):
@@ -114,18 +116,15 @@ class ImporterParcel(ImporterModel):
         parcel_to_save = []
         for record in records:
             setup.current_record = record
-            enclosure = None
             plantation = None
             parcel = None
 
             ## Required fields
-            required_fields = ['code', 'drawers', 'area', 'sigpac_data',
-                'qualification', 'variety']
+            required_fields = [
+                'code', 'drawers', 'area', 'sigpac_data', 'state']
             missing = {
                 field for field in required_fields
                 if field not in setup.fields or not getattr(record, field)}
-            if not cache.ecologicals.get(record.qualification):
-                missing.add('qualification')
             if missing:
                 fields_names = [
                     Translation.get_source(f'importer.per_parcel,{field_name}',
@@ -141,16 +140,17 @@ class ImporterParcel(ImporterModel):
                 or Plantation(code=record.code))
             cache.plantations.add(plantation)
 
+            dnis = set()
             parties = {}
             for string in record.drawers.split('|'):
-                parts = string.split('#')
-                percentage = parts[-1].replace('%', '').replace(',', '.')
-                identifier = cache.identifiers.get(f'ES{parts[0]}')
+                dni, name, percentage = string.split('#')
+                percentage = percentage.replace('%', '').replace(',', '.')
+                identifier = cache.identifiers.get(f'ES{dni}')
+                dnis.add(dni)
                 if not identifier:
                     continue
                 parties[identifier.party] = Decimal(percentage)
             if not parties:
-                dnis = [x.split('#')[0] for x in record.drawers.split('|')]
                 setup.error(gettext('importer.msg_drawers_not_found',
                         dni=', '.join(dnis)))
                 continue
@@ -158,6 +158,35 @@ class ImporterParcel(ImporterModel):
 
             if 'campaign' in setup.fields and record.campaign:
                 plantation.plantation_year = record.campaign
+
+            ## Enclosure
+            new_enclosures = {}
+            for data in record.sigpac_data.split(','):
+                code, parcel, *rest = data.strip().split(':')
+                key = f'{code}{parcel}{rest[-1]}{plantation.id}'
+                new_enclosures[key] = Enclosure(
+                    province_sigpac=int(code[:2]),
+                    municipality_sigpac=int(code[2:]),
+                    parcel_sigpac=int(parcel),
+                    enclosure_sigpac=int(rest[-1]),
+                    plantation=plantation)
+
+            enclosures = getattr(plantation, 'enclosures', tuple())
+            for compare in enclosures:
+                key = (
+                    f"{str(getattr(compare, 'province_sigpac', 0)).zfill(2)}"
+                    f"{str(getattr(compare, 'municipality_sigpac', 0)).zfill(3)}"
+                    f"{getattr(compare, 'parcel_sigpac', 0)}"
+                    f"{getattr(compare, 'enclosure_sigpac', 0)}"
+                    f"{plantation.id}")
+                if key in new_enclosures:
+                    new_enclosures.pop(key)
+
+            plantation.enclosures = enclosures + tuple(new_enclosures.values())
+
+            to_save.append((plantation, record))
+            if not record.state or unidecode(record.state.lower()) != 'produccio':
+                continue
 
             ## Parcel
             parcel = (
@@ -217,33 +246,6 @@ class ImporterParcel(ImporterModel):
             if 'plant_numbers' in setup.fields and record.plant_numbers:
                 parcel.plant_number = record.plant_numbers
 
-            ## Enclosure
-            enclosures = {}
-            for data in record.sigpac_data.split(','):
-                sigpac = data.strip().split(':')
-                enclosure = Enclosure(
-                    province_sigpac=int(sigpac[0][:2]),
-                    municipality_sigpac=int(sigpac[0][2:]),
-                    parcel_sigpac=int(sigpac[1]),
-                    enclosure_sigpac=int(sigpac[-1]),
-                    plantation=plantation)
-                key = f'{sigpac[0]}{sigpac[1]}{sigpac[-1]}{plantation.id}'
-                enclosures[key] = enclosure
-
-            for compare in (getattr(plantation, 'enclosures', None) or []):
-                province = str(getattr(compare, 'province_sigpac', None) or 0).zfill(2)
-                municipality = str(getattr(compare, 'municipality_sigpac', None) or 0).zfill(3)
-                key = f'{province}{municipality}{getattr(compare, "parcel_sigpac", None) or 0}{getattr(compare, "enclosure_sigpac", None) or 0}{plantation.id}'
-                if key in enclosures:
-                    enclosures.pop(key)
-
-            if not getattr(plantation, 'enclosures', None):
-                plantation.enclosures = list(enclosures.values())
-            else:
-                plantation.enclosures += tuple(enclosures.values())
-
-            ## Append objects to save
-            to_save.append((plantation, record))
             parcel_to_save.append((parcel, record))
 
         setup.current_record = None
