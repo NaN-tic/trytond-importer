@@ -318,7 +318,9 @@ class Importer(ModelSQL, ModelView):
                 'invisible': ~Eval('data_source_visible'),
                 })
     logs = fields.One2Many('importer.log', 'importer', 'Log')
-    errors = fields.Function(fields.One2Many('importer.log', 'importer', 'Errors'), 'get_errors')
+    errors = fields.Function(
+            fields.One2Many('importer.log', 'importer', 'Errors'),
+            'get_errors', setter='set_errors')
     log_success = fields.Boolean('Log Success')
     sample_size = fields.Integer('Sample Size', help="Number of records to "
         "import with the sample button.")
@@ -426,6 +428,10 @@ class Importer(ModelSQL, ModelView):
         for error in errors:
             res[error.importer.id].append(error.id)
         return res
+
+    @classmethod
+    def set_errors(cls, importers, name, values):
+        pass
 
     @fields.depends('method')
     def on_change_method(self):
