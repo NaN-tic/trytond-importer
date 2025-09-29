@@ -43,6 +43,7 @@ class ImporterLot(ImporterModel):
                 lot.product = cache.products.get(record.product_code)
                 if not lot.product:
                     continue
+                cache.lots.add(lot)
             if 'expiration_date' in setup.fields:
                 lot.expiration_date = record.expiration_date
             if 'date' in setup.fields:
