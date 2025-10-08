@@ -75,6 +75,7 @@ class Importer(metaclass=PoolMeta):
 
             to_save.append(language)
 
+        Language.load_translations(to_save)
         Language.save(to_save)
         return to_save
 
