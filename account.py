@@ -234,14 +234,14 @@ class ImporterAccountMove(ImporterModel):
                     values = Move.default_get(list(Move._fields.keys()),
                         with_rec_name=False)
 
-                date = record.effective_date
-                move = Move(**values)
-                move.date = date
-                move.number = record.number
-                move.period = period
-                move.journal = cache.journals.get(record.journal_code)
-                move.lines = []
-                moves_to_save.append((move, record))
+                    date = record.effective_date
+                    move = Move(**values)
+                    move.date = date
+                    move.number = record.number
+                    move.period = period
+                    move.journal = cache.journals.get(record.journal_code)
+                    move.lines = []
+                    moves_to_save.append((move, record))
 
                 if not move:
                     continue
