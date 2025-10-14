@@ -361,7 +361,7 @@ class ImporterProduct(ImporterModel):
             if 'variant_suffix_code' in setup.fields:
                 product.suffix_code = record.variant_suffix_code
             if 'list_price' in setup.fields:
-                product.list_price = record.sale_price or Decimal(0)
+                template.list_price = record.sale_price or Decimal(0)
             if 'cost_price' in setup.fields:
                 product.cost_price = record.cost_price or Decimal(0)
             if 'description' in setup.fields:
