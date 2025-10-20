@@ -83,7 +83,7 @@ class ImporterStockMove(ImporterModel):
             move.from_location = from_location
             move.to_location = to_location
             move.product = product
-            move.quantity = round(record.quantity)
+            move.quantity = record.quantity
             if 'cost_price' in setup.fields:
                 move.cost_price = round_price(record.cost_price)
             if 'unit_price' in setup.fields:
