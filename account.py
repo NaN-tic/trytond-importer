@@ -704,3 +704,12 @@ class Importer(metaclass=PoolMeta):
             FiscalYear.create_period([fiscalyear])
             imported.append(fiscalyear)
         return imported
+
+
+class ImporterAccountJournal(ImporterModel):
+    'Importer Account Journal'
+    __name__ = 'importer.account.journal'
+
+    name = fields.Char('Name')
+    type = fields.Char('Type')
+    code = fields.Char('Code')
