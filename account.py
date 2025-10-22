@@ -508,6 +508,11 @@ class Importer(metaclass=PoolMeta):
                 'model': 'importer.account.asset',
                 'chunked': False,
                 },
+            'account_journal': {
+                'string': 'Account Journal',
+                'model': 'importer.account.journal',
+                'chunked': False,
+                },
         })
         return methods
 
@@ -710,7 +715,6 @@ class ImporterAccountJournal(ImporterModel):
     'Importer Account Journal'
     __name__ = 'importer.account.journal'
 
-    company_name = fields.Char('Company Name')
     name = fields.Char('Name')
     type = fields.Char('Type')
     code = fields.Char('Code')
@@ -720,24 +724,12 @@ class ImporterAccountJournal(ImporterModel):
         setup = Setup.get()
         cache = setup.cache
 
-        cache.companies = Cache('company.company',
-            key=lambda x: x.party.name.lower())
         cache.journals = Cache('account.journal', 'code')
-
-    def importer_context(self):
-        res = super().importer_context()
-        setup = Setup.get()
-        if 'company' in setup.fields and self.company_name:
-            company = setup.cache.companies.get(self.company_name)
-            if company:
-                res['company'] = company.id
-        return res
 
     @classmethod
     def importer_import(cls, records):
         pool = Pool()
         Journal = pool.get('account.journal')
-        Company = pool.get('company.company')
 
         setup = Setup.get()
         cache = setup.cache
@@ -746,17 +738,6 @@ class ImporterAccountJournal(ImporterModel):
         for record in records:
             setup.current_record = record
 
-            company = None
-            if cache.companies.get(record.company_name):
-                company = cache.companies.get(record.company_name)
-            elif Transaction().context.get('company'):
-                company = Company(Transaction().context.get('company'))
-
-            if not company:
-                setup.error(gettext('importer.msg_company_not_found',
-                    company=record.company_name))
-                continue
-
             if cache.journals.get(record.code):
                 continue
 
@@ -764,7 +745,6 @@ class ImporterAccountJournal(ImporterModel):
             journal.name = record.name
             journal.type = record.type
             journal.code = record.code
-            journal.company = company
             journals_to_save.append((journal, record))
 
         setup.current_record = None
