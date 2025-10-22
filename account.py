@@ -140,7 +140,7 @@ class ImporterAccountMove(ImporterModel):
 
             company = None
             if cache.companies.get(record.company_name):
-                company = setup.cache.companies.get(record.company_name)
+                company = cache.companies.get(record.company_name)
             elif Transaction().context.get('company'):
                 company = Company(Transaction().context.get('company'))
 
@@ -508,6 +508,11 @@ class Importer(metaclass=PoolMeta):
                 'model': 'importer.account.asset',
                 'chunked': False,
                 },
+            'account_journal': {
+                'string': 'Account Journal',
+                'model': 'importer.account.journal',
+                'chunked': False,
+                },
         })
         return methods
 
@@ -704,3 +709,44 @@ class Importer(metaclass=PoolMeta):
             FiscalYear.create_period([fiscalyear])
             imported.append(fiscalyear)
         return imported
+
+
+class ImporterAccountJournal(ImporterModel):
+    'Importer Account Journal'
+    __name__ = 'importer.account.journal'
+
+    name = fields.Char('Name')
+    type = fields.Char('Type')
+    code = fields.Char('Code')
+
+    @classmethod
+    def importer_start(cls):
+        setup = Setup.get()
+        cache = setup.cache
+
+        cache.journals = Cache('account.journal', 'code')
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        Journal = pool.get('account.journal')
+
+        setup = Setup.get()
+        cache = setup.cache
+
+        journals_to_save = []
+        for record in records:
+            setup.current_record = record
+
+            if cache.journals.get(record.code):
+                continue
+
+            journal = Journal()
+            journal.name = record.name
+            journal.type = record.type
+            journal.code = record.code
+            journals_to_save.append((journal, record))
+
+        setup.current_record = None
+        cls.importer_save(journals_to_save)
+        return [x[0] for x in journals_to_save]
