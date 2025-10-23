@@ -2722,7 +2722,7 @@ msgstr "La eliminación de registros está deshabilitada."
 #, python-format
 msgctxt "model:ir.message,text:msg_employee_not_found"
 msgid "Employee %(employee)s not found."
-msgstr "No se encontró el empleado %(empleado)."
+msgstr "No se encontró el empleado %(employee)s."
 
 #, python-format
 msgctxt "model:ir.message,text:msg_group_not_found"
