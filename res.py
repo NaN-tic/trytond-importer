@@ -124,7 +124,7 @@ class Importer(metaclass=PoolMeta):
             if Company:
                 if record.companies:
                     companies_to_add = []
-                    for company in [x.strip() for x in record.companies.split(',')]:
+                    for company in [x.strip() for x in record.companies.split('|')]:
                         if company.strip() not in companies:
                             raise UserError(gettext(
                                     'importer.msg_company_not_found',
@@ -161,4 +161,3 @@ class Importer(metaclass=PoolMeta):
 
         User.save(to_save)
         return to_save
-
