@@ -395,7 +395,7 @@ msgstr "Valor"
 
 msgctxt "field:importer.company,currency:"
 msgid "Currency"
-msgstr "moneda"
+msgstr "Moneda"
 
 msgctxt "field:importer.company,name:"
 msgid "Name"
