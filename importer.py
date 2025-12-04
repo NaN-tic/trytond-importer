@@ -28,6 +28,7 @@ from trytond.pool import Pool
 from trytond.pyson import PYSONEncoder, Eval, Bool
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError, UserWarning
+from trytond.model.exceptions import ValidationError
 from trytond.i18n import gettext
 from trytond.config import config
 from trytond.rpc import RPC
@@ -1327,7 +1328,7 @@ class ImporterColumn(ModelSQL, ModelView):
             int(self.name)
         except ValueError:
             if not re.fullmatch('[A-Z]+', self.name):
-                raise UserError(gettext('importer.invalid_column_name',
+                raise ValidationError(gettext('importer.invalid_column_name',
                         name=self.name, column=self.rec_name,
                         importer=self.importer))
 
