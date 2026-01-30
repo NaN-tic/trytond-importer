@@ -767,7 +767,7 @@ class Importer(ModelSQL, ModelView):
         Column = pool.get('importer.column')
 
         for r_column in self.source_columns:
-            column = self.column_match_name(r_column.name, Column)
+            column = self.get_column_matching_name(r_column.name, Column)
             if column:
                 r_column.field = column.field
                 r_column.format = column.format
@@ -796,7 +796,7 @@ class Importer(ModelSQL, ModelView):
                 elif column.name == r_column.name:
                     column.name = None
 
-    def column_match_name(self, name, Model):
+    def get_column_matching_name(self, name, Model):
         columns = Model.search([
             ('importer', '=', self.id),
             ('name', '=', name),
