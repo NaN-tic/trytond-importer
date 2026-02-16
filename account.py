@@ -506,7 +506,7 @@ class Importer(metaclass=PoolMeta):
                 'chunked': False,
                 },
             'account_asset': {
-                'string': 'Asset',
+                'string': 'Account Asset',
                 'model': 'importer.account.asset',
                 'chunked': False,
                 },
