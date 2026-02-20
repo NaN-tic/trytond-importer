@@ -1,17 +1,6 @@
 #
-# SPDX-FileCopyrightText: 2025 juanjo <juanjo.garcia@nan-tic.com>
 msgid ""
-msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
-"Last-Translator: juanjo <juanjo.garcia@nan-tic.com>\n"
-"PO-Revision-Date: 2025-08-01 09:30+0200\n"
-"Project-Id-Version: \n"
-"Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
-"Language: ca_ES\n"
-"Content-Transfer-Encoding: 8bit\n"
-"MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 25.04.3\n"
+msgstr "Content-Type: text/plain; charset=utf-8\n"
 
 msgctxt "field:importer,binary_data:"
 msgid "Data"
@@ -24,10 +13,6 @@ msgstr "Nom del fitxer binari"
 msgctxt "field:importer,columns:"
 msgid "Columns"
 msgstr "Columnes"
-
-msgctxt "field:importer,commit_chunks:"
-msgid "Commit Chunks"
-msgstr "Commit per blocs"
 
 msgctxt "field:importer,data_source:"
 msgid "Data Source"
@@ -133,10 +118,6 @@ msgctxt "field:importer,use_header:"
 msgid "Use Header?"
 msgstr "Utilitzar capçalera?"
 
-msgctxt "field:importer,use_subtransactions:"
-msgid "Use Subtransactions"
-msgstr "Utilitza subtransaccions"
-
 msgctxt "field:importer,user:"
 msgid "User"
 msgstr "Usuari"
@@ -223,15 +204,11 @@ msgstr "Data de finalització"
 
 msgctxt "field:importer.account.fiscalyear,in_credit_note_sequence_name:"
 msgid "In Credit Note Sequence Name"
-msgstr "Nom de la seqüència de la nota de crèdit"
+msgstr "Nom de la seqüència de la Factura rectificativa de Proveïdor"
 
 msgctxt "field:importer.account.fiscalyear,in_invoice_sequence_name:"
 msgid "In Invoice Sequence Name"
-msgstr "Nom de la seqüència de la factura"
-
-msgctxt "field:importer.account.fiscalyear,move_sequence_name:"
-msgid "Move Sequence Name"
-msgstr "Nom de la seqüència de moviments"
+msgstr "Nom de la seqüència de la factura Proveïdor"
 
 msgctxt "field:importer.account.fiscalyear,name:"
 msgid "Name"
@@ -239,11 +216,15 @@ msgstr "Nom"
 
 msgctxt "field:importer.account.fiscalyear,out_credit_note_sequence_name:"
 msgid "Out Credit Note Sequence Name"
-msgstr "Nom de la seqüència de la nota de crèdit de sortida"
+msgstr "Nom de la seqüència de la Factura rectificativa de Client"
 
 msgctxt "field:importer.account.fiscalyear,out_invoice_sequence_name:"
 msgid "Out Invoice Sequence Name"
-msgstr "Nom de la seqüència de la factura de sortida"
+msgstr "Nom de la seqüència de la factura de Cliet"
+
+msgctxt "field:importer.account.fiscalyear,post_move_sequence_name:"
+msgid "Post Move Sequence Name"
+msgstr "Nom de la seqüència de moviment comptabilitzat"
 
 msgctxt "field:importer.account.fiscalyear,start_date:"
 msgid "Start Date"
@@ -279,11 +260,11 @@ msgstr "Descripció"
 
 msgctxt "field:importer.account.move,effective_date:"
 msgid "Effecive Date"
-msgstr "Data d'entrada en vigor"
+msgstr "Data efectiva"
 
 msgctxt "field:importer.account.move,journal_code:"
 msgid "Journal Code"
-msgstr "Codi de la revista"
+msgstr "Codi del diari"
 
 msgctxt "field:importer.account.move,maturity_date:"
 msgid "Maturity Date"
@@ -299,11 +280,11 @@ msgstr "Número de moviment"
 
 msgctxt "field:importer.account.move,party_code:"
 msgid "Party Code"
-msgstr "Codi del partit"
+msgstr "Codi del tercer"
 
 msgctxt "field:importer.account.move,party_name:"
 msgid "Party Name"
-msgstr "Nom del partit"
+msgstr "Nom del tercer"
 
 msgctxt "field:importer.account.move,row_number:"
 msgid "Row Number"
@@ -331,7 +312,7 @@ msgstr "Òrgan Gestor"
 
 msgctxt "field:importer.address.facturae,party:"
 msgid "Party"
-msgstr "Festa"
+msgstr "Tercer"
 
 msgctxt "field:importer.address.facturae,row_number:"
 msgid "Row Number"
@@ -351,7 +332,7 @@ msgstr "Metadades"
 
 msgctxt "field:importer.carrier,party:"
 msgid "Party"
-msgstr "Festa"
+msgstr "Tercer"
 
 msgctxt "field:importer.carrier,product:"
 msgid "Product"
@@ -475,7 +456,7 @@ msgstr "Animal"
 
 msgctxt "field:importer.farm.farrowing.event,child_birthdate:"
 msgid "Child Birthdate"
-msgstr "Data de naixement del nen/a"
+msgstr "Data de naixement"
 
 msgctxt "field:importer.farm.farrowing.event,child_number:"
 msgid "Child Number"
@@ -483,15 +464,15 @@ msgstr "Número de fill/a"
 
 msgctxt "field:importer.farm.farrowing.event,child_sex:"
 msgid "Child Sex"
-msgstr "Sexe infantil"
+msgstr "Sexe fill/a"
 
 msgctxt "field:importer.farm.farrowing.event,child_tags:"
 msgid "Child Tags"
-msgstr "Etiquetes infantils"
+msgstr "Etiquetes fill/a"
 
 msgctxt "field:importer.farm.farrowing.event,child_weight:"
 msgid "Child Weight"
-msgstr "Pes infantil"
+msgstr "Pes fill/a"
 
 msgctxt "field:importer.farm.farrowing.event,farm:"
 msgid "Farm"
@@ -499,7 +480,7 @@ msgstr "Granja"
 
 msgctxt "field:importer.farm.farrowing.event,live:"
 msgid "Live"
-msgstr "En directe"
+msgstr "Viu"
 
 msgctxt "field:importer.farm.farrowing.event,problem:"
 msgid "Problem"
@@ -715,11 +696,11 @@ msgstr "URL de dades"
 
 msgctxt "field:importer.invoice,account_move_number:"
 msgid "Account Move number"
-msgstr "Número de trasllat de compte"
+msgstr "Número d'assentament"
 
 msgctxt "field:importer.invoice,currency:"
 msgid "Currency"
-msgstr "moneda"
+msgstr "Moneda"
 
 msgctxt "field:importer.invoice,discount:"
 msgid "Discount"
@@ -743,11 +724,11 @@ msgstr "Diari"
 
 msgctxt "field:importer.invoice,party_code:"
 msgid "Party Code"
-msgstr "Codi del partit"
+msgstr "Codi del tercer"
 
 msgctxt "field:importer.invoice,party_name:"
 msgid "Party Name"
-msgstr "Nom del partit"
+msgstr "Nom del tercer"
 
 msgctxt "field:importer.invoice,product_code:"
 msgid "Product Code"
@@ -799,7 +780,7 @@ msgstr "Nom"
 
 msgctxt "field:importer.location,parent:"
 msgid "Parent"
-msgstr "Pare/Mare"
+msgstr "Pare"
 
 msgctxt "field:importer.location,type:"
 msgid "Type"
@@ -843,7 +824,7 @@ msgstr "Data"
 
 msgctxt "field:importer.lot,expiration_date:"
 msgid "Expiry Date"
-msgstr "Data de caducitat"
+msgstr "Data caducitat"
 
 msgctxt "field:importer.lot,metadata:"
 msgid "Metadata"
@@ -896,10 +877,6 @@ msgstr "Nom de la columna"
 msgctxt "field:importer.meta,column_value:"
 msgid "Column Value"
 msgstr "Valor de la columna"
-
-msgctxt "field:importer.meta,commit_chunks:"
-msgid "Commit Chunks"
-msgstr "Commit Chunks"
 
 msgctxt "field:importer.meta,data_source:"
 msgid "Data Source"
@@ -968,10 +945,6 @@ msgstr "URL"
 msgctxt "field:importer.meta,use_header:"
 msgid "Use Header"
 msgstr "Utilitzar la capçalera"
-
-msgctxt "field:importer.meta,use_subtransactions:"
-msgid "Use Subtransactions"
-msgstr "Utilitza subtransaccions"
 
 msgctxt "field:importer.meta,user:"
 msgid "User"
@@ -1103,7 +1076,7 @@ msgstr "Nota"
 
 msgctxt "field:importer.party,party_relation:"
 msgid "Party Relation"
-msgstr "Relació amb el partit"
+msgstr "Relació amb el tercer"
 
 msgctxt "field:importer.party,phone:"
 msgid "Phone"
@@ -1207,7 +1180,7 @@ msgstr "Nom"
 
 msgctxt "field:importer.party.address,party_code:"
 msgid "Party Code"
-msgstr "Codi del partit"
+msgstr "Codi del tercer"
 
 msgctxt "field:importer.party.address,postal_code:"
 msgid "Postal Code"
@@ -1275,7 +1248,7 @@ msgstr "Nom"
 
 msgctxt "field:importer.party.contact_mechanism,party:"
 msgid "Party"
-msgstr "Festa"
+msgstr "Tercer"
 
 msgctxt "field:importer.party.contact_mechanism,row_number:"
 msgid "Row Number"
@@ -1303,7 +1276,7 @@ msgstr "Primer límit de crèdit aprovat"
 
 msgctxt "field:importer.party.credit,party:"
 msgid "Party"
-msgstr "Festa"
+msgstr "Tercer"
 
 msgctxt "field:importer.party.credit,requested_credit_limit:"
 msgid "Requested Credit Limit"
@@ -1319,7 +1292,7 @@ msgstr "Parcel Sigpac"
 
 msgctxt "field:importer.plantation,party:"
 msgid "Party"
-msgstr "Festa"
+msgstr "Tercer"
 
 msgctxt "field:importer.plantation,plantation_code:"
 msgid "Plantation Code"
@@ -1515,7 +1488,7 @@ msgstr "Tipus"
 
 msgctxt "field:importer.product,uom:"
 msgid "UoM"
-msgstr "Universitat de Mèxic"
+msgstr "UoM"
 
 msgctxt "field:importer.product,variant_code:"
 msgid "Variant Code"
@@ -1677,10 +1650,6 @@ msgctxt "field:importer.product.supplier,code:"
 msgid "Code"
 msgstr "Codi"
 
-msgctxt "field:importer.product.supplier,company:"
-msgid "Company"
-msgstr "Empresa"
-
 msgctxt "field:importer.product.supplier,currency:"
 msgid "Currency"
 msgstr "moneda"
@@ -1711,11 +1680,11 @@ msgstr "Quantitat múltiple"
 
 msgctxt "field:importer.product.supplier,party_code:"
 msgid "Party Code"
-msgstr "Codi del partit"
+msgstr "Codi del tercer"
 
 msgctxt "field:importer.product.supplier,party_name:"
 msgid "Party Name"
-msgstr "Nom del partit"
+msgstr "Nom del tercer"
 
 msgctxt "field:importer.product.supplier,product_code:"
 msgid "Product Code"
@@ -1771,11 +1740,7 @@ msgstr "Quantitat d'entrada del producte"
 
 msgctxt "field:importer.production.bom,input_uom:"
 msgid "Product Input UoM"
-msgstr "Unitat d'Unitat de Mesura d'Entrada del Producte"
-
-msgctxt "field:importer.production.bom,metadata:"
-msgid "Metadata"
-msgstr "Metadades"
+msgstr "Unitat de mesura d'entrada del producte"
 
 msgctxt "field:importer.production.bom,name:"
 msgid "Name"
@@ -1793,18 +1758,6 @@ msgctxt "field:importer.production.bom,output_uom:"
 msgid "Product Output UoM"
 msgstr "Unitat de mesura de sortida del producte"
 
-msgctxt "field:importer.production.bom,row_number:"
-msgid "Row Number"
-msgstr "Número de fila"
-
-msgctxt "field:importer.production.configuration,metadata:"
-msgid "Metadata"
-msgstr "Metadades"
-
-msgctxt "field:importer.production.configuration,row_number:"
-msgid "Row Number"
-msgstr "Número de fila"
-
 msgctxt "field:importer.production.configuration,sequence_number_next:"
 msgid "Sequence number next"
 msgstr "Número de seqüència següent"
@@ -1820,90 +1773,6 @@ msgstr "Prefix de seqüència"
 msgctxt "field:importer.production.configuration,sequence_suffix:"
 msgid "Sequence suffix"
 msgstr "Sufix de seqüència"
-
-msgctxt "field:importer.project.work.status,active:"
-msgid "Active"
-msgstr "Actiu"
-
-msgctxt "field:importer.project.work.status,count:"
-msgid "Count"
-msgstr "Compte"
-
-msgctxt "field:importer.project.work.status,default:"
-msgid "Default"
-msgstr "Per defecte"
-
-msgctxt "field:importer.project.work.status,metadata:"
-msgid "Metadata"
-msgstr "Metadades"
-
-msgctxt "field:importer.project.work.status,name:"
-msgid "Name"
-msgstr "Nom"
-
-msgctxt "field:importer.project.work.status,progress:"
-msgid "Progress"
-msgstr "Progrés"
-
-msgctxt "field:importer.project.work.status,project:"
-msgid "Project"
-msgstr "Projecte"
-
-msgctxt "field:importer.project.work.status,row_number:"
-msgid "Row Number"
-msgstr "Número de fila"
-
-msgctxt "field:importer.project.work.status,sequence:"
-msgid "Sequence"
-msgstr "Seqüència"
-
-msgctxt "field:importer.project.work.status,task:"
-msgid "Task"
-msgstr "Tasca"
-
-msgctxt "field:importer.project.work.tracker,active:"
-msgid "Active"
-msgstr "Actiu"
-
-msgctxt "field:importer.project.work.tracker,group:"
-msgid "Group"
-msgstr "Grup"
-
-msgctxt "field:importer.project.work.tracker,metadata:"
-msgid "Metadata"
-msgstr "Metadades"
-
-msgctxt "field:importer.project.work.tracker,name:"
-msgid "Name"
-msgstr "Nom"
-
-msgctxt "field:importer.project.work.tracker,row_number:"
-msgid "Row Number"
-msgstr "Número de fila"
-
-msgctxt "field:importer.project.work.tracker,workflow:"
-msgid "Workflow"
-msgstr "Flux de treball"
-
-msgctxt "field:importer.project.work.workflow,metadata:"
-msgid "Metadata"
-msgstr "Metadades"
-
-msgctxt "field:importer.project.work.workflow,name:"
-msgid "Name"
-msgstr "Nom"
-
-msgctxt "field:importer.project.work.workflow,row_number:"
-msgid "Row Number"
-msgstr "Número de fila"
-
-msgctxt "field:importer.project.work.workflow,sequence:"
-msgid "Sequence"
-msgstr "Seqüència"
-
-msgctxt "field:importer.project.work.workflow,status:"
-msgid "Status"
-msgstr "Estat"
 
 msgctxt "field:importer.purchase,currency:"
 msgid "Currency"
@@ -1923,11 +1792,11 @@ msgstr "Mètode de facturació"
 
 msgctxt "field:importer.purchase,party_code:"
 msgid "Party Code"
-msgstr "Codi del partit"
+msgstr "Codi del tercer"
 
 msgctxt "field:importer.purchase,party_name:"
 msgid "Party Name"
-msgstr "Nom del partit"
+msgstr "Nom del tercer"
 
 msgctxt "field:importer.purchase,product_code:"
 msgid "Product Code"
@@ -2015,11 +1884,11 @@ msgstr "Metadades"
 
 msgctxt "field:importer.sale,party_code:"
 msgid "Party Code"
-msgstr "Codi del partit"
+msgstr "Codi del tercer"
 
 msgctxt "field:importer.sale,party_name:"
 msgid "Party Name"
-msgstr "Nom del partit"
+msgstr "Nom del tercer"
 
 msgctxt "field:importer.sale,product_code:"
 msgid "Product Code"
@@ -2051,7 +1920,7 @@ msgstr "Mètode d'enviament"
 
 msgctxt "field:importer.sale,shipment_party_name:"
 msgid "Shipment Party Name"
-msgstr "Nom de la part de l'enviament"
+msgstr "Nom del tercer de l'enviament"
 
 msgctxt "field:importer.sale,state:"
 msgid "State"
@@ -2245,14 +2114,6 @@ msgctxt "field:importer.user,signature:"
 msgid "Signature"
 msgstr "Signatura"
 
-msgctxt "help:importer,commit_chunks:"
-msgid ""
-"By default, data is committed at the very end of the process. However, for "
-"very large imports, committing can improve performance."
-msgstr ""
-"Per defecte, les dades es confirmen al final del procés. Tanmateix, per a "
-"importacions molt grans, la confirmació pot millorar el rendiment."
-
 msgctxt "help:importer,language:"
 msgid "Language to use, if different from the one of the user."
 msgstr "Idioma a utilitzar, si és diferent de la de l'usuari."
@@ -2276,16 +2137,6 @@ msgid ""
 msgstr ""
 "Si està marcat, els noms de les columnes s'utilitzaran per al mapeig. En cas"
 " contrari, s'utilitzarà el número de la columna."
-
-msgctxt "help:importer,use_subtransactions:"
-msgid ""
-"Subtransactions make the import process more robust, allowing it to recover "
-"from database errors but can be slower when importing many thousands of "
-"records."
-msgstr ""
-"Les subtransaccions fan que el procés d'importació sigui més robust, "
-"permetent-li recuperar-se d'errors de la base de dades, però pot ser més "
-"lent quan s'importen milers de registres."
 
 msgctxt "help:importer.account.move,company_name:"
 msgid ""
@@ -2320,15 +2171,6 @@ msgstr ""
 "Millor ordenar els registres per empresa abans de la importació per a un "
 "millor rendiment."
 
-msgctxt "help:importer.product.supplier,company:"
-msgid ""
-"Company field can be used to set company-dependent fields.Better sort "
-"records by company prior to import for better performance."
-msgstr ""
-"El camp Empresa es pot utilitzar per definir camps dependents de l'empresa. "
-"Millor ordenar els registres per empresa abans de la importació per a un "
-"millor rendiment."
-
 msgctxt "help:importer.sale.configuration,sale_invoice_method:"
 msgid "selection|sale.sale|invoice_method"
 msgstr "selecció|venda.venda|mètode_factura"
@@ -2353,249 +2195,241 @@ msgctxt "help:importer.user,roles:"
 msgid "Comma separated list of role names"
 msgstr "Llista de noms de rol separats per comes"
 
-msgctxt "model:importer,string:"
+msgctxt "model:importer,name:"
 msgid "Importer"
 msgstr "Importador"
 
-msgctxt "model:importer.account.asset,string:"
+msgctxt "model:importer.account.asset,name:"
 msgid "Importer Account Asset"
 msgstr "Actiu del compte d'importador"
 
-msgctxt "model:importer.account.chart,string:"
-msgid "Importer Account Chart"
-msgstr "Gràfic de comptes d'importador"
+msgctxt "model:importer.account.chart,name:"
+msgid "Importer Chart"
+msgstr "Gràfic d'importador"
 
-msgctxt "model:importer.account.fiscalyear,string:"
-msgid "Importer Account Fiscalyear"
-msgstr "Compte d'importador Any fiscal"
+msgctxt "model:importer.account.fiscalyear,name:"
+msgid "Importer Fiscal Year"
+msgstr "Exercici fiscal de l'importador"
 
-msgctxt "model:importer.account.move,string:"
+msgctxt "model:importer.account.move,name:"
 msgid "Importer Account Move"
-msgstr "Trasllat de compte d'importador"
+msgstr "Importador d'Assentaments"
 
-msgctxt "model:importer.address.facturae,string:"
-msgid "Importer Address Facturae"
-msgstr "Facturació de l'adreça de l'importador"
+msgctxt "model:importer.address.facturae,name:"
+msgid "Importer Address Factura-e"
+msgstr "Adreça de l'importador Factura-e"
 
-msgctxt "model:importer.carrier,string:"
+msgctxt "model:importer.carrier,name:"
 msgid "Importer Carrier"
 msgstr "Importador/a de transport"
 
-msgctxt "model:importer.column,string:"
+msgctxt "model:importer.column,name:"
 msgid "Importer Column"
-msgstr "Columna d'importador"
+msgstr "Columna Importador"
 
-msgctxt "model:importer.company,string:"
+msgctxt "model:importer.company,name:"
 msgid "Importer Company"
 msgstr "Empresa importadora"
 
-msgctxt "model:importer.country,string:"
+msgctxt "model:importer.country,name:"
 msgid "Importer Country"
 msgstr "País importador"
 
-msgctxt "model:importer.country.postal_codes,string:"
-msgid "Importer Country Postal Codes"
-msgstr "Codis postals del país importador"
+msgctxt "model:importer.country.postal_codes,name:"
+msgid "Importer Postal Codes"
+msgstr "Codis postals de l'importador"
 
-msgctxt "model:importer.currency,string:"
+msgctxt "model:importer.currency,name:"
 msgid "Importer Currency"
 msgstr "Moneda de l'importador"
 
-msgctxt "model:importer.employee,string:"
-msgid "Importer Employee"
+msgctxt "model:importer.employee,name:"
+msgid "Importer Employoee"
 msgstr "Empleat importador"
 
-msgctxt "model:importer.farm.abort.event,string:"
+msgctxt "model:importer.farm.abort.event,name:"
 msgid "Importer Farm Abort Event"
 msgstr "Esdeveniment d'avortament de la granja d'importadors"
 
-msgctxt "model:importer.farm.animal,string:"
+msgctxt "model:importer.farm.animal,name:"
 msgid "Importer Farm Animal"
 msgstr "Importador d'animals de granja"
 
-msgctxt "model:importer.farm.farrowing.event,string:"
+msgctxt "model:importer.farm.farrowing.event,name:"
 msgid "Importer Farm Farrowing Event"
 msgstr "Esdeveniment de part de granja importadora"
 
-msgctxt "model:importer.farm.insemination.event,string:"
+msgctxt "model:importer.farm.insemination.event,name:"
 msgid "Importer Farm Insemination Event"
 msgstr "Esdeveniment d'inseminació a granges importadores"
 
-msgctxt "model:importer.farm.medication.event,string:"
+msgctxt "model:importer.farm.medication.event,name:"
 msgid "Importer Farm Medication Event"
 msgstr "Esdeveniment de medicaments agrícoles importadors"
 
-msgctxt "model:importer.farm.move.event,string:"
-msgid "Importer Farm Move Event"
-msgstr "Esdeveniment de trasllat de granja d'importador"
+msgctxt "model:importer.farm.move.event,name:"
+msgid "Importer Event Move"
+msgstr "Importador Esdeveniment Moviment"
 
-msgctxt "model:importer.farm.pregnancy_diagnosis.event,string:"
+msgctxt "model:importer.farm.pregnancy_diagnosis.event,name:"
 msgid "Importer Farm Pregnancy Diagnosis Event"
 msgstr "Esdeveniment de diagnòstic d'embaràs a la granja importadora"
 
-msgctxt "model:importer.farm.reclassification.event,string:"
-msgid "Importer Farm Reclassification Event"
+msgctxt "model:importer.farm.reclassification.event,name:"
+msgid "Importer Farm reclassification Event"
 msgstr "Esdeveniment de reclassificació de granges importadores"
 
-msgctxt "model:importer.farm.removal.event,string:"
-msgid "Importer Farm Removal Event"
-msgstr "Esdeveniment d'eliminació de granges d'importadors"
+msgctxt "model:importer.farm.removal.event,name:"
+msgid "Importer Removal Event"
+msgstr "Esdeveniment d'eliminació de l'importador"
 
-msgctxt "model:importer.farm.transformation.event,string:"
+msgctxt "model:importer.farm.transformation.event,name:"
 msgid "Importer Farm Transformation Event"
 msgstr "Esdeveniment de transformació de granges d'importadors"
 
-msgctxt "model:importer.farm.weaning.event,string:"
+msgctxt "model:importer.farm.weaning.event,name:"
 msgid "Importer Farm Weaning Event"
 msgstr "Esdeveniment de deslletament de granges importadores"
 
-msgctxt "model:importer.import.ask,string:"
-msgid "Importer Import Ask"
-msgstr "Importador Importa Pregunta"
+msgctxt "model:importer.import.ask,name:"
+msgid "Import Ask"
+msgstr "Importador Inici"
 
-msgctxt "model:importer.import.ask.error,string:"
-msgid "Importer Import Ask Error"
-msgstr "Error de la pregunta d'importació de l'importador"
+msgctxt "model:importer.import.ask.error,name:"
+msgid "Import Ask and Import Error"
+msgstr "Importa pregunta i error d'importació"
 
-msgctxt "model:importer.invoice,string:"
+msgctxt "model:importer.invoice,name:"
 msgid "Importer Invoice"
 msgstr "Factura de l'importador"
 
-msgctxt "model:importer.language,string:"
+msgctxt "model:importer.language,name:"
 msgid "Importer Language"
-msgstr "Idioma de l'importador"
+msgstr "Importador d'idiomes"
 
-msgctxt "model:importer.location,string:"
+msgctxt "model:importer.location,name:"
 msgid "Importer Location"
 msgstr "Ubicació de l'importador"
 
-msgctxt "model:importer.log,string:"
+msgctxt "model:importer.log,name:"
 msgid "Importer Log"
-msgstr "Registre de l'importador"
+msgstr "Bitàcola de l'importador"
 
-msgctxt "model:importer.lot,string:"
+msgctxt "model:importer.lot,name:"
 msgid "Importer Lot"
 msgstr "Lot d'importador"
 
-msgctxt "model:importer.marketing.email,string:"
+msgctxt "model:importer.marketing.email,name:"
 msgid "Importer Marketing Email"
 msgstr "Correu electrònic de màrqueting de l'importador"
 
-msgctxt "model:importer.meta,string:"
+msgctxt "model:importer.meta,name:"
 msgid "Importer Meta"
-msgstr "Meta de l'importador"
+msgstr "Meta Importador"
 
-msgctxt "model:importer.order_point,string:"
-msgid "Importer Order Point"
-msgstr "Punt de comanda de l'importador"
-
-msgctxt "model:importer.parcel,string:"
-msgid "Importer Parcel"
-msgstr "Paquet importador"
-
-msgctxt "model:importer.party,string:"
-msgid "Importer Party"
-msgstr "Part importadora"
-
-msgctxt "model:importer.party.address,string:"
-msgid "Importer Party Address"
-msgstr "Adreça de la part importadora"
-
-msgctxt "model:importer.party.configuration,string:"
-msgid "Importer Party Configuration"
-msgstr "Configuració de la part importadora"
-
-msgctxt "model:importer.party.contact_mechanism,string:"
-msgid "Importer Party Contact Mechanism"
-msgstr "Mecanisme de contacte de la part importadora"
-
-msgctxt "model:importer.party.credit,string:"
-msgid "Importer Party Credit"
-msgstr "Crèdit de la part importadora"
-
-msgctxt "model:importer.plantation,string:"
-msgid "Importer Plantation"
-msgstr "Plantació d'importadors"
-
-msgctxt "model:importer.price_list,string:"
-msgid "Importer Price List"
-msgstr "Llista de preus d'importador"
-
-msgctxt "model:importer.product,string:"
-msgid "Importer Product"
-msgstr "Producte importador"
-
-msgctxt "model:importer.product.agronomics,string:"
-msgid "Importer Product Agronomics"
-msgstr "Importador de productes agronòmics"
-
-msgctxt "model:importer.product.attributes,string:"
-msgid "Importer Product Attributes"
-msgstr "Atributs del producte de l'importador"
-
-msgctxt "model:importer.product.configuration,string:"
-msgid "Importer Product Configuration"
-msgstr "Configuració del producte de l'importador"
-
-msgctxt "model:importer.product.supplier,string:"
-msgid "Importer Product Supplier"
-msgstr "Importador i proveïdor de productes"
-
-msgctxt "model:importer.product_codes,string:"
-msgid "Importer Product Codes"
-msgstr "Codis de producte de l'importador"
-
-msgctxt "model:importer.production.bom,string:"
-msgid "Importer Production Bom"
-msgstr "Importador Production Bom"
-
-msgctxt "model:importer.production.configuration,string:"
-msgid "Importer Production Configuration"
-msgstr "Configuració de producció de l'importador"
-
-msgctxt "model:importer.project.work.status,string:"
-msgid "Importer Project Work Status"
-msgstr "Importador de l'Estat del treball del projecte"
-
-msgctxt "model:importer.project.work.tracker,string:"
-msgid "Importer Project Work Tracker"
-msgstr "Importador del Seguiment de treballs de projectes"
-
-msgctxt "model:importer.project.work.workflow,string:"
-msgid "Importer Project Work Workflow"
-msgstr "Importador del Flux de treball del projecte"
-
-msgctxt "model:importer.purchase,string:"
-msgid "Importer Purchase"
-msgstr "Compra d'importador"
-
-msgctxt "model:importer.purchase.configuration,string:"
-msgid "Importer Purchase Configuration"
-msgstr "Configuració de compra de l'importador"
-
-msgctxt "model:importer.sale,string:"
-msgid "Importer Sale"
-msgstr "Venda d'importador"
-
-msgctxt "model:importer.sale.configuration,string:"
-msgid "Importer Sale Configuration"
-msgstr "Configuració de vendes de l'importador"
-
-msgctxt "model:importer.sequence,string:"
-msgid "Importer Sequence"
-msgstr "Seqüència d'importació"
-
-msgctxt "model:importer.source_column,string:"
-msgid "Importer Source Column"
-msgstr "Columna d'origen de l'importador"
-
-msgctxt "model:importer.stock.move,string:"
+msgctxt "model:importer.order_point,name:"
 msgid "Importer Stock Move"
 msgstr "Moviment d'estoc de l'importador"
 
-msgctxt "model:importer.user,string:"
+msgctxt "model:importer.parcel,name:"
+msgid "Importer Parcel"
+msgstr "Paquet importador"
+
+msgctxt "model:importer.party,name:"
+msgid "Importer Party"
+msgstr "Importador de tercers"
+
+msgctxt "model:importer.party.address,name:"
+msgid "Importer Address"
+msgstr "Adreça de l'importador"
+
+msgctxt "model:importer.party.configuration,name:"
+msgid "Importer Party Configuration"
+msgstr "Configuració de l'importador de tercers"
+
+msgctxt "model:importer.party.contact_mechanism,name:"
+msgid "Importer Contact Method"
+msgstr "Mètode de contacte de l'importador"
+
+msgctxt "model:importer.party.credit,name:"
+msgid "Importer Party Credit"
+msgstr "Crèdit de l'importador de tercers"
+
+msgctxt "model:importer.plantation,name:"
+msgid "Importer Plantation"
+msgstr "Plantació d'importadors"
+
+msgctxt "model:importer.price_list,name:"
+msgid "Importer Price List"
+msgstr "Llista de preus d'importador"
+
+msgctxt "model:importer.product,name:"
+msgid "Importer Product"
+msgstr "Producte importador"
+
+msgctxt "model:importer.product.agronomics,name:"
+msgid "Importer Product Agronomics"
+msgstr "Importador de productes agronòmics"
+
+msgctxt "model:importer.product.attributes,name:"
+msgid "Importer Product Attributes"
+msgstr "Atributs del producte de l'importador"
+
+msgctxt "model:importer.product.configuration,name:"
+msgid "Importer Product Configuration"
+msgstr "Configuració del producte de l'importador"
+
+msgctxt "model:importer.product.supplier,name:"
+msgid "Importer Product Supplier"
+msgstr "Importador i proveïdor de productes"
+
+msgctxt "model:importer.product_codes,name:"
+msgid "Importer Product"
+msgstr "Producte importador"
+
+msgctxt "model:importer.production.bom,name:"
+msgid "Importer Production Bom"
+msgstr "Importador Production Bom"
+
+msgctxt "model:importer.production.configuration,name:"
+msgid "Importer Production Configuration"
+msgstr "Configuració de producció de l'importador"
+
+msgctxt "model:importer.purchase,name:"
+msgid "Importer Purchase"
+msgstr "Compra d'importador"
+
+msgctxt "model:importer.purchase.configuration,name:"
+msgid "Importer Purchase Configuration"
+msgstr "Configuració de compra de l'importador"
+
+msgctxt "model:importer.sale,name:"
+msgid "Importer Sale"
+msgstr "Venda d'importador"
+
+msgctxt "model:importer.sale.configuration,name:"
+msgid "Importer Sale Configuration"
+msgstr "Configuració de vendes de l'importador"
+
+msgctxt "model:importer.sequence,name:"
+msgid "Importer Party Configuration"
+msgstr "Configuració de l'importador de tercers"
+
+msgctxt "model:importer.source_column,name:"
+msgid "Importer Source Column"
+msgstr "Columna Font de l'importador"
+
+msgctxt "model:importer.stock.move,name:"
+msgid "Importer Stock Move"
+msgstr "Moviment d'estoc de l'importador"
+
+msgctxt "model:importer.user,name:"
 msgid "Importer User"
-msgstr "Usuari importador"
+msgstr "Importador d'usuaris"
+
+msgctxt "model:ir.action,name:"
+msgid "Import Errors"
+msgstr "Errors d'importació"
 
 msgctxt "model:ir.action,name:act_ask_and_import_wizard"
 msgid "Import"
@@ -2680,7 +2514,6 @@ msgctxt "model:ir.message,text:msg_account_not_found"
 msgid "Account %(account)s not found."
 msgstr "No s'ha trobat el compte %(account)s."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_asset_product_not_found"
 msgid ""
 "Asset product \"%(product)s\" does not exist on the database or it could not"
@@ -2689,27 +2522,22 @@ msgstr ""
 "El producte actiu \"%(product)s\" no existeix a la base de dades o no s'ha "
 "pogut trobar."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_carrier_party_not_found"
 msgid "Party code %(party)s not found."
-msgstr "No s'ha trobat el codi de festa %(party)s."
+msgstr "No s'ha trobat el codi de tercer %(party)s."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_carrier_product_not_found"
 msgid "Product code %(product)s not found."
 msgstr "No s'ha trobat el codi de producte %(product)s."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_chart_not_found"
 msgid "Chart \"%(chart)s\" not found."
 msgstr "No s'ha trobat el gràfic \"%(chart)s\"."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_company_not_found"
 msgid "Company %(company)s not found."
 msgstr "No s'ha trobat l'empresa %(company)s."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_currency_not_found"
 msgid "Currency %(currency)s not found."
 msgstr "No s'ha trobat la moneda %(currency)s."
@@ -2718,33 +2546,29 @@ msgctxt "model:ir.message,text:msg_deletes_disabled"
 msgid "Deletion of records is disabled."
 msgstr "La supressió de registres està desactivada."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_employee_not_found"
 msgid "Employee %(employee)s not found."
-msgstr "No s'ha trobat l'empleat %(employee)s."
+msgstr "No s'ha trobat l'empleat %(empleat)s."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_group_not_found"
 msgid "Group with name \"%(name)s\" not found."
 msgstr "No s'ha trobat el grup amb el nom \"%(name)s\"."
 
-#, python-format
+msgctxt "model:ir.message,text:msg_import_company_not_found"
+msgid "Company not found."
+msgstr "Empresa no trobada."
+
 msgctxt "model:ir.message,text:msg_invalid_connection"
 msgid "Could not establish connection using importer \"%(importer)s\"."
 msgstr "No s'ha pogut establir la connexió amb l'importador \"%(importer)s\"."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_invalid_invoice_type"
 msgid "Invoice type must be 'out' or 'in' but \"%(type)s\" was found."
-msgstr ""
-"El tipus de factura ha de ser \"fora\" o \"dins\", però s'ha trobat \"%(type)s"
-"\"."
+msgstr "El tipus de factura ha de ser \"fora\" o \"dins\", però s'ha trobat \"%(type)s\"."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_invalid_value"
 msgid ""
-"Invalid value \"%(value)s\" for column \"%(column)s\" in row \"%(row)s\" impor"
-"ting data with importer \"%(importer)s\":\n"
+"Invalid value \"%(value)s\" for column \"%(column)s\" in row \"%(row)s\" importing data with importer \"%(importer)s\":\n"
 "\n"
 "%(error)s."
 msgstr ""
@@ -2755,7 +2579,6 @@ msgctxt "model:ir.message,text:msg_name_required"
 msgid "Missing company name."
 msgstr "Falta el nom de l'empresa."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_product_attribute_incorrect_cast"
 msgid ""
 "Value %(value)s is incorrect for attribute %(attribute)s expected type "
@@ -2764,7 +2587,6 @@ msgstr ""
 "El valor %(value)s és incorrecte per a l'atribut %(attribute)s, tipus "
 "esperat %(type)s, amb el codi de producte %(code)s."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_product_attribute_not_found"
 msgid ""
 "Attribute %(attribute)s for product of code %(code)s could not be found."
@@ -2772,7 +2594,6 @@ msgstr ""
 "No s'ha pogut trobar l'atribut %(attribute)s per al producte del codi "
 "%(code)s."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_product_attribute_selection_not_found"
 msgid ""
 "Attribute set %(set)s attribute %(attribute)s of type \"Selection\" has no "
@@ -2781,22 +2602,11 @@ msgstr ""
 "El conjunt d'atributs %(set)s de l'atribut %(attribute)s de tipus "
 "\"Selecció\" no té cap valor d'opció de selecció %(selection)s."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_product_attribute_set_not_found"
 msgid "Attribute set %(set)s for product of code %(code)s could not be found."
 msgstr ""
 "No s'ha pogut trobar el conjunt d'atributs %(set)s per al producte del codi "
 "%(code)s."
-
-#, python-format
-msgctxt "model:ir.message,text:msg_project_group_not_found"
-msgid "Project group %(group)s not found."
-msgstr "No s'ha trobat el grup de projectes %(group)s."
-
-#, python-format
-msgctxt "model:ir.message,text:msg_project_workflow_not_found"
-msgid "Project workflow %(workflow)s not found."
-msgstr "No s'ha trobat el flux de treball del projecte %(workflow)s."
 
 #, python-format
 msgctxt "model:ir.message,text:msg_role_not_found"
@@ -2813,20 +2623,13 @@ msgid "Sequence Type is required"
 msgstr "El tipus de seqüència és obligatori"
 
 #, python-format
-msgctxt "model:ir.message,text:msg_status_not_found"
-msgid "Status %(status)s not found."
-msgstr "No s'ha trobat l'estat %(status)s."
-
-#, python-format
 msgctxt "model:ir.message,text:msg_subdivision_not_found"
 msgid "Subdivision \"%(subdivision)s\" not found in country \"%(country)s\"."
-msgstr ""
-"La subdivisió \"%(subdivision)s\" no s'ha trobat al país \"%(country)s\"."
+msgstr "La subdivisió \"%(subdivision)s\" no s'ha trobat al país \"%(country)s\"."
 
 #, python-format
 msgctxt "model:ir.message,text:msg_subdivision_type_not_allowed"
-msgid ""
-"Subdivision type \"%(type)s\" of subdivision \"%(subdivision)s\" not allowed."
+msgid "Subdivision type \"%(type)s\" of subdivision \"%(subdivision)s\" not allowed."
 msgstr ""
 "No es permet el tipus de subdivisió \"%(type)s\" de la subdivisió "
 "\"%(subdivision)s\"."
@@ -2836,17 +2639,14 @@ msgctxt "model:ir.message,text:msg_successful_connection"
 msgid "Successful connection using importer \"%(importer)s\"."
 msgstr "Connexió correcta mitjançant l'importador \"%(importer)s\"."
 
-#, python-format
 msgctxt "model:ir.message,text:msg_supervisor_not_found"
 msgid "Supervisor \"%(supervisor)s\" not found."
 msgstr "No s'ha trobat el supervisor \"%(supervisor)s\"."
 
-#, python-format
 msgctxt "model:ir.message,text:no_records_imported"
 msgid "No records where imported using importer \"%(importer)s\"."
 msgstr "No s'ha importat cap registre amb l'importador \"%(importer)s\"."
 
-#, python-format
 msgctxt "model:ir.message,text:order_point_not_value"
 msgid ""
 "Order point not fount a value for Warehouse:  %(warehouse)s or Product "
@@ -2855,17 +2655,14 @@ msgstr ""
 "El punt de comanda no ha establert un valor per al Magatzem: %(warehouse)s o"
 " el Producte %(product)s."
 
-#, python-format
 msgctxt "model:ir.message,text:order_point_type_not_supported"
 msgid "Type %(type_)s not supported for orderpoint."
 msgstr "El tipus %(type_)s no és compatible amb el punt de comanda."
 
-#, python-format
 msgctxt "model:ir.message,text:party_not_found"
 msgid "Party \"%(party)s\" not found."
 msgstr "No s'ha trobat el tercer \"%(party)s\"."
 
-#, python-format
 msgctxt "model:ir.message,text:party_required_for_account"
 msgid ""
 "Account \"%(account)s\" requires a party but no party was supplied in move "
@@ -2878,7 +2675,6 @@ msgctxt "model:ir.message,text:produced_animals_not_found"
 msgid "No produced animals found."
 msgstr "No s'han trobat animals reproduïts."
 
-#, python-format
 msgctxt "model:ir.message,text:product_category_not_found"
 msgid "Product category \"%(category)s\" not found."
 msgstr "No s'ha trobat la categoria de producte \"%(category)s\"."
@@ -2893,23 +2689,20 @@ msgctxt "model:ir.message,text:single_product_error"
 msgid "There must be one and only one product with \"%(product)s\"."
 msgstr "Hi ha d'haver un i només un producte amb \"%(product)s\"."
 
-#, python-format
 msgctxt "model:ir.message,text:stock_move_error"
 msgid ""
 "Coud not create move, could not find some info: from_location: "
 "\"%(from_location)s\", to_location: \"%(to_location)s\", product: "
 "\"%(product)s\"."
 msgstr ""
-"No s'ha pogut crear el trasllat, no s'ha pogut trobar informació: "
+"No s'ha pogut crear l'assentament, no s'ha pogut trobar informació: "
 "from_location: \"%(from_location)s\", to_location: \"%(to_location)s\", "
 "product: \"%(product)s\"."
 
-#, python-format
 msgctxt "model:ir.message,text:tag_not_found"
 msgid "Can't find tag \"%(tag)s\"."
 msgstr "No es pot trobar l'etiqueta \"%(tag)s\"."
 
-#, python-format
 msgctxt "model:ir.message,text:value_not_in_selection"
 msgid "Could not find this value in the field selection \"%(field)%\""
 msgstr "No s'ha pogut trobar aquest valor a la selecció de camp \"%(field)%\""
@@ -3070,3 +2863,5 @@ msgstr "Importar"
 msgctxt "wizard_button:importer.ask_and_import,error_form,end:"
 msgid "Ok"
 msgstr "D'acord"
+
+
