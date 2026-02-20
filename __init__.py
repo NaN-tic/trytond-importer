@@ -4,6 +4,7 @@
 from trytond.pool import Pool
 from . import agronomics
 from . import account
+from . import asset
 from . import bank
 from . import bank_es
 from . import carrier
@@ -64,6 +65,11 @@ def register():
         importer.ExcelTemplate,
         importer.Export,
         module='importer', type_='report')
+    Pool.register(
+        asset.ImporterAsset,
+        asset.Importer,
+        depends=['aeat_347', 'asset', 'asset_property'],
+        module='importer', type_='model')
     Pool.register(
         party_credit.ImporterPartyCredit,
         party_credit.Importer,
