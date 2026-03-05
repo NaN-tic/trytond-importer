@@ -392,7 +392,8 @@ class Importer(metaclass=PoolMeta):
                     line.product_package = None
                     line.package_quantity = None
                 # TODO base_price
-                line.unit_price = round_price(record.unit_price)
+                if record.unit_price is not None:
+                    line.unit_price = round_price(record.unit_price)
                 lines_to_save.append(line)
 
         for to_save in grouped_slice(purchases_to_save):
