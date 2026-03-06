@@ -184,6 +184,23 @@ class ImporterTestCase(ModuleTestCase):
         Identifier = pool.get('product.identifier')
         self.assertEqual(len(Identifier.search([])), 1)
 
+        self.import_('product', [{
+                'company': company.party.name,
+                'name': 'Product A345',
+                'variant_code': 'A345',
+                'template_code': 'A345',
+                'purchasable': 'True',
+                'salable': 'True',
+                }])
+        self.import_('product', [{
+                'company': company.party.name,
+                'name': 'Product 345',
+                'variant_code': '345',
+                'template_code': '345',
+                'purchasable': 'True',
+                'salable': 'True',
+                }])
+
         self.import_('price_list', [{
                 'name': "Price List",
                 'company_name': company.rec_name,
@@ -195,6 +212,20 @@ class ImporterTestCase(ModuleTestCase):
                 }])
         PriceList = pool.get('product.price_list')
         self.assertEqual(len(PriceList.search([])), 1)
+
+        self.import_('price_list_exact', [{
+                'name': "Price List Exact",
+                'company_name': company.rec_name,
+                'tax_included': True,
+                'category': None,
+                'product_code': '345',
+                'quantity': 1,
+                'formula': '5.12',
+                }])
+        price_list_exact, = PriceList.search([
+                ('name', '=', 'Price List Exact'),
+                ])
+        self.assertEqual(price_list_exact.lines[0].product.code, '345')
 
         self.import_('invoice', [{
                 'party_name': company.party.name,

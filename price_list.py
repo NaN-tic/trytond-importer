@@ -2,6 +2,7 @@ from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
+from .tools import Setup
 
 
 class ImporterPriceList(ModelView):
@@ -29,6 +30,11 @@ class Importer(metaclass=PoolMeta):
                     'model': 'importer.price_list',
                     'chunked': False,
                     },
+                'price_list_exact': {
+                    'string': 'Price List (Exact Product Code)',
+                    'model': 'importer.price_list',
+                    'chunked': False,
+                    },
                 })
         return methods
 
@@ -44,10 +50,12 @@ class Importer(metaclass=PoolMeta):
         Line = pool.get('product.price_list.line')
         Product = pool.get('product.product')
         Category = pool.get('product.category')
+        setup = Setup.get()
+        exact = bool(setup and setup.method == 'price_list_exact')
 
         # Materialize iterator so we can walk through several times
         records = list(records)
-        if any([x.product_code for x in records]):
+        if not exact and any([x.product_code for x in records]):
             products = {x.code: x for x in Product.search([])}
         else:
             products = {}
@@ -82,11 +90,24 @@ class Importer(metaclass=PoolMeta):
             line = Line()
             line.price_list = price_list
             if record.product_code:
-                product = products.get(record.product_code)
+                if exact:
+                    products = Product.search([
+                            ('code', '=', record.product_code),
+                            ], limit=2)
+                    if len(products) != 1:
+                        raise UserError(gettext(
+                                'importer.single_product_error',
+                                product=record.product_code))
+                    product = products[0]
+                else:
+                    product = products.get(record.product_code)
+                    if not product:
+                        raise UserError(gettext('importer.single_product_error',
+                                product=record.product_code))
                 if not product:
                     raise UserError(gettext('importer.single_product_error',
                             product=record.product_code))
-                line.product = products.get(record.product_code)
+                line.product = product
             if record.category:
                 category = categories.get(record.category)
                 if not category:
@@ -101,3 +122,7 @@ class Importer(metaclass=PoolMeta):
         PriceList.save(lists_to_save)
         Line.save(lines_to_save)
         return lists_to_save
+
+    @classmethod
+    def import_price_list_exact(cls, records):
+        return cls.import_price_list(records)
