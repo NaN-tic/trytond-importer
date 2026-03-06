@@ -29,6 +29,11 @@ class Importer(metaclass=PoolMeta):
                     'model': 'importer.price_list',
                     'chunked': False,
                     },
+                'price_list_exact_product_code': {
+                    'string': 'Price List (exact product code)',
+                    'model': 'importer.price_list',
+                    'chunked': False,
+                    },
                 })
         return methods
 
@@ -38,6 +43,14 @@ class Importer(metaclass=PoolMeta):
 
     @classmethod
     def import_price_list(cls, records):
+        return cls._import_price_list(records)
+
+    @classmethod
+    def import_price_list_exact_product_code(cls, records):
+        return cls._import_price_list(records, exact_product_code=True)
+
+    @classmethod
+    def _import_price_list(cls, records, exact_product_code=False):
         pool = Pool()
         Company = pool.get('company.company')
         PriceList = pool.get('product.price_list')
@@ -82,11 +95,18 @@ class Importer(metaclass=PoolMeta):
             line = Line()
             line.price_list = price_list
             if record.product_code:
-                product = products.get(record.product_code)
+                if exact_product_code:
+                    product_code = record.product_code
+                    matches = Product.search([
+                            ('code', '=', product_code),
+                            ])
+                    product = matches[0] if len(matches) == 1 else None
+                else:
+                    product = products.get(record.product_code)
                 if not product:
                     raise UserError(gettext('importer.single_product_error',
                             product=record.product_code))
-                line.product = products.get(record.product_code)
+                line.product = product
             if record.category:
                 category = categories.get(record.category)
                 if not category:
