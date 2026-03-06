@@ -1314,6 +1314,10 @@ msgctxt "field:importer.plantation,zone_sigpac:"
 msgid "Zone Sigpac"
 msgstr "Zona Sigpac"
 
+msgctxt "field:importer.price_list,base_price_formula:"
+msgid "Base Price Formula"
+msgstr "Fórmula precio base"
+
 msgctxt "field:importer.price_list,category:"
 msgid "Category"
 msgstr "Categoría"
@@ -2692,8 +2696,8 @@ msgid ""
 "Account \"%(account)s\" requires a party but no party was supplied in move "
 "\"%(move)s\"."
 msgstr ""
-"La cuenta \"%(account)s\" requiere un tercero, pero no se proporcionó ningún "
-"tercero en el movimiento \"%(move)s\"."
+"La cuenta \"%(account)s\" requiere un tercero, pero no se proporcionó ningún"
+" tercero en el movimiento \"%(move)s\"."
 
 msgctxt "model:ir.message,text:produced_animals_not_found"
 msgid "No produced animals found."
@@ -2891,5 +2895,3 @@ msgstr "Importar"
 msgctxt "wizard_button:importer.ask_and_import,error_form,end:"
 msgid "Ok"
 msgstr "Aceptar"
-
-
