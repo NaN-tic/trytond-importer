@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from proteus import Model, Wizard
+from proteus import Model, Wizard, config as pconfig
 from trytond.tests.test_tryton import drop_db
 from trytond.tests.tools import activate_modules
 
@@ -17,17 +17,18 @@ class Test(unittest.TestCase):
         super().tearDown()
 
     def test(self):
-        config = activate_modules(['importer', 'sale_product_customer'])
+        activate_modules(['importer', 'sale_product_customer'])
+        current_config = pconfig.get_config()
 
-        Party = Model.get('party.party', config=config)
+        Party = Model.get('party.party')
         party1 = Party(name='Customer 1', code='CUST1')
         party1.save()
         party2 = Party(name='Customer 2', code='CUST2')
         party2.save()
 
-        ProductUom = Model.get('product.uom', config=config)
+        ProductUom = Model.get('product.uom')
         unit, = ProductUom.find([('name', '=', 'Unit')])
-        ProductTemplate = Model.get('product.template', config=config)
+        ProductTemplate = Model.get('product.template')
         template = ProductTemplate()
         template.name = 'Product'
         template.default_uom = unit
@@ -37,7 +38,7 @@ class Test(unittest.TestCase):
         template.save()
         product, = template.products
 
-        ProductIdentifier = Model.get('product.identifier', config=config)
+        ProductIdentifier = Model.get('product.identifier')
         identifier = ProductIdentifier()
         identifier.product = product
         identifier.type = 'brand'
@@ -54,7 +55,7 @@ class Test(unittest.TestCase):
         identifier.code = '4006381333931'
         identifier.save()
 
-        Importer = Model.get('importer', config=config)
+        Importer = Model.get('importer')
         importer = Importer()
         importer.name = 'Importer'
         importer.method = 'sale_product_customer'
@@ -79,7 +80,7 @@ class Test(unittest.TestCase):
         importer.has_header = True
         importer.use_header = True
         importer.save()
-        Importer.update_columns([importer], context=config.context)
+        Importer.update_columns([importer], context=current_config.context)
 
         fields = records[0].keys()
         for column in importer.columns:
@@ -87,9 +88,9 @@ class Test(unittest.TestCase):
                 column.name = column.field.name
                 column.save()
 
-        Wizard('importer.import', [importer], config=config)
+        Wizard('importer.import', [importer])
 
-        ProductCustomer = Model.get('sale.product_customer', config=config)
+        ProductCustomer = Model.get('sale.product_customer')
         product_customers = ProductCustomer.find([
             ('template', '=', template.id),
             ('product', '=', product.id),
@@ -122,7 +123,7 @@ class Test(unittest.TestCase):
         importer.has_header = True
         importer.use_header = True
         importer.save()
-        Importer.update_columns([importer], context=config.context)
+        Importer.update_columns([importer], context=current_config.context)
 
         fields = records[0].keys()
         for column in importer.columns:
@@ -130,7 +131,7 @@ class Test(unittest.TestCase):
                 column.name = column.field.name
                 column.save()
 
-        Wizard('importer.import', [importer], config=config)
+        Wizard('importer.import', [importer])
 
         identifiers = ProductIdentifier.find([
             ('product', '=', product.id),

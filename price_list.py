@@ -1,5 +1,6 @@
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
+from trytond.transaction import Transaction
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 
@@ -30,11 +31,6 @@ class Importer(metaclass=PoolMeta):
                     'model': 'importer.price_list',
                     'chunked': False,
                     },
-                'price_list_exact_product_code': {
-                    'string': 'Price List (exact product code)',
-                    'model': 'importer.price_list',
-                    'chunked': False,
-                    },
                 })
         return methods
 
@@ -44,25 +40,19 @@ class Importer(metaclass=PoolMeta):
 
     @classmethod
     def import_price_list(cls, records):
-        return cls._import_price_list(records)
-
-    @classmethod
-    def import_price_list_exact_product_code(cls, records):
-        return cls._import_price_list(records, exact_product_code=True)
-
-    @classmethod
-    def _import_price_list(cls, records, exact_product_code=False):
         pool = Pool()
         Company = pool.get('company.company')
         PriceList = pool.get('product.price_list')
         Line = pool.get('product.price_list.line')
         Product = pool.get('product.product')
+        Template = pool.get('product.template')
         Category = pool.get('product.category')
 
         # Materialize iterator so we can walk through several times
         records = list(records)
         if any([x.product_code for x in records]):
-            products = {x.code: x for x in Product.search([])}
+            with Transaction().set_context(active_test=False):
+                products = {x.code: x for x in Product.search([])}
         else:
             products = {}
         if any([x.category for x in records]):
@@ -75,6 +65,8 @@ class Importer(metaclass=PoolMeta):
         lists_to_save = []
         lines_to_save = []
         previous_name = None
+        products_to_save = []
+        templates_to_save = []
         for record in records:
             if record.name and record.name != previous_name:
                 previous_name = record.name
@@ -96,17 +88,16 @@ class Importer(metaclass=PoolMeta):
             line = Line()
             line.price_list = price_list
             if record.product_code:
-                if exact_product_code:
-                    product_code = record.product_code
-                    matches = Product.search([
-                            ('code', '=', product_code),
-                            ])
-                    product = matches[0] if len(matches) == 1 else None
-                else:
-                    product = products.get(record.product_code)
+                product = products.get(record.product_code)
                 if not product:
                     raise UserError(gettext('importer.single_product_error',
                             product=record.product_code))
+                if product.active == False:
+                    product.active = True
+                    products_to_save.append(product)
+                    if product.template.active == False:
+                        product.template.active  = True
+                        templates_to_save.append(product.template)
                 line.product = product
             if record.category:
                 category = categories.get(record.category)
@@ -123,4 +114,8 @@ class Importer(metaclass=PoolMeta):
 
         PriceList.save(lists_to_save)
         Line.save(lines_to_save)
+        if products_to_save:
+            Product.save(products_to_save)
+        if templates_to_save:
+            Template.save(templates_to_save)
         return lists_to_save
