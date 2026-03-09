@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from proteus import Model
+from proteus import Model, Wizard
 from trytond.tests.test_tryton import drop_db
 from trytond.tests.tools import activate_modules
 
@@ -17,17 +17,17 @@ class Test(unittest.TestCase):
         super().tearDown()
 
     def test(self):
-        activate_modules(['importer', 'sale_product_customer'])
+        config = activate_modules(['importer', 'sale_product_customer'])
 
-        Party = Model.get('party.party')
+        Party = Model.get('party.party', config=config)
         party1 = Party(name='Customer 1', code='CUST1')
         party1.save()
         party2 = Party(name='Customer 2', code='CUST2')
         party2.save()
 
-        ProductUom = Model.get('product.uom')
+        ProductUom = Model.get('product.uom', config=config)
         unit, = ProductUom.find([('name', '=', 'Unit')])
-        ProductTemplate = Model.get('product.template')
+        ProductTemplate = Model.get('product.template', config=config)
         template = ProductTemplate()
         template.name = 'Product'
         template.default_uom = unit
@@ -37,7 +37,24 @@ class Test(unittest.TestCase):
         template.save()
         product, = template.products
 
-        Importer = Model.get('importer')
+        ProductIdentifier = Model.get('product.identifier', config=config)
+        identifier = ProductIdentifier()
+        identifier.product = product
+        identifier.type = 'brand'
+        identifier.code = 'OLD-BRAND'
+        identifier.save()
+        identifier = ProductIdentifier()
+        identifier.product = product
+        identifier.type = 'mpn'
+        identifier.code = 'OLD-MPN'
+        identifier.save()
+        identifier = ProductIdentifier()
+        identifier.product = product
+        identifier.type = 'ean'
+        identifier.code = '4006381333931'
+        identifier.save()
+
+        Importer = Model.get('importer', config=config)
         importer = Importer()
         importer.name = 'Importer'
         importer.method = 'sale_product_customer'
@@ -62,7 +79,7 @@ class Test(unittest.TestCase):
         importer.has_header = True
         importer.use_header = True
         importer.save()
-        Importer.update_columns([importer])
+        Importer.update_columns([importer], context=config.context)
 
         fields = records[0].keys()
         for column in importer.columns:
@@ -70,9 +87,9 @@ class Test(unittest.TestCase):
                 column.name = column.field.name
                 column.save()
 
-        importer.data_to_records()
+        Wizard('importer.import', [importer], config=config)
 
-        ProductCustomer = Model.get('sale.product_customer')
+        ProductCustomer = Model.get('sale.product_customer', config=config)
         product_customers = ProductCustomer.find([
             ('template', '=', template.id),
             ('product', '=', product.id),
@@ -86,3 +103,44 @@ class Test(unittest.TestCase):
                 ('CUST1', 'Customer Name 1', 'C-1'),
                 ('CUST2', 'Customer Name 2', 'C-2'),
             ])
+
+        importer = Importer()
+        importer.name = 'Importer Identifiers'
+        importer.method = 'product'
+        importer.data_source = 'text'
+        records = [{
+            'template_code': template.code,
+            'variant_code': product.code,
+            'name': template.name,
+            'uom': unit.name,
+            'type_': template.type,
+            'brand_product_identifier': 'BRAND-1, BRAND-2',
+            'manufacturer_part_identifier': 'MPN-1, MPN-2',
+            'ean': '5901234123457, 9780306406157',
+        }]
+        importer.text_data = json.dumps(records)
+        importer.has_header = True
+        importer.use_header = True
+        importer.save()
+        Importer.update_columns([importer], context=config.context)
+
+        fields = records[0].keys()
+        for column in importer.columns:
+            if column.field.name in fields:
+                column.name = column.field.name
+                column.save()
+
+        Wizard('importer.import', [importer], config=config)
+
+        identifiers = ProductIdentifier.find([
+            ('product', '=', product.id),
+        ])
+        by_type = {}
+        for identifier in identifiers:
+            by_type.setdefault(identifier.type, []).append(identifier.code)
+        self.assertEqual(sorted(by_type['brand']), ['BRAND-1', 'BRAND-2'])
+        self.assertEqual(sorted(by_type['mpn']), ['MPN-1', 'MPN-2'])
+        self.assertEqual(sorted(by_type['ean']), [
+            '5901234123457',
+            '9780306406157',
+        ])
