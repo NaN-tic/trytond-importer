@@ -407,6 +407,96 @@ class ImporterProduct(ImporterModel):
         return [x[0] for x in to_save]
 
 
+class ImporterProductCustomer(ImporterModel):
+    'Importer Product Customer'
+    __name__ = 'importer.product.customer'
+
+    party = fields.Char('Party')
+    template = fields.Char('Template')
+    product = fields.Char('Product')
+    name = fields.Char('Name')
+    code = fields.Char('Code')
+
+    @classmethod
+    def importer_start(cls):
+        pool = Pool()
+        ProductCustomer = pool.get('sale.product_customer')
+
+        super().importer_start()
+        cache = Setup.get().cache
+        cache.parties = Cache('party.party', ['code', 'name'],
+            context={'active_test': False}, duplicates='abort-on-use')
+        cache.products = Cache('product.product', 'code',
+            context={'active_test': False}, duplicates='abort-on-use',
+            required=False)
+        cache.templates = Cache('product.template', 'code',
+            context={'active_test': False}, duplicates='abort-on-use',
+            required=False)
+        cache.product_customers = Cache('sale.product_customer',
+            lambda x: (x.party.id, x.template.id, x.product and x.product.id),
+            context={'active_test': False}, required=False)
+        cache.default_product_customer_values = ProductCustomer.default_get(
+            list(ProductCustomer._fields.keys()), with_rec_name=False)
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        ProductCustomer = pool.get('sale.product_customer')
+
+        setup = Setup.get()
+        cache = setup.cache
+
+        to_save = {}
+        for record in records:
+            setup.current_record = record
+
+            party = cache.parties.get(record.party)
+            if not party:
+                record.importer_error('Party not found')
+                continue
+
+            product = None
+            template = None
+            if record.product:
+                product = cache.products.get(record.product)
+                if not product:
+                    record.importer_error('Product not found')
+                    continue
+                template = product.template
+
+            if record.template:
+                template = cache.templates.get(record.template)
+                if not template:
+                    record.importer_error('Template not found')
+                    continue
+
+            if not template:
+                record.importer_error('Missing template/product')
+                continue
+
+            if product and template and product.template != template:
+                record.importer_error('Template does not match product')
+                continue
+
+            key = (party.id, template.id, product and product.id)
+            product_customer = cache.product_customers.get(key)
+            if not product_customer:
+                product_customer = ProductCustomer(
+                    **cache.default_product_customer_values)
+            product_customer.party = party
+            product_customer.template = template
+            product_customer.product = product
+
+            record.importer_assign(product_customer)
+
+            to_save[key] = (product_customer, record)
+
+        setup.current_record = None
+        to_save = list(to_save.values())
+        cls.importer_save(to_save)
+        return [x[0] for x in to_save]
+
+
 class ImporterProductConfiguration(ModelView):
     'Importer Product Configuration'
     __name__ = "importer.product.configuration"
@@ -672,6 +762,11 @@ class Importer(metaclass=PoolMeta):
                 'product_configuration': {
                     'string': 'Product configuration',
                     'model': 'importer.product.configuration',
+                    'chunked': True,
+                    },
+                'sale_product_customer': {
+                    'string': 'Product Customer',
+                    'model': 'importer.product.customer',
                     'chunked': True,
                     },
                 })
