@@ -171,6 +171,10 @@ def register():
         depends=['product_attribute_strict'],
         module='importer', type_='model')
     Pool.register(
+        product.ImporterProductCustomer,
+        depends=['sale_product_customer'],
+        module='importer', type_='model')
+    Pool.register(
         account.ImporterAccountAssetAnalyticDepends,
         account.ImporterAccountMoveDependsAnalytic,
         depends=['analytic_account'],
