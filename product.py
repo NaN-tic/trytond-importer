@@ -41,6 +41,10 @@ class ImporterProduct(ImporterModel):
     location = fields.Char('Location')
     customer = fields.Char('Customer')
     customer_code = fields.Char('Customer Code')
+    brand_product_identifier = fields.Char('Brand Product Identifier')
+    manufacturer_part_identifier = fields.Char(
+        'Manufacturer Part Identifier')
+    ean = fields.Char('EAN')
 
     @classmethod
     def importer_template(self, template):
@@ -101,6 +105,7 @@ class ImporterProduct(ImporterModel):
         ProductCategory = pool.get('product.category')
         Template = pool.get('product.template')
         ProductCostPriceMethod = pool.get('product.cost_price_method')
+        Identifier = pool.get('product.identifier')
         Note = pool.get('ir.note')
 
         def object_to_set(template, product, field):
@@ -108,6 +113,30 @@ class ImporterProduct(ImporterModel):
             if isinstance(field, fields.Function) and not field.setter:
                 return template
             return product
+
+        def split_identifiers(value):
+            if not value:
+                return []
+            return [x.strip() for x in value.split(',') if x.strip()]
+
+        def replace_identifiers(product, type_, value):
+            identifiers = list(getattr(product, 'identifiers', []))
+            identifiers = [identifier for identifier in identifiers
+                if identifier.type != type_]
+            codes = split_identifiers(value)
+            existing = {(identifier.type, identifier.code)
+                for identifier in identifiers}
+            for code in codes:
+                key = (type_, code)
+                if key in existing:
+                    continue
+                identifier = Identifier()
+                identifier.type = type_
+                identifier.code = code
+                identifier.product = product
+                identifiers.append(identifier)
+                existing.add(key)
+            product.identifiers = identifiers
 
         setup = Setup.get()
         cache = setup.cache
@@ -366,6 +395,14 @@ class ImporterProduct(ImporterModel):
                 product.cost_price = record.cost_price or Decimal(0)
             if 'description' in setup.fields:
                 product.description = record.description
+            if 'brand_product_identifier' in setup.fields:
+                replace_identifiers(product, 'brand',
+                    record.brand_product_identifier)
+            if 'manufacturer_part_identifier' in setup.fields:
+                replace_identifiers(product, 'mpn',
+                    record.manufacturer_part_identifier)
+            if 'ean' in setup.fields:
+                replace_identifiers(product, 'ean', record.ean)
 
             # If product exist the packages are set all new, not updated.
             if 'packages' in setup.fields and record.packages:
