@@ -2559,7 +2559,7 @@ msgstr "La supressió de registres està desactivada."
 #, python-format
 msgctxt "model:ir.message,text:msg_employee_not_found"
 msgid "Employee %(employee)s not found."
-msgstr "No s'ha trobat l'empleat %(empleat)s."
+msgstr "No s'ha trobat l'empleat %(employee)s."
 
 #, python-format
 msgctxt "model:ir.message,text:msg_group_not_found"
