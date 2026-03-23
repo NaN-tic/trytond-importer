@@ -17,7 +17,7 @@ class ImporterUser(ModelView):
     groups = fields.Char('Groups', help="Comma separated list of group names")
     roles = fields.Char('Roles', help="Comma separated list of role names")
     companies = fields.Char('Companies',
-        help="Comma separated list of company names")
+        help="Pipe '|' separated list of company names")
     company = fields.Char('Company')
     employees = fields.Char('Employees',
         help="Comma separated list of employee names")
