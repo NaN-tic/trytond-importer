@@ -774,13 +774,29 @@ msgctxt "field:importer.location,code:"
 msgid "Code"
 msgstr "Codi"
 
+msgctxt "field:importer.location,input_location:"
+msgid "Input Location"
+msgstr "Ubicació d'entrada"
+
 msgctxt "field:importer.location,name:"
 msgid "Name"
 msgstr "Nom"
 
+msgctxt "field:importer.location,output_location:"
+msgid "Output Location"
+msgstr "Ubicació de sortida"
+
 msgctxt "field:importer.location,parent:"
 msgid "Parent"
 msgstr "Pare"
+
+msgctxt "field:importer.location,picking_location:"
+msgid "Picking Location"
+msgstr "Ubicació de picking"
+
+msgctxt "field:importer.location,storage_location:"
+msgid "Storage Location"
+msgstr "Ubicació d'emmagatzematge"
 
 msgctxt "field:importer.location,type:"
 msgid "Type"

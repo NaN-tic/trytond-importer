@@ -359,5 +359,45 @@ class ImporterTestCase(ModuleTestCase):
         product_supplier, = ProductSupplier.search([])
         self.assertEqual(len(product_supplier.prices), 1)
 
+    @with_transaction()
+    def test_location_warehouse(self):
+        pool = Pool()
+        Location = pool.get('stock.location')
+
+        self.import_('location', [{
+                'name': 'Main Warehouse',
+                'parent': None,
+                'type': 'warehouse',
+                'input_location': 'Warehouse Input',
+                'output_location': 'Warehouse Output',
+                'storage_location': 'Warehouse Storage',
+                'picking_location': 'Warehouse Picking',
+                }, {
+                'name': 'Warehouse Input',
+                'type': 'storage',
+                }, {
+                'name': 'Warehouse Output',
+                'type': 'storage',
+                }, {
+                'name': 'Warehouse Storage',
+                'type': 'storage',
+                }, {
+                'name': 'Warehouse Picking',
+                'type': 'storage',
+                'parent': 'Warehouse Storage',
+                }])
+
+        warehouse, = Location.search([('name', '=', 'Main Warehouse')])
+        self.assertEqual(warehouse.type, 'warehouse')
+        self.assertEqual(warehouse.input_location.name, 'Warehouse Input')
+        self.assertEqual(warehouse.output_location.name, 'Warehouse Output')
+        self.assertEqual(warehouse.storage_location.name, 'Warehouse Storage')
+        self.assertEqual(warehouse.picking_location.name, 'Warehouse Picking')
+        self.assertEqual(warehouse.input_location.parent, warehouse)
+        self.assertEqual(warehouse.output_location.parent, warehouse)
+        self.assertEqual(warehouse.storage_location.parent, warehouse)
+        self.assertEqual(warehouse.picking_location.parent,
+            warehouse.storage_location)
+
 
 del ModuleTestCase
