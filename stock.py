@@ -221,3 +221,11 @@ class Importer(metaclass=PoolMeta):
                     },
                 })
         return methods
+
+    @classmethod
+    def import_stock_move_and_do(cls, records):
+        Move = Pool().get('stock.move')
+        moves = cls.import_stock_move(records)
+        with Transaction().set_context(_skip_warnings=True):
+            Move.do(moves)
+        return moves
