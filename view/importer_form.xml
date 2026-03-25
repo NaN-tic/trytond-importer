@@ -50,16 +50,7 @@
         <field name="where" colspan="5"/>
     </group>
     <notebook colspan="6">
-        <page name="columns">
-            <field name="columns" colspan="4" height="500"/>
-        </page>
-        <page name="source_columns">
-            <field name="source_columns" colspan="4" height="500"/>
-        </page>
-        <page name="text_data">
-            <field name="text_data" height="500" colspan="4"/>
-        </page>
-        <page name="errors" col="10">
+        <page string="Settings" id="settings" col="10">
             <label name="on_error"/>
             <field name="on_error"/>
             <label name="log_success"/>
@@ -70,6 +61,17 @@
             <field name="elapsed"/>
             <button name="import_sample"/>
             <button name="clean_log"/>
+        </page>
+        <page name="columns">
+            <field name="columns" colspan="4" height="500"/>
+        </page>
+        <page name="source_columns">
+            <field name="source_columns" colspan="4" height="500"/>
+        </page>
+        <page name="text_data">
+            <field name="text_data" height="500" colspan="4"/>
+        </page>
+        <page name="errors" col="10">
             <field name="errors" height="500" colspan="10"/>
         </page>
         <page name="deletes">
