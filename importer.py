@@ -907,7 +907,7 @@ class Importer(ModelSQL, ModelView):
                 use_subtransactions=self.use_subtransactions):
             Model.importer_start()
             if not self.requires_records:
-                return Model.importer_import(fields, [])
+                return Model.importer_import([])
 
             new_records = []
             # In the first iteration we will call the method with a small limit
@@ -1326,7 +1326,7 @@ class ImporterColumn(ModelSQL, ModelView):
                 return None
         elif ttype == 'boolean':
             value = str(value).strip()
-            if value.lower() in ('false', 'off', '0', ''):
+            if value.lower() in ('false', 'off', '0', '', 'no', 'n'):
                 return False
             else:
                 return True
