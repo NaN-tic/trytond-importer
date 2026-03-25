@@ -113,6 +113,11 @@ class ImporterModel(ModelView):
     def importer_import(cls, records):
         raise NotImplementedError
 
+    @classmethod
+    def datetime_to_utc(cls, datetime_, timezone=None):
+        return Pool().get('importer').datetime_to_utc(
+            datetime_, timezone=timezone)
+
     def importer_assign(self, record):
         cls = record.__class__
         for field in Setup.get().fields:

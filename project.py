@@ -193,12 +193,10 @@ class Importer(metaclass=PoolMeta):
                 'project_status': {
                     'string': 'Project Status',
                     'model': 'importer.project.work.status',
-                    'chunked': True,
                     },
                 'project_workflow': {
                     'string': 'Project Workflow',
                     'model': 'importer.project.work.workflow',
-                    'chunked': False,
                     },
                 })
         return methods
@@ -214,7 +212,6 @@ class ProjectTrackerImporter(metaclass=PoolMeta):
                 'project_tracker': {
                     'string': 'Project Tracker',
                     'model': 'importer.project.work.tracker',
-                    'chunked': False,
                     }
                 })
         return methods

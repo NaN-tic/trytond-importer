@@ -1,33 +1,18 @@
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
+from .tools import ImporterModel
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 
 
-class ImporterBank(ModelView):
+class ImporterBank(ImporterModel):
     'Importer Bank'
     __name__ = 'importer.bank'
     name = fields.Char('Name')
     bic = fields.Char('BIC')
 
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'bank': {
-                    'string': 'Banks',
-                    'model': 'importer.bank',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_bank(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Party = pool.get('party.party')
         Bank = pool.get('bank')
@@ -55,3 +40,18 @@ class Importer(metaclass=PoolMeta):
 
         Bank.save(to_save)
         return to_save
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'bank': {
+                    'string': 'Banks',
+                    'model': 'importer.bank',
+                    },
+                })
+        return methods

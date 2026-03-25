@@ -1,10 +1,21 @@
-from trytond.model import ModelView
 from trytond.pool import PoolMeta, Pool
+from .tools import ImporterModel
 
 
-class ImporterSpanishBank(ModelView):
+class ImporterSpanishBank(ImporterModel):
     'Importer Spanish Bank'
     __name__ = 'importer.spanish_bank'
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        Bank = pool.get('bank')
+        LoadBanks = pool.get('load.banks', type='wizard')
+
+        session_id, _, _ = LoadBanks.create()
+        LoadBanks.execute(session_id, {}, 'accept')
+
+        return Bank.search([])
 
 
 class Importer(metaclass=PoolMeta):
@@ -17,20 +28,7 @@ class Importer(metaclass=PoolMeta):
                 'spanish_bank': {
                     'string': 'Spanish Banks',
                     'model': 'importer.spanish_bank',
-                    'chunked': True,
                     'requires_records': False,
                     },
                 })
         return methods
-
-    @classmethod
-    def import_spanish_bank(cls):
-        pool = Pool()
-        Bank = pool.get('bank')
-        LoadBanks = pool.get('load.banks', type='wizard')
-
-        session_id, _, _ = LoadBanks.create()
-        LoadBanks.execute(session_id, {}, 'accept')
-
-        banks = Bank.search([])
-        return banks

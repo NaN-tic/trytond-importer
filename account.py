@@ -1,8 +1,7 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
-from types import SimpleNamespace
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
@@ -323,7 +322,7 @@ class ImporterAccountMoveDependsAnalytic(metaclass=PoolMeta):
     analytic_account = fields.Char('Analytic Account')
 
 
-class ImporterChart(ModelView):
+class ImporterChart(ImporterModel):
     'Importer Chart'
     __name__ = 'importer.account.chart'
     company_name = fields.Char('Company Name')
@@ -430,192 +429,29 @@ class ImporterChart(ModelView):
         accounts = Account.search([('company', '=', company)])
         return dict((str(a.code), a) for a in accounts)
 
-
-class ImporterFiscalYear(ModelView):
-    'Importer Fiscal Year'
-    __name__ = 'importer.account.fiscalyear'
-    name = fields.Char('Name')
-    company_name = fields.Char('Company Name')
-    start_date = fields.Date('Start Date')
-    end_date = fields.Date('End Date')
-    move_sequence_name = fields.Char('Move Sequence Name')
-    in_invoice_sequence_name = fields.Char('In Invoice Sequence Name')
-    out_invoice_sequence_name = fields.Char('Out Invoice Sequence Name')
-    in_credit_note_sequence_name = fields.Char('In Credit Note Sequence Name')
-    out_credit_note_sequence_name = fields.Char('Out Credit Note Sequence Name')
-
-
-class ImporterAccountAsset(ModelView):
-    'Importer Account Asset'
-    __name__ = 'importer.account.asset'
-    value = fields.Char('Value')
-    product_code = fields.Char('Product Code')
-    product_name = fields.Char('Product Name')
-    depreciated_amount = fields.Char('Depreciated Amount')
-    residual_value = fields.Char('Residual Value')
-    current_value = fields.Char('Current Value')
-    purchase_date = fields.Date('Purchase Date')
-    start_date = fields.Date('Start Date')
-    end_date = fields.Date('End Date')
-    comment = fields.Char('Comment')
-    number = fields.Char('Number')
-
-
-class ImporterAccountAssetAnalyticDepends(metaclass=PoolMeta):
-    __name__ = 'importer.account.asset'
-    analytic_account = fields.Char('Analytic Account')
-
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
+    @classmethod
+    def importer_start(cls):
+        super().importer_start()
+        Setup.get().cache.companies = Cache('company.company',
+            key=lambda x: x.party.name.lower())
 
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-            'account_move': {
-                'string': 'Account Move',
-                'model': 'importer.account.move',
-                'chunked': False,
-                },
-            'account_move_party': {
-                'string': 'Account Move Create Missing Party',
-                'model': 'importer.account.move',
-                'chunked': False,
-                },
-            'account_move_account': {
-                'string': 'Account Move Create Missing Account',
-                'model': 'importer.account.move',
-                'chunked': False,
-                },
-            'account_move_account_party': {
-                'string': 'Account Move Create Missing Account and Party',
-                'model': 'importer.account.move',
-                'chunked': False,
-                },
-            'account_create_chart': {
-                'string': 'Create Chart of Accounts',
-                'model': 'importer.account.chart',
-                'chunked': False,
-                },
-            'account_fiscalyear': {
-                'string': 'Fiscal Year',
-                'model': 'importer.account.fiscalyear',
-                'chunked': False,
-                },
-            'account_asset': {
-                'string': 'Account Asset',
-                'model': 'importer.account.asset',
-                'chunked': False,
-                },
-            'account_journal': {
-                'string': 'Account Journal',
-                'model': 'importer.account.journal',
-                'chunked': False,
-                },
-        })
-        return methods
-
-    @classmethod
-    def import_account_asset(cls, records):
-        pool = Pool()
-        Asset = pool.get('account.asset')
-        Product = pool.get('product.product')
-        Date = pool.get('ir.date')
-        Company = pool.get('company.company')
-
-        cache = SimpleNamespace()
-        cache.templates = dict((x.code, x) for x in
-                Product.search([
-                ('code', '!=', None),
-                ('code', '!=', ''),
-                ]))
-        try:
-            AnalyticAccount = pool.get('analytic_account.account')
-            AnalyticEntry = pool.get('analytic.account.entry')
-            cache.analytic_accounts = dict((x.code, x) for x in
-                AnalyticAccount.search([]))
-        except:
-            pass
-
-        company = Company(Transaction().context.get('company'))
-        currency = company.currency
-
-        imported = []
-        for record in records:
-            found_product = []
-            if record.product_code:
-                found_product = Product.search([
-                    ('code', '=', record.product_code ),
-                    ('type', '=', 'assets'),
-                    ('depreciable', '=', True),
-                    ], limit=1)
-            elif record.product_name:
-                found_product = Product.search([
-                    ('name', '=', record.product_name ),
-                    ('type', '=', 'assets'),
-                    ('depreciable', '=', True),
-                    ], limit=1)
-            if not found_product:
-                raise UserError(gettext('importer.msg_asset_product_not_found',
-                    product=record.product_code))
-            product = found_product[0]
-            asset = Asset()
-            asset.number = record.number if record.number else None
-            asset.product = product
-            asset.value = (currency.round(Decimal(record.value))
-                if record.value is not None else 0.0)
-            asset.comment = record.comment
-            asset.purchase_date = record.purchase_date
-            asset.start_date = record.start_date or record.purchase_date
-            depreciated_amount = 0.0
-            if record.depreciated_amount is not None:
-                depreciated_amount = currency.round(Decimal(record.depreciated_amount))
-            elif record.current_value is not None and asset.value is not None:
-                depreciated_amount = currency.round(asset.value - Decimal(record.current_value))
-                asset.start_date = Date.today()
-            asset.depreciated_amount = depreciated_amount
-            asset.residual_value = (currency.round(Decimal(record.residual_value))
-                if record.residual_value is not None else 0.0)
-            if record.end_date:
-                asset.end_date = record.end_date
-            elif product.depreciation_duration:
-                asset.end_date = ((asset.purchase_date or asset.start_date) + relativedelta(
-                    days=-1, months=product.depreciation_duration))
-            # Do not import if the end date is in the past
-            if asset.end_date < Date.today():
-                continue
-            if hasattr(Asset, 'analytic_accounts') and record.analytic_account:
-                account = cache.analytic_accounts.get(record.analytic_account)
-                if account:
-                    root = account.root
-                    entry = AnalyticEntry()
-                    entry.root = root
-                    entry.account = account
-                    asset.analytic_accounts = [entry]
-            imported.append(asset)
-        Asset.save(imported)
-        return imported
-
-    def import_account_create_chart(cls, records):
-        "Create chart of accounts"
+    def importer_import(cls, records):
         pool = Pool()
         Account = pool.get('account.account')
         AccountTemplate = pool.get('account.account.template')
-        Company = pool.get('company.company')
         CreateChart = pool.get('account.create_chart', type='wizard')
+
+        setup = Setup.get()
+        cache = setup.cache
 
         chart_ids = []
         for record in records:
-            record.company_name
+            setup.current_record = record
 
-            companies = Company.search([
-                    ('party.name', '=', record.company_name),
-                    ], limit=1)
-            if not companies:
-                raise UserError(gettext('importer.msg_company_not_found',
-                        company=record.company_name))
-            company, = companies
+            company = cache.companies.get(record.company_name)
+            if not company:
+                continue
 
             charts = AccountTemplate.search([
                     ('name', '=', record.chart_name),
@@ -658,58 +494,307 @@ class Importer(metaclass=PoolMeta):
                 create_chart.properties.account_payable, = accounts
             create_chart.transition_create_properties()
 
+        setup.current_record = None
         return Account.search([('template', 'in', chart_ids)])
 
-    def import_account_fiscalyear(cls, records):
+
+class ImporterFiscalYear(ImporterModel):
+    'Importer Fiscal Year'
+    __name__ = 'importer.account.fiscalyear'
+    name = fields.Char('Name')
+    company_name = fields.Char('Company Name')
+    start_date = fields.Date('Start Date')
+    end_date = fields.Date('End Date')
+    move_sequence_name = fields.Char('Move Sequence Name')
+    in_invoice_sequence_name = fields.Char('In Invoice Sequence Name')
+    out_invoice_sequence_name = fields.Char('Out Invoice Sequence Name')
+    in_credit_note_sequence_name = fields.Char('In Credit Note Sequence Name')
+    out_credit_note_sequence_name = fields.Char('Out Credit Note Sequence Name')
+
+    @staticmethod
+    def cache_key(name, company_name):
+        if isinstance(name, str):
+            name = name.lower()
+        return (name, company_name)
+
+    @classmethod
+    def importer_start(cls):
         pool = Pool()
-        Company = pool.get('company.company')
-        SequenceStrict = pool.get('ir.sequence.strict')
-        ModelData = pool.get('ir.model.data')
         FiscalYear = pool.get('account.fiscalyear')
-        InvoiceSequence = pool.get('account.fiscalyear.invoice_sequence')
+        Sequence = pool.get('ir.sequence.strict')
+        ModelData = pool.get('ir.model.data')
+
+        super().importer_start()
+        setup = Setup.get()
+        cache = setup.cache
 
         type_invoice_id = ModelData.get_id('account_invoice',
             'sequence_type_account_invoice')
-        type_accont_move_id = ModelData.get_id('account',
+        type_account_move_id = ModelData.get_id('account',
             'sequence_type_account_move')
 
-        # Create a dictionary with the sequences of sequence_type = 'account.invoice'
-        invoice_sequences = {x.name: x for x in
-            SequenceStrict.search([('sequence_type', '=', type_invoice_id)])}
-        move_sequences = {x.name: x for x in
-            SequenceStrict.search([('sequence_type', '=', type_accont_move_id)])}
-        companies = {x.party.name: x for x in Company.search([])}
-        fiscalyears = {x.name: x for x in FiscalYear.search([])}
+        cache.companies = Cache('company.company',
+            key=lambda x: x.party.name.lower())
+        with Transaction().set_context(_check_access=False):
+            cache.invoice_sequences = {
+                cls.cache_key(x.name, x.company and x.company.id): x
+                for x in Sequence.search([
+                        ('sequence_type', '=', type_invoice_id),
+                        ])
+                }
+            cache.move_sequences = {
+                cls.cache_key(x.name, x.company and x.company.id): x
+                for x in Sequence.search([
+                        ('sequence_type', '=', type_account_move_id),
+                        ])
+                }
+            cache.fiscalyears = {
+                cls.cache_key(x.name, x.company.id): x
+                for x in FiscalYear.search([])
+                }
 
-        imported = []
+    def importer_context(self):
+        res = super().importer_context()
+        setup = Setup.get()
+        if 'company' in setup.fields and self.company_name:
+            company = setup.cache.companies.get(self.company_name)
+            if company:
+                res['company'] = company.id
+        return res
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        FiscalYear = pool.get('account.fiscalyear')
+        InvoiceSequence = pool.get('account.fiscalyear.invoice_sequence')
+
+        setup = Setup.get()
+        cache = setup.cache
+
+        to_save = {}
+        by_key = {}
         for record in records:
-            fiscalyear = fiscalyears.get(record.name)
-            if not fiscalyear:
+            setup.current_record = record
+            if not record.name:
+                continue
+
+            company = cache.companies.get(record.company_name)
+            if not company:
+                continue
+            key = cls.cache_key(record.name, company.id)
+
+            fiscalyear = by_key.get(key)
+            if fiscalyear is None:
+                fiscalyear = cache.fiscalyears.get(key)
+            if fiscalyear is None:
                 fiscalyear = FiscalYear()
                 fiscalyear.name = record.name
-                seq = InvoiceSequence()
-                seq.company = companies.get(record.company_name)
-                fiscalyear.invoice_sequences = [seq]
+
+            try:
+                seq = fiscalyear.invoice_sequences[:1]
+            except AttributeError:
+                seq = []
+            if seq:
+                seq, = seq
             else:
-                seq = fiscalyear.invoice_sequences[0]
+                seq = InvoiceSequence()
+
             fiscalyear.start_date = record.start_date
             fiscalyear.end_date = record.end_date
-            fiscalyear.company = companies.get(record.company_name)
-            fiscalyear.move_sequence = move_sequences.get(
-                record.move_sequence_name)
-            seq.out_invoice_sequence = invoice_sequences.get(
-                record.out_invoice_sequence_name)
-            seq.in_invoice_sequence = invoice_sequences.get(
-                record.in_invoice_sequence_name)
-            seq.out_credit_note_sequence = invoice_sequences.get(
-                record.out_credit_note_sequence_name)
-            seq.in_credit_note_sequence = invoice_sequences.get(
-                record.in_credit_note_sequence_name)
-            fiscalyear.save()
-            FiscalYear.create_period([fiscalyear])
-            imported.append(fiscalyear)
-        return imported
+            fiscalyear.company = company
+            fiscalyear.move_sequence = cache.move_sequences.get(
+                cls.cache_key(record.move_sequence_name, company.id))
+            seq.company = company
+            seq.fiscalyear = fiscalyear
+            fiscalyear.invoice_sequences = [seq]
+            seq.out_invoice_sequence = cache.invoice_sequences.get(
+                cls.cache_key(
+                    record.out_invoice_sequence_name, company.id))
+            seq.in_invoice_sequence = cache.invoice_sequences.get(
+                cls.cache_key(
+                    record.in_invoice_sequence_name, company.id))
+            seq.out_credit_note_sequence = cache.invoice_sequences.get(
+                cls.cache_key(
+                    record.out_credit_note_sequence_name, company.id))
+            seq.in_credit_note_sequence = cache.invoice_sequences.get(
+                cls.cache_key(
+                    record.in_credit_note_sequence_name, company.id))
 
+            to_save[key] = (fiscalyear, record)
+            by_key[key] = fiscalyear
+
+        setup.current_record = None
+        saved = list(to_save.values())
+        for item in saved:
+            cls.importer_save([item])
+
+        for fiscalyear, _ in saved:
+            if fiscalyear.id:
+                FiscalYear.create_period([fiscalyear])
+
+        return [x[0] for x in saved]
+
+
+class ImporterAccountAsset(ImporterModel):
+    'Importer Account Asset'
+    __name__ = 'importer.account.asset'
+    value = fields.Char('Value')
+    product_code = fields.Char('Product Code')
+    product_name = fields.Char('Product Name')
+    depreciated_amount = fields.Char('Depreciated Amount')
+    residual_value = fields.Char('Residual Value')
+    current_value = fields.Char('Current Value')
+    purchase_date = fields.Date('Purchase Date')
+    start_date = fields.Date('Start Date')
+    end_date = fields.Date('End Date')
+    comment = fields.Char('Comment')
+    number = fields.Char('Number')
+
+    @classmethod
+    def importer_start(cls):
+        pool = Pool()
+
+        super().importer_start()
+        cache = Setup.get().cache
+
+        cache.products_by_code = Cache('product.product', 'code', domain=[
+                ('code', '!=', None),
+                ('code', '!=', ''),
+                ('type', '=', 'assets'),
+                ('depreciable', '=', True),
+                ], required=False)
+        cache.products_by_name = Cache('product.product', 'name', domain=[
+                ('type', '=', 'assets'),
+                ('depreciable', '=', True),
+                ], required=False)
+        try:
+            pool.get('analytic_account.account')
+            pool.get('analytic.account.entry')
+            cache.analytic_accounts = Cache('analytic_account.account', 'code',
+                required=False)
+        except KeyError:
+            cache.analytic_accounts = None
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        Asset = pool.get('account.asset')
+        Date = pool.get('ir.date')
+        Company = pool.get('company.company')
+        AnalyticEntry = None
+        try:
+            AnalyticEntry = pool.get('analytic.account.entry')
+        except KeyError:
+            pass
+
+        setup = Setup.get()
+        cache = setup.cache
+
+        company = Company(Transaction().context.get('company'))
+        currency = company.currency
+
+        to_save = []
+        for record in records:
+            setup.current_record = record
+
+            product = None
+            if record.product_code:
+                product = cache.products_by_code.get(record.product_code)
+            elif record.product_name:
+                product = cache.products_by_name.get(record.product_name)
+            if not product:
+                raise UserError(gettext('importer.msg_asset_product_not_found',
+                    product=record.product_code))
+
+            asset = Asset()
+            asset.number = record.number if record.number else None
+            asset.product = product
+            asset.value = (currency.round(Decimal(record.value))
+                if record.value is not None else 0.0)
+            asset.comment = record.comment
+            asset.purchase_date = record.purchase_date
+            asset.start_date = record.start_date or record.purchase_date
+            depreciated_amount = 0.0
+            if record.depreciated_amount is not None:
+                depreciated_amount = currency.round(
+                    Decimal(record.depreciated_amount))
+            elif record.current_value is not None and asset.value is not None:
+                depreciated_amount = currency.round(
+                    asset.value - Decimal(record.current_value))
+                asset.start_date = Date.today()
+            asset.depreciated_amount = depreciated_amount
+            asset.residual_value = (currency.round(Decimal(record.residual_value))
+                if record.residual_value is not None else 0.0)
+            if record.end_date:
+                asset.end_date = record.end_date
+            elif product.depreciation_duration:
+                asset.end_date = ((asset.purchase_date or asset.start_date)
+                    + relativedelta(days=-1,
+                        months=product.depreciation_duration))
+            if asset.end_date < Date.today():
+                continue
+            if (hasattr(Asset, 'analytic_accounts') and record.analytic_account
+                    and cache.analytic_accounts and AnalyticEntry):
+                account = cache.analytic_accounts.get(record.analytic_account)
+                if account:
+                    root = account.root
+                    entry = AnalyticEntry()
+                    entry.root = root
+                    entry.account = account
+                    asset.analytic_accounts = [entry]
+            to_save.append((asset, record))
+
+        setup.current_record = None
+        cls.importer_save(to_save)
+        return [x[0] for x in to_save]
+
+
+class ImporterAccountAssetAnalyticDepends(metaclass=PoolMeta):
+    __name__ = 'importer.account.asset'
+    analytic_account = fields.Char('Analytic Account')
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+            'account_move': {
+                'string': 'Account Move',
+                'model': 'importer.account.move',
+                },
+            'account_move_party': {
+                'string': 'Account Move Create Missing Party',
+                'model': 'importer.account.move',
+                },
+            'account_move_account': {
+                'string': 'Account Move Create Missing Account',
+                'model': 'importer.account.move',
+                },
+            'account_move_account_party': {
+                'string': 'Account Move Create Missing Account and Party',
+                'model': 'importer.account.move',
+                },
+            'account_create_chart': {
+                'string': 'Create Chart of Accounts',
+                'model': 'importer.account.chart',
+                },
+            'account_fiscalyear': {
+                'string': 'Fiscal Year',
+                'model': 'importer.account.fiscalyear',
+                },
+            'account_asset': {
+                'string': 'Account Asset',
+                'model': 'importer.account.asset',
+                },
+            'account_journal': {
+                'string': 'Account Journal',
+                'model': 'importer.account.journal',
+                },
+        })
+        return methods
 
 class ImporterAccountJournal(ImporterModel):
     'Importer Account Journal'

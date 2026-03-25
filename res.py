@@ -1,10 +1,11 @@
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
+from .tools import ImporterModel
 
 
-class ImporterUser(ModelView):
+class ImporterUser(ImporterModel):
     'Importer User'
     __name__ = 'importer.user'
 
@@ -23,24 +24,8 @@ class ImporterUser(ModelView):
         help="Comma separated list of employee names")
     employee = fields.Char('Employee')
 
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'user': {
-                    'string': 'Users',
-                    'model': 'importer.user',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_user(cls, records, force=False):
+    def importer_import(cls, records):
         pool = Pool()
         User = pool.get('res.user')
         Group = pool.get('res.group')
@@ -166,3 +151,18 @@ class Importer(metaclass=PoolMeta):
 
         User.save(to_save)
         return to_save
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'user': {
+                    'string': 'Users',
+                    'model': 'importer.user',
+                    },
+                })
+        return methods

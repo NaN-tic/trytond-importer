@@ -1,11 +1,12 @@
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.transaction import Transaction
 from trytond.pool import PoolMeta, Pool
+from .tools import ImporterModel
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 
 
-class ImporterOrderPoint(ModelView):
+class ImporterOrderPoint(ImporterModel):
     'Importer Stock Move'
     __name__ = 'importer.order_point'
 
@@ -15,25 +16,8 @@ class ImporterOrderPoint(ModelView):
     target_quantity = fields.Float('Target Quantity')
     type_ = fields.Char('Type')
 
-
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'order_point': {
-                    'string': 'Order Point',
-                    'model': 'importer.order_point',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_order_point(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Location = pool.get('stock.location')
         Product = pool.get('product.product')
@@ -80,6 +64,20 @@ class Importer(metaclass=PoolMeta):
         return to_save
 
 
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'order_point': {
+                    'string': 'Order Point',
+                    'model': 'importer.order_point',
+                    },
+                })
+        return methods
 
 
 

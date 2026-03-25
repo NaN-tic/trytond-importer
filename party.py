@@ -1,6 +1,6 @@
 from datetime import timedelta
 from trytond.tools.email_ import validate_email
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
 from stdnum import get_cc_module
@@ -9,7 +9,7 @@ from trytond.i18n import gettext
 from .tools import ImporterModel, Cache, Setup
 
 
-class ImporterPartyConfiguration(ModelView):
+class ImporterPartyConfiguration(ImporterModel):
     'Importer Party Configuration'
     __name__ = 'importer.party.configuration'
 
@@ -18,6 +18,43 @@ class ImporterPartyConfiguration(ModelView):
     sequence_suffix = fields.Char("Sequence suffix")
     sequence_padding = fields.Integer("Sequence Padding")
     sequence_number_next = fields.Integer("Sequence Number Next")
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+
+        Sequence = pool.get("ir.sequence")
+        Configuration = pool.get("party.configuration")
+        Lang = pool.get("ir.lang")
+        ModelData = pool.get("ir.model.data")
+
+        to_save = []
+        for record in records:
+            configuration = Configuration(1)
+
+            if record.sequence_padding or record.sequence_number_next:
+                sequence = configuration.party_sequence
+
+                if not sequence:
+                    sequence = Sequence()
+                    sequence.name = "Party"
+                    configuration.party_sequence = sequence
+
+                sequence.sequence_type = ModelData.get_id('party',
+                    'sequence_type_party')
+                sequence.prefix = record.sequence_prefix
+                sequence.suffix = record.sequence_suffix
+                sequence.padding = record.sequence_padding
+                sequence.number_next = record.sequence_number_next
+                sequence.save()
+
+            langs = Lang.search(["code", "=", record.language_code], limit=1)
+            if langs:
+                configuration.party_lang, = langs
+            break
+
+        Configuration.save(to_save)
+        return [Configuration(1)]
 
 
 class ImporterParty(ImporterModel):
@@ -790,61 +827,21 @@ class Importer(metaclass=PoolMeta):
                 'party': {
                     'string': 'Party',
                     'model': 'importer.party',
-                    'chunked': True,
                     },
                 'contact_mechanism': {
                     'string': 'Contact Mechanism',
                     'model': 'importer.party.contact_mechanism',
-                    'chunked': True,
                     },
                 'party_configuration': {
                     'string': 'Party configuration',
                     'model': 'importer.party.configuration',
-                    'chunked': True,
                     },
                 'party_address': {
                     'string': 'Address',
                     'model': 'importer.party.address',
-                    'chunked': True,
                 },
                 })
         return methods
-
-    @classmethod
-    def import_party_configuration(cls, records):
-        pool = Pool()
-
-        Sequence = pool.get("ir.sequence")
-        Configuration = pool.get("party.configuration")
-        Lang = pool.get("ir.lang")
-        ModelData = pool.get("ir.model.data")
-
-        to_save = []
-        for record in records:
-            configuration = Configuration(1)
-
-            if record.sequence_padding or record.sequence_number_next:
-                sequence = configuration.party_sequence
-
-                if not sequence:
-                    sequence = Sequence()
-                    sequence.name = "Party"
-                    configuration.party_sequence = sequence
-
-                sequence.sequence_type = ModelData.get_id('party', 'sequence_type_party')
-                sequence.prefix = record.sequence_prefix
-                sequence.suffix = record.sequence_suffix
-                sequence.padding = record.sequence_padding
-                sequence.number_next = record.sequence_number_next
-                sequence.save()
-
-            langs = Lang.search(["code", "=", record.language_code], limit=1)
-            if langs:
-                configuration.party_lang, = langs
-            break
-
-        Configuration.save(to_save)
-        return [Configuration(1)]
 
 
 class ImporterHolidaysParty(metaclass=PoolMeta):
@@ -857,7 +854,6 @@ class ImporterHolidaysParty(metaclass=PoolMeta):
                 'party_holidays': {
                     'string': 'Party Holidays',
                     'model': 'importer.party.holidays',
-                    'chunked': True,
                 },
                 })
         return methods
@@ -926,7 +922,6 @@ class ImportFacturaeAddress(metaclass=PoolMeta):
                 'party_facturae': {
                     'string': 'Party Facutra-e',
                     'model': 'importer.address.facturae',
-                    'chunked': True,
                 },
                 })
         return methods

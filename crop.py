@@ -1,9 +1,10 @@
 from datetime import date
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
+from .tools import ImporterModel
 
 
-class ImporterPlantation(ModelView):
+class ImporterPlantation(ImporterModel):
     'Importer Plantation'
     __name__ = 'importer.plantation'
 
@@ -15,40 +16,8 @@ class ImporterPlantation(ModelView):
     zone_sigpac = fields.Numeric('Zone Sigpac')
     recinte_sigpac = fields.Numeric('Recinte Sigpac')
 
-
-class ImporterParcel(ModelView):
-    'Importer Parcel'
-    __name__ = 'importer.parcel'
-
-    plantation_code = fields.Char('Plantation Code')
-    variety = fields.Char('Variety')
-    crop = fields.Char('Crop')
-    surface = fields.Numeric('Surface')
-    plant_number = fields.Integer('Plant Number')
-    species = fields.Char('Species')
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'plantation': {
-                    'string': 'Plantations',
-                    'model': 'importer.plantation',
-                    'chunked': True,
-                    },
-                'parcel': {
-                    'string': 'Parcels',
-                    'model': 'importer.parcel',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_plantation(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Party = pool.get('party.party')
         Plantation = pool.get('agronomics.plantation')
@@ -79,8 +48,21 @@ class Importer(metaclass=PoolMeta):
         Plantation.save(to_save)
         return to_save
 
+
+
+class ImporterParcel(ImporterModel):
+    'Importer Parcel'
+    __name__ = 'importer.parcel'
+
+    plantation_code = fields.Char('Plantation Code')
+    variety = fields.Char('Variety')
+    crop = fields.Char('Crop')
+    surface = fields.Numeric('Surface')
+    plant_number = fields.Integer('Plant Number')
+    species = fields.Char('Species')
+
     @classmethod
-    def import_parcel(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Crop = pool.get('agronomics.crop')
         Plantation = pool.get('agronomics.plantation')
@@ -133,3 +115,22 @@ class Importer(metaclass=PoolMeta):
             to_save.append(parcel)
         Parcel.save(to_save)
         return to_save
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'plantation': {
+                    'string': 'Plantations',
+                    'model': 'importer.plantation',
+                    },
+                'parcel': {
+                    'string': 'Parcels',
+                    'model': 'importer.parcel',
+                    },
+                })
+        return methods

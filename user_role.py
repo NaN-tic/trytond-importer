@@ -1,35 +1,19 @@
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
+from .tools import ImporterModel
 
 
-class ImporterRole(ModelView):
+class ImporterRole(ImporterModel):
     'Importer Role'
     __name__ = 'importer.role'
 
     name = fields.Char('Name')
     groups = fields.Char('Groups', help="Comma separated list of group names")
 
-
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'role': {
-                    'string': 'Roles',
-                    'model': 'importer.role',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_role(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Group = pool.get('res.group')
         Role = pool.get('res.role')
@@ -65,3 +49,19 @@ class Importer(metaclass=PoolMeta):
 
         Role.save(to_save)
         return to_save
+
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'role': {
+                    'string': 'Roles',
+                    'model': 'importer.role',
+                    },
+                })
+        return methods
