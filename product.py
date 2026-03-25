@@ -417,9 +417,11 @@ class ImporterProduct(ImporterModel):
                 template.packages = packages
 
             if 'template_note' in setup.fields and record.template_note:
-                notes.append((record, template, record.template_note))
+                for item in record.template_note.split('|'):
+                    notes.append((record, template, item))
             if 'product_note' in setup.fields and record.product_note:
-                notes.append((record, product, record.product_note))
+                for item in record.product_note.split('|'):
+                    notes.append((record, product, record.product_note))
             cls.importer_template_hook(record, template)
             cls.importer_product_hook(record, product)
             record.importer_template(template)
