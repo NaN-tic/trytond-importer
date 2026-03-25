@@ -63,6 +63,7 @@ class Importer(metaclass=PoolMeta):
 
         groups = Group.search([])
         groups = {x.name: x for x in groups}
+        admin_groups = Group.search([('admin', '=', True)])
 
         if Role:
             roles = Role.search([])
@@ -105,11 +106,15 @@ class Importer(metaclass=PoolMeta):
 
             if record.groups:
                 groups_to_add = []
-                for group in [x.strip() for x in record.groups.split(',')]:
-                    if group.strip() not in groups:
-                        raise UserError(gettext('importer.msg_group_not_found',
-                                name=group))
-                    groups_to_add.append(groups[group])
+                record_groups = [x.strip() for x in record.groups.split(',')]
+                if 'all' in record_groups:
+                    groups_to_add = admin_groups
+                else:
+                    for group in record_groups:
+                        if group.strip() not in groups:
+                            raise UserError(gettext('importer.msg_group_not_found',
+                                    name=group))
+                        groups_to_add.append(groups[group])
                 user.groups = groups_to_add
 
             if record.roles and Role:
