@@ -63,7 +63,7 @@ class Importer(metaclass=PoolMeta):
 
         groups = Group.search([])
         groups = {x.name: x for x in groups}
-        admin_groups = Group.search([('admin', '=', True)])
+        admin_groups = list(User(1).groups)
 
         if Role:
             roles = Role.search([])
