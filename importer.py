@@ -895,7 +895,7 @@ class Importer(ModelSQL, ModelView):
                             call = True
                 elif len(subrecords) >= limit:
                     call = True
-                elif context != previous_context:
+                elif subrecords and context != previous_context:
                     call = True
 
                 if call:
