@@ -705,7 +705,7 @@ class ImporterFiscalYear(ImporterModel):
             cls.importer_save([item])
 
         for fiscalyear, _ in saved:
-            if fiscalyear.id and not fiscalyear.periods:
+            if fiscalyear.id:
                 FiscalYear.create_period([fiscalyear])
 
         return [x[0] for x in saved]

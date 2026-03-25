@@ -962,7 +962,6 @@ class Importer(metaclass=PoolMeta):
                 'party': {
                     'string': 'Party',
                     'model': 'importer.party',
-                    'chunked': True,
                     },
                 'contact_mechanism': {
                     'string': 'Contact Mechanism',
