@@ -65,6 +65,7 @@ class ImporterParty(ImporterModel):
         help="Company field can be used to set company-dependent fields."
         "Better sort records by company prior to import for better "
         "performance.")
+    active = fields.Boolean('Active')
     code = fields.Char('Code')
     name = fields.Char('Name')
     trade_name = fields.Char('Trade Name')
@@ -204,6 +205,8 @@ class ImporterParty(ImporterModel):
 
             to_save.append((party, record))
 
+            if 'active' in setup.fields:
+                party.active = record.active
             if 'name' in setup.fields:
                 party.name = record.name
             if 'trade_name' in setup.fields:
