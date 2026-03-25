@@ -1046,6 +1046,14 @@ msgctxt "field:importer.party,customer_payment_days:"
 msgid "Customer Payment days"
 msgstr "Dies de pagament del client"
 
+msgctxt "field:importer.party,account_payable:"
+msgid "Account Payable"
+msgstr "Compte a pagar"
+
+msgctxt "field:importer.party,account_receivable:"
+msgid "Account Receivable"
+msgstr "Compte a cobrar"
+
 msgctxt "field:importer.party,customer_payment_term:"
 msgid "Customer Payment Term"
 msgstr "Termini de pagament del client"

@@ -693,6 +693,35 @@ class ImporterAccountDepends(metaclass=PoolMeta):
     __name__ = 'importer.party'
     customer_tax_rule = fields.Char('Customer Tax Rule')
     supplier_tax_rule = fields.Char('Supplier Tax Rule')
+    account_payable = fields.Char('Account Payable')
+    account_receivable = fields.Char('Account Receivable')
+
+    @classmethod
+    def importer_start(cls):
+        super().importer_start()
+        setup = Setup.get()
+        if ('account_payable' not in setup.fields
+                and 'account_receivable' not in setup.fields):
+            return
+        setup.cache.accounts = Cache('account.account',
+            lambda x: (x.company.id, x.code))
+
+    @classmethod
+    def import_party_party_hook(cls, record, party):
+        super().import_party_party_hook(record, party)
+        setup = Setup.get()
+        company = Transaction().context.get('company')
+        if not company:
+            return
+        for field in ('account_payable', 'account_receivable'):
+            if field not in setup.fields:
+                continue
+            account_code = getattr(record, field, None)
+            if not account_code:
+                setattr(party, field, None)
+                continue
+            setattr(party, field, setup.cache.accounts.get(
+                    (company, account_code)))
 
 
 class ImporterCompanyBankDepends(metaclass=PoolMeta):
