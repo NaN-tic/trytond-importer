@@ -1284,7 +1284,7 @@ class ImporterColumn(ModelSQL, ModelView):
                 return None
         elif ttype == 'boolean':
             value = str(value).strip()
-            if value.lower() in ('false', 'off', '0', '', 'no', 'n'):
+            if value.lower() in ('false', 'off', '0', '', 'no', 'n', 'f'):
                 return False
             else:
                 return True
