@@ -499,10 +499,11 @@ class ImporterParty(ImporterModel):
                     relations_to_save[party.code] = party_relation
 
             if record.note:
-                note = Note()
-                note.resource = party
-                note.message = record.note
-                notes_to_save.append((note, record))
+                for item in record.note.split('|'):
+                    note = Note()
+                    note.resource = party
+                    note.message = item
+                    notes_to_save.append((note, record))
 
             cls.import_party_party_hook(record, party)
             cls.importer_party(record, party)
