@@ -21,7 +21,7 @@ class ImporterRole(ImporterModel):
 
         groups = Group.search([])
         groups = {x.name: x for x in groups}
-        admin_groups = list(User(1).groups)
+        admin_groups = Group.search([('admin', '=', True)])
 
         to_save = []
         for record in records:
