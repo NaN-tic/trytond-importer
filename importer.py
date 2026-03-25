@@ -63,22 +63,6 @@ def save_virtual_workbook(workbook):
         with open(tmp.name, 'rb') as f:
             return f.read()
 
-def grouped_slice(records, count=None):
-    'grouped_slice implementation that works with iterators'
-    if count is None:
-        count = Transaction().database.IN_MAX
-
-    chunk = []
-    counter = 0
-    for record in records:
-        chunk.append(record)
-        counter += 1
-        if counter % count == 0:
-            yield chunk
-            chunk = []
-    if chunk:
-        yield chunk
-
 
 class DataExtractor:
     def __init__(self, data_source, binary_data, text_data, url_data,
@@ -833,11 +817,6 @@ class Importer(ModelSQL, ModelView):
     def _get_methods(cls):
         return {}
 
-    @property
-    def chunked(self):
-        info = self._get_methods()
-        return info[self.method]['chunked']
-
     def get_requires_records(self, name):
         # Some importers (such as country) don't really require records as
         # input
@@ -865,33 +844,12 @@ class Importer(ModelSQL, ModelView):
     def import_sample(cls, importers):
         pass
 
-    def old_data_to_records(self, data=None):
-        # Records will be an iterator
-        method = getattr(self, 'import_' + self.method)
-        if self.requires_records:
-            new_records = []
-            if self.chunked:
-                for records in grouped_slice(self.get_records(data=data)):
-                    new_records += method(records)
-            else:
-                new_records += method(self.get_records(data=data))
-        else:
-            new_records = method()
-        return new_records
-
     def data_to_records(self, data=None, sample=None):
         pool = Pool()
         Model = pool.get(self.model.name)
         Log = pool.get('importer.log')
 
         start = time.time()
-        if not hasattr(Model, 'importer_start'):
-            with Transaction().set_context(language=self.get_language_code()):
-                res = self.old_data_to_records(data)
-            self.elapsed = datetime.timedelta(seconds=time.time() - start)
-            self.save()
-            return res
-
         setup = tools.Setup()
         setup.method = self.method
         setup.on_error = self.on_error

@@ -1,5 +1,5 @@
 from decimal import Decimal
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.modules.product import price_digits, round_price
 from trytond.pool import PoolMeta, Pool
 from trytond.i18n import gettext
@@ -536,7 +536,7 @@ class ImporterProductCustomer(ImporterModel):
         return [x[0] for x in to_save]
 
 
-class ImporterProductConfiguration(ModelView):
+class ImporterProductConfiguration(ImporterModel):
     'Importer Product Configuration'
     __name__ = "importer.product.configuration"
 
@@ -549,6 +549,54 @@ class ImporterProductConfiguration(ModelView):
     product_sequence_suffix = fields.Char("Variant Sequence suffix")
     product_sequence_padding = fields.Integer("Variant Sequence padding")
     product_sequence_number_next = fields.Integer("Variant Sequence number next")
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+
+        Sequence = pool.get("ir.sequence")
+        Configuration = pool.get("product.configuration")
+        ModelData = pool.get("ir.model.data")
+
+        configs = []
+        for record in records:
+            configuration = Configuration(1)
+            configuration.default_cost_price_method = record.cost_price_method
+
+            if record.template_sequence_padding or record.template_sequence_number_next:
+                sequence = configuration.product_sequence
+
+                if not sequence:
+                    sequence = Sequence()
+                    sequence.name = "Product Template"
+                    configuration.template_sequence = sequence
+
+                sequence.sequence_type = ModelData.get_id('product',
+                    'sequence_type_template')
+                sequence.prefix = record.template_sequence_prefix
+                sequence.suffix = record.template_sequence_suffix
+                sequence.padding = record.template_sequence_padding
+                sequence.number_next = record.template_sequence_number_next
+                sequence.save()
+
+            if record.product_sequence_padding or record.product_sequence_number_next:
+                sequence = configuration.product_sequence
+
+                if not sequence:
+                    sequence = Sequence()
+                    sequence.name = "Product Variant"
+                    configuration.product_sequence = sequence
+
+                sequence.sequence_type = ModelData.get_id('product',
+                    'sequence_type_product')
+                sequence.prefix = record.product_sequence_prefix
+                sequence.suffix = record.product_sequence_suffix
+                sequence.padding = record.product_sequence_padding
+                sequence.number_next = record.product_sequence_number_next
+                sequence.save()
+            configuration.save()
+            configs.append(configuration)
+        return configs
 
 
 class ImporterProductProductionDepends(metaclass=PoolMeta):
@@ -770,7 +818,7 @@ class ImporterProductAttributes(ImporterModel):
         return [x[0] for x in to_save]
 
 
-class ImporterProductCodes(ModelView):
+class ImporterProductCodes(ImporterModel):
     'Importer Product'
     __name__ = 'importer.product_codes'
 
@@ -780,39 +828,8 @@ class ImporterProductCodes(ModelView):
     type_ = fields.Char('type')
     code = fields.Char('Code')
 
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'product': {
-                    'string': 'Product',
-                    'model': 'importer.product',
-                    'chunked': False,
-                    },
-                'product_codes': {
-                    'string': 'Product Codes',
-                    'model': 'importer.product_codes',
-                    'chunked': True,
-                    },
-                'product_configuration': {
-                    'string': 'Product configuration',
-                    'model': 'importer.product.configuration',
-                    'chunked': True,
-                    },
-                'sale_product_customer': {
-                    'string': 'Product Customer',
-                    'model': 'importer.product.customer',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_product_codes(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Product = pool.get('product.product')
         Identifier = pool.get('product.identifier')
@@ -835,7 +852,6 @@ class Importer(metaclass=PoolMeta):
             identifier.code = record.code
             product = products.get(code)
             if not product:
-                # TODO: Raise an error
                 continue
             identifier.product = product
             to_save.append(identifier)
@@ -843,55 +859,32 @@ class Importer(metaclass=PoolMeta):
         Identifier.save(to_save)
         return to_save
 
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
     @classmethod
-    def import_product_configuration(cls, records):
-        pool = Pool()
-
-        Sequence = pool.get("ir.sequence")
-        Configuration = pool.get("product.configuration")
-        ModelData = pool.get("ir.model.data")
-
-        configs = []
-        for record in records:
-            configuration = Configuration(1)
-            configuration.default_cost_price_method = record.cost_price_method
-
-            if record.template_sequence_padding or record.template_sequence_number_next:
-                sequence = configuration.product_sequence
-
-                if not sequence:
-                    sequence = Sequence()
-                    sequence.name = "Product Template"
-                    configuration.template_sequence = sequence
-
-                sequence.sequence_type = ModelData.get_id('product', 'sequence_type_template')
-                sequence.prefix = record.template_sequence_prefix
-                sequence.suffix = record.template_sequence_suffix
-                sequence.padding = record.template_sequence_padding
-                sequence.number_next = record.template_sequence_number_next
-                sequence.save()
-
-            if record.product_sequence_padding or record.product_sequence_number_next:
-                sequence = configuration.product_sequence
-
-                if not sequence:
-                    sequence = Sequence()
-                    sequence.name = "Product Variant"
-                    configuration.product_sequence = sequence
-
-                sequence.sequence_type = ModelData.get_id('product', 'sequence_type_product')
-                sequence.prefix = record.product_sequence_prefix
-                sequence.suffix = record.product_sequence_suffix
-                sequence.padding = record.product_sequence_padding
-                sequence.number_next = record.product_sequence_number_next
-                sequence.save()
-
-
-            configuration.save()
-            configs.append(configuration)
-
-        return configs
-
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'product': {
+                    'string': 'Product',
+                    'model': 'importer.product',
+                    },
+                'product_codes': {
+                    'string': 'Product Codes',
+                    'model': 'importer.product_codes',
+                    },
+                'product_configuration': {
+                    'string': 'Product configuration',
+                    'model': 'importer.product.configuration',
+                    },
+                'sale_product_customer': {
+                    'string': 'Product Customer',
+                    'model': 'importer.product.customer',
+                    },
+                })
+        return methods
 class ImporterProductAttributeStrictDepends(metaclass=PoolMeta):
     __name__ = 'importer'
 
@@ -902,6 +895,5 @@ class ImporterProductAttributeStrictDepends(metaclass=PoolMeta):
                     'product_atrributes': {
                     'string': 'Product Attributes',
                     'model': 'importer.product.attributes',
-                    'chunked': True,
                     }})
         return methods

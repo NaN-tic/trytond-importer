@@ -1,10 +1,11 @@
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
+from .tools import ImporterModel
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 
 
-class ImporterSequence(ModelView):
+class ImporterSequence(ImporterModel):
     'Importer Party Configuration'
     __name__ = 'importer.sequence'
 
@@ -17,70 +18,8 @@ class ImporterSequence(ModelView):
     number_next = fields.Integer("Sequence Number Next")
     strict = fields.Boolean('Strict')
 
-
-class ImporterLanguage(ModelView):
-    'Importer Language'
-    __name__ = 'importer.language'
-
-    code = fields.Char('Code')
-    name = fields.Char('Name')
-    translatable = fields.Boolean('Translatable')
-    parent = fields.Char('Parent')
-    date = fields.Char('Date Format')
-    decimal_point = fields.Char('Decimal Point')
-
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'language': {
-                    'string': 'Languages',
-                    'model': 'importer.language',
-                    'chunked': True,
-                    },
-                'sequence': {
-                    'string': 'Sequence',
-                    'model': 'importer.sequence',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_language(cls, records):
-        pool = Pool()
-        Language = pool.get('ir.lang')
-
-        to_save = []
-        for record in records:
-            languages = Language.search([('code', '=', record.code)])
-            if languages:
-                language, = languages
-            else:
-                language = Language()
-            if record.name:
-                language.name = record.name
-            if not record.translatable is None:
-                language.translatable = record.translatable
-            if record.parent:
-                language.parent = record.parent
-            if record.date:
-                language.date = record.date
-            if record.decimal_point:
-                language.decimal_point = record.decimal_point
-
-            to_save.append(language)
-
-        Language.load_translations(to_save)
-        Language.save(to_save)
-        return to_save
-
-    @classmethod
-    def import_sequence(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         try:
             Company = pool.get('company.company')
@@ -109,7 +48,10 @@ class Importer(metaclass=PoolMeta):
                         type=record.sequence_type))
             sequence_type = types.get(record.sequence_type)
 
-            sequences = Sequence.search([('name', '=', record.name)], limit=1)
+            domain = [('name', '=', record.name)]
+            if companies and record.company_name:
+                domain.append(('company.party.name', '=', record.company_name))
+            sequences = Sequence.search(domain, limit=1)
             if not sequences:
                 sequence = Sequence()
                 sequence.name = record.name
@@ -132,3 +74,63 @@ class Importer(metaclass=PoolMeta):
             to_return.append(sequence)
 
         return to_return
+
+
+class ImporterLanguage(ImporterModel):
+    'Importer Language'
+    __name__ = 'importer.language'
+
+    code = fields.Char('Code')
+    name = fields.Char('Name')
+    translatable = fields.Boolean('Translatable')
+    parent = fields.Char('Parent')
+    date = fields.Char('Date Format')
+    decimal_point = fields.Char('Decimal Point')
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        Language = pool.get('ir.lang')
+
+        to_save = []
+        for record in records:
+            languages = Language.search([('code', '=', record.code)])
+            if languages:
+                language, = languages
+            else:
+                language = Language()
+            if record.name:
+                language.name = record.name
+            if not record.translatable is None:
+                language.translatable = record.translatable
+            if record.parent:
+                language.parent = record.parent
+            if record.date:
+                language.date = record.date
+            if record.decimal_point:
+                language.decimal_point = record.decimal_point
+
+            to_save.append(language)
+
+        Language.load_translations(to_save)
+        Language.save(to_save)
+        return to_save
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'language': {
+                    'string': 'Languages',
+                    'model': 'importer.language',
+                    },
+                'sequence': {
+                    'string': 'Sequence',
+                    'model': 'importer.sequence',
+                    },
+                })
+        return methods

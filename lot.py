@@ -68,7 +68,6 @@ class Importer(metaclass=PoolMeta):
                 'lot': {
                     'string': 'Lot',
                     'model': 'importer.lot',
-                    'chunked': True,
                     },
                 })
         return methods

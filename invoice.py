@@ -1,5 +1,6 @@
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
+from .tools import ImporterModel, Setup
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from trytond.tools import grouped_slice
@@ -8,7 +9,7 @@ from trytond.modules.product import round_price
 from datetime import datetime
 
 
-class ImporterInvoice(ModelView):
+class ImporterInvoice(ImporterModel):
     'Importer Invoice'
     __name__ = 'importer.invoice'
 
@@ -26,37 +27,8 @@ class ImporterInvoice(ModelView):
     journal = fields.Char('Journal')
     account_move_number = fields.Char('Account Move number')
 
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'invoice': {
-                    'string': 'Invoice',
-                    'model': 'importer.invoice',
-                    'chunked': False,
-                    },
-                'invoice_force': {
-                    'string': 'Invoice Create/Fix Party and Products',
-                    'model': 'importer.invoice',
-                    'chunked': False,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_invoice_header(cls, record):
-        return (record.invoice_number, record.journal)
-
-    @classmethod
-    def import_invoice_force(cls, records):
-        return cls.import_invoice(records, force=True)
-
-    @classmethod
-    def import_invoice(cls, records, force=False):
+    def importer_import(cls, records):
         pool = Pool()
         Invoice = pool.get('account.invoice')
         Line = pool.get('account.invoice.line')
@@ -67,6 +39,8 @@ class Importer(metaclass=PoolMeta):
         Move = pool.get('account.move')
         Period = pool.get('account.period')
         Template = pool.get('product.template')
+
+        force = Setup.get().method == 'invoice_force'
 
         currencies = {x.name: x for x in Currency.search([])}
         currencies.update({x.symbol: x for x in Currency.search([])})
@@ -92,7 +66,7 @@ class Importer(metaclass=PoolMeta):
             return [party]
 
         for record in records:
-            header = cls.import_invoice_header(record)
+            header = (record.invoice_number, record.journal)
             if any(header) and header != previous_header:
                 previous_header = header
                 values = Invoice.default_get(
@@ -211,7 +185,6 @@ class Importer(metaclass=PoolMeta):
                     line.product_package = None
                     line.package_quantity = None
                 line.account.company.party.name
-                # TODO base_price
                 unit_price = record.unit_price or 0
                 line.unit_price = round_price(unit_price)
                 line.quantity = record.quantity
@@ -231,3 +204,22 @@ class Importer(metaclass=PoolMeta):
 
         Invoice.post_batch(invoices_to_post)
         return invoices_to_save
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'invoice': {
+                    'string': 'Invoice',
+                    'model': 'importer.invoice',
+                    },
+                'invoice_force': {
+                    'string': 'Invoice Create/Fix Party and Products',
+                    'model': 'importer.invoice',
+                    },
+                })
+        return methods

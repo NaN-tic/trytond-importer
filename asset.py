@@ -158,7 +158,6 @@ class Importer(metaclass=PoolMeta):
                 'aeat_347_asset': {
                     'string': 'Asset',
                     'model': 'importer.asset',
-                    'chunked': True,
                     },
                 })
         return methods

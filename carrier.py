@@ -14,7 +14,6 @@ class Importer(metaclass=PoolMeta):
             'carrier': {
                 'string': 'Carrier',
                 'model': 'importer.carrier',
-                'chunked': True,
                 },
         })
         return methods

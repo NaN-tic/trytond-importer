@@ -39,6 +39,7 @@ class ImporterTestCase(ModuleTestCase):
         data = DataExtractor('text', None, json.dumps(records), None)
         data.load()
         importer.data_to_records(data)
+        return importer
 
     @with_transaction()
     def test_party(self):
@@ -360,6 +361,77 @@ class ImporterTestCase(ModuleTestCase):
         self.assertEqual(len(product_supplier.prices), 1)
 
     @with_transaction()
+    def test_account_fiscalyear_multi_company(self):
+        pool = Pool()
+        FiscalYear = pool.get('account.fiscalyear')
+        SequenceStrict = pool.get('ir.sequence.strict')
+        Period = pool.get('account.period')
+
+        company1 = create_company('Company A')
+        company2 = create_company('Company B')
+
+        importer = self.import_('sequence', [{
+                'name': 'Account Move A',
+                'sequence_type': 'Account Move',
+                'company_name': company1.party.name,
+                'strict': True,
+                }, {
+                'name': 'Invoice A',
+                'sequence_type': 'Invoice',
+                'company_name': company1.party.name,
+                'strict': True,
+                }, {
+                'name': 'Account Move B',
+                'sequence_type': 'Account Move',
+                'company_name': company2.party.name,
+                'strict': True,
+                }, {
+                'name': 'Invoice B',
+                'sequence_type': 'Invoice',
+                'company_name': company2.party.name,
+                'strict': True,
+                }])
+        self.assertEqual([x.message for x in importer.logs], [])
+        with Transaction().set_context(_check_access=False):
+            self.assertEqual(SequenceStrict.search_count([
+                    ('name', 'in', [
+                            'Account Move A', 'Invoice A',
+                            'Account Move B', 'Invoice B',
+                            ]),
+                    ]), 4)
+
+        importer = self.import_('account_fiscalyear', [{
+                'name': '2026',
+                'company_name': company1.party.name,
+                'start_date': '2026-01-01',
+                'end_date': '2026-12-31',
+                'move_sequence_name': 'Account Move A',
+                'out_invoice_sequence_name': 'Invoice A',
+                'in_invoice_sequence_name': 'Invoice A',
+                'out_credit_note_sequence_name': 'Invoice A',
+                'in_credit_note_sequence_name': 'Invoice A',
+                }, {
+                'name': '2026',
+                'company_name': company2.party.name,
+                'start_date': '2026-01-01',
+                'end_date': '2026-12-31',
+                'move_sequence_name': 'Account Move B',
+                'out_invoice_sequence_name': 'Invoice B',
+                'in_invoice_sequence_name': 'Invoice B',
+                'out_credit_note_sequence_name': 'Invoice B',
+                'in_credit_note_sequence_name': 'Invoice B',
+                }])
+        self.assertEqual([x.message for x in importer.logs], [])
+
+        fiscalyears = FiscalYear.search([], order=[('company.party.name', 'ASC')])
+        self.assertEqual([(x.company.party.name, x.name) for x in fiscalyears], [
+                (company1.party.name, '2026'),
+                (company2.party.name, '2026'),
+                ])
+        self.assertEqual([len(x.periods) for x in fiscalyears], [12, 12])
+        self.assertEqual(Period.search_count([]), 24)
+
+    @with_transaction()
     def test_location_warehouse(self):
         pool = Pool()
         Location = pool.get('stock.location')
@@ -398,6 +470,5 @@ class ImporterTestCase(ModuleTestCase):
         self.assertEqual(warehouse.storage_location.parent, warehouse)
         self.assertEqual(warehouse.picking_location.parent,
             warehouse.storage_location)
-
 
 del ModuleTestCase

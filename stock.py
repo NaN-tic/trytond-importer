@@ -202,38 +202,22 @@ class Importer(metaclass=PoolMeta):
                 'location': {
                     'string': 'Location',
                     'model': 'importer.location',
-                    'chunked': True,
                     },
                 'stock_move': {
                     'string': 'Stock Move',
                     'model': 'importer.stock.move',
-                    'chunked': True,
                     },
                 'stock_move_inverted': {
                     'string': 'Stock Move (Inverted)',
                     'model': 'importer.stock.move',
-                    'chunked': True,
                     },
                 'stock_move_and_do': {
                     'string': 'Stock Move (and Do)',
                     'model': 'importer.stock.move',
-                    'chunked': True,
                     },
                 'stock_move_and_do_inverted': {
                     'string': 'Stock Move (Inverted + Do)',
                     'model': 'importer.stock.move',
-                    'chunked': True,
                     },
                 })
         return methods
-
-    @classmethod
-    def import_stock_move_and_do(cls, records):
-        pool = Pool()
-        Move = pool.get('stock.move')
-
-        moves = cls.import_stock_move(records)
-        # Avoid warnings because of missing origin
-        with Transaction().set_context(_skip_warnings=True):
-            Move.do(moves)
-        return moves

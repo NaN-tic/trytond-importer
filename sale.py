@@ -1,5 +1,5 @@
 from datetime import datetime
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
 from trytond.modules.product import round_price
@@ -220,7 +220,7 @@ class ImporterSale(ImporterModel):
         return [x[0] for x in sales_to_save]
 
 
-class ImporterSaleConfiguration(ModelView):
+class ImporterSaleConfiguration(ImporterModel):
     'Importer Sale Configuration'
     __name__ = 'importer.sale.configuration'
 
@@ -233,34 +233,8 @@ class ImporterSaleConfiguration(ModelView):
     sale_shipment_method = fields.Char("Sale shipment method", help='selection|sale.sale|shipment_method')
     sale_process_after = fields.Char("Sale process after")
 
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'sale': {
-                    'string': 'Sale',
-                    'model': 'importer.sale',
-                    'chunked': False,
-                    },
-                'sale_force': {
-                    'string': 'Sale Create/Fix Party And Products',
-                    'model': 'importer.sale',
-                    'chunked': False,
-                    },
-                'sale_configuration': {
-                    'string': 'Sale configuration',
-                    'model': 'importer.sale.configuration',
-                    'chunked': False,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_sale_configuration(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
 
         Sequence = pool.get("ir.sequence")
@@ -284,12 +258,14 @@ class Importer(metaclass=PoolMeta):
                 if record.sale_sequence_padding or record.sale_sequence_number_next:
                     sequence = configuration.sale_sequence
 
-                    if not sequence or (sequence.company and sequence.company.id != company_id):
+                    if not sequence or (
+                            sequence.company and sequence.company.id != company_id):
                         sequence = Sequence()
                         sequence.name = "Sale"
                         configuration.sale_sequence = sequence
                     sequence.company = company_id
-                    sequence.sequence_type = ModelData.get_id('sale', 'sequence_type_sale')
+                    sequence.sequence_type = ModelData.get_id('sale',
+                        'sequence_type_sale')
                     sequence.prefix = record.sale_sequence_prefix
                     sequence.suffix = record.sale_sequence_suffix
                     sequence.padding = record.sale_sequence_padding
@@ -300,3 +276,26 @@ class Importer(metaclass=PoolMeta):
                 configs.append(configuration)
 
         return configs
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'sale': {
+                    'string': 'Sale',
+                    'model': 'importer.sale',
+                    },
+                'sale_force': {
+                    'string': 'Sale Create/Fix Party And Products',
+                    'model': 'importer.sale',
+                    },
+                'sale_configuration': {
+                    'string': 'Sale configuration',
+                    'model': 'importer.sale.configuration',
+                    },
+                })
+        return methods
