@@ -462,6 +462,12 @@ class ImporterChart(ImporterModel):
             chart, = charts
             chart_ids.append(chart.id)
 
+            accounts = Account.search([
+                    ('company', '=', company),
+                    ('template', '=', chart),
+                    ], limit=1)
+            if accounts:
+                continue
             session_id, _, _ = CreateChart.create()
             create_chart = CreateChart(session_id)
             create_chart.account.account_template = chart
