@@ -45,7 +45,7 @@ class ImporterAccountMove(ImporterModel):
         cache.accounts = Cache('account.account',
             lambda x: (x.company.id, x.code))
         cache.moves = Cache('account.move',
-            lambda x: (x.company.id, x.post_number.lower(), x.date), domain=[
+            lambda x: (x.company.id, x.number.lower(), x.date), domain=[
                 ('period.state', '=', 'open'),
                 ('number', '!=', None),
                 ])
