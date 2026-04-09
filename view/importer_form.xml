@@ -76,6 +76,8 @@
             <newline/>
             <label name="sample_size"/>
             <field name="sample_size"/>
+            <label name="sample_offset"/>
+            <field name="sample_offset"/>
             <button name="import_sample" colspan="2"/>
             <newline/>
             <field name="errors" height="400" colspan="10"/>

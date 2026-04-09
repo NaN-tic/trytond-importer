@@ -82,6 +82,10 @@ msgctxt "field:importer,sample_size:"
 msgid "Sample Size"
 msgstr "Tamaño de la muestra"
 
+msgctxt "field:importer,sample_offset:"
+msgid "Sample Offset"
+msgstr "Desplazamiento de la muestra"
+
 msgctxt "field:importer,schema:"
 msgid "Schema"
 msgstr "Esquema"
@@ -2149,6 +2153,10 @@ msgstr "Idioma a utilizar, si es diferente al del usuario."
 msgctxt "help:importer,sample_size:"
 msgid "Number of records to import with the sample button."
 msgstr "Número de registros a importar con el botón de muestra."
+
+msgctxt "help:importer,sample_offset:"
+msgid "Number of records to skip before importing with the sample button."
+msgstr "Número de registros a omitir antes de importar con el botón de muestra."
 
 msgctxt "help:importer,template:"
 msgid ""
