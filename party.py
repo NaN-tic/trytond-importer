@@ -122,7 +122,8 @@ class ImporterParty(ImporterModel):
         cache.inco_terms = Cache('incoterm', 'code')
         cache.languages = Cache('ir.lang', 'code')
         cache.categories = Cache('party.category', 'name')
-        cache.countries = Cache('country.country', 'code', unaccent=True)
+        cache.currencies = Cache('currency.currency', 'code')
+        cache.countries = Cache('country.country', ('code', 'name'), unaccent=True)
         cache.subdivisions = {}
         for country in cache.countries.values():
             types = Type.get_types(country)
@@ -440,9 +441,7 @@ class ImporterParty(ImporterModel):
                 party.supplier_tax_rule = cache.tax_rules.get(
                     record.supplier_tax_rule)
 
-            if record.bank_account and 'bank_account' in setup.fields:
-                Currency = pool.get('currency.currency')
-                cache.currencies = dict([(x.code, x) for x in Currency.search([])])
+            if record.bank_account:
                 party.bank_accounts = []
                 for account in record.bank_account.split('|'):
                     if (',') in account:
