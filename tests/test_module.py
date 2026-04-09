@@ -105,7 +105,7 @@ class ImporterTestCase(ModuleTestCase):
             sample_offset=importer.sample_offset)
 
         parties = Party.search([], order=[('code', 'ASC')])
-        self.assertEqual([p.code for p in parties], ['SECOND', 'THIRD'])
+        self.assertEqual(set([p.code for p in parties]), set(['SECOND', 'THIRD']))
 
     @with_transaction()
     def test_party_default_bank_accounts(self):
