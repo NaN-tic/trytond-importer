@@ -322,6 +322,7 @@ def register():
     Pool.register(
         bank.Importer,
         bank.ImporterBank,
+        bank.ImporterBankAccount,
         depends=['bank'],
         module='importer', type_='model')
     Pool.register(
