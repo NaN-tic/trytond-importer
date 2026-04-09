@@ -199,8 +199,8 @@ class ImporterParty(ImporterModel):
         company = Transaction().context.get('company')
         vats = {}
         to_save = []
-        to_set_bank_accounts = []
         categories_to_save = []
+        bank_accounts_to_save = []
         notes_to_save = []
         relations_to_save = {}
 
@@ -217,7 +217,7 @@ class ImporterParty(ImporterModel):
             number = number.replace(" ", "")
             for bank_account in party.bank_accounts:
                 for account_number in bank_account.numbers:
-                    if account_number.number_compact == number:
+                    if account_number.number.replace(' ', '') == number:
                         return bank_account
         for record in records:
             setup.current_record = record
@@ -469,40 +469,6 @@ class ImporterParty(ImporterModel):
                 party.supplier_tax_rule = cache.tax_rules.get(
                     record.supplier_tax_rule)
 
-            if record.bank_account:
-                party.bank_accounts = []
-                for account in record.bank_account.split('|'):
-                    if (',') in account:
-                        iban, currency_code = account.split(',')
-                    else:
-                        iban = account
-                        currency_code = 'EUR'
-                    iban = iban.replace(" ", "")
-                    currency = cache.currencies.get(currency_code)
-                    if len(iban) < 8:
-                        raise UserError(gettext('importer.wron_iban',
-                            iban_= iban))
-
-                    bank_code = iban[4:8]
-                    bank = cache.banks.get(bank_code)
-                    if not bank:
-                        setup.error(gettext('importer.bank_not_found',
-                            iban=iban))
-                    bank_account = BankAccount()
-                    if bank:
-                        bank_account.bank = bank
-                    bank_account.currency = currency
-                    account_number = AccountNumber()
-                    account_number.account = bank_account
-                    account_number.type = 'iban'
-                    account_number.number = iban
-                    cache.bank_accounts[iban]=account_number
-                    bank_account.numbers = [account_number]
-                    party.bank_accounts += (bank_account,)
-
-                to_set_bank_accounts.append((party, record))
-
-
             if 'default_payable_company_bank_account' in setup.fields:
                 party.payable_company_bank_account = get_bank_account(
                     record.default_payable_company_bank_account)
@@ -581,30 +547,62 @@ class ImporterParty(ImporterModel):
         # If party has not been saved, do not try to save its notes
         cls.importer_save([x for x in notes_to_save if x[0].resource.id])
 
-        if any(x in setup.fields for x in (
-                    'bank_account',
-                    'default_payable_bank_account',
-                    'default_receivable_bank_account')):
-            # These fields must be set after party has been saved as only
-            # accounts in bank_accounts can be used
-            for party, record in to_set_bank_accounts:
-                if not party.bank_accounts:
-                    continue
-                payable_bank_account = get_party_bank_account(
-                    party, getattr(record, 'default_payable_bank_account', None))
-                receivable_bank_account = get_party_bank_account(
-                    party,
-                    getattr(record, 'default_receivable_bank_account', None))
-                if not payable_bank_account:
-                    payable_bank_account = get_bank_account(
-                    getattr(record, 'default_payable_bank_account', None))
-                if not receivable_bank_account:
-                    receivable_bank_account = get_bank_account(
-                    getattr(record, 'default_receivable_bank_account', None))
-                party.payable_bank_account = (
-                    payable_bank_account or party.bank_accounts[0])
-                party.receivable_bank_account = (
-                    receivable_bank_account or party.bank_accounts[0])
+        # Discard parties that could not be saved
+        to_save = [x for x in to_save if x[0].id]
+
+        if 'bank_account' in setup.fields:
+            for party, record in to_save:
+                if record.bank_account:
+                    for account in record.bank_account.split('|'):
+                        if (',') in account:
+                            iban, currency_code = account.split(',')
+                        else:
+                            iban = account
+                            currency_code = 'EUR'
+
+                        iban = iban.replace(' ', '')
+
+                        currency = cache.currencies.get(currency_code)
+                        if len(iban) < 8:
+                            raise UserError(gettext('importer.wron_iban',
+                                iban_= iban))
+
+                        bank_number = cache.bank_accounts.get(iban)
+                        if not bank_number:
+                            bank_code = iban[4:8]
+                            bank = cache.banks.get(bank_code)
+                            if not bank:
+                                setup.error(gettext('importer.bank_not_found',
+                                    iban=iban))
+                            bank_account = BankAccount()
+                            bank_account.bank = bank
+                            bank_account.currency = currency
+                            bank_account.owners = (party,)
+                            account_number = AccountNumber()
+                            account_number.account = bank_account
+                            account_number.type = 'iban'
+                            account_number.number = iban
+                            cache.bank_accounts[iban] = account_number
+                            bank_account.numbers = [account_number]
+                        else:
+                            bank_account = bank_number.account
+                            bank_account.owners += (party,)
+                        bank_accounts_to_save.append((bank_account, record))
+
+            cls.importer_save(bank_accounts_to_save)
+
+
+        if ('default_payable_bank_account' in setup.fields
+                or 'default_receivable_bank_account' in setup.fields):
+
+            for party, record in to_save:
+                if record.default_payable_bank_account:
+                    party.payable_bank_account = get_party_bank_account(party,
+                        record.default_payable_bank_account)
+                if record.default_receivable_bank_account:
+                    party.receivable_bank_account = get_party_bank_account(party,
+                        record.default_receivable_bank_account)
+
             cls.importer_save(to_save)
 
         if 'relations' in setup.fields:
