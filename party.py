@@ -193,6 +193,22 @@ class ImporterParty(ImporterModel):
         categories_to_save = []
         notes_to_save = []
         relations_to_save = {}
+
+        def get_bank_account(number):
+            if not number:
+                return None
+            account_number = cache.bank_accounts.get(number.replace(" ", ""))
+            if account_number:
+                return getattr(account_number, 'account', account_number)
+
+        def get_party_bank_account(party, number):
+            if not number:
+                return None
+            number = number.replace(" ", "")
+            for bank_account in party.bank_accounts:
+                for account_number in bank_account.numbers:
+                    if account_number.number_compact == number:
+                        return bank_account
         for record in records:
             setup.current_record = record
             party = None
@@ -472,15 +488,15 @@ class ImporterParty(ImporterModel):
                     bank_account.numbers = [account_number]
                     party.bank_accounts += (bank_account,)
 
-                to_set_bank_accounts.append(party)
+                to_set_bank_accounts.append((party, record))
 
 
             if 'default_payable_company_bank_account' in setup.fields:
-                party.payable_company_bank_account = cache.bank_accounts.get(
+                party.payable_company_bank_account = get_bank_account(
                     record.default_payable_company_bank_account)
 
             if 'default_receivable_company_bank_account' in setup.fields:
-                party.receivable_company_bank_account = cache.bank_accounts.get(
+                party.receivable_company_bank_account = get_bank_account(
                     record.default_receivable_company_bank_account)
 
             if 'agent' in setup.fields and record.agent:
@@ -553,14 +569,30 @@ class ImporterParty(ImporterModel):
         # If party has not been saved, do not try to save its notes
         cls.importer_save([x for x in notes_to_save if x[0].resource.id])
 
-        if 'payable_bank_account' in setup.fields:
+        if any(x in setup.fields for x in (
+                    'bank_account',
+                    'default_payable_bank_account',
+                    'default_receivable_bank_account')):
             # These fields must be set after party has been saved as only
             # accounts in bank_accounts can be used
-            for party in to_set_bank_accounts:
+            for party, record in to_set_bank_accounts:
                 if not party.bank_accounts:
                     continue
-                party.payable_bank_account = party.bank_accounts[0]
-                party.receivable_bank_account = party.bank_accounts[0]
+                payable_bank_account = get_party_bank_account(
+                    party, getattr(record, 'default_payable_bank_account', None))
+                receivable_bank_account = get_party_bank_account(
+                    party,
+                    getattr(record, 'default_receivable_bank_account', None))
+                if not payable_bank_account:
+                    payable_bank_account = get_bank_account(
+                    getattr(record, 'default_payable_bank_account', None))
+                if not receivable_bank_account:
+                    receivable_bank_account = get_bank_account(
+                    getattr(record, 'default_receivable_bank_account', None))
+                party.payable_bank_account = (
+                    payable_bank_account or party.bank_accounts[0])
+                party.receivable_bank_account = (
+                    receivable_bank_account or party.bank_accounts[0])
             cls.importer_save(to_save)
 
         if 'relations' in setup.fields:
@@ -728,6 +760,10 @@ class ImporterAccountDepends(metaclass=PoolMeta):
 
 class ImporterCompanyBankDepends(metaclass=PoolMeta):
     __name__ = 'importer.party'
+    default_payable_bank_account = fields.Char(
+        'Default payable bank account')
+    default_receivable_bank_account = fields.Char(
+        'Default receivable bank account')
     default_payable_company_bank_account = fields.Char(
         'Default payable company  Bank Account')
     default_receivable_company_bank_account = fields.Char(

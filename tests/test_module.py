@@ -13,7 +13,8 @@ class ImporterTestCase(ModuleTestCase):
     module = 'importer'
     extras = ['party', 'company', 'product', 'sale', 'purchase',
         'account_invoice', 'account_code_digits', 'stock',
-        'product_price_list', 'user_role', 'bank', 'bank_es']
+        'product_price_list', 'user_role', 'bank', 'bank_es',
+        'company_bank']
 
     def import_(self, method, records):
         pool = Pool()
@@ -61,6 +62,41 @@ class ImporterTestCase(ModuleTestCase):
                 }])
         Party = pool.get('party.party')
         self.assertEqual(len(Party.search([])), 1)
+
+    @with_transaction()
+    def test_party_default_bank_accounts(self):
+        pool = Pool()
+        Party = pool.get('party.party')
+        Bank = pool.get('bank')
+
+        company = create_company()
+        Transaction().set_context(company=company.id)
+
+        bank_party = Party(name='Test Bank')
+        bank_party.save()
+        bank = Bank()
+        bank.party = bank_party
+        bank.bank_code = '2100'
+        bank.bic = 'CAIXESBBXXX'
+        bank.save()
+
+        iban_1 = 'ES9121000418450200051332'
+        iban_2 = 'ES1221000009750201344762'
+        self.import_('party', [{
+                    'company': company.party.name,
+                    'code': 'BANKED',
+                    'name': 'Banked Party',
+                    'bank_account': '%s|%s' % (iban_1, iban_2),
+                    'default_payable_bank_account': iban_2,
+                    'default_receivable_bank_account': iban_1,
+                    }])
+
+        party, = Party.search([('code', '=', 'BANKED')])
+        self.assertEqual(len(party.bank_accounts), 2)
+        self.assertEqual(
+            party.payable_bank_account.numbers[0].number_compact, iban_2)
+        self.assertEqual(
+            party.receivable_bank_account.numbers[0].number_compact, iban_1)
 
     @with_transaction()
     def test_product(self):
