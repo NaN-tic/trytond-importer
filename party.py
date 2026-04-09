@@ -125,14 +125,18 @@ class ImporterParty(ImporterModel):
         cache.currencies = Cache('currency.currency', 'code')
         cache.countries = Cache('country.country', ('code', 'name'), unaccent=True)
         cache.subdivisions = {}
+        cache.postal_codes = {}
         for country in cache.countries.values():
             types = Type.get_types(country)
             cache.subdivisions[country] = Cache('country.subdivision', 'name',
                 domain=[
-                    ('country', '=', country.id),
+                    ('country', '=', country),
                     ('type', 'in', types),
-                ], unaccent=True)
-        cache.postal_codes = Cache('country.subdivision', 'code')
+                    ], unaccent=True)
+            cache.postal_codes[country] = Cache('country.postal_code', 'postal_code', domain=[
+                    ('country', '=', country),
+                    ('subdivision.type', 'in', types),
+                    ], cache_size=50000)
         cache.carriers = Cache('carrier', key=lambda x:x.party.code.lower())
 
     def importer_context(self):
@@ -267,11 +271,13 @@ class ImporterParty(ImporterModel):
                         country=country.name)
 
             if (not getattr(address, 'subdivision', None)
-                    and country and country.code == 'ES'
                     and record.postal_code):
-                code = cache.postal_codes.get(record.postal_code)
-                if code:
-                    address.subdivision = code.subdivision
+
+                cs = cache.postal_codes.get(country)
+                if cs:
+                    code = cs.get(record.postal_code)
+                    if code:
+                        address.subdivision = code.subdivision
 
             if not getattr(address, 'subdivision', None) and subdivision_error:
                 setup.error(subdivision_error, record)
