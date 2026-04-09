@@ -105,7 +105,6 @@ class ImporterParty(ImporterModel):
         super().importer_start()
 
         cache = Setup.get().cache
-        cache.parties = Cache('party.party', 'code', required=False)
         cache.companies = Cache('company.company',
             key=lambda x: x.party.name.lower())
         cache.banks = Cache('bank', key=lambda x: x.bank_code.zfill(4))
@@ -147,6 +146,13 @@ class ImporterParty(ImporterModel):
             if company:
                 res['company'] = company.id
         return res
+
+    @classmethod
+    def importer_context_start(cls):
+        super().importer_context_start()
+
+        cache = Setup.get().cache
+        cache.parties = Cache('party.party', 'code', required=False)
 
     @classmethod
     def importer_party(cls, record, party):

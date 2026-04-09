@@ -106,6 +106,10 @@ class ImporterModel(ModelView):
     def importer_context(self):
         return {}
 
+    @classmethod
+    def importer_context_start(cls):
+        pass
+
     def importer_header(self, importing=True):
         pass
 
