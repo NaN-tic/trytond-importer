@@ -152,7 +152,9 @@ class ImporterParty(ImporterModel):
         super().importer_context_start()
 
         cache = Setup.get().cache
-        cache.parties = Cache('party.party', 'code', required=False)
+        cache.parties = Cache('party.party', 'code', required=False, context={
+                'active_test': False,
+                })
 
     @classmethod
     def importer_party(cls, record, party):
