@@ -64,6 +64,50 @@ class ImporterTestCase(ModuleTestCase):
         self.assertEqual(len(Party.search([])), 1)
 
     @with_transaction()
+    def test_sample_offset(self):
+        pool = Pool()
+        Importer = pool.get('importer')
+        Party = pool.get('party.party')
+
+        records = [{
+                'name': 'First Party',
+                'code': 'FIRST',
+                }, {
+                'name': 'Second Party',
+                'code': 'SECOND',
+                }, {
+                'name': 'Third Party',
+                'code': 'THIRD',
+                }]
+        importer = Importer()
+        importer.name = 'Sample Importer'
+        importer.method = 'party'
+        importer.data_source = 'text'
+        importer.text_data = json.dumps(records)
+        importer.has_header = True
+        importer.use_header = True
+        importer.sample_size = 2
+        importer.sample_offset = 1
+        importer.save()
+        Importer.update_columns([importer])
+
+        fields = records[0].keys()
+        for column in importer.columns:
+            if column.field.name in fields:
+                column.name = column.field.name
+                column.save()
+
+        data = DataExtractor('text', None, json.dumps(records), None)
+        data.load()
+        importer.data_to_records(
+            data=data,
+            sample=importer.sample_size,
+            sample_offset=importer.sample_offset)
+
+        parties = Party.search([], order=[('code', 'ASC')])
+        self.assertEqual([p.code for p in parties], ['SECOND', 'THIRD'])
+
+    @with_transaction()
     def test_party_default_bank_accounts(self):
         pool = Pool()
         Party = pool.get('party.party')

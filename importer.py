@@ -309,6 +309,10 @@ class Importer(ModelSQL, ModelView):
     log_success = fields.Boolean('Log Success')
     sample_size = fields.Integer('Sample Size', help="Number of records to "
         "import with the sample button.")
+    sample_offset = fields.Integer('Sample Offset',
+        domain=[('sample_offset', '>=', 0)],
+        help="Number of records to skip before importing with the sample "
+        "button.")
     elapsed = fields.TimeDelta('Elapsed Time', readonly=True)
     deletes = fields.Text('Deletes', readonly=True, states={
             'invisible': ~Bool(Eval('deletes')),
@@ -324,6 +328,10 @@ class Importer(ModelSQL, ModelView):
     @staticmethod
     def default_sample_size():
         return 100
+
+    @staticmethod
+    def default_sample_offset():
+        return 0
 
     @staticmethod
     def default_language():
@@ -844,7 +852,7 @@ class Importer(ModelSQL, ModelView):
     def import_sample(cls, importers):
         pass
 
-    def data_to_records(self, data=None, sample=None):
+    def data_to_records(self, data=None, sample=None, sample_offset=0):
         pool = Pool()
         Model = pool.get(self.model.name)
         Log = pool.get('importer.log')
@@ -877,9 +885,14 @@ class Importer(ModelSQL, ModelView):
             subrecords = []
             new_records = []
             count = 0
+            sample_offset = max(sample_offset or 0, 0)
+            skipped = 0
             batch_start = time.time()
             importer_records = []
             for record in self.get_records(data=data):
+                if skipped < sample_offset:
+                    skipped += 1
+                    continue
                 if self.log_success:
                     importer_records.append(record)
                 # We do not sort based on context so there can be performance issues
@@ -1567,7 +1580,9 @@ class ImportSample(Wizard):
     import_ = StateAction('importer.act_import_open')
 
     def do_import_(self, action):
-        records = self.record.data_to_records(sample=self.record.sample_size or 100)
+        records = self.record.data_to_records(
+            sample=self.record.sample_size or 100,
+            sample_offset=self.record.sample_offset or 0)
         if not records:
             Transaction().commit()
             raise UserError(gettext('importer.no_records_imported',
