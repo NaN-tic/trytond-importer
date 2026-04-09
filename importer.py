@@ -889,6 +889,7 @@ class Importer(ModelSQL, ModelView):
             skipped = 0
             batch_start = time.time()
             importer_records = []
+            context_start = True
             for record in self.get_records(data=data):
                 if skipped < sample_offset:
                     skipped += 1
@@ -913,6 +914,9 @@ class Importer(ModelSQL, ModelView):
 
                 if call:
                     with Transaction().set_context(previous_context):
+                        if context_start:
+                            Model.importer_context_start()
+                            context_start = False
                         batch = Model.importer_import(subrecords)
                     if self.commit_chunks:
                         Transaction().commit()
@@ -928,12 +932,16 @@ class Importer(ModelSQL, ModelView):
                     limit = LIMIT
                 count += 1
                 subrecords.append(record)
+                if context != previous_context:
+                    context_start = True
                 previous_context = context
                 if sample and count >= sample:
                     break
 
             if subrecords:
                 with Transaction().set_context(previous_context):
+                    if context_start:
+                        Model.importer_context_start()
                     batch = Model.importer_import(subrecords)
                 new_records += batch
                 logger.info('Batch (imported/processed/time): %d/%d/%.2f. '

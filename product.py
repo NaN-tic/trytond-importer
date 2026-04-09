@@ -77,14 +77,6 @@ class ImporterProduct(ImporterModel):
         cache.uoms = Cache('product.uom', ('name', 'symbol'))
         cache.categories = Cache('product.category', 'name')
         cache.bom_routes = Cache('production.route', 'name')
-        cache.products = Cache('product.product', 'code', domain=[
-                ('code', '!=', None),
-                ('code', '!=', ''),
-                ], required=False)
-        cache.templates = Cache('product.template', 'code', domain=[
-                ('code', '!=', None),
-                ('code', '!=', ''),
-                ], required=False)
         cache.accounts = Cache('account.account',
             lambda x: (x.company.id, x.code))
 
@@ -96,6 +88,19 @@ class ImporterProduct(ImporterModel):
             if company:
                 res['company'] = company.id
         return res
+
+    @classmethod
+    def importer_context_start(cls):
+        super().importer_start()
+        cache = Setup.get().cache
+        cache.products = Cache('product.product', 'code', domain=[
+                ('code', '!=', None),
+                ('code', '!=', ''),
+                ], required=False)
+        cache.templates = Cache('product.template', 'code', domain=[
+                ('code', '!=', None),
+                ('code', '!=', ''),
+                ], required=False)
 
     @classmethod
     def importer_import(cls, records):
