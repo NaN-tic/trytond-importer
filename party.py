@@ -4,7 +4,6 @@ from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
 from stdnum import get_cc_module
-from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from .tools import ImporterModel, Cache, Setup
 
@@ -108,7 +107,8 @@ class ImporterParty(ImporterModel):
         cache.companies = Cache('company.company',
             key=lambda x: x.party.name.lower())
         cache.banks = Cache('bank', key=lambda x: x.bank_code.zfill(4))
-        cache.bank_accounts = Cache('bank.account.number', 'number_compact')
+        cache.bank_accounts = Cache('bank.account.number', 'number_compact',
+            required=False)
         cache.payment_terms = Cache('account.invoice.payment_term', 'name')
         cache.payment_types = Cache('account.payment.type',
             key=lambda x: (x.name.lower(), x.kind))
@@ -533,13 +533,6 @@ class ImporterParty(ImporterModel):
                     party_relation.type = type_relation
                     relations_to_save[party.code] = party_relation
 
-            if record.note:
-                for item in record.note.split('|'):
-                    note = Note()
-                    note.resource = party
-                    note.message = item
-                    notes_to_save.append((note, record))
-
             cls.import_party_party_hook(record, party)
             cls.importer_party(record, party)
 
@@ -547,13 +540,39 @@ class ImporterParty(ImporterModel):
         cls.importer_save(categories_to_save)
         cls.importer_save(to_save)
         # If party has not been saved, do not try to save its notes
-        cls.importer_save([x for x in notes_to_save if x[0].resource.id])
 
         # Discard parties that could not be saved
         to_save = [x for x in to_save if x[0].id]
 
+        if 'note' in setup.fields:
+            for party, record in to_save:
+                setup.current_record = record
+                if record.note:
+                    for item in record.note.split('|'):
+                        note = Note()
+                        note.resource = party
+                        note.message = item
+                        notes_to_save.append((note, record))
+            cls.importer_save(notes_to_save)
+
+        if 'relations' in setup.fields:
+            relations_to_save = []
+            for party, record in to_save:
+                setup.current_record = record
+                related = cache.parties.get(record.party_relation)
+                if related:
+                    type_relation = cache.relations.get(record.type_of_relation)
+                    party_relation = Relation()
+                    party_relation.from_ = party
+                    party_relation.to = related
+                    party_relation.type = type_relation
+                    relations_to_save.append((party_relation, record))
+
+            cls.importer_save(relations_to_save)
+
         if 'bank_account' in setup.fields:
             for party, record in to_save:
+                setup.current_record = record
                 if record.bank_account:
                     for account in record.bank_account.split('|'):
                         if (',') in account:
@@ -566,16 +585,14 @@ class ImporterParty(ImporterModel):
 
                         currency = cache.currencies.get(currency_code)
                         if len(iban) < 8:
-                            raise UserError(gettext('importer.wron_iban',
-                                iban_= iban))
+                            setup.error(gettext('importer.msg_wrong_iban',
+                                iban_=iban))
+                            continue
 
                         bank_number = cache.bank_accounts.get(iban)
                         if not bank_number:
                             bank_code = iban[4:8]
                             bank = cache.banks.get(bank_code)
-                            if not bank:
-                                setup.error(gettext('importer.bank_not_found',
-                                    iban=iban))
                             bank_account = BankAccount()
                             bank_account.bank = bank
                             bank_account.currency = currency
@@ -586,10 +603,12 @@ class ImporterParty(ImporterModel):
                             account_number.number = iban
                             cache.bank_accounts[iban] = account_number
                             bank_account.numbers = [account_number]
+                            bank_accounts_to_save.append((bank_account, record))
                         else:
                             bank_account = bank_number.account
                             bank_account.owners += (party,)
-                        bank_accounts_to_save.append((bank_account, record))
+                            if bank_account not in [x[0] for x in bank_accounts_to_save]:
+                                bank_accounts_to_save.append((bank_account, record))
 
             cls.importer_save(bank_accounts_to_save)
 
@@ -598,6 +617,7 @@ class ImporterParty(ImporterModel):
                 or 'default_receivable_bank_account' in setup.fields):
 
             for party, record in to_save:
+                setup.current_record = record
                 if record.default_payable_bank_account:
                     party.payable_bank_account = get_party_bank_account(party,
                         record.default_payable_bank_account)
@@ -607,13 +627,6 @@ class ImporterParty(ImporterModel):
 
             cls.importer_save(to_save)
 
-        if 'relations' in setup.fields:
-            new_parties = dict((x.code, x) for x in to_save)
-            rel_save = []
-            for code, relation in relations_to_save.items():
-                relation.from_ = new_parties.get(code)
-                rel_save.append(relation)
-            cls.importer_save(rel_save)
         return [x[0] for x in to_save]
 
 class ImporterPartyAddress(ImporterModel):
