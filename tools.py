@@ -2,7 +2,7 @@ import base64
 import logging
 from unidecode import unidecode
 import textdistance
-import psycopg2
+import psycopg
 from trytond.pool import Pool
 from trytond.model import fields, ModelView
 from trytond.transaction import Transaction
@@ -76,7 +76,7 @@ class Setup(dict):
         pool = Pool()
 
         res = []
-        for model, to_save in reversed(list(self._saved.items())):
+        for model, to_save in self._saved.items():
             Model = pool.get(model)
             ids = ', '.join(str(x[0]) for x in to_save)
             res.append(f'DELETE FROM {Model._table} WHERE id IN ({ids});')
@@ -156,8 +156,6 @@ class ImporterModel(ModelView):
             # already existed and has not been modified)
             save_values = [x._values and x._values._copy() or None for x in
                 to_save]
-            save_state = [
-                (x._id, list(x._ids), x._local_cache) for x in to_save]
             if use_subtransactions:
                 cursor.execute('SAVEPOINT importer_save')
             try:
@@ -167,9 +165,7 @@ class ImporterModel(ModelView):
                 if use_subtransactions:
                     cursor.execute('RELEASE SAVEPOINT importer_save')
                 logger.info('Saved.')
-            except (UserError,
-                    psycopg2.errors.InvalidTextRepresentation,
-                    psycopg2.errors.ForeignKeyViolation) as e:
+            except (UserError, psycopg.errors.InvalidTextRepresentation) as e:
                 if use_subtransactions:
                     cursor.execute('ROLLBACK TO SAVEPOINT importer_save')
                 if len(records) == 1:
@@ -179,8 +175,6 @@ class ImporterModel(ModelView):
                 for record, sv in zip(to_save, save_values):
                     if not record._values:
                         record._values = sv
-                for record, state in zip(to_save, save_state):
-                    record._id, record._ids, record._local_cache = state
 
                 logger.warning('Error saving a block of %d of %s records (%s). '
                     'Will split and retry.', len(records), Model.__name__, e)
