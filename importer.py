@@ -19,7 +19,7 @@ import textdistance
 import datetime
 import charset_normalizer
 from io import StringIO, BytesIO
-import psycopg2
+import psycopg
 import pathlib
 import os
 from trytond.model import ModelSQL, ModelView, fields
@@ -501,9 +501,9 @@ class Importer(ModelSQL, ModelView):
 
     def check_connection_psql(self):
         try:
-            psycopg2.connect(database = self.database, host=self.server,
+            psycopg.connect(database = self.database, host=self.server,
                 user=self.user, password=self.password, port=5432)
-        except psycopg2.OperationalError:
+        except psycopg.OperationalError:
             raise UserError(gettext('importer.msg_invalid_connection',
                     importer=self.name))
         raise UserError(gettext('importer.msg_successful_connection',
@@ -511,9 +511,9 @@ class Importer(ModelSQL, ModelView):
 
     def get_connection_psql(self, fail=True):
         try:
-            conn = psycopg2.connect(database = self.database, host=self.server,
+            conn = psycopg.connect(database = self.database, host=self.server,
                 user=self.user, password=self.password, port=5432)
-        except psycopg2.OperationalError as e:
+        except psycopg.OperationalError as e:
             if fail:
                 raise UserError(e)
             else:

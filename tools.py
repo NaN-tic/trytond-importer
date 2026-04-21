@@ -2,7 +2,7 @@ import base64
 import logging
 from unidecode import unidecode
 import textdistance
-import psycopg2
+import psycopg
 from trytond.pool import Pool
 from trytond.model import fields, ModelView
 from trytond.transaction import Transaction
@@ -165,7 +165,7 @@ class ImporterModel(ModelView):
                 if use_subtransactions:
                     cursor.execute('RELEASE SAVEPOINT importer_save')
                 logger.info('Saved.')
-            except (UserError, psycopg2.errors.InvalidTextRepresentation) as e:
+            except (UserError, psycopg.errors.InvalidTextRepresentation) as e:
                 if use_subtransactions:
                     cursor.execute('ROLLBACK TO SAVEPOINT importer_save')
                 if len(records) == 1:
