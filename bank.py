@@ -131,6 +131,7 @@ class ImporterBankAccount(ImporterModel):
                         account_number.type = 'iban'
                         account_number.number = iban
                         bank_account.numbers = [account_number]
+                        bank_account.owners = []
                         cache.bank_accounts[iban] = account_number
 
                     current_owners = list(bank_account.owners or ())
