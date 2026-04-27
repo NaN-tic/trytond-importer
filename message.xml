@@ -87,7 +87,7 @@
 
     <data depends="bank">
         <record model="ir.message" id="msg_wrong_iban">
-            <field name="text">The bank account "%(iban)s" is not a valid IBAN. Check the source value before importing it.</field>
+            <field name="text">Wrong IBAN %(iban)s.</field>
         </record>
     </data>
 
