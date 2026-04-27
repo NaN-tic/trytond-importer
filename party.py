@@ -3,7 +3,7 @@ from trytond.tools.email_ import validate_email
 from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
-from stdnum import get_cc_module
+from stdnum import get_cc_module, iban as stdnum_iban
 from trytond.i18n import gettext
 from .tools import ImporterModel, Cache, Setup
 
@@ -444,7 +444,16 @@ class ImporterParty(ImporterModel):
                 if not module.is_valid(vat):
                     vat_type = None
 
-                party_identifier = PartyIdentifier()
+                party_identifier = None
+                if party.id is not None and party.id >= 0:
+                    identifiers = PartyIdentifier.search([
+                            ('party', '=', party.id),
+                            ('code', '=', vat),
+                            ], limit=1)
+                    if identifiers:
+                        party_identifier = identifiers[0]
+                if not party_identifier:
+                    party_identifier = PartyIdentifier()
                 party_identifier.type = vat_type
                 party_identifier.code = vat
                 party.identifiers = (party_identifier,)
@@ -584,9 +593,9 @@ class ImporterParty(ImporterModel):
                         iban = iban.replace(' ', '')
 
                         currency = cache.currencies.get(currency_code)
-                        if len(iban) < 8:
+                        if len(iban) < 8 or not stdnum_iban.is_valid(iban):
                             setup.error(gettext('importer.msg_wrong_iban',
-                                iban_=iban))
+                                iban=iban))
                             continue
 
                         bank_number = cache.bank_accounts.get(iban)

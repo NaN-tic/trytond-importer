@@ -2686,6 +2686,15 @@ msgstr ""
 "\"%(subdivision)s\"."
 
 #, python-format
+msgctxt "model:ir.message,text:msg_wrong_iban"
+msgid ""
+"The bank account \"%(iban)s\" is not a valid IBAN. Check the source value "
+"before importing it."
+msgstr ""
+"El compte bancari \"%(iban)s\" no és un IBAN vàlid. Reviseu el valor "
+"d'origen abans d'importar-lo."
+
+#, python-format
 msgctxt "model:ir.message,text:msg_successful_connection"
 msgid "Successful connection using importer \"%(importer)s\"."
 msgstr "Connexió correcta mitjançant l'importador \"%(importer)s\"."
