@@ -1,6 +1,10 @@
 from decimal import Decimal
+from unidecode import unidecode
 from trytond.model import ModelView, fields
 from trytond.pool import PoolMeta, Pool
+from trytond.modules.importer.tools import ImporterModel, Setup, Cache
+from trytond.i18n import gettext
+from trytond.transaction import Transaction
 
 
 class ImporterProductAgronomics(ModelView):
@@ -30,6 +34,277 @@ class ImporterProductAgronomics(ModelView):
     brand = fields.Char('Brand')
 
 
+class ImporterParcel(ImporterModel):
+    'Per-parcel Extraction Importer'
+    __name__ = 'importer.per_parcel'
+
+    code = fields.Char('Code')
+    drawers = fields.Char('Drawers')
+    campaign = fields.Integer('Campaign')
+    variety = fields.Char('Variety')
+    qualification = fields.Char('Qualification')
+    plant_numbers = fields.Integer('Number of Plants')
+    reg_type = fields.Char('Reg Type')
+    area = fields.Char('Area')
+    tenure_regime = fields.Char('Tenure Regime')
+    dos_name = fields.Char('DOs Name')
+    sigpac_data = fields.Char('SIGPAC Data')
+    state = fields.Char('State')
+
+    @classmethod
+    def importer_start(cls):
+        super().importer_start()
+        pool = Pool()
+        Crop = pool.get('agronomics.crop')
+        Date = pool.get('ir.date')
+        ProductTaxon = pool.get('product.taxon')
+
+        today = Date.today()
+        year = today.year
+
+        cache = Setup.get().cache
+        cache.plantations = Cache('agronomics.plantation', 'code',
+            required=False)
+        cache.parcels = Cache('agronomics.parcel', 'plantation', required=False)
+        cache.identifiers = Cache('party.identifier', 'code',
+            domain=[('type', '=', 'eu_vat'), ('code', 'like', 'ES%')],
+            required=False)
+        # We cannot use 'name' as key because it can contain spaces and special chars
+        cache.varieties = Cache('product.taxon',
+            key=lambda taxon: taxon.name.lower().strip().replace('·', '.'),
+            required=False, domain=[('rank', '=', 'variety')])
+        cache.ecologicals = Cache('agronomics.ecological', 'name')
+        cache.irrigations = Cache('agronomics.irrigation', 'name',
+            required=False)
+        cache.denominations = Cache('agronomics.denomination_of_origin', 'name',
+            required=False)
+        cache.beneficiaries = Cache('agronomics.beneficiary',
+            key=lambda x: (x.party, x.parcel), required=False)
+        cache.max_productions = Cache('agronomics.max.production.allowed',
+            'variety')
+
+        crops = Crop.search([('code', '=', str(year))])
+        if not crops:
+            crop = Crop(code=year, name=year,
+                start_date=today.replace(month=1, day=1),
+                end_date=today.replace(month=12, day=31))
+            crop.save()
+            crops = [crop]
+        cache.crop = crops[0]
+
+        species = ProductTaxon.search([('rank', '=', 'species')])
+        assert species, gettext('importer.msg_no_species_found')
+        cache.specie = species[0]
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        Beneficiary = pool.get('agronomics.beneficiary')
+        Denomination = pool.get('agronomics.denomination_of_origin')
+        Enclosure = pool.get('agronomics.enclosure')
+        Irrigation = pool.get('agronomics.irrigation')
+        Parcel = pool.get('agronomics.parcel')
+        Plantation = pool.get('agronomics.plantation')
+        Translation = pool.get('ir.translation')
+
+        transaction = Transaction()
+
+        setup = Setup.get()
+        cache = setup.cache
+
+        to_save = []
+        parcel_to_save = []
+        for record in records:
+            setup.current_record = record
+            plantation = None
+            parcel = None
+
+            ## Required fields
+            required_fields = [
+                'code', 'drawers', 'area', 'sigpac_data', 'state']
+            missing = {
+                field for field in required_fields
+                if field not in setup.fields or not getattr(record, field)}
+            if missing:
+                fields_names = [
+                    Translation.get_source(f'importer.per_parcel,{field_name}',
+                        'field', transaction.language)
+                        or getattr(cls, field_name).string
+                    for field_name in missing]
+                setup.error(gettext('importer.msg_field_required',
+                        label='", "'.join(fields_names)))
+                continue
+
+            ## Plantation
+            plantation = (cache.plantations.get(record.code)
+                or Plantation(code=record.code))
+            cache.plantations.add(plantation)
+
+            dnis = set()
+            parties = {}
+            for string in record.drawers.split('|'):
+                dni, name, percentage = string.split('#')
+                percentage = percentage.replace('%', '').replace(',', '.')
+                identifier = cache.identifiers.get(f'ES{dni}')
+                dnis.add(dni)
+                if not identifier:
+                    continue
+                parties[identifier.party] = Decimal(percentage)
+            if not parties:
+                setup.error(gettext('importer.msg_drawers_not_found',
+                        dni=', '.join(dnis)))
+                continue
+            plantation.party = list(parties.keys())[0]
+
+            if 'campaign' in setup.fields and record.campaign:
+                plantation.plantation_year = record.campaign
+
+            ## Enclosure
+            new_enclosures = {}
+            for data in record.sigpac_data.split(','):
+                code, parcel, *rest = data.strip().split(':')
+                key = f'{code}{parcel}{rest[-1]}{plantation.id}'
+                new_enclosures[key] = Enclosure(
+                    province_sigpac=int(code[:2]),
+                    municipality_sigpac=int(code[2:]),
+                    parcel_sigpac=int(parcel),
+                    enclosure_sigpac=int(rest[-1]),
+                    plantation=plantation)
+
+            enclosures = getattr(plantation, 'enclosures', tuple())
+            for compare in enclosures:
+                key = (
+                    f"{str(getattr(compare, 'province_sigpac', 0)).zfill(2)}"
+                    f"{str(getattr(compare, 'municipality_sigpac', 0)).zfill(3)}"
+                    f"{getattr(compare, 'parcel_sigpac', 0)}"
+                    f"{getattr(compare, 'enclosure_sigpac', 0)}"
+                    f"{plantation.id}")
+                if key in new_enclosures:
+                    new_enclosures.pop(key)
+
+            plantation.enclosures = enclosures + tuple(new_enclosures.values())
+
+            to_save.append((plantation, record))
+            if not record.state or unidecode(record.state.lower()) != 'produccio':
+                continue
+
+            ## Parcel
+            parcel = (
+                cache.parcels.get(plantation) or Parcel(plantation=plantation))
+            parcel.crop = cache.crop
+            parcel.species = cache.specie
+            parcel.ecological = cache.ecologicals.get(record.qualification)
+            parcel.surface = Decimal(record.area.replace(',', '.'))
+            cache.parcels.add(parcel)
+
+            varieties = [label.strip() for label in record.variety.split(',')]
+            for variety in varieties:
+                variety = cache.varieties.get(variety)
+                if variety:
+                    break
+            else:
+                setup.error(gettext('importer.msg_no_varieties_found',
+                        taxon='", "'.join(varieties)))
+                continue
+            parcel.variety = variety
+
+            max_production = cache.max_productions.get(variety)
+            if not max_production or not max_production.product:
+                setup.error(gettext('importer.msg_no_max_production_found',
+                        variety=variety.rec_name))
+                continue
+            parcel.product = max_production.product.template
+
+            if 'reg_type' in setup.fields and record.reg_type:
+                irrigation = (cache.irrigations.get(record.reg_type)
+                    or Irrigation(name=record.reg_type))
+                cache.irrigations.add(irrigation)
+                parcel.irrigation = irrigation
+
+            if 'tenure_regime' in setup.fields and record.tenure_regime:
+                parcel.tenure_regime = record.tenure_regime
+
+            if 'dos_name' in setup.fields and record.dos_name:
+                prefix = lambda x: f'D.O.P. {x.strip()}'
+                parcel.denomination_origin = [
+                    cache.denominations.get(prefix(name))
+                        or Denomination(name=prefix(name))
+                    for name in record.dos_name.split(',')]
+                for denomination in parcel.denomination_origin:
+                    cache.denominations.add(denomination)
+
+            beneficiaries = []
+            for party, percentage in parties.items():
+                beneficiary = (cache.beneficiaries.get((party, parcel))
+                    or Beneficiary(party=party, parcel=parcel))
+                beneficiary.percentage = Decimal(percentage)
+
+                cache.beneficiaries.add(beneficiary)
+                beneficiaries.append(beneficiary)
+            parcel.beneficiaries = beneficiaries
+
+            if 'plant_numbers' in setup.fields and record.plant_numbers:
+                parcel.plant_number = record.plant_numbers
+
+            parcel_to_save.append((parcel, record))
+
+        setup.current_record = None
+        cls.importer_save(to_save)
+        cls.importer_save(parcel_to_save)
+        return [x[0] for x in to_save]
+
+
+class ImporterMunicipality(ImporterModel):
+    'Municipality Importer'
+    __name__ = 'importer.sigpac_municipality'
+
+    code = fields.Char('Cadastral Code')
+    municipality = fields.Char('Municipality')
+    region = fields.Char('Region')
+    province = fields.Char('Province')
+
+    @classmethod
+    def importer_start(cls):
+        super().importer_start()
+        cache = Setup.get().cache
+        cache.municipalities = Cache('agronomics.sigpac.municipality', 'code',
+            required=False)
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        Municipality = pool.get('agronomics.sigpac.municipality')
+
+        setup = Setup.get()
+        cache = setup.cache
+
+        to_save = []
+        for record in records:
+            setup.current_record = record
+            municipality = None
+
+            if 'code' not in setup.fields or not record.code:
+                setup.error(gettext('importer.msg_cadastral_code_required'))
+                continue
+
+            municipality = (cache.municipalities.get(record.code)
+                or Municipality(code=record.code))
+
+            if 'region' in setup.fields and record.region:
+                municipality.region = record.region.title()
+            if 'province' in setup.fields and record.province:
+                municipality.province = record.province.title()
+            if 'municipality' in setup.fields and record.municipality:
+                municipality.municipality = record.municipality.title()
+
+            cache.municipalities.add(municipality)
+            to_save.append((municipality, record))
+
+        setup.current_record = None
+        cls.importer_save(to_save)
+        return [x[0] for x in to_save]
+
+
 class Importer(metaclass=PoolMeta):
     __name__ = 'importer'
 
@@ -40,6 +315,16 @@ class Importer(metaclass=PoolMeta):
                 'product_agronomics': {
                     'string': 'Product Agronomics',
                     'model': 'importer.product.agronomics',
+                    'chunked': True,
+                    },
+                'agronomics_parcel': {
+                    'string': 'Per-parcel Extraction',
+                    'model': 'importer.per_parcel',
+                    'chunked': True,
+                    },
+                'agronomics_municipality': {
+                    'string': 'SIGPAC Municipality',
+                    'model': 'importer.sigpac_municipality',
                     'chunked': True,
                     },
                 })

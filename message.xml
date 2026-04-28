@@ -181,4 +181,22 @@
             <field name="text">Party code %(party)s not found.</field>
         </record>
     </data>
+
+    <data depends="agronomics">
+        <record model="ir.message" id="msg_field_required">
+            <field name="text">The next fields are required and cannot be null: "%(label)s".</field>
+        </record>
+        <record model="ir.message" id="msg_no_species_found">
+            <field name="text">No taxon with rank “species” found. Please create at least one "species" taxon before importing.</field>
+        </record>
+        <record model="ir.message" id="msg_no_varieties_found">
+            <field name="text">No taxon with rank "variety" and name "%(taxon)s" found.</field>
+        </record>
+        <record model="ir.message" id="msg_drawers_not_found">
+            <field name="text">No parties found with DNI(s): %(dni)s</field>
+        </record>
+        <record model="ir.message" id="msg_no_max_production_found">
+            <field name="text">No Maximum Allowed Production found. Please create one record for the variety "%(variety)s".</field>
+        </record>
+    </data>
 </tryton>
