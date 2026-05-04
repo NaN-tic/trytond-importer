@@ -128,6 +128,6 @@ class ImporterPriceListSaleDiscountPriceList(metaclass=PoolMeta):
 
     @classmethod
     def importer_line_hook(cls, record, line):
-        super()._import_price_list_line_hook(record, line)
+        super().importer_line_hook(record, line)
         if record.base_price_formula is not None:
             line.base_price_formula = record.base_price_formula
