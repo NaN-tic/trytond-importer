@@ -17,7 +17,6 @@ class ImporterPriceList(ImporterModel):
     product_code = fields.Char('Product Code')
     quantity = fields.Float('Quantity')
     formula = fields.Char('Formula')
-    base_price_formula = fields.Char('Base Price Formula')
 
     @classmethod
     def importer_line_hook(cls, record, line):
@@ -92,8 +91,6 @@ class ImporterPriceList(ImporterModel):
                 line.category = category
             line.quantity = record.quantity
             line.formula = record.formula
-            if hasattr(line, 'base_price_formula'):
-                line.base_price_formula = record.base_price_formula
             cls.importer_line_hook(record, line)
             lines_to_save.append(line)
 
@@ -123,3 +120,15 @@ class Importer(metaclass=PoolMeta):
     @classmethod
     def _import_price_list_line_hook(cls, record, line):
         pass
+
+
+class ImporterPriceListSaleDiscountPriceList(metaclass=PoolMeta):
+    __name__ = 'importer.price_list'
+
+    base_price_formula = fields.Char('Base Price Formula')
+
+    @classmethod
+    def importer_line_hook(cls, record, line):
+        super()._import_price_list_line_hook(record, line)
+        if record.base_price_formula is not None:
+            line.base_price_formula = record.base_price_formula

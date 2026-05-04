@@ -564,4 +564,56 @@ class ImporterTestCase(ModuleTestCase):
         self.assertEqual(warehouse.picking_location.parent,
             warehouse.storage_location)
 
+class ImporterSaleDiscountPriceListTestCase(ModuleTestCase):
+    'Test Importer module with sale_discount_price_list'
+    module = 'importer'
+    extras = ['party', 'company', 'product', 'product_price_list',
+        'sale_discount_price_list']
+
+    def import_(self, method, records):
+        pool = Pool()
+        Importer = pool.get('importer')
+
+        importer = Importer()
+        importer.name = 'Importer'
+        importer.method = method
+        importer.data_source = 'text'
+        importer.text_data = json.dumps(records)
+        importer.has_header = True
+        importer.use_header = True
+        importer.save()
+        Importer.update_columns([importer])
+
+        if records:
+            fields = records[0].keys()
+            for column in importer.columns:
+                if column.field.name in fields:
+                    column.name = column.field.name
+                    column.save()
+
+        data = DataExtractor('text', None, json.dumps(records), None)
+        data.load()
+        importer.data_to_records(data)
+
+    @with_transaction()
+    def test_price_list_base_price_formula(self):
+        pool = Pool()
+        PriceList = pool.get('product.price_list')
+        company = create_company()
+
+        self.import_('price_list', [{
+                'name': 'Price List',
+                'company_name': company.rec_name,
+                'quantity': 1,
+                'formula': '0',
+                'base_price_formula': 'unit_price',
+                }])
+
+        price_lists = PriceList.search([])
+        self.assertEqual(len(price_lists), 1)
+        self.assertEqual(len(price_lists[0].lines), 1)
+        self.assertEqual(
+            price_lists[0].lines[0].base_price_formula, 'unit_price')
+
+
 del ModuleTestCase
