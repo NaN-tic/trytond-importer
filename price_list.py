@@ -16,7 +16,6 @@ class ImporterPriceList(ModelView):
     product_code = fields.Char('Product Code')
     quantity = fields.Float('Quantity')
     formula = fields.Char('Formula')
-    base_price_formula = fields.Char('Base Price Formula')
 
 
 class Importer(metaclass=PoolMeta):
@@ -107,8 +106,6 @@ class Importer(metaclass=PoolMeta):
                             category=record.category))
             line.quantity = record.quantity
             line.formula = record.formula
-            if hasattr(line, 'base_price_formula'):
-                line.base_price_formula = record.base_price_formula
             cls._import_price_list_line_hook(record, line)
             lines_to_save.append(line)
 
@@ -119,3 +116,19 @@ class Importer(metaclass=PoolMeta):
         if templates_to_save:
             Template.save(templates_to_save)
         return lists_to_save
+
+
+class ImporterPriceListSaleDiscountPriceList(metaclass=PoolMeta):
+    __name__ = 'importer.price_list'
+
+    base_price_formula = fields.Char('Base Price Formula')
+
+
+class ImporterSaleDiscountPriceList(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _import_price_list_line_hook(cls, record, line):
+        super()._import_price_list_line_hook(record, line)
+        if record.base_price_formula is not None:
+            line.base_price_formula = record.base_price_formula
