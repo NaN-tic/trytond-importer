@@ -99,6 +99,10 @@ def register():
         depends=['product_price_list'],
         module='importer', type_='model')
     Pool.register(
+        price_list.ImporterPriceListSaleDiscountPriceList,
+        depends=['product_price_list', 'sale_discount_price_list'],
+        module='importer', type_='model')
+    Pool.register(
         sale.Importer,
         sale.ImporterSale,
         sale.ImporterSaleConfiguration,
