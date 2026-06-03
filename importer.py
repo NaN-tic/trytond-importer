@@ -4,6 +4,7 @@ import csv
 import json
 import yaml
 import pytz
+import urllib.error
 import urllib.request
 import decimal
 import tempfile
@@ -83,6 +84,14 @@ class DataExtractor:
     def to_str(d):
         return charset_normalizer.from_bytes(d).best().output().decode('utf-8')
 
+    def _read_url(self, url):
+        try:
+            with urllib.request.urlopen(url) as f:
+                return f.read()
+        except urllib.error.URLError as exception:
+            raise UserError(gettext('importer.msg_invalid_url_data',
+                    url=url, error=str(exception))) from exception
+
     def get_data_file(self, force_text=False):
         'force_text makes the method always return a StringIO.'
         'Required by csv reader, which only supports text files.'
@@ -105,18 +114,15 @@ class DataExtractor:
                 if '#' in extra:
                     url += '&' + extra.split('#')[-1]
                 try:
-                    with urllib.request.urlopen(url) as f:
-                        data = f.read()
-                except:
+                    data = self._read_url(url)
+                except UserError:
                     # In some cases we've found that adding gid and other
                     # parameters does not work. In those cases, we try again
                     # without them.
                     url = main + '/export?format=xlsx'
-                    with urllib.request.urlopen(url) as f:
-                        data = f.read()
+                    data = self._read_url(url)
             else:
-                with urllib.request.urlopen(url) as f:
-                    data = f.read()
+                data = self._read_url(url)
             if force_text:
                 return StringIO(self.to_str(data))
             return BytesIO(data)
