@@ -17,6 +17,9 @@
         <record model="ir.message" id="msg_invalid_connection">
             <field name="text">Could not establish connection using importer "%(importer)s".</field>
         </record>
+        <record model="ir.message" id="msg_invalid_url_data">
+            <field name="text">Could not load data from URL "%(url)s": %(error)s.</field>
+        </record>
         <record model="ir.message" id="msg_successful_connection">
             <field name="text">Successful connection using importer "%(importer)s".</field>
         </record>
