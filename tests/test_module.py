@@ -1,6 +1,10 @@
 # This file is part of Tryton.  The COPYRIGHT file at the top level of
 # this repository contains the full copyright notices and license terms.
 import json
+from unittest.mock import patch
+from urllib.error import HTTPError
+
+from trytond.exceptions import UserError
 from trytond.tests.test_tryton import ModuleTestCase, with_transaction
 from trytond.transaction import Transaction
 from trytond.pool import Pool
@@ -563,6 +567,21 @@ class ImporterTestCase(ModuleTestCase):
         self.assertEqual(warehouse.storage_location.parent, warehouse)
         self.assertEqual(warehouse.picking_location.parent,
             warehouse.storage_location)
+
+    @with_transaction()
+    def test_data_extractor_url_unauthorized(self):
+        data = DataExtractor(
+            'url', None, None, 'https://example.com/private.xlsx')
+
+        error = HTTPError(
+            data.url_data, 401, 'Unauthorized', hdrs=None, fp=None)
+        with patch('trytond.modules.importer.importer.urllib.request.urlopen',
+                side_effect=error):
+            with self.assertRaises(UserError) as cm:
+                data.get_data_file()
+
+        self.assertIn('Could not load data from URL', str(cm.exception))
+        self.assertIn('401', str(cm.exception))
 
 class ImporterSaleDiscountPriceListTestCase(ModuleTestCase):
     'Test Importer module with sale_discount_price_list'
