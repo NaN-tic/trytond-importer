@@ -129,6 +129,10 @@ msgctxt "field:importer,url_data:"
 msgid "Data URL"
 msgstr "URL de dades"
 
+msgctxt "model:ir.message,text:msg_invalid_url_data"
+msgid "Could not load data from URL \"%(url)s\". %(error)s."
+msgstr "No s'han pogut carregar les dades des de l'URL \"%(url)s\". %(error)s."
+
 msgctxt "field:importer,use_header:"
 msgid "Use Header?"
 msgstr "Utilitzar capçalera?"
