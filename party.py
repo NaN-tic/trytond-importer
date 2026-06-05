@@ -923,7 +923,7 @@ class ImportFacturaeAddress(metaclass=PoolMeta):
         methods = super()._get_methods()
         methods.update({
                 'party_facturae': {
-                    'string': 'Party Facutra-e',
+                    'string': 'Party Factura-e',
                     'model': 'importer.address.facturae',
                     'chunked': True,
                 },
