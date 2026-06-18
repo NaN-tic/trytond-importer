@@ -1,10 +1,12 @@
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
+from .tools import ImporterModel
+from trytond.transaction import Transaction
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 
 
-class ImporterPriceList(ModelView):
+class ImporterPriceList(ImporterModel):
     'Importer Price List'
     __name__ = 'importer.price_list'
 
@@ -16,39 +18,24 @@ class ImporterPriceList(ModelView):
     quantity = fields.Float('Quantity')
     formula = fields.Char('Formula')
 
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
+    @classmethod
+    def importer_line_hook(cls, record, line):
+        Pool().get('importer')._import_price_list_line_hook(record, line)
 
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'price_list': {
-                    'string': 'Price List',
-                    'model': 'importer.price_list',
-                    'chunked': False,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def _import_price_list_line_hook(cls, record, line):
-        pass
-
-    @classmethod
-    def import_price_list(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Company = pool.get('company.company')
         PriceList = pool.get('product.price_list')
         Line = pool.get('product.price_list.line')
         Product = pool.get('product.product')
+        Template = pool.get('product.template')
         Category = pool.get('product.category')
 
-        # Materialize iterator so we can walk through several times
         records = list(records)
         if any([x.product_code for x in records]):
-            products = {x.code: x for x in Product.search([])}
+            with Transaction().set_context(active_test=False):
+                products = {x.code: x for x in Product.search([])}
         else:
             products = {}
         if any([x.category for x in records]):
@@ -61,6 +48,8 @@ class Importer(metaclass=PoolMeta):
         lists_to_save = []
         lines_to_save = []
         previous_name = None
+        products_to_save = []
+        templates_to_save = []
         for record in records:
             if record.name and record.name != previous_name:
                 previous_name = record.name
@@ -86,7 +75,13 @@ class Importer(metaclass=PoolMeta):
                 if not product:
                     raise UserError(gettext('importer.single_product_error',
                             product=record.product_code))
-                line.product = products.get(record.product_code)
+                if product.active == False:
+                    product.active = True
+                    products_to_save.append(product)
+                    if product.template.active == False:
+                        product.template.active  = True
+                        templates_to_save.append(product.template)
+                line.product = product
             if record.category:
                 category = categories.get(record.category)
                 if not category:
@@ -95,9 +90,44 @@ class Importer(metaclass=PoolMeta):
                             category=record.category))
             line.quantity = record.quantity
             line.formula = record.formula
-            cls._import_price_list_line_hook(record, line)
+            cls.importer_line_hook(record, line)
             lines_to_save.append(line)
 
         PriceList.save(lists_to_save)
         Line.save(lines_to_save)
+        if products_to_save:
+            Product.save(products_to_save)
+        if templates_to_save:
+            Template.save(templates_to_save)
         return lists_to_save
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'price_list': {
+                    'string': 'Price List',
+                    'model': 'importer.price_list',
+                    },
+                })
+        return methods
+
+    @classmethod
+    def _import_price_list_line_hook(cls, record, line):
+        pass
+
+
+class ImporterPriceListSaleDiscountPriceList(metaclass=PoolMeta):
+    __name__ = 'importer.price_list'
+
+    base_price_formula = fields.Char('Base Price Formula')
+
+    @classmethod
+    def importer_line_hook(cls, record, line):
+        super().importer_line_hook(record, line)
+        if record.base_price_formula is not None:
+            line.base_price_formula = record.base_price_formula

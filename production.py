@@ -175,12 +175,10 @@ class Importer(metaclass=PoolMeta):
                 'production_bom': {
                     'string': 'Production BOM',
                     'model': 'importer.production.bom',
-                    'chunked': False,
                     },
                 'production_configuration': {
                     'string': 'Production configuration',
                     'model': 'importer.production.configuration',
-                    'chunked': True,
                     },
                 })
         return methods

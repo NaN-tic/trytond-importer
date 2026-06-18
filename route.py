@@ -1,8 +1,9 @@
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
+from .tools import ImporterModel
 
 
-class ImporterRoute(ModelView):
+class ImporterRoute(ImporterModel):
     'Importer Stock Move'
     __name__ = 'importer.production_routes'
 
@@ -18,36 +19,21 @@ class ImporterRoute(ModelView):
     notes=fields.Char('Notes')
     subcontracted_product = fields.Char('Subcontract Product')
 
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'routes': {
-                    'string': 'Production Routes',
-                    'model': 'importer.production_routes',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_production_routes_header(cls, record):
+    def importer_header(cls, record):
         return (record.name,)
 
     @classmethod
-    def _import_production_route_operation_hook(cls, record, operation):
-        pass
+    def importer_operation_hook(cls, record, operation):
+        Pool().get('importer')._import_production_route_operation_hook(
+            record, operation)
 
     @classmethod
-    def _import_production_route_route_hook(cls, record, route):
-        pass
+    def importer_route_hook(cls, record, route):
+        Pool().get('importer')._import_production_route_route_hook(record, route)
 
     @classmethod
-    def import_routes(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Route = pool.get('production.route')
         RouteOperation = pool.get('production.route.operation')
@@ -63,7 +49,6 @@ class Importer(metaclass=PoolMeta):
                     ('code', '!=', ''),
                     ]))
 
-
         routes = dict((x.name, x) for x in Route.search([]))
         types = dict((x.name, x) for x  in OperationType.search([]))
         categories = dict((x.name,x) for x in WorkCenterCategory.search([]))
@@ -76,7 +61,7 @@ class Importer(metaclass=PoolMeta):
         to_save = []
         lines_to_save = []
         for record in records:
-            header = cls.import_production_routes_header(record)
+            header = cls.importer_header(record)
             if any(header) and header != previous_header:
                 previous_header = header
                 values = Route.default_get(list(Route._fields.keys()),
@@ -87,10 +72,9 @@ class Importer(metaclass=PoolMeta):
                     route.name = record.name
                     if record.uom:
                         route.uom = uoms.get(record.uom and record.uom.lower())
-                    cls._import_production_route_route_hook(record, route)
+                    cls.importer_route_hook(record, route)
                     to_save.append(route)
                     routes[record.name] = route
-
 
             values = RouteOperation.default_get(list(
                 RouteOperation._fields.keys()),with_rec_name=False)
@@ -112,7 +96,7 @@ class Importer(metaclass=PoolMeta):
                     products.get(record.subcontracted_product)):
                 operation.subcontracted_product = products.get(
                     record.subcontracted_product)
-            cls._import_production_route_operation_hook(record, operation)
+            cls.importer_operation_hook(record, operation)
             lines_to_save.append(operation)
 
         if to_save:
@@ -122,3 +106,26 @@ class Importer(metaclass=PoolMeta):
             RouteOperation.save(lines_to_save)
 
         return to_save
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'routes': {
+                    'string': 'Production Routes',
+                    'model': 'importer.production_routes',
+                    },
+                })
+        return methods
+
+    @classmethod
+    def _import_production_route_operation_hook(cls, record, operation):
+        pass
+
+    @classmethod
+    def _import_production_route_route_hook(cls, record, route):
+        pass

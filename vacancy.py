@@ -1,8 +1,9 @@
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
+from .tools import ImporterModel
 
 
-class ImporterCandidate(ModelView):
+class ImporterCandidate(ImporterModel):
     'Importer Candidate'
     __name__ = 'importer.candidate'
 
@@ -15,24 +16,8 @@ class ImporterCandidate(ModelView):
     application_method = fields.Char('Application Method')
     application_url = fields.Char('Application URL')
 
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'candidate': {
-                    'string': 'Candidate',
-                    'model': 'importer.candidate',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_candidate(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         ApplicationMethod = pool.get('employee.candidate.application_method')
         Candidate = pool.get('employee.candidate')
@@ -48,30 +33,44 @@ class Importer(metaclass=PoolMeta):
 
         candidates = []
         for record in records:
-             party = Party()
-             party.name = record.party_name
-             party.save()
-             phone = ContactMechanism()
-             phone.party = party
-             phone.type = 'phone'
-             phone.value = record.phone
-             phone.save()
-             email = ContactMechanism()
-             email.party = party
-             email.type = 'email'
-             email.value = record.email
-             email.save()
-             resume = Resume()
-             resume.party = party
-             resume.url = record.profile_url
-             resume.save()
-             candidate = Candidate()
-             candidate.vacancy = vacancies.get(record.vacancy)
-             candidate.party = party
-             candidate.phase = phases.get(record.phase)
-             candidate.application_method = methods.get(record.application_method)
-             candidate.url = record.application_url
-             candidate.save()
-             candidates.append(candidate)
+            party = Party()
+            party.name = record.party_name
+            party.save()
+            phone = ContactMechanism()
+            phone.party = party
+            phone.type = 'phone'
+            phone.value = record.phone
+            phone.save()
+            email = ContactMechanism()
+            email.party = party
+            email.type = 'email'
+            email.value = record.email
+            email.save()
+            resume = Resume()
+            resume.party = party
+            resume.url = record.profile_url
+            resume.save()
+            candidate = Candidate()
+            candidate.vacancy = vacancies.get(record.vacancy)
+            candidate.party = party
+            candidate.phase = phases.get(record.phase)
+            candidate.application_method = methods.get(record.application_method)
+            candidate.url = record.application_url
+            candidate.save()
+            candidates.append(candidate)
         return candidates
 
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'candidate': {
+                    'string': 'Candidate',
+                    'model': 'importer.candidate',
+                    },
+                })
+        return methods

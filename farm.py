@@ -1,10 +1,11 @@
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
+from .tools import ImporterModel
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 
 
-class ImporterFarmMoveEvent(ModelView):
+class ImporterFarmMoveEvent(ImporterModel):
     'Importer Event Move'
     __name__ = 'importer.farm.move.event'
 
@@ -15,197 +16,8 @@ class ImporterFarmMoveEvent(ModelView):
     notes = fields.Char('Notes')
     weight = fields.Numeric('Weight')
 
-
-class ImporterFarmRemovalEvent(ModelView):
-    'Importer Removal Event'
-    __name__ = 'importer.farm.removal.event'
-
-    farm = fields.Char('Farm')
-    animal = fields.Char('Animal')
-    timestamp = fields.DateTime('Date & Time')
-    removal_reason = fields.Char('Reason')
-    removal_type = fields.Char('Type')
-
-
-class ImporterFarmAnimal(ModelView):
-    "Importer Farm Animal"
-    __name__ = 'importer.farm.animal'
-
-    animal_type = fields.Char("Animal Type")
-    sex = fields.Char("Sex")
-    breed = fields.Char("Breed")
-    initial_location = fields.Char("Initial Location")
-    arrival_date = fields.Date("Arrival Date")
-    origin = fields.Char("Origin")
-    number = fields.Char("Number")
-
-
-class ImporterFarmMedicationEvent(ModelView):
-    "Importer Farm Medication Event"
-    __name__ = 'importer.farm.medication.event'
-
-    #farm = fields.Char("Farm") #TODO: add farm?
-    animal = fields.Char("Animal")
-    timestamp = fields.DateTime("Timestamp")
-    feed_location = fields.Char("Feed Location")
-    feed_product = fields.Char("Feed Product")
-    feed_lot = fields.Char("Feed Lot")
-    feed_quantity = fields.Numeric("Feed Quantity")
-    end_date = fields.Date("End Date")
-
-
-class ImporterFarmInseminationEvent(ModelView):
-    "Importer Farm Insemination Event"
-    __name__ = 'importer.farm.insemination.event'
-
-    farm = fields.Char("Farm")
-    animal = fields.Char("Animal")
-    timestamp = fields.DateTime("Timestamp")
-    dose_bom = fields.Char("Dose BOM")
-
-
-class ImporterFarmPregnancyDiagnosisEvent(ModelView):
-    "Importer Farm Pregnancy Diagnosis Event"
-    __name__ = 'importer.farm.pregnancy_diagnosis.event'
-
-    farm = fields.Char("Farm")
-    animal = fields.Char("Animal")
-    timestamp = fields.DateTime("Timestamp")
-    result = fields.Char("Result")
-    notes = fields.Char("Notes")
-
-
-class ImporterFarmAbortEvent(ModelView):
-    "Importer Farm Abort Event"
-    __name__ = 'importer.farm.abort.event'
-
-    #reference
-    farm = fields.Char("Farm")
-    animal = fields.Char("Animal")
-    timestamp = fields.DateTime("Timestamp")
-    notes = fields.Char("Notes")
-
-
-class ImporterFarmFarrowingEvent(ModelView):
-    "Importer Farm Farrowing Event"
-    __name__ = 'importer.farm.farrowing.event'
-
-    farm = fields.Char("Farm")
-    animal = fields.Char("Animal")
-    timestamp = fields.DateTime("Timestamp")
-    live = fields.Integer("Live")
-    problem = fields.Char("Problem")
-    child_birthdate = fields.Date("Child Birthdate")
-    child_sex = fields.Char("Child Sex")
-    child_weight = fields.Numeric("Child Weight")
-    child_number = fields.Char("Child Number")
-    child_tags = fields.Char("Child Tags")
-
-
-class ImporterFarmWeaningEvent(ModelView):
-    "Importer Farm Weaning Event"
-    __name__ = 'importer.farm.weaning.event'
-
-    #reference
-    farm = fields.Char("Farm")
-    animal = fields.Char("Animal")
-    timestamp = fields.DateTime("Timestamp")
-    female_to_location = fields.Char("Female To Location")
-    weaned_to_location = fields.Char("Weaned To Location")
-    quantity = fields.Numeric("Quantity")
-
-
-class ImporterFarmTransformationEvent(ModelView):
-    "Importer Farm Transformation Event"
-    __name__ = 'importer.farm.transformation.event'
-
-    farm = fields.Char("Farm")
-    animal = fields.Char("Animal")
-    timestamp = fields.DateTime("Timestamp")
-    from_location = fields.Char("From Location")
-    to_animal_type = fields.Char("To Animal Type")
-    to_location = fields.Char("To Location")
-
-
-class ImporterFarmReclassificationEvent(ModelView):
-    "Importer Farm reclassification Event"
-    __name__ = 'importer.farm.reclassification.event'
-
-    farm = fields.Char("Farm")
-    animal = fields.Char("Animal")
-    timestamp = fields.DateTime("Timestamp")
-    reclassification_product = fields.Char("Reclasification Product")
-    to_location = fields.Char("To Location")
-    weight = fields.Numeric("Weight")
-
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'farm_move_event': {
-                    'string': 'Farm Move Event',
-                    'model': 'importer.farm.move.event',
-                    'chunked': True,
-                    },
-                'farm_removal_event': {
-                    'string': 'Farm Removal Event',
-                    'model': 'importer.farm.removal.event',
-                    'chunked': True,
-                    },
-                'farm_animal': {
-                    'string': 'Farm Animal',
-                    'model': 'importer.farm.animal',
-                    'chunked': True,
-                    },
-                'farm_medication_event': {
-                    'string': 'Farm Medication Event',
-                    'model': 'importer.farm.medication.event',
-                    'chunked': True,
-                    },
-                'farm_insemination_event': {
-                    'string': 'Farm Insemination Event',
-                    'model': 'importer.farm.insemination.event',
-                    'chunked': True,
-                    },
-                'farm_pregnancy_diagnosis_event': {
-                    'string': 'Farm Pregnancy Diagnosis Event',
-                    'model': 'importer.farm.pregnancy_diagnosis.event',
-                    'chunked': True,
-                    },
-                'farm_abort_diagnosis_event': {
-                    'string': 'Farm Abort Diagnosis Event',
-                    'model': 'importer.farm.abort.event',
-                    'chunked': True,
-                    },
-                'farm_farrowing_event': {
-                    'string': 'Farm Farrowing Event',
-                    'model': 'importer.farm.farrowing.event',
-                    'chunked': True,
-                    },
-                'farm_weaning_event': {
-                    'string': 'Farm Weaning Event',
-                    'model': 'importer.farm.weaning.event',
-                    'chunked': True,
-                    },
-                'farm_transformation_event': {
-                    'string': 'Farm Transformation Event',
-                    'model': 'importer.farm.transformation.event',
-                    'chunked': True,
-                    },
-                'farm_reclassification_event': {
-                    'string': 'Farm Reclassification Event',
-                    'model': 'importer.farm.reclassification.event',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_farm_move_event(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Location = pool.get('stock.location')
         Animal = pool.get('farm.animal')
@@ -239,8 +51,20 @@ class Importer(metaclass=PoolMeta):
         FarmMove.save(to_save)
         return to_save
 
+
+
+class ImporterFarmRemovalEvent(ImporterModel):
+    'Importer Removal Event'
+    __name__ = 'importer.farm.removal.event'
+
+    farm = fields.Char('Farm')
+    animal = fields.Char('Animal')
+    timestamp = fields.DateTime('Date & Time')
+    removal_reason = fields.Char('Reason')
+    removal_type = fields.Char('Type')
+
     @classmethod
-    def import_farm_removal_event(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Location = pool.get('stock.location')
         Animal = pool.get('farm.animal')
@@ -274,12 +98,26 @@ class Importer(metaclass=PoolMeta):
         FarmRemoval.save(to_save)
         return to_save
 
+
+
+class ImporterFarmAnimal(ImporterModel):
+    "Importer Farm Animal"
+    __name__ = 'importer.farm.animal'
+
+    animal_type = fields.Char("Animal Type")
+    sex = fields.Char("Sex")
+    breed = fields.Char("Breed")
+    initial_location = fields.Char("Initial Location")
+    arrival_date = fields.Date("Arrival Date")
+    origin = fields.Char("Origin")
+    number = fields.Char("Number")
+
     @classmethod
     def import_farm_animal_hook(cls, record, animal):
         pass
 
     @classmethod
-    def import_farm_animal(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         FarmAnimal = pool.get('farm.animal')
         Breed = pool.get('farm.specie.breed')
@@ -318,8 +156,23 @@ class Importer(metaclass=PoolMeta):
         FarmAnimal.save(to_save)
         return to_save
 
+
+
+class ImporterFarmMedicationEvent(ImporterModel):
+    "Importer Farm Medication Event"
+    __name__ = 'importer.farm.medication.event'
+
+    #farm = fields.Char("Farm") #TODO: add farm?
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    feed_location = fields.Char("Feed Location")
+    feed_product = fields.Char("Feed Product")
+    feed_lot = fields.Char("Feed Lot")
+    feed_quantity = fields.Numeric("Feed Quantity")
+    end_date = fields.Date("End Date")
+
     @classmethod
-    def import_farm_medication_event(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         FarmMedicationEvent = pool.get('farm.medication.event')
         FarmAnimal = pool.get('farm.animal')
@@ -367,8 +220,19 @@ class Importer(metaclass=PoolMeta):
         FarmMedicationEvent.validate_event(to_save)
         return to_save
 
+
+
+class ImporterFarmInseminationEvent(ImporterModel):
+    "Importer Farm Insemination Event"
+    __name__ = 'importer.farm.insemination.event'
+
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    dose_bom = fields.Char("Dose BOM")
+
     @classmethod
-    def import_farm_insemination_event(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         FarmInseminationEvent = pool.get('farm.insemination.event')
         Location = pool.get('stock.location')
@@ -399,8 +263,20 @@ class Importer(metaclass=PoolMeta):
         FarmInseminationEvent.validate_event(to_save)
         return to_save
 
+
+
+class ImporterFarmPregnancyDiagnosisEvent(ImporterModel):
+    "Importer Farm Pregnancy Diagnosis Event"
+    __name__ = 'importer.farm.pregnancy_diagnosis.event'
+
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    result = fields.Char("Result")
+    notes = fields.Char("Notes")
+
     @classmethod
-    def import_farm_pregnancy_diagnosis_event(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         PregnancyDiagnosisEvent = pool.get('farm.pregnancy_diagnosis.event')
         Location = pool.get('stock.location')
@@ -431,8 +307,20 @@ class Importer(metaclass=PoolMeta):
         PregnancyDiagnosisEvent.validate_event(to_save)
         return to_save
 
+
+
+class ImporterFarmAbortEvent(ImporterModel):
+    "Importer Farm Abort Event"
+    __name__ = 'importer.farm.abort.event'
+
+    #reference
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    notes = fields.Char("Notes")
+
     @classmethod
-    def import_farm_abort_diagnosis_event(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         FarmAbortEvent = pool.get('farm.abort.event')
         Location = pool.get('stock.location')
@@ -461,12 +349,29 @@ class Importer(metaclass=PoolMeta):
         FarmAbortEvent.validate_event(to_save)
         return to_save
 
+
+
+class ImporterFarmFarrowingEvent(ImporterModel):
+    "Importer Farm Farrowing Event"
+    __name__ = 'importer.farm.farrowing.event'
+
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    live = fields.Integer("Live")
+    problem = fields.Char("Problem")
+    child_birthdate = fields.Date("Child Birthdate")
+    child_sex = fields.Char("Child Sex")
+    child_weight = fields.Numeric("Child Weight")
+    child_number = fields.Char("Child Number")
+    child_tags = fields.Char("Child Tags")
+
     @classmethod
     def import_farm_farrowing_event_child_hook(cls, record, animal):
         pass
 
     @classmethod
-    def import_farm_farrowing_event(cls,records):
+    def importer_import(cls, records):
         pool = Pool()
         FarmFarrowingEvent = pool.get('farm.farrowing.event')
         Location = pool.get('stock.location')
@@ -555,8 +460,22 @@ class Importer(metaclass=PoolMeta):
         AnimalTag.save(to_save_animals_tags)
         return to_save
 
+
+
+class ImporterFarmWeaningEvent(ImporterModel):
+    "Importer Farm Weaning Event"
+    __name__ = 'importer.farm.weaning.event'
+
+    #reference
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    female_to_location = fields.Char("Female To Location")
+    weaned_to_location = fields.Char("Weaned To Location")
+    quantity = fields.Numeric("Quantity")
+
     @classmethod
-    def import_farm_weaning_event(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         FarmWeaningEvent = pool.get('farm.weaning.event')
         Location = pool.get('stock.location')
@@ -591,8 +510,21 @@ class Importer(metaclass=PoolMeta):
         FarmWeaningEvent.validate_event(to_save)
         return to_save
 
+
+
+class ImporterFarmTransformationEvent(ImporterModel):
+    "Importer Farm Transformation Event"
+    __name__ = 'importer.farm.transformation.event'
+
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    from_location = fields.Char("From Location")
+    to_animal_type = fields.Char("To Animal Type")
+    to_location = fields.Char("To Location")
+
     @classmethod
-    def import_farm_transformation_event(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         FarmTransformationEvent = pool.get('farm.transformation.event')
         Location = pool.get('stock.location')
@@ -628,8 +560,21 @@ class Importer(metaclass=PoolMeta):
         FarmTransformationEvent.validate_event(to_save)
         return to_save
 
+
+
+class ImporterFarmReclassificationEvent(ImporterModel):
+    "Importer Farm reclassification Event"
+    __name__ = 'importer.farm.reclassification.event'
+
+    farm = fields.Char("Farm")
+    animal = fields.Char("Animal")
+    timestamp = fields.DateTime("Timestamp")
+    reclassification_product = fields.Char("Reclasification Product")
+    to_location = fields.Char("To Location")
+    weight = fields.Numeric("Weight")
+
     @classmethod
-    def import_farm_reclassification_event(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         FarmReclassificationEvent = pool.get('farm.reclassification.event')
         Location = pool.get('stock.location')
@@ -669,3 +614,58 @@ class Importer(metaclass=PoolMeta):
         FarmReclassificationEvent.save(to_save)
         FarmReclassificationEvent.validate_event(to_save)
         return to_save
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'farm_move_event': {
+                    'string': 'Farm Move Event',
+                    'model': 'importer.farm.move.event',
+                    },
+                'farm_removal_event': {
+                    'string': 'Farm Removal Event',
+                    'model': 'importer.farm.removal.event',
+                    },
+                'farm_animal': {
+                    'string': 'Farm Animal',
+                    'model': 'importer.farm.animal',
+                    },
+                'farm_medication_event': {
+                    'string': 'Farm Medication Event',
+                    'model': 'importer.farm.medication.event',
+                    },
+                'farm_insemination_event': {
+                    'string': 'Farm Insemination Event',
+                    'model': 'importer.farm.insemination.event',
+                    },
+                'farm_pregnancy_diagnosis_event': {
+                    'string': 'Farm Pregnancy Diagnosis Event',
+                    'model': 'importer.farm.pregnancy_diagnosis.event',
+                    },
+                'farm_abort_diagnosis_event': {
+                    'string': 'Farm Abort Diagnosis Event',
+                    'model': 'importer.farm.abort.event',
+                    },
+                'farm_farrowing_event': {
+                    'string': 'Farm Farrowing Event',
+                    'model': 'importer.farm.farrowing.event',
+                    },
+                'farm_weaning_event': {
+                    'string': 'Farm Weaning Event',
+                    'model': 'importer.farm.weaning.event',
+                    },
+                'farm_transformation_event': {
+                    'string': 'Farm Transformation Event',
+                    'model': 'importer.farm.transformation.event',
+                    },
+                'farm_reclassification_event': {
+                    'string': 'Farm Reclassification Event',
+                    'model': 'importer.farm.reclassification.event',
+                    },
+                })
+        return methods

@@ -1,4 +1,4 @@
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.transaction import Transaction
 from trytond.pool import PoolMeta, Pool
 from trytond.modules.product import round_price
@@ -107,13 +107,89 @@ class ImporterStockMove(ImporterModel):
         return [x[0] for x in to_save]
 
 
-class ImporterLocation(ModelView):
+class ImporterLocation(ImporterModel):
     'Importer Location'
     __name__ = 'importer.location'
     name = fields.Char('Name')
     parent = fields.Char('Parent')
     code = fields.Char('Code')
     type = fields.Char('Type')
+    input_location = fields.Char('Input Location')
+    output_location = fields.Char('Output Location')
+    storage_location = fields.Char('Storage Location')
+    picking_location = fields.Char('Picking Location')
+
+    @classmethod
+    def importer_start(cls):
+        super().importer_start()
+        Setup.get().cache.locations = Cache('stock.location', 'name')
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        Location = pool.get('stock.location')
+
+        cache = Setup.get().cache
+
+        to_save = []
+        by_name = {}
+        for record in records:
+            if not record.name:
+                continue
+
+            location = cache.locations.get(record.name)
+            new_location = location is None
+            if new_location:
+                location = Location()
+                location.name = record.name
+
+            if record.code is not None:
+                location.code = record.code
+            if record.type is not None:
+                if new_location and record.type == 'warehouse':
+                    location.type = 'view'
+                else:
+                    location.type = record.type
+
+            to_save.append((location, record))
+            by_name[record.name] = location
+
+        cls.importer_save(to_save)
+        for location in by_name.values():
+            cache.locations.add(location)
+
+        to_save_parents = []
+        to_save_warehouses = []
+        for location, record in to_save:
+            if record.parent is not None:
+                location.parent = by_name.get(record.parent) or cache.locations.get(
+                    record.parent)
+
+            if record.type == 'warehouse':
+                location.type = 'warehouse'
+                if record.input_location is not None:
+                    location.input_location = (
+                        by_name.get(record.input_location)
+                        or cache.locations.get(record.input_location))
+                if record.output_location is not None:
+                    location.output_location = (
+                        by_name.get(record.output_location)
+                        or cache.locations.get(record.output_location))
+                if record.storage_location is not None:
+                    location.storage_location = (
+                        by_name.get(record.storage_location)
+                        or cache.locations.get(record.storage_location))
+                if record.picking_location is not None:
+                    location.picking_location = (
+                        by_name.get(record.picking_location)
+                        or cache.locations.get(record.picking_location))
+                to_save_warehouses.append((location, record))
+            else:
+                to_save_parents.append((location, record))
+
+        cls.importer_save(to_save_parents)
+        cls.importer_save(to_save_warehouses)
+        return [x[0] for x in to_save]
 
 
 class Importer(metaclass=PoolMeta):
@@ -126,75 +202,22 @@ class Importer(metaclass=PoolMeta):
                 'location': {
                     'string': 'Location',
                     'model': 'importer.location',
-                    'chunked': True,
                     },
                 'stock_move': {
                     'string': 'Stock Move',
                     'model': 'importer.stock.move',
-                    'chunked': True,
                     },
                 'stock_move_inverted': {
                     'string': 'Stock Move (Inverted)',
                     'model': 'importer.stock.move',
-                    'chunked': True,
                     },
                 'stock_move_and_do': {
                     'string': 'Stock Move (and Do)',
                     'model': 'importer.stock.move',
-                    'chunked': True,
                     },
                 'stock_move_and_do_inverted': {
                     'string': 'Stock Move (Inverted + Do)',
                     'model': 'importer.stock.move',
-                    'chunked': True,
                     },
                 })
         return methods
-
-    @classmethod
-    def import_location(cls, records):
-        pool = Pool()
-        Location = pool.get('stock.location')
-
-        locations = {x.name: x for x in Location.search([])}
-
-        to_save = {}
-        updated_locations = []
-        for record in records:
-            if not record.name:
-                continue
-
-            location = locations.get(record.name)
-            if not location:
-                location = Location()
-                location.name = record.name
-            if record.code is not None:
-                location.code = record.code
-
-            if record.parent is not None:
-                if record.parent in to_save:
-                    Location.save(to_save.values())
-                    locations.update(to_save)
-                    to_save = {}
-
-                location.parent = locations.get(record.parent)
-
-            if record.type is not None:
-                location.type = record.type
-
-            to_save[record.name] = location
-            updated_locations.append(location)
-
-        Location.save(to_save.values())
-        return updated_locations
-
-    @classmethod
-    def import_stock_move_and_do(cls, records):
-        pool = Pool()
-        Move = pool.get('stock.move')
-
-        moves = cls.import_stock_move(records)
-        # Avoid warnings because of missing origin
-        with Transaction().set_context(_skip_warnings=True):
-            Move.do(moves)
-        return moves

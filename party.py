@@ -1,15 +1,14 @@
 from datetime import timedelta
 from trytond.tools.email_ import validate_email
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
 from stdnum import get_cc_module
-from trytond.exceptions import UserError
 from trytond.i18n import gettext
 from .tools import ImporterModel, Cache, Setup
 
 
-class ImporterPartyConfiguration(ModelView):
+class ImporterPartyConfiguration(ImporterModel):
     'Importer Party Configuration'
     __name__ = 'importer.party.configuration'
 
@@ -18,6 +17,43 @@ class ImporterPartyConfiguration(ModelView):
     sequence_suffix = fields.Char("Sequence suffix")
     sequence_padding = fields.Integer("Sequence Padding")
     sequence_number_next = fields.Integer("Sequence Number Next")
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+
+        Sequence = pool.get("ir.sequence")
+        Configuration = pool.get("party.configuration")
+        Lang = pool.get("ir.lang")
+        ModelData = pool.get("ir.model.data")
+
+        to_save = []
+        for record in records:
+            configuration = Configuration(1)
+
+            if record.sequence_padding or record.sequence_number_next:
+                sequence = configuration.party_sequence
+
+                if not sequence:
+                    sequence = Sequence()
+                    sequence.name = "Party"
+                    configuration.party_sequence = sequence
+
+                sequence.sequence_type = ModelData.get_id('party',
+                    'sequence_type_party')
+                sequence.prefix = record.sequence_prefix
+                sequence.suffix = record.sequence_suffix
+                sequence.padding = record.sequence_padding
+                sequence.number_next = record.sequence_number_next
+                sequence.save()
+
+            langs = Lang.search(["code", "=", record.language_code], limit=1)
+            if langs:
+                configuration.party_lang, = langs
+            break
+
+        Configuration.save(to_save)
+        return [Configuration(1)]
 
 
 class ImporterParty(ImporterModel):
@@ -28,6 +64,7 @@ class ImporterParty(ImporterModel):
         help="Company field can be used to set company-dependent fields."
         "Better sort records by company prior to import for better "
         "performance.")
+    active = fields.Boolean('Active')
     code = fields.Char('Code')
     name = fields.Char('Name')
     trade_name = fields.Char('Trade Name')
@@ -67,11 +104,11 @@ class ImporterParty(ImporterModel):
         super().importer_start()
 
         cache = Setup.get().cache
-        cache.parties = Cache('party.party', 'code', required=False)
         cache.companies = Cache('company.company',
             key=lambda x: x.party.name.lower())
         cache.banks = Cache('bank', key=lambda x: x.bank_code.zfill(4))
-        cache.bank_accounts = Cache('bank.account.number', 'number_compact')
+        cache.bank_accounts = Cache('bank.account.number', 'number_compact',
+            required=False)
         cache.payment_terms = Cache('account.invoice.payment_term', 'name')
         cache.payment_types = Cache('account.payment.type',
             key=lambda x: (x.name.lower(), x.kind))
@@ -84,16 +121,21 @@ class ImporterParty(ImporterModel):
         cache.inco_terms = Cache('incoterm', 'code')
         cache.languages = Cache('ir.lang', 'code')
         cache.categories = Cache('party.category', 'name')
-        cache.countries = Cache('country.country', 'code', unaccent=True)
+        cache.currencies = Cache('currency.currency', 'code')
+        cache.countries = Cache('country.country', ('code', 'name'), unaccent=True)
         cache.subdivisions = {}
+        cache.postal_codes = {}
         for country in cache.countries.values():
             types = Type.get_types(country)
             cache.subdivisions[country] = Cache('country.subdivision', 'name',
                 domain=[
-                    ('country', '=', country.id),
+                    ('country', '=', country),
                     ('type', 'in', types),
-                ], unaccent=True)
-        cache.postal_codes = Cache('country.subdivision', 'code')
+                    ], unaccent=True)
+            cache.postal_codes[country] = Cache('country.postal_code', 'postal_code', domain=[
+                    ('country', '=', country),
+                    ('subdivision.type', 'in', types),
+                    ], cache_size=50000)
         cache.carriers = Cache('carrier', key=lambda x:x.party.code.lower())
 
     def importer_context(self):
@@ -104,6 +146,15 @@ class ImporterParty(ImporterModel):
             if company:
                 res['company'] = company.id
         return res
+
+    @classmethod
+    def importer_context_start(cls):
+        super().importer_context_start()
+
+        cache = Setup.get().cache
+        cache.parties = Cache('party.party', 'code', required=False, context={
+                'active_test': False,
+                })
 
     @classmethod
     def importer_party(cls, record, party):
@@ -150,10 +201,26 @@ class ImporterParty(ImporterModel):
         company = Transaction().context.get('company')
         vats = {}
         to_save = []
-        to_set_bank_accounts = []
         categories_to_save = []
+        bank_accounts_to_save = []
         notes_to_save = []
         relations_to_save = {}
+
+        def get_bank_account(number):
+            if not number:
+                return None
+            account_number = cache.bank_accounts.get(number.replace(" ", ""))
+            if account_number:
+                return getattr(account_number, 'account', account_number)
+
+        def get_party_bank_account(party, number):
+            if not number:
+                return None
+            number = number.replace(" ", "")
+            for bank_account in party.bank_accounts:
+                for account_number in bank_account.numbers:
+                    if account_number.number.replace(' ', '') == number:
+                        return bank_account
         for record in records:
             setup.current_record = record
             party = None
@@ -167,6 +234,8 @@ class ImporterParty(ImporterModel):
 
             to_save.append((party, record))
 
+            if 'active' in setup.fields:
+                party.active = record.active
             if 'name' in setup.fields:
                 party.name = record.name
             if 'trade_name' in setup.fields:
@@ -210,11 +279,13 @@ class ImporterParty(ImporterModel):
                         country=country.name)
 
             if (not getattr(address, 'subdivision', None)
-                    and country and country.code == 'ES'
                     and record.postal_code):
-                code = cache.postal_codes.get(record.postal_code)
-                if code:
-                    address.subdivision = code.subdivision
+
+                cs = cache.postal_codes.get(country)
+                if cs:
+                    code = cs.get(record.postal_code)
+                    if code:
+                        address.subdivision = code.subdivision
 
             if not getattr(address, 'subdivision', None) and subdivision_error:
                 setup.error(subdivision_error, record)
@@ -400,48 +471,12 @@ class ImporterParty(ImporterModel):
                 party.supplier_tax_rule = cache.tax_rules.get(
                     record.supplier_tax_rule)
 
-            if record.bank_account and 'bank_account' in setup.fields:
-                Currency = pool.get('currency.currency')
-                cache.currencies = dict([(x.code, x) for x in Currency.search([])])
-                party.bank_accounts = []
-                for account in record.bank_account.split('|'):
-                    if (',') in account:
-                        iban, currency_code = account.split(',')
-                    else:
-                        iban = account
-                        currency_code = 'EUR'
-                    iban = iban.replace(" ", "")
-                    currency = cache.currencies.get(currency_code)
-                    if len(iban) < 8:
-                        raise UserError(gettext('importer.wron_iban',
-                            iban_= iban))
-
-                    bank_code = iban[4:8]
-                    bank = cache.banks.get(bank_code)
-                    if not bank:
-                        setup.error(gettext('importer.bank_not_found',
-                            iban=iban))
-                    bank_account = BankAccount()
-                    if bank:
-                        bank_account.bank = bank
-                    bank_account.currency = currency
-                    account_number = AccountNumber()
-                    account_number.account = bank_account
-                    account_number.type = 'iban'
-                    account_number.number = iban
-                    cache.bank_accounts[iban]=account_number
-                    bank_account.numbers = [account_number]
-                    party.bank_accounts += (bank_account,)
-
-                to_set_bank_accounts.append(party)
-
-
             if 'default_payable_company_bank_account' in setup.fields:
-                party.payable_company_bank_account = cache.bank_accounts.get(
+                party.payable_company_bank_account = get_bank_account(
                     record.default_payable_company_bank_account)
 
             if 'default_receivable_company_bank_account' in setup.fields:
-                party.receivable_company_bank_account = cache.bank_accounts.get(
+                party.receivable_company_bank_account = get_bank_account(
                     record.default_receivable_company_bank_account)
 
             if 'agent' in setup.fields and record.agent:
@@ -498,12 +533,6 @@ class ImporterParty(ImporterModel):
                     party_relation.type = type_relation
                     relations_to_save[party.code] = party_relation
 
-            if record.note:
-                note = Note()
-                note.resource = party
-                note.message = record.note
-                notes_to_save.append((note, record))
-
             cls.import_party_party_hook(record, party)
             cls.importer_party(record, party)
 
@@ -511,25 +540,93 @@ class ImporterParty(ImporterModel):
         cls.importer_save(categories_to_save)
         cls.importer_save(to_save)
         # If party has not been saved, do not try to save its notes
-        cls.importer_save([x for x in notes_to_save if x[0].resource.id])
 
-        if 'payable_bank_account' in setup.fields:
-            # These fields must be set after party has been saved as only
-            # accounts in bank_accounts can be used
-            for party in to_set_bank_accounts:
-                if not party.bank_accounts:
-                    continue
-                party.payable_bank_account = party.bank_accounts[0]
-                party.receivable_bank_account = party.bank_accounts[0]
-            cls.importer_save(to_save)
+        # Discard parties that could not be saved
+        to_save = [x for x in to_save if x[0].id]
+
+        if 'note' in setup.fields:
+            for party, record in to_save:
+                setup.current_record = record
+                if record.note:
+                    for item in record.note.split('|'):
+                        note = Note()
+                        note.resource = party
+                        note.message = item
+                        notes_to_save.append((note, record))
+            cls.importer_save(notes_to_save)
 
         if 'relations' in setup.fields:
-            new_parties = dict((x.code, x) for x in to_save)
-            rel_save = []
-            for code, relation in relations_to_save.items():
-                relation.from_ = new_parties.get(code)
-                rel_save.append(relation)
-            cls.importer_save(rel_save)
+            relations_to_save = []
+            for party, record in to_save:
+                setup.current_record = record
+                related = cache.parties.get(record.party_relation)
+                if related:
+                    type_relation = cache.relations.get(record.type_of_relation)
+                    party_relation = Relation()
+                    party_relation.from_ = party
+                    party_relation.to = related
+                    party_relation.type = type_relation
+                    relations_to_save.append((party_relation, record))
+
+            cls.importer_save(relations_to_save)
+
+        if 'bank_account' in setup.fields:
+            for party, record in to_save:
+                setup.current_record = record
+                if record.bank_account:
+                    for account in record.bank_account.split('|'):
+                        if (',') in account:
+                            iban, currency_code = account.split(',')
+                        else:
+                            iban = account
+                            currency_code = 'EUR'
+
+                        iban = iban.replace(' ', '')
+
+                        currency = cache.currencies.get(currency_code)
+                        if len(iban) < 8:
+                            setup.error(gettext('importer.msg_wrong_iban',
+                                iban_=iban))
+                            continue
+
+                        bank_number = cache.bank_accounts.get(iban)
+                        if not bank_number:
+                            bank_code = iban[4:8]
+                            bank = cache.banks.get(bank_code)
+                            bank_account = BankAccount()
+                            bank_account.bank = bank
+                            bank_account.currency = currency
+                            bank_account.owners = (party,)
+                            account_number = AccountNumber()
+                            account_number.account = bank_account
+                            account_number.type = 'iban'
+                            account_number.number = iban
+                            cache.bank_accounts[iban] = account_number
+                            bank_account.numbers = [account_number]
+                            bank_accounts_to_save.append((bank_account, record))
+                        else:
+                            bank_account = bank_number.account
+                            bank_account.owners += (party,)
+                            if bank_account not in [x[0] for x in bank_accounts_to_save]:
+                                bank_accounts_to_save.append((bank_account, record))
+
+            cls.importer_save(bank_accounts_to_save)
+
+
+        if ('default_payable_bank_account' in setup.fields
+                or 'default_receivable_bank_account' in setup.fields):
+
+            for party, record in to_save:
+                setup.current_record = record
+                if record.default_payable_bank_account:
+                    party.payable_bank_account = get_party_bank_account(party,
+                        record.default_payable_bank_account)
+                if record.default_receivable_bank_account:
+                    party.receivable_bank_account = get_party_bank_account(party,
+                        record.default_receivable_bank_account)
+
+            cls.importer_save(to_save)
+
         return [x[0] for x in to_save]
 
 class ImporterPartyAddress(ImporterModel):
@@ -655,10 +752,43 @@ class ImporterAccountDepends(metaclass=PoolMeta):
     __name__ = 'importer.party'
     customer_tax_rule = fields.Char('Customer Tax Rule')
     supplier_tax_rule = fields.Char('Supplier Tax Rule')
+    account_payable = fields.Char('Account Payable')
+    account_receivable = fields.Char('Account Receivable')
+
+    @classmethod
+    def importer_start(cls):
+        super().importer_start()
+        setup = Setup.get()
+        if ('account_payable' not in setup.fields
+                and 'account_receivable' not in setup.fields):
+            return
+        setup.cache.accounts = Cache('account.account',
+            lambda x: (x.company.id, x.code))
+
+    @classmethod
+    def import_party_party_hook(cls, record, party):
+        super().import_party_party_hook(record, party)
+        setup = Setup.get()
+        company = Transaction().context.get('company')
+        if not company:
+            return
+        for field in ('account_payable', 'account_receivable'):
+            if field not in setup.fields:
+                continue
+            account_code = getattr(record, field, None)
+            if not account_code:
+                setattr(party, field, None)
+                continue
+            setattr(party, field, setup.cache.accounts.get(
+                    (company, account_code)))
 
 
 class ImporterCompanyBankDepends(metaclass=PoolMeta):
     __name__ = 'importer.party'
+    default_payable_bank_account = fields.Char(
+        'Default payable bank account')
+    default_receivable_bank_account = fields.Char(
+        'Default receivable bank account')
     default_payable_company_bank_account = fields.Char(
         'Default payable company  Bank Account')
     default_receivable_company_bank_account = fields.Char(
@@ -789,61 +919,21 @@ class Importer(metaclass=PoolMeta):
                 'party': {
                     'string': 'Party',
                     'model': 'importer.party',
-                    'chunked': True,
                     },
                 'contact_mechanism': {
                     'string': 'Contact Mechanism',
                     'model': 'importer.party.contact_mechanism',
-                    'chunked': True,
                     },
                 'party_configuration': {
                     'string': 'Party configuration',
                     'model': 'importer.party.configuration',
-                    'chunked': True,
                     },
                 'party_address': {
                     'string': 'Address',
                     'model': 'importer.party.address',
-                    'chunked': True,
                 },
                 })
         return methods
-
-    @classmethod
-    def import_party_configuration(cls, records):
-        pool = Pool()
-
-        Sequence = pool.get("ir.sequence")
-        Configuration = pool.get("party.configuration")
-        Lang = pool.get("ir.lang")
-        ModelData = pool.get("ir.model.data")
-
-        to_save = []
-        for record in records:
-            configuration = Configuration(1)
-
-            if record.sequence_padding or record.sequence_number_next:
-                sequence = configuration.party_sequence
-
-                if not sequence:
-                    sequence = Sequence()
-                    sequence.name = "Party"
-                    configuration.party_sequence = sequence
-
-                sequence.sequence_type = ModelData.get_id('party', 'sequence_type_party')
-                sequence.prefix = record.sequence_prefix
-                sequence.suffix = record.sequence_suffix
-                sequence.padding = record.sequence_padding
-                sequence.number_next = record.sequence_number_next
-                sequence.save()
-
-            langs = Lang.search(["code", "=", record.language_code], limit=1)
-            if langs:
-                configuration.party_lang, = langs
-            break
-
-        Configuration.save(to_save)
-        return [Configuration(1)]
 
 
 class ImporterHolidaysParty(metaclass=PoolMeta):
@@ -856,7 +946,6 @@ class ImporterHolidaysParty(metaclass=PoolMeta):
                 'party_holidays': {
                     'string': 'Party Holidays',
                     'model': 'importer.party.holidays',
-                    'chunked': True,
                 },
                 })
         return methods
@@ -923,9 +1012,8 @@ class ImportFacturaeAddress(metaclass=PoolMeta):
         methods = super()._get_methods()
         methods.update({
                 'party_facturae': {
-                    'string': 'Party Facutra-e',
+                    'string': 'Party Factura-e',
                     'model': 'importer.address.facturae',
-                    'chunked': True,
                 },
                 })
         return methods

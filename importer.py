@@ -20,7 +20,7 @@ import textdistance
 import datetime
 import charset_normalizer
 from io import StringIO, BytesIO
-import psycopg2
+import psycopg
 import pathlib
 import os
 from trytond.model import ModelSQL, ModelView, fields
@@ -29,6 +29,7 @@ from trytond.pool import Pool
 from trytond.pyson import PYSONEncoder, Eval, Bool
 from trytond.transaction import Transaction
 from trytond.exceptions import UserError, UserWarning
+from trytond.model.exceptions import ValidationError
 from trytond.i18n import gettext
 from trytond.config import config
 from trytond.rpc import RPC
@@ -62,22 +63,6 @@ def save_virtual_workbook(workbook):
         save_workbook(workbook, tmp.name)
         with open(tmp.name, 'rb') as f:
             return f.read()
-
-def grouped_slice(records, count=None):
-    'grouped_slice implementation that works with iterators'
-    if count is None:
-        count = Transaction().database.IN_MAX
-
-    chunk = []
-    counter = 0
-    for record in records:
-        chunk.append(record)
-        counter += 1
-        if counter % count == 0:
-            yield chunk
-            chunk = []
-    if chunk:
-        yield chunk
 
 
 class DataExtractor:
@@ -330,6 +315,10 @@ class Importer(ModelSQL, ModelView):
     log_success = fields.Boolean('Log Success')
     sample_size = fields.Integer('Sample Size', help="Number of records to "
         "import with the sample button.")
+    sample_offset = fields.Integer('Sample Offset',
+        domain=[('sample_offset', '>=', 0)],
+        help="Number of records to skip before importing with the sample "
+        "button.")
     elapsed = fields.TimeDelta('Elapsed Time', readonly=True)
     deletes = fields.Text('Deletes', readonly=True, states={
             'invisible': ~Bool(Eval('deletes')),
@@ -345,6 +334,10 @@ class Importer(ModelSQL, ModelView):
     @staticmethod
     def default_sample_size():
         return 100
+
+    @staticmethod
+    def default_sample_offset():
+        return 0
 
     @staticmethod
     def default_language():
@@ -514,9 +507,9 @@ class Importer(ModelSQL, ModelView):
 
     def check_connection_psql(self):
         try:
-            psycopg2.connect(database = self.database, host=self.server,
+            psycopg.connect(database = self.database, host=self.server,
                 user=self.user, password=self.password, port=5432)
-        except psycopg2.OperationalError:
+        except psycopg.OperationalError:
             raise UserError(gettext('importer.msg_invalid_connection',
                     importer=self.name))
         raise UserError(gettext('importer.msg_successful_connection',
@@ -524,9 +517,9 @@ class Importer(ModelSQL, ModelView):
 
     def get_connection_psql(self, fail=True):
         try:
-            conn = psycopg2.connect(database = self.database, host=self.server,
+            conn = psycopg.connect(database = self.database, host=self.server,
                 user=self.user, password=self.password, port=5432)
-        except psycopg2.OperationalError as e:
+        except psycopg.OperationalError as e:
             if fail:
                 raise UserError(e)
             else:
@@ -786,7 +779,7 @@ class Importer(ModelSQL, ModelView):
         Column = pool.get('importer.column')
 
         for r_column in self.source_columns:
-            column = self.column_match_name(r_column.name, Column)
+            column = self.get_column_matching_name(r_column.name, Column)
             if column:
                 r_column.field = column.field
                 r_column.format = column.format
@@ -815,7 +808,7 @@ class Importer(ModelSQL, ModelView):
                 elif column.name == r_column.name:
                     column.name = None
 
-    def column_match_name(self, name, Model):
+    def get_column_matching_name(self, name, Model):
         columns = Model.search([
             ('importer', '=', self.id),
             ('name', '=', name),
@@ -837,11 +830,6 @@ class Importer(ModelSQL, ModelView):
     @classmethod
     def _get_methods(cls):
         return {}
-
-    @property
-    def chunked(self):
-        info = self._get_methods()
-        return info[self.method]['chunked']
 
     def get_requires_records(self, name):
         # Some importers (such as country) don't really require records as
@@ -870,33 +858,12 @@ class Importer(ModelSQL, ModelView):
     def import_sample(cls, importers):
         pass
 
-    def old_data_to_records(self, data=None):
-        # Records will be an iterator
-        method = getattr(self, 'import_' + self.method)
-        if self.requires_records:
-            new_records = []
-            if self.chunked:
-                for records in grouped_slice(self.get_records(data=data)):
-                    new_records += method(records)
-            else:
-                new_records += method(self.get_records(data=data))
-        else:
-            new_records = method()
-        return new_records
-
-    def data_to_records(self, data=None, sample=None):
+    def data_to_records(self, data=None, sample=None, sample_offset=0):
         pool = Pool()
         Model = pool.get(self.model.name)
         Log = pool.get('importer.log')
 
         start = time.time()
-        if not hasattr(Model, 'importer_start'):
-            with Transaction().set_context(language=self.get_language_code()):
-                res = self.old_data_to_records(data)
-            self.elapsed = datetime.timedelta(seconds=time.time() - start)
-            self.save()
-            return res
-
         setup = tools.Setup()
         setup.method = self.method
         setup.on_error = self.on_error
@@ -912,7 +879,7 @@ class Importer(ModelSQL, ModelView):
                 use_subtransactions=self.use_subtransactions):
             Model.importer_start()
             if not self.requires_records:
-                return Model.importer_import(fields, [])
+                return Model.importer_import([])
 
             new_records = []
             # In the first iteration we will call the method with a small limit
@@ -924,9 +891,15 @@ class Importer(ModelSQL, ModelView):
             subrecords = []
             new_records = []
             count = 0
+            sample_offset = max(sample_offset or 0, 0)
+            skipped = 0
             batch_start = time.time()
             importer_records = []
+            context_start = True
             for record in self.get_records(data=data):
+                if skipped < sample_offset:
+                    skipped += 1
+                    continue
                 if self.log_success:
                     importer_records.append(record)
                 # We do not sort based on context so there can be performance issues
@@ -942,11 +915,14 @@ class Importer(ModelSQL, ModelView):
                             call = True
                 elif len(subrecords) >= limit:
                     call = True
-                elif context != previous_context:
+                elif subrecords and context != previous_context:
                     call = True
 
                 if call:
                     with Transaction().set_context(previous_context):
+                        if context_start:
+                            Model.importer_context_start()
+                            context_start = False
                         batch = Model.importer_import(subrecords)
                     if self.commit_chunks:
                         Transaction().commit()
@@ -962,12 +938,16 @@ class Importer(ModelSQL, ModelView):
                     limit = LIMIT
                 count += 1
                 subrecords.append(record)
+                if context != previous_context:
+                    context_start = True
                 previous_context = context
                 if sample and count >= sample:
                     break
 
             if subrecords:
                 with Transaction().set_context(previous_context):
+                    if context_start:
+                        Model.importer_context_start()
                     batch = Model.importer_import(subrecords)
                 new_records += batch
                 logger.info('Batch (imported/processed/time): %d/%d/%.2f. '
@@ -1332,7 +1312,7 @@ class ImporterColumn(ModelSQL, ModelView):
                 return None
         elif ttype == 'boolean':
             value = str(value).strip()
-            if value.lower() in ('false', 'off', '0', ''):
+            if value.lower() in ('false', 'off', '0', '', 'no', 'n', 'f'):
                 return False
             else:
                 return True
@@ -1350,7 +1330,7 @@ class ImporterColumn(ModelSQL, ModelView):
             int(self.name)
         except ValueError:
             if not re.fullmatch('[A-Z]+', self.name):
-                raise UserError(gettext('importer.invalid_column_name',
+                raise ValidationError(gettext('importer.invalid_column_name',
                         name=self.name, column=self.rec_name,
                         importer=self.importer))
 
@@ -1615,7 +1595,9 @@ class ImportSample(Wizard):
     import_ = StateAction('importer.act_import_open')
 
     def do_import_(self, action):
-        records = self.record.data_to_records(sample=self.record.sample_size or 100)
+        records = self.record.data_to_records(
+            sample=self.record.sample_size or 100,
+            sample_offset=self.record.sample_offset or 0)
         if not records:
             Transaction().commit()
             raise UserError(gettext('importer.no_records_imported',

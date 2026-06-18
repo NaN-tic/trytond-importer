@@ -1,9 +1,10 @@
 from decimal import Decimal
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
+from .tools import ImporterModel
 
 
-class ImporterProductAgronomics(ModelView):
+class ImporterProductAgronomics(ImporterModel):
     'Importer Product Agronomics'
     __name__ = 'importer.product.agronomics'
 
@@ -29,24 +30,8 @@ class ImporterProductAgronomics(ModelView):
     alcohol_content = fields.Char('Alcohol Content')
     brand = fields.Char('Brand')
 
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'product_agronomics': {
-                    'string': 'Product Agronomics',
-                    'model': 'importer.product.agronomics',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_product_agronomics(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Product = pool.get('product.product')
         Template = pool.get('product.template')
@@ -229,3 +214,18 @@ class Importer(metaclass=PoolMeta):
         Template.save(to_save)
         Product.save(products_to_save)
         return to_save
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'product_agronomics': {
+                    'string': 'Product Agronomics',
+                    'model': 'importer.product.agronomics',
+                    },
+                })
+        return methods

@@ -1,10 +1,11 @@
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
+from .tools import ImporterModel
 
 
-class ImporterUser(ModelView):
+class ImporterUser(ImporterModel):
     'Importer User'
     __name__ = 'importer.user'
 
@@ -17,30 +18,14 @@ class ImporterUser(ModelView):
     groups = fields.Char('Groups', help="Comma separated list of group names")
     roles = fields.Char('Roles', help="Comma separated list of role names")
     companies = fields.Char('Companies',
-        help="Comma separated list of company names")
+        help="Pipe '|' separated list of company names")
     company = fields.Char('Company')
     employees = fields.Char('Employees',
         help="Comma separated list of employee names")
     employee = fields.Char('Employee')
 
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'user': {
-                    'string': 'Users',
-                    'model': 'importer.user',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_user(cls, records, force=False):
+    def importer_import(cls, records):
         pool = Pool()
         User = pool.get('res.user')
         Group = pool.get('res.group')
@@ -63,6 +48,7 @@ class Importer(metaclass=PoolMeta):
 
         groups = Group.search([])
         groups = {x.name: x for x in groups}
+        admin_groups = list(User(1).groups)
 
         if Role:
             roles = Role.search([])
@@ -105,11 +91,15 @@ class Importer(metaclass=PoolMeta):
 
             if record.groups:
                 groups_to_add = []
-                for group in [x.strip() for x in record.groups.split(',')]:
-                    if group.strip() not in groups:
-                        raise UserError(gettext('importer.msg_group_not_found',
-                                name=group))
-                    groups_to_add.append(groups[group])
+                record_groups = [x.strip() for x in record.groups.split(',')]
+                if 'all' in record_groups:
+                    groups_to_add = admin_groups
+                else:
+                    for group in record_groups:
+                        if group.strip() not in groups:
+                            raise UserError(gettext('importer.msg_group_not_found',
+                                    name=group))
+                        groups_to_add.append(groups[group])
                 user.groups = groups_to_add
 
             if record.roles and Role:
@@ -161,3 +151,18 @@ class Importer(metaclass=PoolMeta):
 
         User.save(to_save)
         return to_save
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'user': {
+                    'string': 'Users',
+                    'model': 'importer.user',
+                    },
+                })
+        return methods

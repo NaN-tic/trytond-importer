@@ -101,7 +101,6 @@ class Importer(metaclass=PoolMeta):
                 'meta': {
                     'string': 'Importer',
                     'model': 'importer.meta',
-                    'chunked': False, # Deprecated
                     },
                 })
         return methods

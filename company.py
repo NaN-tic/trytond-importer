@@ -1,10 +1,11 @@
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
+from .tools import ImporterModel
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
 
 
-class ImporterCompany(ModelView):
+class ImporterCompany(ImporterModel):
     'Importer Company'
     __name__ = 'importer.company'
 
@@ -12,42 +13,9 @@ class ImporterCompany(ModelView):
     currency = fields.Char("Currency")
     timezone = fields.Char("timezone")
 
-
-class ImporterEmployee(ModelView):
-    'Importer Employoee'
-    __name__ = 'importer.employee'
-
-    name = fields.Char('Name')
-    company = fields.Char('Company')
-    start_date = fields.Date('Start Date')
-    end_date = fields.Date('End Date')
-    supervisor = fields.Char('Supervisor')
-
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'company': {
-                    'string': 'Company',
-                    'model': 'importer.company',
-                    'chunked': True,
-                    },
-                'employee': {
-                    'string': 'Employee',
-                    'model': 'importer.employee',
-                    'chunked': True,
-                    }
-                })
-        return methods
-
-    @classmethod
-    def import_company(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
-
         Company = pool.get("company.company")
         Currency = pool.get("currency.currency")
         Party = pool.get("party.party")
@@ -89,8 +57,19 @@ class Importer(metaclass=PoolMeta):
         Company.save(to_save)
         return to_save
 
+
+class ImporterEmployee(ImporterModel):
+    'Importer Employoee'
+    __name__ = 'importer.employee'
+
+    name = fields.Char('Name')
+    company = fields.Char('Company')
+    start_date = fields.Date('Start Date')
+    end_date = fields.Date('End Date')
+    supervisor = fields.Char('Supervisor')
+
     @classmethod
-    def import_employee(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Company = pool.get("company.company")
         Employee = pool.get("company.employee")
@@ -136,8 +115,26 @@ class Importer(metaclass=PoolMeta):
                             supervisor=record.supervisor))
                 employee.supervisor, = supervisors
 
-            # Save on each iteration so we can import supervisors in the same file
             employee.save()
             saved.append(employee)
 
         return saved
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'company': {
+                    'string': 'Company',
+                    'model': 'importer.company',
+                    },
+                'employee': {
+                    'string': 'Employee',
+                    'model': 'importer.employee',
+                    }
+                })
+        return methods

@@ -1,5 +1,5 @@
 from decimal import Decimal
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.modules.product import price_digits, round_price
 from trytond.pool import PoolMeta, Pool
 from trytond.i18n import gettext
@@ -41,6 +41,10 @@ class ImporterProduct(ImporterModel):
     location = fields.Char('Location')
     customer = fields.Char('Customer')
     customer_code = fields.Char('Customer Code')
+    brand_product_identifier = fields.Char('Brand Product Identifier')
+    manufacturer_part_identifier = fields.Char(
+        'Manufacturer Part Identifier')
+    ean = fields.Char('EAN')
 
     @classmethod
     def importer_template(self, template):
@@ -73,14 +77,6 @@ class ImporterProduct(ImporterModel):
         cache.uoms = Cache('product.uom', ('name', 'symbol'))
         cache.categories = Cache('product.category', 'name')
         cache.bom_routes = Cache('production.route', 'name')
-        cache.products = Cache('product.product', 'code', domain=[
-                ('code', '!=', None),
-                ('code', '!=', ''),
-                ], required=False)
-        cache.templates = Cache('product.template', 'code', domain=[
-                ('code', '!=', None),
-                ('code', '!=', ''),
-                ], required=False)
         cache.accounts = Cache('account.account',
             lambda x: (x.company.id, x.code))
 
@@ -94,6 +90,19 @@ class ImporterProduct(ImporterModel):
         return res
 
     @classmethod
+    def importer_context_start(cls):
+        super().importer_start()
+        cache = Setup.get().cache
+        cache.products = Cache('product.product', 'code', domain=[
+                ('code', '!=', None),
+                ('code', '!=', ''),
+                ], required=False)
+        cache.templates = Cache('product.template', 'code', domain=[
+                ('code', '!=', None),
+                ('code', '!=', ''),
+                ], required=False)
+
+    @classmethod
     def importer_import(cls, records):
         pool = Pool()
         Product = pool.get('product.product')
@@ -101,6 +110,7 @@ class ImporterProduct(ImporterModel):
         ProductCategory = pool.get('product.category')
         Template = pool.get('product.template')
         ProductCostPriceMethod = pool.get('product.cost_price_method')
+        Identifier = pool.get('product.identifier')
         Note = pool.get('ir.note')
 
         def object_to_set(template, product, field):
@@ -108,6 +118,30 @@ class ImporterProduct(ImporterModel):
             if isinstance(field, fields.Function) and not field.setter:
                 return template
             return product
+
+        def split_identifiers(value):
+            if not value:
+                return []
+            return [x.strip() for x in value.split(',') if x.strip()]
+
+        def replace_identifiers(product, type_, value):
+            identifiers = list(getattr(product, 'identifiers', []))
+            identifiers = [identifier for identifier in identifiers
+                if identifier.type != type_]
+            codes = split_identifiers(value)
+            existing = {(identifier.type, identifier.code)
+                for identifier in identifiers}
+            for code in codes:
+                key = (type_, code)
+                if key in existing:
+                    continue
+                identifier = Identifier()
+                identifier.type = type_
+                identifier.code = code
+                identifier.product = product
+                identifiers.append(identifier)
+                existing.add(key)
+            product.identifiers = identifiers
 
         setup = Setup.get()
         cache = setup.cache
@@ -366,6 +400,14 @@ class ImporterProduct(ImporterModel):
                 product.cost_price = record.cost_price or Decimal(0)
             if 'description' in setup.fields:
                 product.description = record.description
+            if 'brand_product_identifier' in setup.fields:
+                replace_identifiers(product, 'brand',
+                    record.brand_product_identifier)
+            if 'manufacturer_part_identifier' in setup.fields:
+                replace_identifiers(product, 'mpn',
+                    record.manufacturer_part_identifier)
+            if 'ean' in setup.fields:
+                replace_identifiers(product, 'ean', record.ean)
 
             # If product exist the packages are set all new, not updated.
             if 'packages' in setup.fields and record.packages:
@@ -380,9 +422,11 @@ class ImporterProduct(ImporterModel):
                 template.packages = packages
 
             if 'template_note' in setup.fields and record.template_note:
-                notes.append((record, template, record.template_note))
+                for item in record.template_note.split('|'):
+                    notes.append((record, template, item))
             if 'product_note' in setup.fields and record.product_note:
-                notes.append((record, product, record.product_note))
+                for item in record.product_note.split('|'):
+                    notes.append((record, product, record.product_note))
             cls.importer_template_hook(record, template)
             cls.importer_product_hook(record, product)
             record.importer_template(template)
@@ -407,7 +451,97 @@ class ImporterProduct(ImporterModel):
         return [x[0] for x in to_save]
 
 
-class ImporterProductConfiguration(ModelView):
+class ImporterProductCustomer(ImporterModel):
+    'Importer Product Customer'
+    __name__ = 'importer.product.customer'
+
+    party = fields.Char('Party')
+    template = fields.Char('Template')
+    product = fields.Char('Product')
+    name = fields.Char('Name')
+    code = fields.Char('Code')
+
+    @classmethod
+    def importer_start(cls):
+        pool = Pool()
+        ProductCustomer = pool.get('sale.product_customer')
+
+        super().importer_start()
+        cache = Setup.get().cache
+        cache.parties = Cache('party.party', ['code', 'name'],
+            context={'active_test': False}, duplicates='abort-on-use')
+        cache.products = Cache('product.product', 'code',
+            context={'active_test': False}, duplicates='abort-on-use',
+            required=False)
+        cache.templates = Cache('product.template', 'code',
+            context={'active_test': False}, duplicates='abort-on-use',
+            required=False)
+        cache.product_customers = Cache('sale.product_customer',
+            lambda x: (x.party.id, x.template.id, x.product and x.product.id),
+            context={'active_test': False}, required=False)
+        cache.default_product_customer_values = ProductCustomer.default_get(
+            list(ProductCustomer._fields.keys()), with_rec_name=False)
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        ProductCustomer = pool.get('sale.product_customer')
+
+        setup = Setup.get()
+        cache = setup.cache
+
+        to_save = {}
+        for record in records:
+            setup.current_record = record
+
+            party = cache.parties.get(record.party)
+            if not party:
+                record.importer_error('Party not found')
+                continue
+
+            product = None
+            template = None
+            if record.product:
+                product = cache.products.get(record.product)
+                if not product:
+                    record.importer_error('Product not found')
+                    continue
+                template = product.template
+
+            if record.template:
+                template = cache.templates.get(record.template)
+                if not template:
+                    record.importer_error('Template not found')
+                    continue
+
+            if not template:
+                record.importer_error('Missing template/product')
+                continue
+
+            if product and template and product.template != template:
+                record.importer_error('Template does not match product')
+                continue
+
+            key = (party.id, template.id, product and product.id)
+            product_customer = cache.product_customers.get(key)
+            if not product_customer:
+                product_customer = ProductCustomer(
+                    **cache.default_product_customer_values)
+            product_customer.party = party
+            product_customer.template = template
+            product_customer.product = product
+
+            record.importer_assign(product_customer)
+
+            to_save[key] = (product_customer, record)
+
+        setup.current_record = None
+        to_save = list(to_save.values())
+        cls.importer_save(to_save)
+        return [x[0] for x in to_save]
+
+
+class ImporterProductConfiguration(ImporterModel):
     'Importer Product Configuration'
     __name__ = "importer.product.configuration"
 
@@ -420,6 +554,54 @@ class ImporterProductConfiguration(ModelView):
     product_sequence_suffix = fields.Char("Variant Sequence suffix")
     product_sequence_padding = fields.Integer("Variant Sequence padding")
     product_sequence_number_next = fields.Integer("Variant Sequence number next")
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+
+        Sequence = pool.get("ir.sequence")
+        Configuration = pool.get("product.configuration")
+        ModelData = pool.get("ir.model.data")
+
+        configs = []
+        for record in records:
+            configuration = Configuration(1)
+            configuration.default_cost_price_method = record.cost_price_method
+
+            if record.template_sequence_padding or record.template_sequence_number_next:
+                sequence = configuration.product_sequence
+
+                if not sequence:
+                    sequence = Sequence()
+                    sequence.name = "Product Template"
+                    configuration.template_sequence = sequence
+
+                sequence.sequence_type = ModelData.get_id('product',
+                    'sequence_type_template')
+                sequence.prefix = record.template_sequence_prefix
+                sequence.suffix = record.template_sequence_suffix
+                sequence.padding = record.template_sequence_padding
+                sequence.number_next = record.template_sequence_number_next
+                sequence.save()
+
+            if record.product_sequence_padding or record.product_sequence_number_next:
+                sequence = configuration.product_sequence
+
+                if not sequence:
+                    sequence = Sequence()
+                    sequence.name = "Product Variant"
+                    configuration.product_sequence = sequence
+
+                sequence.sequence_type = ModelData.get_id('product',
+                    'sequence_type_product')
+                sequence.prefix = record.product_sequence_prefix
+                sequence.suffix = record.product_sequence_suffix
+                sequence.padding = record.product_sequence_padding
+                sequence.number_next = record.product_sequence_number_next
+                sequence.save()
+            configuration.save()
+            configs.append(configuration)
+        return configs
 
 
 class ImporterProductProductionDepends(metaclass=PoolMeta):
@@ -641,7 +823,7 @@ class ImporterProductAttributes(ImporterModel):
         return [x[0] for x in to_save]
 
 
-class ImporterProductCodes(ModelView):
+class ImporterProductCodes(ImporterModel):
     'Importer Product'
     __name__ = 'importer.product_codes'
 
@@ -651,34 +833,8 @@ class ImporterProductCodes(ModelView):
     type_ = fields.Char('type')
     code = fields.Char('Code')
 
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'product': {
-                    'string': 'Product',
-                    'model': 'importer.product',
-                    'chunked': False,
-                    },
-                'product_codes': {
-                    'string': 'Product Codes',
-                    'model': 'importer.product_codes',
-                    'chunked': True,
-                    },
-                'product_configuration': {
-                    'string': 'Product configuration',
-                    'model': 'importer.product.configuration',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_product_codes(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         Product = pool.get('product.product')
         Identifier = pool.get('product.identifier')
@@ -701,7 +857,6 @@ class Importer(metaclass=PoolMeta):
             identifier.code = record.code
             product = products.get(code)
             if not product:
-                # TODO: Raise an error
                 continue
             identifier.product = product
             to_save.append(identifier)
@@ -709,55 +864,32 @@ class Importer(metaclass=PoolMeta):
         Identifier.save(to_save)
         return to_save
 
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
     @classmethod
-    def import_product_configuration(cls, records):
-        pool = Pool()
-
-        Sequence = pool.get("ir.sequence")
-        Configuration = pool.get("product.configuration")
-        ModelData = pool.get("ir.model.data")
-
-        configs = []
-        for record in records:
-            configuration = Configuration(1)
-            configuration.default_cost_price_method = record.cost_price_method
-
-            if record.template_sequence_padding or record.template_sequence_number_next:
-                sequence = configuration.product_sequence
-
-                if not sequence:
-                    sequence = Sequence()
-                    sequence.name = "Product Template"
-                    configuration.template_sequence = sequence
-
-                sequence.sequence_type = ModelData.get_id('product', 'sequence_type_template')
-                sequence.prefix = record.template_sequence_prefix
-                sequence.suffix = record.template_sequence_suffix
-                sequence.padding = record.template_sequence_padding
-                sequence.number_next = record.template_sequence_number_next
-                sequence.save()
-
-            if record.product_sequence_padding or record.product_sequence_number_next:
-                sequence = configuration.product_sequence
-
-                if not sequence:
-                    sequence = Sequence()
-                    sequence.name = "Product Variant"
-                    configuration.product_sequence = sequence
-
-                sequence.sequence_type = ModelData.get_id('product', 'sequence_type_product')
-                sequence.prefix = record.product_sequence_prefix
-                sequence.suffix = record.product_sequence_suffix
-                sequence.padding = record.product_sequence_padding
-                sequence.number_next = record.product_sequence_number_next
-                sequence.save()
-
-
-            configuration.save()
-            configs.append(configuration)
-
-        return configs
-
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'product': {
+                    'string': 'Product',
+                    'model': 'importer.product',
+                    },
+                'product_codes': {
+                    'string': 'Product Codes',
+                    'model': 'importer.product_codes',
+                    },
+                'product_configuration': {
+                    'string': 'Product configuration',
+                    'model': 'importer.product.configuration',
+                    },
+                'sale_product_customer': {
+                    'string': 'Product Customer',
+                    'model': 'importer.product.customer',
+                    },
+                })
+        return methods
 class ImporterProductAttributeStrictDepends(metaclass=PoolMeta):
     __name__ = 'importer'
 
@@ -768,6 +900,5 @@ class ImporterProductAttributeStrictDepends(metaclass=PoolMeta):
                     'product_atrributes': {
                     'string': 'Product Attributes',
                     'model': 'importer.product.attributes',
-                    'chunked': True,
                     }})
         return methods

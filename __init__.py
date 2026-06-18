@@ -5,6 +5,7 @@ from trytond.pool import Pool
 from . import agronomics
 from . import account
 from . import activity
+from . import asset
 from . import bank
 from . import bank_es
 from . import carrier
@@ -68,6 +69,11 @@ def register():
         importer.Export,
         module='importer', type_='report')
     Pool.register(
+        asset.ImporterAsset,
+        asset.Importer,
+        depends=['aeat_347', 'asset', 'asset_property'],
+        module='importer', type_='model')
+    Pool.register(
         party_credit.ImporterPartyCredit,
         party_credit.Importer,
         depends=['account_insurance_credit_limit'],
@@ -91,6 +97,10 @@ def register():
         price_list.Importer,
         price_list.ImporterPriceList,
         depends=['product_price_list'],
+        module='importer', type_='model')
+    Pool.register(
+        price_list.ImporterPriceListSaleDiscountPriceList,
+        depends=['product_price_list', 'sale_discount_price_list'],
         module='importer', type_='model')
     Pool.register(
         sale.Importer,
@@ -163,6 +173,10 @@ def register():
         product.ImporterProductAttributes,
         product.ImporterProductAttributeStrictDepends,
         depends=['product_attribute_strict'],
+        module='importer', type_='model')
+    Pool.register(
+        product.ImporterProductCustomer,
+        depends=['sale_product_customer'],
         module='importer', type_='model')
     Pool.register(
         account.ImporterAccountAssetAnalyticDepends,
@@ -312,6 +326,7 @@ def register():
     Pool.register(
         bank.Importer,
         bank.ImporterBank,
+        bank.ImporterBankAccount,
         depends=['bank'],
         module='importer', type_='model')
     Pool.register(

@@ -59,7 +59,6 @@ class Importer(metaclass=PoolMeta):
                 'activity_type': {
                     'string': 'Activity Type',
                     'model': 'importer.activity.type',
-                    'chunked': False,
                     }
                 })
         return methods

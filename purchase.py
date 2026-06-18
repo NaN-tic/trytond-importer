@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
 from trytond.exceptions import UserError
 from trytond.i18n import gettext
@@ -10,7 +10,7 @@ from .tools import ImporterModel, Cache, Setup
 
 
 
-class ImporterPurchase(ModelView):
+class ImporterPurchase(ImporterModel):
     'Importer Purchase'
     __name__ = 'importer.purchase'
 
@@ -27,8 +27,148 @@ class ImporterPurchase(ModelView):
     discount = fields.Numeric('Discount')
     state = fields.Char('State')
 
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+        Purchase = pool.get('purchase.purchase')
+        Line = pool.get('purchase.line')
+        Party = pool.get('party.party')
+        Product = pool.get('product.product')
+        Currency = pool.get('currency.currency')
 
-class ImporterPurchaseConfiguration(ModelView):
+        force = Setup.get().method == 'purchase_force'
+
+        currencies = {x.name: x for x in Currency.search([])}
+        currencies.update({x.symbol: x for x in Currency.search([])})
+
+        purchase = None
+        purchases_to_save = []
+        lines_to_save = []
+        previous_header = None
+
+        to_quote = []
+        to_confirm = []
+        to_process = []
+
+        for record in records:
+            header = (record.reference, record.date, record.party_name)
+            if any(header) and header != previous_header:
+                previous_header = header
+                values = Purchase.default_get(
+                    list(Purchase._fields.keys()), with_rec_name=False)
+                if record.invoice_method:
+                    values['invoice_method'] = record.invoice_method
+
+                purchases = []
+                if record.purchase_number:
+                    domain = [('number', '=', record.purchase_number)]
+                    if record.date:
+                        domain += [('purchase_date', '=', record.date)]
+                    purchases = Purchase.search(domain, limit=1)
+
+                purchase = Purchase(**values)
+                if not purchases:
+                    purchases_to_save.append(purchase)
+                purchase.reference = record.reference
+                purchase_date = record.date
+                if isinstance(record.date, datetime):
+                    purchase_date = record.date.date()
+                purchase.purchase_date = purchase_date
+
+                if record.state:
+                    if record.state in ('draft', 'cancelled', 'done'):
+                        purchase.state = record.state
+                    elif record.state == 'quote':
+                        to_quote += [purchase]
+                    elif record.state == 'confirm':
+                        to_confirm += [purchase]
+                    elif record.state == 'process':
+                        to_process += [purchase]
+
+                if record.purchase_number:
+                    purchase.number = record.purchase_number
+
+                party_domain=[]
+                parties = []
+                if record.party_name:
+                    party_domain.append(('name', '=', record.party_name))
+                if record.party_code:
+                    party_domain.append(('code', '=', record.party_code))
+                if party_domain and party_domain != []:
+                    with Transaction().set_context(active_test=False):
+                        parties = Party.search(party_domain)
+
+                if len(parties) != 1:
+                    raise UserError(gettext('importer.single_party_error',
+                            party=record.party_code))
+
+                purchase.party = parties[0]
+                purchase.on_change_party()
+
+                if record.currency and record.currency in currencies.keys():
+                    purchase.currency = currencies.get(record.currency)
+
+                if record.invoice_method:
+                    purchase.invoice_method = record.invoice_method
+
+            if not purchase or not purchase.party:
+                continue
+
+            if record.product_code:
+                with Transaction().set_context(active_test=False):
+                    products = Product.search([
+                        ('code', '=', record.product_code),
+                        ('purchasable', '=', True),
+                        ])
+                if len(products) != 1:
+                    active_products = []
+                    for product in products:
+                        if product.active:
+                            active_products.append(product)
+                    if len(active_products) == 1:
+                        products = active_products
+                    else:
+                        raise UserError(gettext('importer.single_product_error',
+                            product=record.product_code))
+
+                values = Line.default_get(
+                    list(Line._fields.keys()), with_rec_name=False)
+                line = Line(**values)
+                product = products[0]
+                template = product.template
+                if force and not template.purchasable:
+                    template.purchasable = True
+                    template.save()
+
+                line.purchase = purchase
+                line.product = product
+                line.on_change_product()
+                line.quantity = record.quantity
+                line.on_change_quantity()
+                if 'product_package' in Line._fields:
+                    line.product_package = None
+                    line.package_quantity = None
+                if record.unit_price is not None:
+                    line.unit_price = round_price(record.unit_price)
+                lines_to_save.append(line)
+
+        for to_save in grouped_slice(purchases_to_save):
+            Purchase.save(list(to_save))
+
+        for to_save in grouped_slice(lines_to_save):
+            Line.save(list(to_save))
+
+        to_confirm += to_process
+        to_quote += to_confirm
+
+        Purchase.quote(to_quote)
+        Purchase.confirm(to_confirm)
+        Purchase.process(to_process)
+
+        return purchases_to_save
+
+
+class ImporterPurchaseConfiguration(ImporterModel):
     'Importer Purchase Configuration'
     __name__ = 'importer.purchase.configuration'
 
@@ -39,6 +179,49 @@ class ImporterPurchaseConfiguration(ModelView):
     sequence_number_next = fields.Integer("Purchase sequence number next")
     invoice_method = fields.Char("Purchase invoice method")
     process_after = fields.Char("Purchase process after")
+
+    @classmethod
+    def importer_import(cls, records):
+        pool = Pool()
+
+        Sequence = pool.get("ir.sequence")
+        Configuration = pool.get("purchase.configuration")
+        ModelData = pool.get("ir.model.data")
+        Company = pool.get("company.company")
+
+        configs = []
+        for record in records:
+            if record.company:
+                company, = Company.search([('party.name', '=', record.company)])
+                company_id = company.id
+            else:
+                company_id = Transaction().context.get('company')
+            with Transaction().set_context(company=company_id):
+                configuration = Configuration(1)
+                configuration.purchase_invoice_method = record.invoice_method
+                configuration.purchase_process_after = record.process_after
+
+                if record.sequence_padding or record.sequence_number_next:
+                    sequence = configuration.purchase_sequence
+
+                    if not sequence or (
+                            sequence.company and sequence.company.id != company_id):
+                        sequence = Sequence()
+                        sequence.name = "Purchase"
+                        configuration.purchase_sequence = sequence
+                    sequence.company = company_id
+                    sequence.sequence_type = ModelData.get_id('purchase',
+                        'sequence_type_purchase')
+                    sequence.prefix = record.sequence_prefix
+                    sequence.suffix = record.sequence_suffix
+                    sequence.padding = record.sequence_padding
+                    sequence.number_next = record.sequence_number_next
+                    sequence.save()
+
+                configuration.save()
+                configs.append(configuration)
+
+        return configs
 
 
 class ImporterProductSupplier(ImporterModel):
@@ -243,210 +426,18 @@ class Importer(metaclass=PoolMeta):
                 'purchase': {
                     'string': 'Purchase',
                     'model': 'importer.purchase',
-                    'chunked': False,
                     },
                 'purchase_force': {
                     'string': 'Purchase Force',
                     'model': 'importer.purchase',
-                    'chunked': False,
                     },
                 'purchase_product_supplier': {
                     'string': 'Purchase Product Supplier',
                     'model': 'importer.product.supplier',
-                    'chunked': False,
                     },
                 'purchase_configuration': {
                     'string': 'Purchase configuration',
                     'model': 'importer.purchase.configuration',
-                    'chunked': False,
                     },
                 })
         return methods
-
-    @classmethod
-    def import_purchase_header(cls, record):
-        return (record.reference, record.date, record.party_name)
-
-    @classmethod
-    def import_purchase_force(cls, records):
-        return cls.import_purchase(records, force=True)
-
-    @classmethod
-    def import_purchase(cls, records, force=False):
-        pool = Pool()
-        Purchase = pool.get('purchase.purchase')
-        Line = pool.get('purchase.line')
-        Party = pool.get('party.party')
-        Product = pool.get('product.product')
-        Currency = pool.get('currency.currency')
-
-        currencies = {x.name: x for x in Currency.search([])}
-        currencies.update({x.symbol: x for x in Currency.search([])})
-
-        purchase = None
-        purchases_to_save = []
-        lines_to_save = []
-        previous_header = None
-
-        to_quote = []
-        to_confirm = []
-        to_process = []
-
-        for record in records:
-            header = cls.import_purchase_header(record)
-            if any(header) and header != previous_header:
-                previous_header = header
-                values = Purchase.default_get(
-                    list(Purchase._fields.keys()), with_rec_name=False)
-                if record.invoice_method:
-                    values['invoice_method'] = record.invoice_method
-
-                purchases = []
-                if record.purchase_number:
-                    domain = [('number', '=', record.purchase_number)]
-                    if record.date:
-                        domain += [('purchase_date', '=', record.date)]
-                    purchases = Purchase.search(domain, limit=1)
-
-                purchase = Purchase(**values)
-                if not purchases:
-                    purchases_to_save.append(purchase)
-                purchase.reference = record.reference
-                purchase_date = record.date
-                if isinstance(record.date, datetime):
-                    purchase_date = record.date.date()
-                purchase.purchase_date = purchase_date
-
-                # purchase workflow (states)
-                if record.state:
-                    if record.state in ('draft', 'cancelled', 'done'):
-                        purchase.state = record.state
-                    elif record.state == 'quote':
-                        to_quote += [purchase]
-                    elif record.state == 'confirm':
-                        to_confirm += [purchase]
-                    elif record.state == 'process':
-                        to_process += [purchase]
-
-                if record.purchase_number:
-                    purchase.number = record.purchase_number
-
-                party_domain=[]
-                parties = []
-                if record.party_name:
-                    party_domain.append(('name', '=', record.party_name))
-                if record.party_code:
-                    party_domain.append(('code', '=', record.party_code))
-                if party_domain and party_domain != []:
-                    with Transaction().set_context(active_test=False):
-                        parties = Party.search(party_domain)
-
-                if len(parties) != 1:
-                    raise UserError(gettext('importer.single_party_error',
-                            party=record.party_code))
-
-                purchase.party = parties[0]
-                purchase.on_change_party()
-
-                if record.currency and record.currency in currencies.keys():
-                    purchase.currency = currencies.get(record.currency)
-
-                if record.invoice_method:
-                    purchase.invoice_method = record.invoice_method
-
-            if not purchase or not purchase.party:
-                continue
-
-            if record.product_code:
-                with Transaction().set_context(active_test=False):
-                    products = Product.search([
-                        ('code', '=', record.product_code),
-                        ('purchasable', '=', True),
-                        ])
-                if len(products) != 1:
-                    active_products = []
-                    for product in products:
-                        if product.active:
-                            active_products.append(product)
-                    if len(active_products) == 1:
-                        products = active_products
-                    else:
-                        raise UserError(gettext('importer.single_product_error',
-                            product=record.product_code))
-
-                values = Line.default_get(
-                    list(Line._fields.keys()), with_rec_name=False)
-                line = Line(**values)
-                product = products[0]
-                template = product.template
-                if force and not template.purchasable:
-                    template.purchasable = True
-                    template.save()
-
-                line.purchase = purchase
-                line.product = product
-                line.on_change_product()
-                line.quantity = record.quantity
-                line.on_change_quantity()
-                if 'product_package' in Line._fields:
-                    line.product_package = None
-                    line.package_quantity = None
-                # TODO base_price
-                line.unit_price = round_price(record.unit_price)
-                lines_to_save.append(line)
-
-        for to_save in grouped_slice(purchases_to_save):
-            Purchase.save(list(to_save))
-
-        for to_save in grouped_slice(lines_to_save):
-            Line.save(list(to_save))
-
-        to_confirm += to_process
-        to_quote += to_confirm
-
-        Purchase.quote(to_quote)
-        Purchase.confirm(to_confirm)
-        Purchase.process(to_process)
-
-        return purchases_to_save
-
-    @classmethod
-    def import_purchase_configuration(cls, records):
-        pool = Pool()
-
-        Sequence = pool.get("ir.sequence")
-        Configuration = pool.get("purchase.configuration")
-        ModelData = pool.get("ir.model.data")
-        Company = pool.get("company.company")
-
-        configs = []
-        for record in records:
-            if record.company:
-                company, = Company.search([('party.name', '=', record.company)])
-                company_id = company.id
-            else:
-                company_id = Transaction().context.get('company')
-            with Transaction().set_context(company=company_id):
-                configuration = Configuration(1)
-                configuration.purchase_invoice_method = record.invoice_method
-                configuration.purchase_process_after = record.process_after
-
-                if record.sequence_padding or record.sequence_number_next:
-                    sequence = configuration.purchase_sequence
-
-                    if not sequence or (sequence.company and sequence.company.id != company_id):
-                        sequence = Sequence()
-                        sequence.name = "Purchase"
-                        configuration.purchase_sequence = sequence
-                    sequence.company = company_id
-                    sequence.sequence_type = ModelData.get_id('purchase', 'sequence_type_purchase')
-                    sequence.prefix = record.sequence_prefix
-                    sequence.suffix = record.sequence_suffix
-                    sequence.padding = record.sequence_padding
-                    sequence.number_next = record.sequence_number_next
-                    sequence.save()
-
-                configuration.save()
-                configs.append(configuration)
-
-        return configs

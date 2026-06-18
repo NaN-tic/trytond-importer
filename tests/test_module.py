@@ -17,7 +17,8 @@ class ImporterTestCase(ModuleTestCase):
     module = 'importer'
     extras = ['party', 'company', 'product', 'sale', 'purchase',
         'account_invoice', 'account_code_digits', 'stock',
-        'product_price_list', 'user_role', 'bank', 'bank_es']
+        'product_price_list', 'user_role', 'bank', 'bank_es',
+        'company_bank']
 
     def import_(self, method, records):
         pool = Pool()
@@ -43,6 +44,7 @@ class ImporterTestCase(ModuleTestCase):
         data = DataExtractor('text', None, json.dumps(records), None)
         data.load()
         importer.data_to_records(data)
+        return importer
 
     @with_transaction()
     def test_party(self):
@@ -64,6 +66,85 @@ class ImporterTestCase(ModuleTestCase):
                 }])
         Party = pool.get('party.party')
         self.assertEqual(len(Party.search([])), 1)
+
+    @with_transaction()
+    def test_sample_offset(self):
+        pool = Pool()
+        Importer = pool.get('importer')
+        Party = pool.get('party.party')
+
+        records = [{
+                'name': 'First Party',
+                'code': 'FIRST',
+                }, {
+                'name': 'Second Party',
+                'code': 'SECOND',
+                }, {
+                'name': 'Third Party',
+                'code': 'THIRD',
+                }]
+        importer = Importer()
+        importer.name = 'Sample Importer'
+        importer.method = 'party'
+        importer.data_source = 'text'
+        importer.text_data = json.dumps(records)
+        importer.has_header = True
+        importer.use_header = True
+        importer.sample_size = 2
+        importer.sample_offset = 1
+        importer.save()
+        Importer.update_columns([importer])
+
+        fields = records[0].keys()
+        for column in importer.columns:
+            if column.field.name in fields:
+                column.name = column.field.name
+                column.save()
+
+        data = DataExtractor('text', None, json.dumps(records), None)
+        data.load()
+        importer.data_to_records(
+            data=data,
+            sample=importer.sample_size,
+            sample_offset=importer.sample_offset)
+
+        parties = Party.search([], order=[('code', 'ASC')])
+        self.assertEqual(set([p.code for p in parties]), set(['SECOND', 'THIRD']))
+
+    @with_transaction()
+    def test_party_default_bank_accounts(self):
+        pool = Pool()
+        Party = pool.get('party.party')
+        Bank = pool.get('bank')
+
+        company = create_company()
+        Transaction().set_context(company=company.id)
+
+        bank_party = Party(name='Test Bank')
+        bank_party.save()
+        bank = Bank()
+        bank.party = bank_party
+        bank.bank_code = '2100'
+        bank.bic = 'CAIXESBBXXX'
+        bank.save()
+
+        iban_1 = 'ES9121000418450200051332'
+        iban_2 = 'ES1221000009750201344762'
+        self.import_('party', [{
+                    'company': company.party.name,
+                    'code': 'BANKED',
+                    'name': 'Banked Party',
+                    'bank_account': '%s|%s' % (iban_1, iban_2),
+                    'default_payable_bank_account': iban_2,
+                    'default_receivable_bank_account': iban_1,
+                    }])
+
+        party, = Party.search([('code', '=', 'BANKED')])
+        self.assertEqual(len(party.bank_accounts), 2)
+        self.assertEqual(
+            party.payable_bank_account.numbers[0].number_compact, iban_2)
+        self.assertEqual(
+            party.receivable_bank_account.numbers[0].number_compact, iban_1)
 
     @with_transaction()
     def test_product(self):
@@ -377,6 +458,169 @@ class ImporterTestCase(ModuleTestCase):
 
         self.assertIn('Could not load data from URL', str(cm.exception))
         self.assertIn('401', str(cm.exception))
+
+    @with_transaction()
+    def test_account_fiscalyear_multi_company(self):
+        pool = Pool()
+        FiscalYear = pool.get('account.fiscalyear')
+        SequenceStrict = pool.get('ir.sequence.strict')
+        Period = pool.get('account.period')
+
+        company1 = create_company('Company A')
+        company2 = create_company('Company B')
+
+        importer = self.import_('sequence', [{
+                'name': 'Account Move A',
+                'sequence_type': 'Account Move',
+                'company_name': company1.party.name,
+                'strict': True,
+                }, {
+                'name': 'Invoice A',
+                'sequence_type': 'Invoice',
+                'company_name': company1.party.name,
+                'strict': True,
+                }, {
+                'name': 'Account Move B',
+                'sequence_type': 'Account Move',
+                'company_name': company2.party.name,
+                'strict': True,
+                }, {
+                'name': 'Invoice B',
+                'sequence_type': 'Invoice',
+                'company_name': company2.party.name,
+                'strict': True,
+                }])
+        self.assertEqual([x.message for x in importer.logs], [])
+        with Transaction().set_context(_check_access=False):
+            self.assertEqual(SequenceStrict.search_count([
+                    ('name', 'in', [
+                            'Account Move A', 'Invoice A',
+                            'Account Move B', 'Invoice B',
+                            ]),
+                    ]), 4)
+
+        importer = self.import_('account_fiscalyear', [{
+                'name': '2026',
+                'company_name': company1.party.name,
+                'start_date': '2026-01-01',
+                'end_date': '2026-12-31',
+                'move_sequence_name': 'Account Move A',
+                'out_invoice_sequence_name': 'Invoice A',
+                'in_invoice_sequence_name': 'Invoice A',
+                'out_credit_note_sequence_name': 'Invoice A',
+                'in_credit_note_sequence_name': 'Invoice A',
+                }, {
+                'name': '2026',
+                'company_name': company2.party.name,
+                'start_date': '2026-01-01',
+                'end_date': '2026-12-31',
+                'move_sequence_name': 'Account Move B',
+                'out_invoice_sequence_name': 'Invoice B',
+                'in_invoice_sequence_name': 'Invoice B',
+                'out_credit_note_sequence_name': 'Invoice B',
+                'in_credit_note_sequence_name': 'Invoice B',
+                }])
+        self.assertEqual([x.message for x in importer.logs], [])
+
+        fiscalyears = FiscalYear.search([], order=[('company.party.name', 'ASC')])
+        self.assertEqual([(x.company.party.name, x.name) for x in fiscalyears], [
+                (company1.party.name, '2026'),
+                (company2.party.name, '2026'),
+                ])
+        self.assertEqual([len(x.periods) for x in fiscalyears], [12, 12])
+        self.assertEqual(Period.search_count([]), 24)
+
+    @with_transaction()
+    def test_location_warehouse(self):
+        pool = Pool()
+        Location = pool.get('stock.location')
+
+        self.import_('location', [{
+                'name': 'Main Warehouse',
+                'parent': None,
+                'type': 'warehouse',
+                'input_location': 'Warehouse Input',
+                'output_location': 'Warehouse Output',
+                'storage_location': 'Warehouse Storage',
+                'picking_location': 'Warehouse Picking',
+                }, {
+                'name': 'Warehouse Input',
+                'type': 'storage',
+                }, {
+                'name': 'Warehouse Output',
+                'type': 'storage',
+                }, {
+                'name': 'Warehouse Storage',
+                'type': 'storage',
+                }, {
+                'name': 'Warehouse Picking',
+                'type': 'storage',
+                'parent': 'Warehouse Storage',
+                }])
+
+        warehouse, = Location.search([('name', '=', 'Main Warehouse')])
+        self.assertEqual(warehouse.type, 'warehouse')
+        self.assertEqual(warehouse.input_location.name, 'Warehouse Input')
+        self.assertEqual(warehouse.output_location.name, 'Warehouse Output')
+        self.assertEqual(warehouse.storage_location.name, 'Warehouse Storage')
+        self.assertEqual(warehouse.picking_location.name, 'Warehouse Picking')
+        self.assertEqual(warehouse.input_location.parent, warehouse)
+        self.assertEqual(warehouse.output_location.parent, warehouse)
+        self.assertEqual(warehouse.storage_location.parent, warehouse)
+        self.assertEqual(warehouse.picking_location.parent,
+            warehouse.storage_location)
+
+
+class ImporterSaleDiscountPriceListTestCase(ModuleTestCase):
+    'Test Importer module with sale_discount_price_list'
+    module = 'importer'
+    extras = ['party', 'company', 'product', 'product_price_list',
+        'sale_discount_price_list']
+
+    def import_(self, method, records):
+        pool = Pool()
+        Importer = pool.get('importer')
+
+        importer = Importer()
+        importer.name = 'Importer'
+        importer.method = method
+        importer.data_source = 'text'
+        importer.text_data = json.dumps(records)
+        importer.has_header = True
+        importer.use_header = True
+        importer.save()
+        Importer.update_columns([importer])
+
+        if records:
+            fields = records[0].keys()
+            for column in importer.columns:
+                if column.field.name in fields:
+                    column.name = column.field.name
+                    column.save()
+
+        data = DataExtractor('text', None, json.dumps(records), None)
+        data.load()
+        importer.data_to_records(data)
+
+    @with_transaction()
+    def test_price_list_base_price_formula(self):
+        pool = Pool()
+        PriceList = pool.get('product.price_list')
+        company = create_company()
+
+        self.import_('price_list', [{
+                'name': 'Price List',
+                'company_name': company.rec_name,
+                'quantity': 1,
+                'formula': '0',
+                'base_price_formula': 'unit_price',
+                }])
+
+        price_lists = PriceList.search([])
+        self.assertEqual(len(price_lists), 1)
+        self.assertEqual(len(price_lists[0].lines), 1)
+        self.assertEqual(
+            price_lists[0].lines[0].base_price_formula, 'unit_price')
 
 
 del ModuleTestCase

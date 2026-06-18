@@ -1,8 +1,9 @@
-from trytond.model import ModelView, fields
+from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
+from .tools import ImporterModel
 
 
-class ImporterPartyCredit(ModelView):
+class ImporterPartyCredit(ImporterModel):
     'Importer Party Credit'
     __name__ = 'importer.party.credit'
 
@@ -13,24 +14,8 @@ class ImporterPartyCredit(ModelView):
     first_approved_credit_limit = fields.Float("First Approved Credit Limit")
     requested_credit_limit = fields.Float("Requested Credit Limit")
 
-
-class Importer(metaclass=PoolMeta):
-    __name__ = 'importer'
-
     @classmethod
-    def _get_methods(cls):
-        methods = super()._get_methods()
-        methods.update({
-                'party_credit': {
-                    'string': 'Party Credit',
-                    'model': 'importer.party.credit',
-                    'chunked': True,
-                    },
-                })
-        return methods
-
-    @classmethod
-    def import_party_credit(cls, records):
+    def importer_import(cls, records):
         pool = Pool()
         PartyCredit = pool.get('party.credit')
         Party = pool.get('party.party')
@@ -53,5 +38,19 @@ class Importer(metaclass=PoolMeta):
             to_save.append(party_credit)
 
         PartyCredit.save(to_save)
-        #TODO: approve?
         return to_save
+
+
+class Importer(metaclass=PoolMeta):
+    __name__ = 'importer'
+
+    @classmethod
+    def _get_methods(cls):
+        methods = super()._get_methods()
+        methods.update({
+                'party_credit': {
+                    'string': 'Party Credit',
+                    'model': 'importer.party.credit',
+                    },
+                })
+        return methods

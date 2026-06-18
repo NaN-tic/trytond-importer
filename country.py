@@ -1,20 +1,55 @@
 import os
 import subprocess
-from trytond.model import ModelView
 from trytond.pool import PoolMeta, Pool
+from .tools import ImporterModel
 from trytond.transaction import Transaction
 from trytond.config import config
 from trytond import backend
 
 
-class ImporterCountry(ModelView):
+class ImporterCountry(ImporterModel):
     'Importer Country'
     __name__ = 'importer.country'
 
+    @classmethod
+    def importer_import(cls, records):
+        env = os.environ.copy()
+        env['PYTHONPATH'] = os.environ.get('PYTHONPATH', '') + 'trytond:proteus'
+        env['TRYTOND_DATABASE_URI'] = config.get('database', 'uri',
+            default='sqlite:///')
+        command = ('python ./trytond/trytond/modules/country/scripts/'
+            'import_countries.py -d %s' % Transaction().database.name)
 
-class ImporterPostalCodes(ModelView):
+        if backend.name == 'sqlite':
+            Transaction().connection.commit()
+
+        subprocess.check_call(command, shell=True, env=env)
+        Transaction().connection.commit()
+
+        Country = Pool().get("country.country")
+        return Country.search([])
+
+
+class ImporterPostalCodes(ImporterModel):
     'Importer Postal Codes'
     __name__ = 'importer.country.postal_codes'
+
+    @classmethod
+    def importer_import(cls, records):
+        env = os.environ.copy()
+        env['PYTHONPATH'] = os.environ.get('PYTHONPATH', '') + 'trytond:proteus'
+        env['TRYTOND_DATABASE_URI'] = config.get('database', 'uri',
+            default='sqlite:///')
+        command = ('python ./trytond/trytond/modules/country/scripts/'
+            'import_postal_codes.py -d %s ES' % Transaction().database.name)
+
+        if backend.name == 'sqlite':
+            Transaction().connection.commit()
+        subprocess.check_call(command, shell=True, env=env)
+        Transaction().connection.commit()
+
+        PostalCode = Pool().get("country.postal_code")
+        return PostalCode.search([])
 
 
 class Importer(metaclass=PoolMeta):
@@ -27,13 +62,11 @@ class Importer(metaclass=PoolMeta):
                 'country': {
                     'string': 'Country',
                     'model': 'importer.country',
-                    'chunked': True,
                     'requires_records': False,
                     },
                 'spanish_postal_codes': {
                     'string': 'Postal codes',
                     'model': 'importer.country.postal_codes',
-                    'chunked': True,
                     'requires_records': False,
                     },
                 })

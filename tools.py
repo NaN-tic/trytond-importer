@@ -2,7 +2,7 @@ import base64
 import logging
 from unidecode import unidecode
 import textdistance
-import psycopg2
+import psycopg
 from trytond.pool import Pool
 from trytond.model import fields, ModelView
 from trytond.transaction import Transaction
@@ -106,12 +106,21 @@ class ImporterModel(ModelView):
     def importer_context(self):
         return {}
 
+    @classmethod
+    def importer_context_start(cls):
+        pass
+
     def importer_header(self, importing=True):
         pass
 
     @classmethod
     def importer_import(cls, records):
         raise NotImplementedError
+
+    @classmethod
+    def datetime_to_utc(cls, datetime_, timezone=None):
+        return Pool().get('importer').datetime_to_utc(
+            datetime_, timezone=timezone)
 
     def importer_assign(self, record):
         cls = record.__class__
@@ -156,7 +165,7 @@ class ImporterModel(ModelView):
                 if use_subtransactions:
                     cursor.execute('RELEASE SAVEPOINT importer_save')
                 logger.info('Saved.')
-            except (UserError, psycopg2.errors.InvalidTextRepresentation) as e:
+            except (UserError, psycopg.errors.InvalidTextRepresentation) as e:
                 if use_subtransactions:
                     cursor.execute('ROLLBACK TO SAVEPOINT importer_save')
                 if len(records) == 1:
