@@ -2624,6 +2624,15 @@ msgid "Company %(company)s not found."
 msgstr "Empresa %(company)s no encontrada."
 
 #, python-format
+msgctxt "model:ir.message,text:msg_account_move_line_without_amount"
+msgid ""
+"Accounting entry line was not imported because debit and credit are both "
+"empty or zero."
+msgstr ""
+"No se ha importado la línea del asiento porque el debe y el haber están "
+"ambos vacíos o a cero."
+
+#, python-format
 msgctxt "model:ir.message,text:msg_currency_not_found"
 msgid "Currency %(currency)s not found."
 msgstr "Moneda %(currency)s no encontrada."
