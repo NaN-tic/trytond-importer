@@ -1182,6 +1182,7 @@ class ImporterColumn(ModelSQL, ModelView):
             ('keep-spaces', 'Keep Spaces'),
             ('date-%d/%m/%Y %H:%M:%S', '%d/%m/%Y %H:%M:%S'),
             ('date-%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M:%S'),
+            ('date-%d/%m/%y', '%d/%m/%y'),
             ('date-%d/%m/%Y', '%d/%m/%Y'),
             ('date-%Y-%m-%d', '%Y-%m-%d'),
             ('decimal-,', 'Decimal (,)'),
