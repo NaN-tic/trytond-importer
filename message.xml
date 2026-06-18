@@ -47,6 +47,9 @@
         <record model="ir.message" id="msg_company_not_found">
             <field name="text">Company %(company)s not found.</field>
         </record>
+        <record model="ir.message" id="msg_account_move_line_without_amount">
+            <field name="text">Accounting entry line was not imported because debit and credit are both empty or zero.</field>
+        </record>
         <record model="ir.message" id="party_not_found">
             <field name="text">Party "%(party)s" not found.</field>
         </record>
