@@ -895,6 +895,8 @@ class Importer(metaclass=PoolMeta):
                     },
                 })
         return methods
+
+
 class ImporterProductAttributeStrictDepends(metaclass=PoolMeta):
     __name__ = 'importer'
 
