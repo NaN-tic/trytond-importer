@@ -10,6 +10,7 @@ from trytond.transaction import Transaction
 from trytond.pool import Pool
 from trytond.modules.importer.importer import DataExtractor
 from trytond.modules.company.tests import create_company
+from trytond.modules.account.tests import get_fiscalyear
 
 
 class ImporterTestCase(ModuleTestCase):
@@ -443,6 +444,41 @@ class ImporterTestCase(ModuleTestCase):
         self.assertEqual(len(ProductSupplier.search([])), 1)
         product_supplier, = ProductSupplier.search([])
         self.assertEqual(len(product_supplier.prices), 1)
+
+    @with_transaction()
+    def test_account_move_account_party_uses_company_name_context(self):
+        pool = Pool()
+        Date = pool.get('ir.date')
+        FiscalYear = pool.get('account.fiscalyear')
+        Move = pool.get('account.move')
+
+        today = Date.today()
+        company = create_company()
+
+        self.import_('account_create_chart', [{
+                'company_name': company.party.name,
+                'chart_name': 'Universal Chart of Accounts',
+                }])
+        fiscalyear = get_fiscalyear(company, today=today)
+        fiscalyear.save()
+        FiscalYear.create_period([fiscalyear])
+
+        self.import_('account_move_account_party', [{
+                'company_name': company.party.name,
+                'account_name': 'Test Expense',
+                'party_name': company.party.name,
+                'account_code': '5.1.5000',
+                'debit': 100,
+                'credit': 0,
+                'effective_date': today.strftime('%Y-%m-%d'),
+                'number': 'CTX-001',
+                'journal_code': 'EXP',
+                }])
+
+        moves = Move.search([('number', '=', 'CTX-001')])
+        self.assertEqual(len(moves), 1)
+        move, = moves
+        self.assertEqual(move.company, company)
 
     @with_transaction()
     def test_account_fiscalyear_multi_company(self):

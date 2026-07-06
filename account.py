@@ -57,8 +57,8 @@ class ImporterAccountMove(ImporterModel):
     def importer_context(self):
         res = super().importer_context()
         setup = Setup.get()
-        if 'company' in setup.fields and self.company:
-            company = setup.cache.companies.get(self.company)
+        if 'company_name' in setup.fields and self.company_name:
+            company = setup.cache.companies.get(self.company_name)
             if company:
                 res['company'] = company.id
         return res
