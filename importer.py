@@ -507,7 +507,7 @@ class Importer(ModelSQL, ModelView):
 
     def check_connection_psql(self):
         try:
-            psycopg.connect(database = self.database, host=self.server,
+            psycopg.connect(dbname = self.database, host=self.server,
                 user=self.user, password=self.password, port=5432)
         except psycopg.OperationalError:
             raise UserError(gettext('importer.msg_invalid_connection',
@@ -517,7 +517,7 @@ class Importer(ModelSQL, ModelView):
 
     def get_connection_psql(self, fail=True):
         try:
-            conn = psycopg.connect(database = self.database, host=self.server,
+            conn = psycopg.connect(dbname = self.database, host=self.server,
                 user=self.user, password=self.password, port=5432)
         except psycopg.OperationalError as e:
             if fail:
