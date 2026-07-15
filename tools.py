@@ -156,6 +156,8 @@ class ImporterModel(ModelView):
             # already existed and has not been modified)
             save_values = [x._values and x._values._copy() or None for x in
                 to_save]
+            save_state = [
+                (x._id, list(x._ids), x._local_cache) for x in to_save]
             if use_subtransactions:
                 cursor.execute('SAVEPOINT importer_save')
             try:
@@ -165,7 +167,9 @@ class ImporterModel(ModelView):
                 if use_subtransactions:
                     cursor.execute('RELEASE SAVEPOINT importer_save')
                 logger.info('Saved.')
-            except (UserError, psycopg2.errors.InvalidTextRepresentation) as e:
+            except (UserError,
+                    psycopg2.errors.InvalidTextRepresentation,
+                    psycopg2.errors.ForeignKeyViolation) as e:
                 if use_subtransactions:
                     cursor.execute('ROLLBACK TO SAVEPOINT importer_save')
                 if len(records) == 1:
@@ -175,6 +179,8 @@ class ImporterModel(ModelView):
                 for record, sv in zip(to_save, save_values):
                     if not record._values:
                         record._values = sv
+                for record, state in zip(to_save, save_state):
+                    record._id, record._ids, record._local_cache = state
 
                 logger.warning('Error saving a block of %d of %s records (%s). '
                     'Will split and retry.', len(records), Model.__name__, e)

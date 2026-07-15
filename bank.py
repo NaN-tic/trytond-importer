@@ -56,6 +56,7 @@ class ImporterBankAccount(ImporterModel):
         super().importer_start()
 
         cache = Setup.get().cache
+        cache.banks = Cache('bank', key=lambda x: x.bank_code.zfill(4))
         cache.bank_accounts = Cache('bank.account.number', 'number_compact',
             required=False)
         cache.parties = Cache('party.party', 'code', required=False, context={
@@ -125,7 +126,10 @@ class ImporterBankAccount(ImporterModel):
                     if bank_number:
                         bank_account = bank_number.account
                     else:
+                        bank_code = iban[4:8]
+                        bank = cache.banks.get(bank_code)
                         bank_account = BankAccount()
+                        bank_account.bank = bank
                         account_number = AccountNumber()
                         account_number.account = bank_account
                         account_number.type = 'iban'
