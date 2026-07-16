@@ -69,8 +69,52 @@ class ImporterAccountMove(ImporterModel):
     def get_party_code(self):
         return self.party_code
 
+    def get_party_codes(self, account_code=None):
+        codes = []
+        value = str(self.party_code or '').strip().upper()
+        if not value:
+            return codes
+        if value not in codes:
+            codes.append(value)
+        if value.startswith('ES'):
+            value = value[2:]
+            if value and value not in codes:
+                codes.append(value)
+        account_code = str(account_code or '').strip()
+        is_supplier_account = account_code.startswith(('40', '41'))
+        if value and is_supplier_account and not value.startswith('PR'):
+            prefixed = f'PR{value}'
+            if prefixed not in codes:
+                codes.append(prefixed)
+        return codes
+
     def get_account_code(self):
         return self.account_code
+
+    @staticmethod
+    def get_journal_fallback_codes(code):
+        code = str(code or '').strip().upper()
+        candidates = []
+        if code and code not in ('0', 'O'):
+            candidates.append(code)
+        candidates.extend(['MISC', 'ASS'])
+        return candidates
+
+    @staticmethod
+    def get_fallback_account_codes(code):
+        code = str(code or '')
+        if not code.isdigit():
+            return []
+        seen = set()
+        candidates = []
+        for i in range(len(code) - 1, -1, -1):
+            if code[i] == '0':
+                continue
+            candidate = code[:i] + ('0' * (len(code) - i))
+            if candidate != code and candidate not in seen:
+                seen.add(candidate)
+                candidates.append(candidate)
+        return candidates
 
     def get_new_party(self, code, name):
         pool = Pool()
@@ -208,7 +252,17 @@ class ImporterAccountMove(ImporterModel):
                     continue
                 acc_code = record.get_account_code()
                 if not create_account:
-                    account = cache.accounts.get((company.id, str(acc_code)))
+                    account = None
+                    account_key = (company.id, str(acc_code))
+                    if account_key in cache.accounts:
+                        account = cache.accounts[account_key]
+                    else:
+                        for fallback_code in cls.get_fallback_account_codes(
+                                acc_code):
+                            fallback_key = (company.id, fallback_code)
+                            if fallback_key in cache.accounts:
+                                account = cache.accounts[fallback_key]
+                                break
                 else:
                     if (company.id, str(acc_code)) in cache.accounts:
                         account = cache.accounts[(company.id, str(acc_code))]
@@ -238,7 +292,17 @@ class ImporterAccountMove(ImporterModel):
                     move.date = date
                     move.number = record.number
                     move.period = period
-                    move.journal = cache.journals.get(record.journal_code)
+                    move.journal = None
+                    for journal_code in record.get_journal_fallback_codes(
+                            record.journal_code):
+                        if journal_code in cache.journals:
+                            move.journal = cache.journals[journal_code]
+                            break
+                    if not move.journal:
+                        setup.error(f'Key "{record.journal_code}" not found '
+                            'accessing "account.journal"', record)
+                        move = None
+                        continue
                     move.lines = []
                     moves_to_save.append((move, record))
 
@@ -246,12 +310,18 @@ class ImporterAccountMove(ImporterModel):
                     continue
 
                 party_code = record.get_party_code()
-                party = cache.parties.get(party_code)
+                party = None
+                for candidate in record.get_party_codes(account.code):
+                    if candidate in cache.parties:
+                        party = cache.parties[candidate]
+                        break
                 if account.party_required and not party:
                     if not create_party:
-                        raise UserError(gettext(
+                        setup.error(gettext(
                             'importer.party_required_for_account',
-                            account=record.account_code, move=record.number))
+                            account=record.account_code, move=record.number),
+                            record)
+                        continue
                     party_name = record.party_name
                     if party_name in created_parties:
                         party = created_parties[party_name]
@@ -635,7 +705,7 @@ class ImporterFiscalYear(ImporterModel):
             cls.importer_save([item])
 
         for fiscalyear, _ in saved:
-            if fiscalyear.id:
+            if fiscalyear.id and not fiscalyear.periods:
                 FiscalYear.create_period([fiscalyear])
 
         return [x[0] for x in saved]

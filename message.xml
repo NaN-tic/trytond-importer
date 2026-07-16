@@ -74,6 +74,15 @@
         <record model="ir.message" id="msg_import_company_not_found">
             <field name="text">Company not found.</field>
         </record>
+        <record model="ir.message" id="msg_sheet_not_found">
+            <field name="text">Sheet "%(sheet)s" not found in the selected file.</field>
+        </record>
+        <record model="ir.message" id="msg_url_download_error">
+            <field name="text">Could not download data from URL "%(url)s" (HTTP %(code)s).</field>
+        </record>
+        <record model="ir.message" id="msg_google_drive_quota_exceeded">
+            <field name="text">Google Drive returned a quota exceeded page instead of the file for URL "%(url)s".</field>
+        </record>
     </data>
 
     <data depends="account">

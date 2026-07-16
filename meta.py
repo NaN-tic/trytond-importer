@@ -17,6 +17,8 @@ class ImporterMeta(ImporterModel):
     text_data = fields.Text('Text')
     binary_data = fields.Binary('Binary')
     url_data = fields.Char('URL')
+    sheet_number = fields.Integer('Sheet Number')
+    data_start_row = fields.Integer('Data Start Row')
     sql_source = fields.Char('SQL Source')
     server = fields.Char('Server')
     user = fields.Char('User')
@@ -31,6 +33,7 @@ class ImporterMeta(ImporterModel):
     sql_data = fields.Char('Sql Data')
     use_subtransactions = fields.Boolean('Use Subtransactions')
     commit_chunks = fields.Boolean('Commit Chunks')
+    agent_sample_rows = fields.Integer('Agent Sample Rows')
 
     @classmethod
     def importer_start(cls):

@@ -107,8 +107,8 @@ class ImporterProduct(ImporterModel):
         pool = Pool()
         Product = pool.get('product.product')
         Template = pool.get('product.template')
-        ProductCategory = pool.get('product.category')
         Template = pool.get('product.template')
+        ProductCategory = pool.get('product.category')
         ProductCostPriceMethod = pool.get('product.cost_price_method')
         Identifier = pool.get('product.identifier')
         Note = pool.get('ir.note')
@@ -185,6 +185,7 @@ class ImporterProduct(ImporterModel):
         products_to_save = []
         notes = []
         categories_to_save = []
+        brands_to_save = []
 
         for record in records:
             setup.current_record = record
@@ -355,42 +356,45 @@ class ImporterProduct(ImporterModel):
                 if record.depreciation_duration:
                     template.depreciation_duration = record.depreciation_duration
 
-            if cache.parties and 'supplier' in setup.fields:
+            if cache.parties and 'supplier' in setup.fields and record.supplier:
                 party = cache.parties.get(record.supplier)
-                supplier = ProductSupplier()
-                supplier.party = party
-                supplier.code = record.supplier_code
-                if record.supplier_currency:
-                    supplier.currency = cache.currencies.get('supplier_currency')
-                if ProductSupplier._fields.get('minimum_quantity') and record.supplier_minimum_quantity:
-                    supplier.minimum_quantity = record.minimum_quantity
-                if ProductSupplier._fields.get('multiple_quantity') and record.supplier_multiple_quantity:
-                    supplier.multiple_quantity = record.multiple_quantity
-                if record.supplier_unit_price:
-                    supplier_price = ProductSupplierPrice()
-                    supplier_price.quantity = 0
-                    supplier_price.unit_price = round_price(record.supplier_unit_price)
-                    supplier.prices = (supplier_price,)
-                template.product_suppliers = [supplier]
-                cache.templates[record.template_code] = template
+                if party:
+                    supplier = ProductSupplier()
+                    supplier.party = party
+                    supplier.code = record.supplier_code
+                    if record.supplier_currency:
+                        supplier.currency = cache.currencies.get('supplier_currency')
+                    if ProductSupplier._fields.get('minimum_quantity') and record.supplier_minimum_quantity:
+                        supplier.minimum_quantity = record.minimum_quantity
+                    if ProductSupplier._fields.get('multiple_quantity') and record.supplier_multiple_quantity:
+                        supplier.multiple_quantity = record.multiple_quantity
+                    if record.supplier_unit_price:
+                        supplier_price = ProductSupplierPrice()
+                        supplier_price.quantity = 0
+                        supplier_price.unit_price = round_price(record.supplier_unit_price)
+                        supplier.prices = (supplier_price,)
+                    template.product_suppliers = [supplier]
+                    cache.templates[record.template_code] = template
 
-                if 'brand' in setup.fields and record.brand:
-                    if record.brand:
-                        brand = cache.brands.get(record.brand)
-                        if not brand:
-                            brand = Brand()
-                            brand.name = record.brand
-                            cache.brands[record.brand] = brand
-                    else:
-                        brand = None
-                    template.brand = brand
+            if 'brand' in setup.fields and record.brand:
+                if record.brand:
+                    brand = cache.brands.get(record.brand)
+                    if not brand:
+                        brand = Brand()
+                        brand.name = record.brand
+                        cache.brands[record.brand] = brand
+                        brands_to_save.append((brand, record))
+                else:
+                    brand = None
+                template.brand = brand
 
-            if cache.parties and 'customer' in setup.fields:
+            if cache.parties and 'customer' in setup.fields and record.customer:
                 party = cache.parties.get(record.customer)
-                customer = ProductCustomer()
-                customer.party = party
-                customer.code = record.customer_code
-                template.product_customers = [customer]
+                if party:
+                    customer = ProductCustomer()
+                    customer.party = party
+                    customer.code = record.customer_code
+                    template.product_customers = [customer]
 
             if 'variant_suffix_code' in setup.fields:
                 product.suffix_code = record.variant_suffix_code
@@ -435,6 +439,7 @@ class ImporterProduct(ImporterModel):
 
         setup.current_record = None
         cls.importer_save(categories_to_save)
+        cls.importer_save(brands_to_save)
         cls.importer_save(to_save)
         cls.importer_save(products_to_save)
 

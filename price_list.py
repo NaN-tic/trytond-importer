@@ -89,6 +89,7 @@ class ImporterPriceList(ImporterModel):
                     raise UserError(gettext(
                             'importer.product_category_not_found',
                             category=record.category))
+                line.category = category
             line.quantity = record.quantity
             line.formula = record.formula
             if hasattr(line, 'base_price_formula'):

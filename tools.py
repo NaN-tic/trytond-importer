@@ -76,7 +76,7 @@ class Setup(dict):
         pool = Pool()
 
         res = []
-        for model, to_save in self._saved.items():
+        for model, to_save in reversed(list(self._saved.items())):
             Model = pool.get(model)
             ids = ', '.join(str(x[0]) for x in to_save)
             res.append(f'DELETE FROM {Model._table} WHERE id IN ({ids});')

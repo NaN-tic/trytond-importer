@@ -96,6 +96,12 @@ class ImporterParty(ImporterModel):
     type_of_relation = fields.Char('Type of relation')
     note = fields.Char('Note')
 
+    @staticmethod
+    def _country_cache_key(country):
+        if not country:
+            return None
+        return getattr(country, '_id', None) or getattr(country, 'id', None)
+
     @classmethod
     def importer_start(cls):
         pool = Pool()
@@ -127,12 +133,12 @@ class ImporterParty(ImporterModel):
         cache.postal_codes = {}
         for country in cache.countries.values():
             types = Type.get_types(country)
-            cache.subdivisions[country] = Cache('country.subdivision', 'name',
+            cache.subdivisions[country.id] = Cache('country.subdivision', 'name',
                 domain=[
                     ('country', '=', country),
                     ('type', 'in', types),
                     ], unaccent=True)
-            cache.postal_codes[country] = Cache('country.postal_code', 'postal_code', domain=[
+            cache.postal_codes[country.id] = Cache('country.postal_code', 'postal_code', domain=[
                     ('country', '=', country),
                     ('subdivision.type', 'in', types),
                     ], cache_size=50000)
@@ -194,6 +200,10 @@ class ImporterParty(ImporterModel):
             Relation = pool.get('party.relation')
         except KeyError:
             Relation = None
+        try:
+            PartyCompany = pool.get('party.company.rel')
+        except KeyError:
+            PartyCompany = None
 
         setup = Setup.get()
         cache = setup.cache
@@ -268,7 +278,7 @@ class ImporterParty(ImporterModel):
                 address.invoice = record.invoice_address
 
             subdivision_error = None
-            cs = cache.subdivisions.get(country)
+            cs = cache.subdivisions.get(cls._country_cache_key(country))
 
             if cs and record.subdivision:
                 if record.subdivision in cs:
@@ -281,7 +291,7 @@ class ImporterParty(ImporterModel):
             if (not getattr(address, 'subdivision', None)
                     and record.postal_code):
 
-                cs = cache.postal_codes.get(country)
+                cs = cache.postal_codes.get(cls._country_cache_key(country))
                 if cs:
                     code = cs.get(record.postal_code)
                     if code:
@@ -308,19 +318,21 @@ class ImporterParty(ImporterModel):
 
 
                 subdivision_error = None
-                cs = cache.subdivisions.get(country)
+                cs = cache.subdivisions.get(cls._country_cache_key(country))
                 if cs and record.shipment_subdivision:
-                    if record.subdivision in cs:
-                        shipment_address.subdivision = cs.get(record.subdivision)
+                    if record.shipment_subdivision in cs:
+                        shipment_address.subdivision = cs.get(
+                            record.shipment_subdivision)
                     else:
                         subdivision_error = gettext('importer.msg_subdivision_not_found',
-                            subdivision=record.subdivision,
+                            subdivision=record.shipment_subdivision,
                             country=country.name)
 
                 if (not getattr(shipment_address, 'subdivision', None)
                         and country and country.code == 'ES'
-                        and record.postal_code):
-                    code = cache.postal_codes.get(record.postal_code)
+                        and record.shipment_postal_code):
+                    cs = cache.postal_codes.get(cls._country_cache_key(country))
+                    code = cs.get(record.shipment_postal_code) if cs else None
                     if code:
                         shipment_address.subdivision = code.subdivision
 
@@ -435,7 +447,10 @@ class ImporterParty(ImporterModel):
                 party.supplier_payment_days = record.supplier_payment_days
 
             if record.vat:
-                vat = "%s%s" % (record.country, record.vat)
+                vat = str(record.vat).replace(' ', '').strip().upper()
+                country_code = str(record.country or '').strip().upper()
+                if country_code and not vat.startswith(country_code):
+                    vat = f'{country_code}{vat}'
                 vat_type = 'eu_vat'
                 if vat in vats:
                     vat_type = None
@@ -553,6 +568,25 @@ class ImporterParty(ImporterModel):
         # Discard parties that could not be saved
         to_save = [x for x in to_save if x[0].id]
 
+        if PartyCompany and company:
+            existing_relations = {
+                relation.party.id for relation in PartyCompany.search([
+                        ('company', '=', company),
+                        ('party', 'in', [party.id for party, _ in to_save]),
+                        ])
+                }
+            party_companies_to_save = []
+            for party, record in to_save:
+                setup.current_record = record
+                if party.id in existing_relations:
+                    continue
+                relation = PartyCompany()
+                relation.party = party
+                relation.company = company
+                party_companies_to_save.append((relation, record))
+                existing_relations.add(party.id)
+            cls.importer_save(party_companies_to_save)
+
         if 'note' in setup.fields:
             for party, record in to_save:
                 setup.current_record = record
@@ -663,10 +697,9 @@ class ImporterPartyAddress(ImporterModel):
         cache = Setup.get().cache
         cache.countries = Cache('country.country', 'code', unaccent=True)
         cache.subdivisions = {}
-        cache.subdivisions = {}
         for country in cache.countries.values():
             types = Type.get_types(country)
-            cache.subdivisions[country] = Cache('country.subdivision', 'name',
+            cache.subdivisions[country.id] = Cache('country.subdivision', 'name',
                 domain=[
                     ('country', '=', country.id),
                     ('type', 'in', types),
@@ -703,8 +736,9 @@ class ImporterPartyAddress(ImporterModel):
             if 'city' in setup.fields:
                 address.city = record.city
             if 'subdivision' in setup.fields:
-                cs = cache.subdivisions.get(cache.countries.get(
-                    record.country_name))
+                country = cache.countries.get(record.country_name)
+                cs = cache.subdivisions.get(
+                    ImporterParty._country_cache_key(country))
                 if cs:
                     address.subdivision = cs.get(record.subdivision)
             if 'sequence' in setup.fields:
@@ -928,6 +962,7 @@ class Importer(metaclass=PoolMeta):
                 'party': {
                     'string': 'Party',
                     'model': 'importer.party',
+                    'chunked': True,
                     },
                 'contact_mechanism': {
                     'string': 'Contact Mechanism',

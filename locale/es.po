@@ -30,6 +30,14 @@ msgctxt "field:importer,deletes:"
 msgid "Deletes"
 msgstr "Elimina"
 
+msgctxt "field:importer,use_subtransactions:"
+msgid "Use Subtransactions"
+msgstr "Usar subtransacciones"
+
+msgctxt "field:importer,commit_chunks:"
+msgid "Commit Chunks"
+msgstr "Confirmar en bloques"
+
 msgctxt "field:importer,elapsed:"
 msgid "Elapsed Time"
 msgstr "Tiempo transcurrido"
@@ -86,6 +94,18 @@ msgctxt "field:importer,sample_offset:"
 msgid "Sample Offset"
 msgstr "Desplazamiento de la muestra"
 
+msgctxt "field:importer,data_start_row:"
+msgid "Data Start Row"
+msgstr "Fila de inicio de los datos"
+
+msgctxt "field:importer,agent_sample_rows:"
+msgid "Sample Rows"
+msgstr "Filas de muestra"
+
+msgctxt "field:importer,agent_sample_data:"
+msgid "Sample Data"
+msgstr "Datos de muestra"
+
 msgctxt "field:importer,schema:"
 msgid "Schema"
 msgstr "Esquema"
@@ -117,6 +137,10 @@ msgstr "Datos"
 msgctxt "field:importer,url_data:"
 msgid "Data URL"
 msgstr "URL de Datos "
+
+msgctxt "field:importer,sheet_number:"
+msgid "Sheet Number"
+msgstr "Número de hoja"
 
 msgctxt "field:importer,use_header:"
 msgid "Use Header?"
@@ -962,6 +986,14 @@ msgctxt "field:importer.meta,url_data:"
 msgid "URL"
 msgstr "URL"
 
+msgctxt "field:importer.meta,sheet_number:"
+msgid "Sheet Number"
+msgstr "Número de hoja"
+
+msgctxt "field:importer.meta,data_start_row:"
+msgid "Data Start Row"
+msgstr "Fila de inicio de los datos"
+
 msgctxt "field:importer.meta,use_header:"
 msgid "Use Header"
 msgstr "Usar encabezado"
@@ -973,6 +1005,18 @@ msgstr "Usuario"
 msgctxt "field:importer.meta,where:"
 msgid "Where"
 msgstr "Dónde"
+
+msgctxt "field:importer.meta,use_subtransactions:"
+msgid "Use Subtransactions"
+msgstr "Usar subtransacciones"
+
+msgctxt "field:importer.meta,commit_chunks:"
+msgid "Commit Chunks"
+msgstr "Confirmar en bloques"
+
+msgctxt "field:importer.meta,agent_sample_rows:"
+msgid "Agent Sample Rows"
+msgstr "Filas de muestra del agente"
 
 msgctxt "field:importer.order_point,min_quantity:"
 msgid "Minimum Quantity"

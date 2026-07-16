@@ -16,10 +16,15 @@
         <field name="data_source"/>
         <label name="language"/>
         <field name="language"/>
+        <label name="sheet_number"/>
+        <field name="sheet_number"/>
+        <label name="data_start_row"/>
+        <field name="data_start_row"/>
     </group>
     <group id="buttons" col="-1" colspan="4">
         <button name="update_columns"/>
         <button name="update_source_columns"/>
+        <button name="update_agent_sample" string="UPDATE SAMPLE"/>
         <button name="detect"/>
         <button name="import_"/>
         <button name="check_connection"/>
@@ -55,6 +60,9 @@
         </page>
         <page name="source_columns">
             <field name="source_columns" colspan="4" height="500"/>
+        </page>
+        <page name="agent_sample" string="Sample">
+            <field name="agent_sample_data" height="500" colspan="4"/>
         </page>
         <page name="text_data">
             <field name="text_data" height="500" colspan="4"/>

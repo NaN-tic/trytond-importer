@@ -249,7 +249,20 @@ class ImporterTestCase(ModuleTestCase):
                 'cost_price': '5',
                 }])
         Product = pool.get('product.product')
+        Account = pool.get('account.account')
         self.assertEqual(len(Product.search([])), 1)
+        with Transaction().set_context(company=company.id):
+            category.reload()
+            expense, = Account.search([
+                    ('company', '=', company.id),
+                    ('code', '=', '60000000'),
+                    ], limit=1)
+            revenue, = Account.search([
+                    ('company', '=', company.id),
+                    ('code', '=', '70000000'),
+                    ], limit=1)
+            self.assertEqual(category.account_expense, expense)
+            self.assertEqual(category.account_revenue, revenue)
 
         self.import_('product_codes', [{
                 'code': 'xxx',
