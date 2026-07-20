@@ -31,7 +31,7 @@ from trytond.transaction import Transaction
 from trytond.exceptions import UserError, UserWarning
 from trytond.model.exceptions import ValidationError
 from trytond.i18n import gettext
-from trytond.config import config
+import trytond.config as config
 from trytond.rpc import RPC
 from trytond.report import Report
 from trytond.cache import BaseCache
