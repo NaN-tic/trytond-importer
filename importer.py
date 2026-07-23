@@ -136,7 +136,7 @@ class DataExtractor:
         # Process XLSX files
         try:
             book = openpyxl.load_workbook(filename=self.get_data_file(),
-                data_only=True)
+                data_only=True, read_only=True, keep_links=False)
         except:
             book = None
         if book:
@@ -154,6 +154,7 @@ class DataExtractor:
             self.has_header = False
             self.header_reliable = False
             self.rows = rows
+            book.close()
             return
 
         # Process JSON and YAML files
