@@ -161,42 +161,45 @@ class DataExtractor:
         # Process XLSX files
         try:
             book = openpyxl.load_workbook(filename=self.get_data_file(),
-                data_only=True)
+                data_only=True, read_only=True, keep_links=False)
         except UserError:
             raise
         except Exception:
             book = None
         if book:
-            self.sheet_names = list(book.sheetnames)
-            if self.sheet_number:
-                if self.sheet_number < 1 or self.sheet_number > len(
-                        book.worksheets):
-                    raise UserError(gettext('importer.msg_sheet_not_found',
-                            sheet=self.sheet_number))
-                sheet = book.worksheets[self.sheet_number - 1]
-            else:
-                sheet = book.active
-            self.selected_sheet_name = sheet.title
-            rows = []
-            row_number = 0
-            for row in sheet.iter_rows():
-                row_number += 1
-                if self.start_row and row_number < self.start_row:
-                    continue
-                # Limit the number of columns to a maximum of 1024.
-                # We've found with some spreadsheets with many columns (most of
-                # them empty) that not limiting the number of columns causes
-                # openpyxl to load data incorrectly. Using 1600 instead of 1024
-                # fails too, so we set the limit to 1024 which is the maximum
-                # number of columns allowed by LibreOffice
-                rows.append([x.value for x in row[:1024]])
-                if self.row_limit and len(rows) >= self.row_limit:
-                    break
-            self.type = 'xlsx'
-            self.has_header = False
-            self.header_reliable = False
-            self.rows = rows
-            return
+            try:
+                self.sheet_names = list(book.sheetnames)
+                if self.sheet_number:
+                    if self.sheet_number < 1 or self.sheet_number > len(
+                            book.worksheets):
+                        raise UserError(gettext('importer.msg_sheet_not_found',
+                                sheet=self.sheet_number))
+                    sheet = book.worksheets[self.sheet_number - 1]
+                else:
+                    sheet = book.active
+                self.selected_sheet_name = sheet.title
+                rows = []
+                row_number = 0
+                for row in sheet.iter_rows():
+                    row_number += 1
+                    if self.start_row and row_number < self.start_row:
+                        continue
+                    # Limit the number of columns to a maximum of 1024.
+                    # We've found with some spreadsheets with many columns (most of
+                    # them empty) that not limiting the number of columns causes
+                    # openpyxl to load data incorrectly. Using 1600 instead of 1024
+                    # fails too, so we set the limit to 1024 which is the maximum
+                    # number of columns allowed by LibreOffice
+                    rows.append([x.value for x in row[:1024]])
+                    if self.row_limit and len(rows) >= self.row_limit:
+                        break
+                self.type = 'xlsx'
+                self.has_header = False
+                self.header_reliable = False
+                self.rows = rows
+                return
+            finally:
+                book.close()
 
         # Process JSON and YAML files
         try:
