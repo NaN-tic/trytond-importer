@@ -4,8 +4,8 @@ import csv
 import json
 import yaml
 import pytz
-import urllib.request
 import urllib.error
+import urllib.request
 import decimal
 import tempfile
 import time
@@ -114,15 +114,12 @@ class DataExtractor:
                         url=url))
             return data
 
-        def text_stream(value):
-            return StringIO(value, newline='')
-
         if self.data_source == 'binary' and self.binary_data:
             if force_text:
-                return text_stream(self.to_str(self.binary_data))
+                return StringIO(self.to_str(self.binary_data), newline='')
             return BytesIO(self.binary_data)
         elif self.data_source == 'text' and self.text_data:
-            return text_stream(self.text_data)
+            return StringIO(self.text_data, newline='')
         elif self.data_source == 'url' and self.url_data:
             url = self.url_data
             if ('docs.google.com' in url and 'export' not in url):
@@ -136,7 +133,7 @@ class DataExtractor:
                     url += '&' + extra.split('#')[-1]
                 try:
                     data = self._read_url(url)
-                except Exception:
+                except UserError:
                     # In some cases we've found that adding gid and other
                     # parameters does not work. In those cases, we try again
                     # without them.
@@ -149,12 +146,12 @@ class DataExtractor:
                 data = self._read_url(url)
             data = ensure_drive_download(data, url)
             if force_text:
-                return text_stream(self.to_str(data))
+                return StringIO(self.to_str(data), newline='')
             return BytesIO(data)
 
         # If no data source or data specified return empty content
         if force_text:
-            return text_stream(str())
+            return StringIO('', newline='')
         return BytesIO(bytes())
 
     def load(self):
@@ -391,10 +388,6 @@ class Importer(ModelSQL, ModelView):
     data_start_row = fields.Integer('Data Start Row',
         help='Spreadsheet row number where actual data starts. If headers '
         'are used, the header is assumed to be on the previous row.')
-    agent_sample_rows = fields.Integer('Sample Rows',
-        domain=[('agent_sample_rows', '>=', 1)],
-        help='Internal field kept for compatibility. Sample rows are fixed '
-        'by the importer implementation.')
     agent_sample_data = fields.Text('Sample Data', readonly=True)
     elapsed = fields.TimeDelta('Elapsed Time', readonly=True)
     deletes = fields.Text('Deletes', readonly=True, states={
@@ -415,10 +408,6 @@ class Importer(ModelSQL, ModelView):
     @staticmethod
     def default_sample_offset():
         return 0
-
-    @staticmethod
-    def default_agent_sample_rows():
-        return 20
 
     @staticmethod
     def default_language():

@@ -98,10 +98,6 @@ msgctxt "field:importer,data_start_row:"
 msgid "Data Start Row"
 msgstr "Fila d'inici de les dades"
 
-msgctxt "field:importer,agent_sample_rows:"
-msgid "Sample Rows"
-msgstr "Files de mostra"
-
 msgctxt "field:importer,agent_sample_data:"
 msgid "Sample Data"
 msgstr "Dades de mostra"
@@ -137,6 +133,11 @@ msgstr "Dades"
 msgctxt "field:importer,url_data:"
 msgid "Data URL"
 msgstr "URL de dades"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_url_data"
+msgid "Could not load data from URL \"%(url)s\": %(error)s."
+msgstr "No s'han pogut carregar les dades des de l'URL \"%(url)s\": %(error)s."
 
 msgctxt "field:importer,sheet_number:"
 msgid "Sheet Number"
@@ -1013,10 +1014,6 @@ msgstr "Utilitzar subtransaccions"
 msgctxt "field:importer.meta,commit_chunks:"
 msgid "Commit Chunks"
 msgstr "Confirmar en blocs"
-
-msgctxt "field:importer.meta,agent_sample_rows:"
-msgid "Agent Sample Rows"
-msgstr "Files de mostra de l'agent"
 
 msgctxt "field:importer.order_point,min_quantity:"
 msgid "Minimum Quantity"

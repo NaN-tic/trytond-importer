@@ -200,11 +200,6 @@ class ImporterParty(ImporterModel):
             Relation = pool.get('party.relation')
         except KeyError:
             Relation = None
-        try:
-            PartyCompany = pool.get('party.company.rel')
-        except KeyError:
-            PartyCompany = None
-
         setup = Setup.get()
         cache = setup.cache
 
@@ -567,25 +562,6 @@ class ImporterParty(ImporterModel):
 
         # Discard parties that could not be saved
         to_save = [x for x in to_save if x[0].id]
-
-        if PartyCompany and company:
-            existing_relations = {
-                relation.party.id for relation in PartyCompany.search([
-                        ('company', '=', company),
-                        ('party', 'in', [party.id for party, _ in to_save]),
-                        ])
-                }
-            party_companies_to_save = []
-            for party, record in to_save:
-                setup.current_record = record
-                if party.id in existing_relations:
-                    continue
-                relation = PartyCompany()
-                relation.party = party
-                relation.company = company
-                party_companies_to_save.append((relation, record))
-                existing_relations.add(party.id)
-            cls.importer_save(party_companies_to_save)
 
         if 'note' in setup.fields:
             for party, record in to_save:

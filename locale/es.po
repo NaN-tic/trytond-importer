@@ -98,10 +98,6 @@ msgctxt "field:importer,data_start_row:"
 msgid "Data Start Row"
 msgstr "Fila de inicio de los datos"
 
-msgctxt "field:importer,agent_sample_rows:"
-msgid "Sample Rows"
-msgstr "Filas de muestra"
-
 msgctxt "field:importer,agent_sample_data:"
 msgid "Sample Data"
 msgstr "Datos de muestra"
@@ -137,6 +133,11 @@ msgstr "Datos"
 msgctxt "field:importer,url_data:"
 msgid "Data URL"
 msgstr "URL de Datos "
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_url_data"
+msgid "Could not load data from URL \"%(url)s\": %(error)s."
+msgstr "No se han podido cargar los datos desde la URL \"%(url)s\": %(error)s."
 
 msgctxt "field:importer,sheet_number:"
 msgid "Sheet Number"
@@ -1013,10 +1014,6 @@ msgstr "Usar subtransacciones"
 msgctxt "field:importer.meta,commit_chunks:"
 msgid "Commit Chunks"
 msgstr "Confirmar en bloques"
-
-msgctxt "field:importer.meta,agent_sample_rows:"
-msgid "Agent Sample Rows"
-msgstr "Filas de muestra del agente"
 
 msgctxt "field:importer.order_point,min_quantity:"
 msgid "Minimum Quantity"
@@ -2644,7 +2641,7 @@ msgstr "La eliminación de registros está deshabilitada."
 #, python-format
 msgctxt "model:ir.message,text:msg_employee_not_found"
 msgid "Employee %(employee)s not found."
-msgstr "No se encontró el empleado %(employee)."
+msgstr "No se encontró el empleado %(employee)s."
 
 #, python-format
 msgctxt "model:ir.message,text:msg_group_not_found"

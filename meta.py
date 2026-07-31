@@ -33,7 +33,6 @@ class ImporterMeta(ImporterModel):
     sql_data = fields.Char('Sql Data')
     use_subtransactions = fields.Boolean('Use Subtransactions')
     commit_chunks = fields.Boolean('Commit Chunks')
-    agent_sample_rows = fields.Integer('Agent Sample Rows')
 
     @classmethod
     def importer_start(cls):
