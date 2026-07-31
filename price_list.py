@@ -88,7 +88,6 @@ class ImporterPriceList(ImporterModel):
                     raise UserError(gettext(
                             'importer.product_category_not_found',
                             category=record.category))
-                line.category = category
             line.quantity = record.quantity
             line.formula = record.formula
             cls.importer_line_hook(record, line)

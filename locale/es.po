@@ -30,14 +30,6 @@ msgctxt "field:importer,deletes:"
 msgid "Deletes"
 msgstr "Elimina"
 
-msgctxt "field:importer,use_subtransactions:"
-msgid "Use Subtransactions"
-msgstr "Usar subtransacciones"
-
-msgctxt "field:importer,commit_chunks:"
-msgid "Commit Chunks"
-msgstr "Confirmar en bloques"
-
 msgctxt "field:importer,elapsed:"
 msgid "Elapsed Time"
 msgstr "Tiempo transcurrido"
@@ -94,14 +86,6 @@ msgctxt "field:importer,sample_offset:"
 msgid "Sample Offset"
 msgstr "Desplazamiento de la muestra"
 
-msgctxt "field:importer,data_start_row:"
-msgid "Data Start Row"
-msgstr "Fila de inicio de los datos"
-
-msgctxt "field:importer,agent_sample_data:"
-msgid "Sample Data"
-msgstr "Datos de muestra"
-
 msgctxt "field:importer,schema:"
 msgid "Schema"
 msgstr "Esquema"
@@ -134,24 +118,9 @@ msgctxt "field:importer,url_data:"
 msgid "Data URL"
 msgstr "URL de Datos "
 
-#, python-format
 msgctxt "model:ir.message,text:msg_invalid_url_data"
-msgid "Could not load data from URL \"%(url)s\": %(error)s."
-msgstr "No se han podido cargar los datos desde la URL \"%(url)s\": %(error)s."
-
-msgctxt "field:importer,sheet_number:"
-msgid "Sheet Number"
-msgstr "Número de hoja"
-
-#, python-format
-msgctxt "model:ir.message,text:msg_sheet_not_found"
-msgid "Sheet \"%(sheet)s\" not found in the selected file."
-msgstr "No se encontró la hoja \"%(sheet)s\" en el archivo seleccionado."
-
-#, python-format
-msgctxt "model:ir.message,text:msg_google_drive_quota_exceeded"
-msgid "Google Drive returned a quota exceeded page instead of the file for URL \"%(url)s\"."
-msgstr "Google Drive devolvió una página de cuota excedida en lugar del archivo para la URL \"%(url)s\"."
+msgid "Could not load data from URL \"%(url)s\". %(error)s."
+msgstr "No se han podido cargar los datos desde la URL \"%(url)s\". %(error)s."
 
 msgctxt "field:importer,use_header:"
 msgid "Use Header?"
@@ -997,14 +966,6 @@ msgctxt "field:importer.meta,url_data:"
 msgid "URL"
 msgstr "URL"
 
-msgctxt "field:importer.meta,sheet_number:"
-msgid "Sheet Number"
-msgstr "Número de hoja"
-
-msgctxt "field:importer.meta,data_start_row:"
-msgid "Data Start Row"
-msgstr "Fila de inicio de los datos"
-
 msgctxt "field:importer.meta,use_header:"
 msgid "Use Header"
 msgstr "Usar encabezado"
@@ -1016,14 +977,6 @@ msgstr "Usuario"
 msgctxt "field:importer.meta,where:"
 msgid "Where"
 msgstr "Dónde"
-
-msgctxt "field:importer.meta,use_subtransactions:"
-msgid "Use Subtransactions"
-msgstr "Usar subtransacciones"
-
-msgctxt "field:importer.meta,commit_chunks:"
-msgid "Commit Chunks"
-msgstr "Confirmar en bloques"
 
 msgctxt "field:importer.order_point,min_quantity:"
 msgid "Minimum Quantity"
@@ -2651,7 +2604,7 @@ msgstr "La eliminación de registros está deshabilitada."
 #, python-format
 msgctxt "model:ir.message,text:msg_employee_not_found"
 msgid "Employee %(employee)s not found."
-msgstr "No se encontró el empleado %(employee)s."
+msgstr "No se encontró el empleado %(employee)."
 
 #, python-format
 msgctxt "model:ir.message,text:msg_group_not_found"
@@ -2745,15 +2698,6 @@ msgid "Subdivision type \"%(type)s\" of subdivision \"%(subdivision)s\" not allo
 msgstr ""
 "No se permite el tipo de subdivisión \"%(type)s\" de la subdivisión "
 "\"%(subdivision)s\"."
-
-#, python-format
-msgctxt "model:ir.message,text:msg_wrong_iban"
-msgid ""
-"The bank account \"%(iban)s\" is not a valid IBAN. Check the source value "
-"before importing it."
-msgstr ""
-"La cuenta bancaria \"%(iban)s\" no es un IBAN válido. Revise el valor de "
-"origen antes de importarlo."
 
 #, python-format
 msgctxt "model:ir.message,text:msg_successful_connection"

@@ -69,17 +69,8 @@ class ImporterAccountMove(ImporterModel):
     def get_party_code(self):
         return self.party_code
 
-    def get_party_codes(self, account_code=None):
-        return [self.get_party_code()]
-
     def get_account_code(self):
         return self.account_code
-
-    def get_account_codes(self):
-        return [self.get_account_code()]
-
-    def get_journal_codes(self):
-        return [self.journal_code]
 
     def get_new_party(self, code, name):
         pool = Pool()
@@ -216,17 +207,9 @@ class ImporterAccountMove(ImporterModel):
                 continue
             if record.account_code is None:
                 continue
-            account_codes = record.get_account_codes()
-            if not account_codes:
-                continue
-            acc_code = account_codes[0]
+            acc_code = record.get_account_code()
             if not create_account:
-                account = None
-                for account_code in account_codes:
-                    account = cache.accounts.get(
-                        (company.id, str(account_code)))
-                    if account:
-                        break
+                account = cache.accounts.get((company.id, str(acc_code)))
             else:
                 if (company.id, str(acc_code)) in cache.accounts:
                     account = cache.accounts[(company.id, str(acc_code))]
@@ -256,11 +239,7 @@ class ImporterAccountMove(ImporterModel):
                 move.date = date
                 move.number = record.number
                 move.period = period
-                move.journal = None
-                for journal_code in record.get_journal_codes():
-                    move.journal = cache.journals.get(journal_code)
-                    if move.journal:
-                        break
+                move.journal = cache.journals.get(record.journal_code)
                 move.lines = []
                 moves_to_save.append((move, record))
 
@@ -268,11 +247,7 @@ class ImporterAccountMove(ImporterModel):
                 continue
 
             party_code = record.get_party_code()
-            party = None
-            for candidate in record.get_party_codes(account.code):
-                party = cache.parties.get(candidate)
-                if party:
-                    break
+            party = cache.parties.get(party_code)
             if account.party_required and not party:
                 if not create_party:
                     setup.error(gettext(
