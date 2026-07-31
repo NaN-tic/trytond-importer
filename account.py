@@ -69,52 +69,8 @@ class ImporterAccountMove(ImporterModel):
     def get_party_code(self):
         return self.party_code
 
-    def get_party_codes(self, account_code=None):
-        codes = []
-        value = str(self.party_code or '').strip().upper()
-        if not value:
-            return codes
-        if value not in codes:
-            codes.append(value)
-        if value.startswith('ES'):
-            value = value[2:]
-            if value and value not in codes:
-                codes.append(value)
-        account_code = str(account_code or '').strip()
-        is_supplier_account = account_code.startswith(('40', '41'))
-        if value and is_supplier_account and not value.startswith('PR'):
-            prefixed = f'PR{value}'
-            if prefixed not in codes:
-                codes.append(prefixed)
-        return codes
-
     def get_account_code(self):
         return self.account_code
-
-    @staticmethod
-    def get_journal_fallback_codes(code):
-        code = str(code or '').strip().upper()
-        candidates = []
-        if code and code not in ('0', 'O'):
-            candidates.append(code)
-        candidates.extend(['MISC', 'ASS'])
-        return candidates
-
-    @staticmethod
-    def get_fallback_account_codes(code):
-        code = str(code or '')
-        if not code.isdigit():
-            return []
-        seen = set()
-        candidates = []
-        for i in range(len(code) - 1, -1, -1):
-            if code[i] == '0':
-                continue
-            candidate = code[:i] + ('0' * (len(code) - i))
-            if candidate != code and candidate not in seen:
-                seen.add(candidate)
-                candidates.append(candidate)
-        return candidates
 
     def get_new_party(self, code, name):
         pool = Pool()
@@ -187,7 +143,6 @@ class ImporterAccountMove(ImporterModel):
             elif Transaction().context.get('company'):
                 company = Company(Transaction().context.get('company'))
 
-
             if not company:
                 setup.error(gettext('importer.msg_company_not_found',
                     company=cache.companies.get(record.company_name)))
@@ -205,177 +160,154 @@ class ImporterAccountMove(ImporterModel):
 
             # Ensure the move list has to be created before create all the
             # related fields.
-            with Transaction().set_context(company=company.id):
-                debit = 0
-                credit = 0
-                if not record.debit:
-                    record.debit = 0
-                if not record.credit:
-                    record.credit = 0
-                if record.debit < 0:
-                    credit = abs(record.debit or 0)
+            debit = 0
+            credit = 0
+            if not record.debit:
+                record.debit = 0
+            if not record.credit:
+                record.credit = 0
+            if record.debit < 0:
+                credit = abs(record.debit or 0)
+            else:
+                debit = record.debit or 0
+            if record.credit < 0:
+                debit += abs(record.credit or 0)
+            else:
+                credit += record.credit or 0
+
+
+            # Control that only one debit or credit has value.
+            # And none of them has, not create line.
+            if debit and credit:
+                balance = debit - credit
+                if balance == 0:
+                    continue
+                elif balance < 0:
+                    debit = 0
+                    credit = abs(balance)
                 else:
-                    debit = record.debit or 0
-                if record.credit < 0:
-                    debit += abs(record.credit or 0)
+                    debit = balance
+                    credit = 0
+            elif not debit and not credit:
+                setup.error(gettext(
+                        'importer.msg_account_move_line_without_amount'))
+                continue
+
+            mdate = record.effective_date
+            period = cache.periods.get((company.id, mdate))
+            if not period:
+                period_id = Period.find(company, date=mdate, test_state=True)
+                period = Period(period_id)
+                cache.periods[(company.id ,mdate)] = period
+            if isinstance(mdate, str):
+                mdate = datetime.strptime(mdate, '%Y-%m-%d %H:%M:%s').date()
+            elif isinstance(mdate, datetime):
+                mdate = mdate.date()
+            if (company.id, record.number, mdate) in cache.moves:
+                continue
+            if record.account_code is None:
+                continue
+            acc_code = record.get_account_code()
+            if not create_account:
+                account = cache.accounts.get((company.id, str(acc_code)))
+            else:
+                if (company.id, str(acc_code)) in cache.accounts:
+                    account = cache.accounts[(company.id, str(acc_code))]
                 else:
-                    credit += record.credit or 0
-
-                # Control that only one debit or credit has value.
-                # And none of them has, not create line.
-                if debit and credit:
-                    balance = debit - credit
-                    if balance == 0:
-                        continue
-                    elif balance < 0:
-                        debit = 0
-                        credit = abs(balance)
-                    else:
-                        debit = balance
-                        credit = 0
-                elif not debit and not credit:
-                    continue
-
-                mdate = record.effective_date
-                period = cache.periods.get((company.id, mdate))
-                if not period:
-                    period_id = Period.find(company, date=mdate, test_state=True)
-                    period = Period(period_id)
-                    cache.periods[(company.id ,mdate)] = period
-                if isinstance(mdate, str):
-                    mdate = datetime.strptime(mdate, '%Y-%m-%d %H:%M:%s').date()
-                elif isinstance(mdate, datetime):
-                    mdate = mdate.date()
-                if (company.id, record.number, mdate) in cache.moves:
-                    continue
-                if record.account_code is None:
-                    continue
-                acc_code = record.get_account_code()
-                if not create_account:
-                    account = None
-                    account_key = (company.id, str(acc_code))
-                    if account_key in cache.accounts:
-                        account = cache.accounts[account_key]
-                    else:
-                        for fallback_code in cls.get_fallback_account_codes(
-                                acc_code):
-                            fallback_key = (company.id, fallback_code)
-                            if fallback_key in cache.accounts:
-                                account = cache.accounts[fallback_key]
-                                break
-                else:
-                    if (company.id, str(acc_code)) in cache.accounts:
-                        account = cache.accounts[(company.id, str(acc_code))]
-                    else:
-                        account = Chart.create_account(acc_code,
-                            record.account_name, charts[company.id])
-                        if not account:
-                            setup.error(gettext(
-                                'importer.msg_account_not_found',
-                                account=acc_code, company=company.party.name))
-                            continue
-                        account.company = company
-                        accounts_to_save.append((account, record))
-                        cache.accounts.add(account)
-
-                if not account:
-                    continue
-
-                header = record.importer_header()
-                if any(header) and header != previous_header:
-                    previous_header = header
-                    values = Move.default_get(list(Move._fields.keys()),
-                        with_rec_name=False)
-
-                    date = record.effective_date
-                    move = Move(**values)
-                    move.date = date
-                    move.number = record.number
-                    move.period = period
-                    move.journal = None
-                    for journal_code in record.get_journal_fallback_codes(
-                            record.journal_code):
-                        if journal_code in cache.journals:
-                            move.journal = cache.journals[journal_code]
-                            break
-                    if not move.journal:
-                        setup.error(f'Key "{record.journal_code}" not found '
-                            'accessing "account.journal"', record)
-                        move = None
-                        continue
-                    move.lines = []
-                    moves_to_save.append((move, record))
-
-                if not move:
-                    continue
-
-                party_code = record.get_party_code()
-                party = None
-                for candidate in record.get_party_codes(account.code):
-                    if candidate in cache.parties:
-                        party = cache.parties[candidate]
-                        break
-                if account.party_required and not party:
-                    if not create_party:
+                    account = Chart.create_account(acc_code,
+                        record.account_name, charts[company.id])
+                    if not account:
                         setup.error(gettext(
-                            'importer.party_required_for_account',
-                            account=record.account_code, move=record.number),
-                            record)
+                            'importer.msg_account_not_found',
+                            account=acc_code, company=company.party.name))
                         continue
-                    party_name = record.party_name
-                    if party_name in created_parties:
-                        party = created_parties[party_name]
+                    account.company = company
+                    accounts_to_save.append((account, record))
+                    cache.accounts.add(account)
+
+            if not account:
+                continue
+
+            header = record.importer_header()
+            if any(header) and header != previous_header:
+                previous_header = header
+                values = Move.default_get(list(Move._fields.keys()),
+                    with_rec_name=False)
+
+                date = record.effective_date
+                move = Move(**values)
+                move.date = date
+                move.number = record.number
+                move.period = period
+                move.journal = cache.journals.get(record.journal_code)
+                move.lines = []
+                moves_to_save.append((move, record))
+
+            if not move:
+                continue
+
+            party_code = record.get_party_code()
+            party = cache.parties.get(party_code)
+            if account.party_required and not party:
+                if not create_party:
+                    setup.error(gettext(
+                        'importer.party_required_for_account',
+                        account=record.account_code, move=record.number))
+                    continue
+                party_name = record.party_name
+                if party_name in created_parties:
+                    party = created_parties[party_name]
+                else:
+                    parties = Party.search([
+                        ('name', '=', party_name)
+                    ], limit=1)
+
+                    if parties:
+                        party, = parties
                     else:
-                        parties = Party.search([
-                            ('name', '=', party_name)
+                        party = record.get_new_party(party_code, party_name)
+                        created_parties[party_name] = party
+                        parties_to_save.append((party, record))
+
+            line = Line()
+            lines_to_save.append((line, record))
+            line.move = move
+            line.account = account
+            line.description = record.description
+            line.maturity_date = record.maturity_date
+            line.debit = currency.round(debit)
+            line.credit = currency.round(credit)
+            if account.party_required:
+                line.party = party
+            if account.id is not None and account.second_currency:
+                line.second_currency = account.second_currency
+                line.amount_second_currency = Currency.compute(
+                    account.currency, line.debit - line.credit,
+                    account.second_currency)
+            if 'analytic_account' in setup.fields and record.analytic_account:
+                analytic_account = cache.analytic_accounts.get(
+                    record.analytic_account)
+                if not analytic_account:
+                    analytic_account = AnalyticAccount()
+                    root_account = AnalyticAccount.search([
+                        ('type', '=', 'root'),
+                        ('company', '=', company),
                         ], limit=1)
-
-                        if parties:
-                            party, = parties
-                        else:
-                            party = record.get_new_party(party_code, party_name)
-                            created_parties[party_name] = party
-                            parties_to_save.append((party, record))
-
-                line = Line()
-                lines_to_save.append((line, record))
-                line.move = move
-                line.account = account
-                line.description = record.description
-                line.maturity_date = record.maturity_date
-                line.debit = currency.round(debit)
-                line.credit = currency.round(credit)
-                if account.party_required:
-                    line.party = party
-                if account.id is not None and account.second_currency:
-                    line.second_currency = account.second_currency
-                    line.amount_second_currency = Currency.compute(
-                        account.currency, line.debit - line.credit,
-                        account.second_currency)
-                if 'analytic_account' in setup.fields and record.analytic_account:
-                    analytic_account = cache.analytic_accounts.get(
-                        record.analytic_account)
-                    if not analytic_account:
-                        analytic_account = AnalyticAccount()
-                        root_account = AnalyticAccount.search([
-                            ('type', '=', 'root'),
-                            ('company', '=', company),
-                            ], limit=1)
-                        root_account = root_account[0] if root_account else None
-                        analytic_account.name = record.analytic_account
-                        analytic_account.company = company
-                        analytic_account.type = 'normal'
-                        analytic_account.root = root_account
-                        analytic_account.parent = root_account
-                        cache.analytic_accounts.add(analytic_account)
-                        analytic_accounts_to_save.append((analytic_account, record))
-                    analytic_line = AnalyticLine()
-                    analytic_line.account = analytic_account
-                    analytic_line.date = record.effective_date
-                    analytic_line.debit = line.debit
-                    analytic_line.credit = line.credit
-                    analytic_line.move_line = line
-                    analytic_lines_to_save.append((analytic_line, record))
+                    root_account = root_account[0] if root_account else None
+                    analytic_account.name = record.analytic_account
+                    analytic_account.company = company
+                    analytic_account.type = 'normal'
+                    analytic_account.root = root_account
+                    analytic_account.parent = root_account
+                    cache.analytic_accounts.add(analytic_account)
+                    analytic_accounts_to_save.append((analytic_account, record))
+                analytic_line = AnalyticLine()
+                analytic_line.account = analytic_account
+                analytic_line.date = record.effective_date
+                analytic_line.debit = line.debit
+                analytic_line.credit = line.credit
+                analytic_line.move_line = line
+                analytic_lines_to_save.append((analytic_line, record))
 
         setup.current_record = None
         cls.importer_save(parties_to_save)

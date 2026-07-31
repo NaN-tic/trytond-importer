@@ -3,7 +3,7 @@ import subprocess
 from trytond.pool import PoolMeta, Pool
 from .tools import ImporterModel
 from trytond.transaction import Transaction
-from trytond.config import config
+import trytond.config as config
 from trytond import backend
 
 class ImporterCurrency(ImporterModel):
