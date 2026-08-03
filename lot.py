@@ -33,7 +33,11 @@ class ImporterLot(ImporterModel):
         setup = Setup.get()
         cache = setup.cache
 
-        to_save = []
+        # A file may contain the same product/lot more than once.  Keep a
+        # single save operation per lot, otherwise Model.save clears the
+        # pending values after processing the same record the first time.
+        # Reassigning the item preserves the values from the last row.
+        to_save = {}
         for record in records:
             setup.current_record = record
             lot = cache.lots.get((record.product_code, record.number))
@@ -52,8 +56,9 @@ class ImporterLot(ImporterModel):
                 lot.shelf_life_expiration_date = (
                     record.shelf_life_expiration_date)
             cls.importer_lot(record, lot)
-            to_save.append((lot, record))
+            to_save[id(lot)] = (lot, record)
 
+        to_save = list(to_save.values())
         cls.importer_save(to_save)
         return [x[0] for x in to_save]
 
