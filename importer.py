@@ -67,18 +67,24 @@ def save_virtual_workbook(workbook):
 
 class DataExtractor:
     def __init__(self, data_source, binary_data, text_data, url_data,
-            conn=None, sql=None):
+            conn=None, sql=None, sheet_number=None, row_limit=None,
+            start_row=None):
         self.data_source = data_source
         self.binary_data = binary_data
         self.text_data = text_data
         self.url_data = url_data
         self.connection = conn
         self.sql = sql
+        self.sheet_number = sheet_number
+        self.row_limit = row_limit
+        self.start_row = start_row
         self.type = None
         self.has_header = None
         self.header_reliable = None
         self.rows = None
         self.filename = None
+        self.sheet_names = []
+        self.selected_sheet_name = None
 
     @staticmethod
     def to_str(d):
@@ -98,10 +104,10 @@ class DataExtractor:
 
         if self.data_source == 'binary' and self.binary_data:
             if force_text:
-                return StringIO(self.to_str(self.binary_data))
+                return StringIO(self.to_str(self.binary_data), newline='')
             return BytesIO(self.binary_data)
         elif self.data_source == 'text' and self.text_data:
-            return StringIO(self.text_data)
+            return StringIO(self.text_data, newline='')
         elif self.data_source == 'url' and self.url_data:
             url = self.url_data
             if ('docs.google.com' in url and 'export' not in url):
@@ -123,13 +129,21 @@ class DataExtractor:
                     data = self._read_url(url)
             else:
                 data = self._read_url(url)
+            if isinstance(data, (bytes, bytearray)):
+                lowered = data[:4096].lower()
+                if (b'google drive - quota exceeded' in lowered
+                        or b"can't view or download this file at this time" in lowered
+                        or b'too many users have viewed or downloaded this file recently' in lowered):
+                    raise UserError(gettext(
+                            'importer.msg_google_drive_quota_exceeded',
+                            url=url))
             if force_text:
-                return StringIO(self.to_str(data))
+                return StringIO(self.to_str(data), newline='')
             return BytesIO(data)
 
         # If no data source or data specified return empty content
         if force_text:
-            return StringIO(str())
+            return StringIO('', newline='')
         return BytesIO(bytes())
 
     def load(self):
@@ -137,25 +151,44 @@ class DataExtractor:
         try:
             book = openpyxl.load_workbook(filename=self.get_data_file(),
                 data_only=True, read_only=True, keep_links=False)
+        except UserError:
+            raise
         except:
             book = None
         if book:
-            sheet = book.active
-            rows = []
-            for row in sheet.iter_rows():
-                # Limit the number of columns to a maximum of 1024.
-                # We've found with some spreadsheets with many columns (most of
-                # them empty) that not limiting the number of columns causes
-                # openpyxl to load data incorrectly. Using 1600 instead of 1024
-                # fails too, so we set the limit to 1024 which is the maximum
-                # number of columns allowed by LibreOffice
-                rows.append([x.value for x in row[:1024]])
-            self.type = 'xlsx'
-            self.has_header = False
-            self.header_reliable = False
-            self.rows = rows
-            book.close()
-            return
+            try:
+                self.sheet_names = list(book.sheetnames)
+                if self.sheet_number:
+                    if self.sheet_number < 1 or self.sheet_number > len(
+                            book.worksheets):
+                        raise UserError(gettext('importer.msg_sheet_not_found',
+                                sheet=self.sheet_number))
+                    sheet = book.worksheets[self.sheet_number - 1]
+                else:
+                    sheet = book.active
+                self.selected_sheet_name = sheet.title
+                rows = []
+                row_number = 0
+                for row in sheet.iter_rows():
+                    row_number += 1
+                    if self.start_row and row_number < self.start_row:
+                        continue
+                    # Limit the number of columns to a maximum of 1024.
+                    # We've found with some spreadsheets with many columns (most of
+                    # them empty) that not limiting the number of columns causes
+                    # openpyxl to load data incorrectly. Using 1600 instead of 1024
+                    # fails too, so we set the limit to 1024 which is the maximum
+                    # number of columns allowed by LibreOffice
+                    rows.append([x.value for x in row[:1024]])
+                    if self.row_limit and len(rows) >= self.row_limit:
+                        break
+                self.type = 'xlsx'
+                self.has_header = False
+                self.header_reliable = False
+                self.rows = rows
+                return
+            finally:
+                book.close()
 
         # Process JSON and YAML files
         try:
@@ -169,6 +202,10 @@ class DataExtractor:
                 content = None
         if isinstance(content, list):
             if all(isinstance(x, list) for x in content):
+                if self.start_row:
+                    content = content[self.start_row - 1:]
+                if self.row_limit:
+                    content = content[:self.row_limit]
                 self.type = type
                 self.has_header = False
                 self.header_reliable = True
@@ -182,11 +219,17 @@ class DataExtractor:
                     keys.update(item.keys())
                 header = [x for x in sorted(list(keys))]
                 rows.append(header)
+                row_number = 1
                 for item in content:
+                    row_number += 1
+                    if self.start_row and row_number < self.start_row:
+                        continue
                     row = []
                     for key in header:
                         row.append(item.get(key))
                     rows.append(row)
+                    if self.row_limit and len(rows) >= self.row_limit:
+                        break
                 self.type = type
                 self.has_header = True
                 self.header_reliable = True
@@ -203,8 +246,14 @@ class DataExtractor:
             has_header = sniffer.has_header(chunk)
             data.seek(0)
             reader = csv.reader(data, dialect)
+            row_number = 0
             for row in reader:
+                row_number += 1
+                if self.start_row and row_number < self.start_row:
+                    continue
                 rows.append(row)
+                if self.row_limit and len(rows) >= self.row_limit:
+                    break
             self.type = 'csv'
             self.has_header = has_header
             self.header_reliable = False
@@ -218,7 +267,14 @@ class DataExtractor:
                 cursor = self.connection.cursor()
                 cursor.execute(self.sql)
                 rows = [[item[0] for item in cursor.description]]
-                rows += cursor.fetchall()
+                row_number = 1
+                for row in cursor.fetchall():
+                    row_number += 1
+                    if self.start_row and row_number < self.start_row:
+                        continue
+                    rows.append(row)
+                    if self.row_limit and len(rows) >= self.row_limit:
+                        break
                 self.type = 'sql'
                 self.has_header = True
                 self.header_reliable = True
@@ -304,6 +360,7 @@ class Importer(ModelSQL, ModelView):
     url_data = fields.Char('Data URL', states={
             'invisible': Eval('data_source') != 'url',
             })
+    sheet_number = fields.Integer('Sheet Number')
     columns = fields.One2Many('importer.column', 'importer', 'Columns')
     source_columns = fields.One2Many('importer.source_column',
             'importer', 'Source Columns', states={
@@ -320,6 +377,10 @@ class Importer(ModelSQL, ModelView):
         domain=[('sample_offset', '>=', 0)],
         help="Number of records to skip before importing with the sample "
         "button.")
+    data_start_row = fields.Integer('Data Start Row',
+        help='Spreadsheet row number where actual data starts. If headers '
+        'are used, the header is assumed to be on the previous row.')
+    agent_sample_data = fields.Text('Sample Data', readonly=True)
     elapsed = fields.TimeDelta('Elapsed Time', readonly=True)
     deletes = fields.Text('Deletes', readonly=True, states={
             'invisible': ~Bool(Eval('deletes')),
@@ -408,6 +469,11 @@ class Importer(ModelSQL, ModelView):
                     'icon': 'tryton-cancel',
                     'invisible': ~Bool(Eval('deletes')),
                     },
+                'update_agent_sample': {
+                    'icon': 'tryton-refresh',
+                    'invisible': ~Bool(Eval('data_source')),
+                    'depends': ['data_source'],
+                    },
                 })
         cls.sql_source.selection.append(('psql', 'PSQL'))
 
@@ -475,6 +541,7 @@ class Importer(ModelSQL, ModelView):
         default.setdefault('logs')
         default.setdefault('deletes')
         default.setdefault('elapsed')
+        default.setdefault('agent_sample_data')
         return super().copy(importers, default=default)
 
     @classmethod
@@ -532,6 +599,45 @@ class Importer(ModelSQL, ModelView):
     def extractor(cls):
         return DataExtractor
 
+    def get_data_start_row(self, include_header=False):
+        start_row = self.data_start_row or 1
+        if include_header and self.has_header and start_row > 1:
+            return start_row - 1
+        return start_row
+
+    @classmethod
+    @ModelView.button
+    def update_agent_sample(cls, importers):
+        def to_json(value):
+            if isinstance(value, (datetime.datetime, datetime.date,
+                    datetime.time, datetime.timedelta, Decimal)):
+                return str(value)
+            return value
+
+        for importer in importers:
+            rows_to_read = 20
+            conn = importer.get_connection()
+            sql = importer.get_sql()
+            Data = cls.extractor()
+            data = Data(importer.data_source, importer.binary_data,
+                importer.text_data, importer.url_data, conn, sql,
+                sheet_number=importer.sheet_number,
+                row_limit=rows_to_read + (1 if importer.has_header else 0),
+                start_row=(importer.get_data_start_row(include_header=True)
+                    if importer.data_start_row else None))
+            data.filename = importer.binary_file_name
+            data.load()
+            payload = {
+                'filename': data.filename,
+                'type': data.type,
+                'sheet_name': data.selected_sheet_name,
+                'available_sheets': data.sheet_names,
+                'rows': data.rows,
+                }
+            importer.agent_sample_data = json.dumps(payload,
+                ensure_ascii=False, indent=2, default=to_json)
+        cls.save(importers)
+
     @classmethod
     @ModelView.button
     def clean_log(cls, importers):
@@ -580,6 +686,8 @@ class Importer(ModelSQL, ModelView):
                 js['binary_data'] = None
             # URL
             js['url_data'] = importer.url_data
+            js['sheet_number'] = importer.sheet_number
+            js['data_start_row'] = importer.data_start_row
             # SQL
             js['sql_data'] = importer.sql_data
             js['sql_source'] = importer.sql_source
@@ -643,7 +751,10 @@ class Importer(ModelSQL, ModelView):
             sql = importer.get_sql()
             Data = cls.extractor()
             data = Data(importer.data_source, importer.binary_data,
-                importer.text_data, importer.url_data, conn, sql)
+                importer.text_data, importer.url_data, conn, sql,
+                sheet_number=importer.sheet_number,
+                start_row=importer.get_data_start_row(include_header=True))
+            data.filename = importer.binary_file_name
             data.load()
 
             source_to_delete += importer.source_columns
@@ -675,7 +786,10 @@ class Importer(ModelSQL, ModelView):
             sql = importer.get_sql()
             Data = cls.extractor()
             data = Data(importer.data_source, importer.binary_data,
-                importer.text_data, importer.url_data, conn, sql)
+                importer.text_data, importer.url_data, conn, sql,
+                sheet_number=importer.sheet_number,
+                start_row=importer.get_data_start_row(include_header=True))
+            data.filename = importer.binary_file_name
             data.load()
             if not data.rows:
                 continue
@@ -746,7 +860,7 @@ class Importer(ModelSQL, ModelView):
         for column in self.columns:
             row_minimum = (9, None)
             for header in row:
-                header = str(header)
+                header = self.normalize_header(header)
                 header_minimum = 9
                 for string in strings[column.field]:
                     value = lev.normalized_distance(header.lower(),
@@ -765,7 +879,7 @@ class Importer(ModelSQL, ModelView):
 
         self.source_columns = ()
         for pos, field in enumerate(row):
-            field = str(field)
+            field = self.normalize_header(field)
             r_column = SourceColumn()
             r_column.importer = self.id
             if self.has_header and self.use_header:
@@ -823,6 +937,14 @@ class Importer(ModelSQL, ModelView):
                 column1.field == column2.field and
                 column1.format == column2.format)
 
+    @staticmethod
+    def normalize_header(value):
+        if value is None:
+            return ''
+        if not isinstance(value, str):
+            value = str(value)
+        return ' '.join(value.split())
+
 
     @classmethod
     def get_methods(cls):
@@ -866,14 +988,17 @@ class Importer(ModelSQL, ModelView):
 
         start = time.time()
         setup = tools.Setup()
+        setup.importer = self
         setup.method = self.method
         setup.on_error = self.on_error
         setup.fields = [x.field.name for x in self.columns if x.name or
             x.value]
         if data:
-            setup.filename = data.filename
+            setup.filename = data.filename or self.binary_file_name
+            setup.selected_sheet_name = data.selected_sheet_name
         else:
             setup.filename = self.binary_file_name
+            setup.selected_sheet_name = None
         setup.cache = SimpleNamespace()
         with Transaction().set_context(importer_setup=setup, _no_trigger=True,
                 _skip_warnings=True, language=self.get_language_code(),
@@ -1029,7 +1154,8 @@ class Importer(ModelSQL, ModelView):
             sql = self.get_sql()
             Data = self.extractor()
             data = Data(self.data_source, self.binary_data, self.text_data,
-                self.url_data, conn, sql)
+                self.url_data, conn, sql, sheet_number=self.sheet_number,
+                start_row=self.get_data_start_row(include_header=True))
             data.filename = self.binary_file_name
             data.load()
         rows = data.rows
@@ -1038,6 +1164,7 @@ class Importer(ModelSQL, ModelView):
         indexes = self.get_field_indexes(rows)
         if self.has_header:
             rows = rows[1:]
+        max_index = max(indexes.values(), default=-1)
 
         # We want to make sure we set all fields, even if the Importer record
         # has not been updated since the last change of the model
@@ -1045,6 +1172,8 @@ class Importer(ModelSQL, ModelView):
             - {c.field.name for c in self.columns})
 
         row_number = 0
+        if self.data_start_row:
+            row_number = self.data_start_row - 1
         if hasattr(Model, 'row_number'):
             update_row_number = True
         else:
@@ -1053,6 +1182,8 @@ class Importer(ModelSQL, ModelView):
             row_number += 1
             if not any(row):
                 continue
+            if len(row) <= max_index:
+                row = list(row) + [''] * (max_index + 1 - len(row))
             record = Model()
             # Loop on columns so we ensure we set a value for all fields
             # hence importer methods can rely on the field to exist even if it
@@ -1100,7 +1231,7 @@ class Importer(ModelSQL, ModelView):
     def get_field_indexes(self, rows):
         indexes = {}
         if self.has_header and self.use_header:
-            header = rows[0]
+            header = [self.normalize_header(x) for x in rows[0]]
             hi = {}
             for pos in range(len(header)):
                 hi[header[pos]] = pos
@@ -1389,18 +1520,22 @@ class ImporterSourceColumn(ModelSQL, ModelView):
                 continue
             conn = importer.get_connection()
             sql = importer.get_sql()
-            Data = column.importer.extractor()
+            Data = importer.extractor()
             data = Data(importer.data_source, importer.binary_data,
-                importer.text_data, importer.url_data, conn, sql)
+                importer.text_data, importer.url_data, conn, sql,
+                sheet_number=importer.sheet_number,
+                start_row=importer.get_data_start_row(include_header=True))
+            data.filename = importer.binary_file_name
             data.load()
             records = {}
             if data.rows:
-                headers = data.rows[0]
+                headers = [importer.normalize_header(x) for x in data.rows[0]]
                 rows = data.rows[1:]
                 for i in range(min(len(rows), 3)):
                     row = rows[i]
                     for j in range(len(headers)):
-                        records.setdefault(headers[j], []).append(row[j])
+                        value = row[j] if j < len(row) else None
+                        records.setdefault(headers[j], []).append(value)
             importers[column.importer] = records
 
         for column in columns:
@@ -1519,7 +1654,10 @@ class AskAndImport(Wizard):
 
         Data = Importer.extractor()
         data = Data(self.ask.data_source, self.ask.binary_data,
-            self.ask.text_data, self.ask.url_data, conn, sql)
+            self.ask.text_data, self.ask.url_data, conn, sql,
+            sheet_number=self.ask.importer.sheet_number,
+            start_row=self.ask.importer.get_data_start_row(
+                include_header=True))
         data.filename = getattr(self.ask, 'filename', None)
         data.load()
         records = self.ask.importer.data_to_records(data)

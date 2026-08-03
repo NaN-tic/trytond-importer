@@ -30,6 +30,14 @@ msgctxt "field:importer,deletes:"
 msgid "Deletes"
 msgstr "Elimina"
 
+msgctxt "field:importer,use_subtransactions:"
+msgid "Use Subtransactions"
+msgstr "Utilitzar subtransaccions"
+
+msgctxt "field:importer,commit_chunks:"
+msgid "Commit Chunks"
+msgstr "Confirmar en blocs"
+
 msgctxt "field:importer,elapsed:"
 msgid "Elapsed Time"
 msgstr "Temps transcorregut"
@@ -86,6 +94,14 @@ msgctxt "field:importer,sample_offset:"
 msgid "Sample Offset"
 msgstr "Desplaçament de la mostra"
 
+msgctxt "field:importer,data_start_row:"
+msgid "Data Start Row"
+msgstr "Fila d'inici de les dades"
+
+msgctxt "field:importer,agent_sample_data:"
+msgid "Sample Data"
+msgstr "Dades de mostra"
+
 msgctxt "field:importer,schema:"
 msgid "Schema"
 msgstr "Esquema"
@@ -118,9 +134,24 @@ msgctxt "field:importer,url_data:"
 msgid "Data URL"
 msgstr "URL de dades"
 
+#, python-format
 msgctxt "model:ir.message,text:msg_invalid_url_data"
-msgid "Could not load data from URL \"%(url)s\". %(error)s."
-msgstr "No s'han pogut carregar les dades des de l'URL \"%(url)s\". %(error)s."
+msgid "Could not load data from URL \"%(url)s\": %(error)s."
+msgstr "No s'han pogut carregar les dades des de l'URL \"%(url)s\": %(error)s."
+
+msgctxt "field:importer,sheet_number:"
+msgid "Sheet Number"
+msgstr "Número de full"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_sheet_not_found"
+msgid "Sheet \"%(sheet)s\" not found in the selected file."
+msgstr "No s'ha trobat el full \"%(sheet)s\" al fitxer seleccionat."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_google_drive_quota_exceeded"
+msgid "Google Drive returned a quota exceeded page instead of the file for URL \"%(url)s\"."
+msgstr "Google Drive ha retornat una pàgina de quota excedida en lloc del fitxer per a l'URL \"%(url)s\"."
 
 msgctxt "field:importer,use_header:"
 msgid "Use Header?"
@@ -966,6 +997,14 @@ msgctxt "field:importer.meta,url_data:"
 msgid "URL"
 msgstr "URL"
 
+msgctxt "field:importer.meta,sheet_number:"
+msgid "Sheet Number"
+msgstr "Número de full"
+
+msgctxt "field:importer.meta,data_start_row:"
+msgid "Data Start Row"
+msgstr "Fila d'inici de les dades"
+
 msgctxt "field:importer.meta,use_header:"
 msgid "Use Header"
 msgstr "Utilitzar la capçalera"
@@ -977,6 +1016,14 @@ msgstr "Usuari"
 msgctxt "field:importer.meta,where:"
 msgid "Where"
 msgstr "On"
+
+msgctxt "field:importer.meta,use_subtransactions:"
+msgid "Use Subtransactions"
+msgstr "Utilitzar subtransaccions"
+
+msgctxt "field:importer.meta,commit_chunks:"
+msgid "Commit Chunks"
+msgstr "Confirmar en blocs"
 
 msgctxt "field:importer.order_point,min_quantity:"
 msgid "Minimum Quantity"
@@ -2697,6 +2744,15 @@ msgid "Subdivision type \"%(type)s\" of subdivision \"%(subdivision)s\" not allo
 msgstr ""
 "No es permet el tipus de subdivisió \"%(type)s\" de la subdivisió "
 "\"%(subdivision)s\"."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_wrong_iban"
+msgid ""
+"The bank account \"%(iban)s\" is not a valid IBAN. Check the source value "
+"before importing it."
+msgstr ""
+"El compte bancari \"%(iban)s\" no és un IBAN vàlid. Reviseu el valor "
+"d'origen abans d'importar-lo."
 
 #, python-format
 msgctxt "model:ir.message,text:msg_successful_connection"
