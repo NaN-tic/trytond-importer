@@ -132,6 +132,16 @@
             <field name="group" ref="group_importer"/>
         </record>
 
+        <record model="ir.model.button" id="importer_update_agent_sample_button">
+            <field name="name">update_agent_sample</field>
+            <field name="string">Update Agent Sample</field>
+            <field name="model">importer</field>
+        </record>
+        <record model="ir.model.button-res.group" id="importer_update_agent_sample_button_group_importer">
+            <field name="button" ref="importer_update_agent_sample_button"/>
+            <field name="group" ref="group_importer"/>
+        </record>
+
         <record model="ir.model.button" id="importer_clean_deletes_button">
             <field name="name">clean_deletes</field>
             <field name="string">Clean Deletes</field>
