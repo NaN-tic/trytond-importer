@@ -3,7 +3,7 @@ from trytond.tools.email_ import validate_email
 from trytond.model import fields
 from trytond.pool import PoolMeta, Pool
 from trytond.transaction import Transaction
-from stdnum import get_cc_module
+from stdnum import get_cc_module, iban as stdnum_iban
 from trytond.i18n import gettext
 from .tools import ImporterModel, Cache, Setup
 
@@ -435,7 +435,10 @@ class ImporterParty(ImporterModel):
                 party.supplier_payment_days = record.supplier_payment_days
 
             if record.vat:
-                vat = "%s%s" % (record.country, record.vat)
+                vat = str(record.vat).replace(' ', '').strip().upper()
+                country_code = str(record.country or '').strip().upper()
+                if country_code and not vat.startswith(country_code):
+                    vat = f'{country_code}{vat}'
                 vat_type = 'eu_vat'
                 if vat in vats:
                     vat_type = None
@@ -584,9 +587,9 @@ class ImporterParty(ImporterModel):
                         iban = iban.replace(' ', '')
 
                         currency = cache.currencies.get(currency_code)
-                        if len(iban) < 8:
+                        if len(iban) < 8 or not stdnum_iban.is_valid(iban):
                             setup.error(gettext('importer.msg_wrong_iban',
-                                iban_=iban))
+                                iban=iban))
                             continue
 
                         bank_number = cache.bank_accounts.get(iban)
