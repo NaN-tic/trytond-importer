@@ -1508,7 +1508,7 @@ class ImporterSourceColumn(ModelSQL, ModelView):
 
         def value_to_str(value):
             if isinstance(value, str):
-                return value
+                return value.replace('\r', ' ').replace('\n', ' ')
             if isinstance(value, datetime.date):
                 return language.strftime(value)
             return str(value)
