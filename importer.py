@@ -1442,6 +1442,20 @@ class ImporterColumn(ModelSQL, ModelView):
                     return None
             elif not isinstance(value, (datetime.datetime, datetime.date)):
                 return None
+        elif ttype == 'time':
+            if isinstance(value, str):
+                value = value.strip()
+                if not value:
+                    return None
+                try:
+                    return datetime.time.fromisoformat(value)
+                except ValueError:
+                    tools.Setup.get().error(
+                        'Invalid time value "{value}" for column "{column}"',
+                        value=value, column=self.rec_name)
+                    return None
+            elif not isinstance(value, datetime.time):
+                return None
         elif ttype == 'boolean':
             value = str(value).strip()
             if value.lower() in ('false', 'off', '0', '', 'no', 'n', 'f'):
