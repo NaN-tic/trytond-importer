@@ -38,7 +38,7 @@ class ImporterActivityType(ImporterModel):
                 type.active = record.active
             if 'color' in setup.fields:
                 type.color = record.color
-            if 'sequence' in setup.fields:
+            if 'sequence' in setup.fields and record.sequence:
                 type.sequence = record.sequence
             if 'default_description' in setup.fields:
                 type.default_description = record.default_description
