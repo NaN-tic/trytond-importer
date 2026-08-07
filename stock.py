@@ -122,7 +122,8 @@ class ImporterLocation(ImporterModel):
     @classmethod
     def importer_start(cls):
         super().importer_start()
-        Setup.get().cache.locations = Cache('stock.location', 'name')
+        Setup.get().cache.locations = Cache('stock.location', 'name',
+            required=False)
 
     @classmethod
     def importer_import(cls, records):
@@ -132,16 +133,19 @@ class ImporterLocation(ImporterModel):
         cache = Setup.get().cache
 
         to_save = []
+        all_records = []
         by_name = {}
         for record in records:
             if not record.name:
                 continue
 
-            location = cache.locations.get(record.name)
+            location = by_name.get(record.name) or cache.locations.get(
+                record.name)
             new_location = location is None
             if new_location:
                 location = Location()
                 location.name = record.name
+                to_save.append((location, record))
 
             if record.code is not None:
                 location.code = record.code
@@ -151,7 +155,7 @@ class ImporterLocation(ImporterModel):
                 else:
                     location.type = record.type
 
-            to_save.append((location, record))
+            all_records.append((location, record))
             by_name[record.name] = location
 
         cls.importer_save(to_save)
@@ -160,7 +164,8 @@ class ImporterLocation(ImporterModel):
 
         to_save_parents = []
         to_save_warehouses = []
-        for location, record in to_save:
+        already_saved = set()
+        for location, record in all_records:
             if record.parent is not None:
                 location.parent = by_name.get(record.parent) or cache.locations.get(
                     record.parent)
@@ -183,9 +188,24 @@ class ImporterLocation(ImporterModel):
                     location.picking_location = (
                         by_name.get(record.picking_location)
                         or cache.locations.get(record.picking_location))
-                to_save_warehouses.append((location, record))
+                if id(location) not in already_saved:
+                    to_save_warehouses.append((location, record))
+                    already_saved.add(id(location))
             else:
-                to_save_parents.append((location, record))
+                if id(location) not in already_saved:
+                    to_save_parents.append((location, record))
+                    already_saved.add(id(location))
+
+        if hasattr(Location, 'production_location'):
+            to_save_productions = []
+            for location, record in to_save_warehouses:
+                if not location.production_location:
+                    production = Location()
+                    production.name = 'Producció %s' % location.name
+                    production.type = 'production'
+                    to_save_productions.append((production, record))
+                    location.production_location = production
+            cls.importer_save(to_save_productions)
 
         cls.importer_save(to_save_parents)
         cls.importer_save(to_save_warehouses)
