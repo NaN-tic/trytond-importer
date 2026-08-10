@@ -484,11 +484,17 @@ class ImporterTestCase(ModuleTestCase):
     def test_account_fiscalyear_multi_company(self):
         pool = Pool()
         FiscalYear = pool.get('account.fiscalyear')
+        PartyIdentifier = pool.get('party.identifier')
         SequenceStrict = pool.get('ir.sequence.strict')
         Period = pool.get('account.period')
 
         company1 = create_company('Company A')
         company2 = create_company('Company B')
+        PartyIdentifier.create([{
+                'party': company2.party.id,
+                'type': 'eu_vat',
+                'code': 'ESB64793250',
+                }])
 
         importer = self.import_('sequence', [{
                 'name': 'Account Move A',
@@ -530,9 +536,10 @@ class ImporterTestCase(ModuleTestCase):
                 'in_invoice_sequence_name': 'Invoice A',
                 'out_credit_note_sequence_name': 'Invoice A',
                 'in_credit_note_sequence_name': 'Invoice A',
-                }, {
+            }, {
                 'name': '2026',
-                'company_name': company2.party.name,
+                'company_name': 'Original Company B',
+                'company_vat': 'ESB64793250',
                 'start_date': '2026-01-01',
                 'end_date': '2026-12-31',
                 'move_sequence_name': 'Account Move B',

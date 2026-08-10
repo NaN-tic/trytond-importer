@@ -536,6 +536,7 @@ class ImporterFiscalYear(ImporterModel):
     __name__ = 'importer.account.fiscalyear'
     name = fields.Char('Name')
     company_name = fields.Char('Company Name')
+    company_vat = fields.Char('Company VAT')
     start_date = fields.Date('Start Date')
     end_date = fields.Date('End Date')
     move_sequence_name = fields.Char('Move Sequence Name')
@@ -569,6 +570,12 @@ class ImporterFiscalYear(ImporterModel):
         cache.companies = Cache('company.company',
             key=lambda x: x.party.name.lower())
         with Transaction().set_context(_check_access=False):
+            cache.companies_by_vat = {}
+            for company in cache.companies.values():
+                for identifier in company.party.identifiers:
+                    if identifier.type == 'eu_vat' and identifier.code:
+                        cache.companies_by_vat[
+                            identifier.code.upper()] = company
             cache.invoice_sequences = {
                 cls.cache_key(x.name, x.company and x.company.id): x
                 for x in Sequence.search([
@@ -589,8 +596,12 @@ class ImporterFiscalYear(ImporterModel):
     def importer_context(self):
         res = super().importer_context()
         setup = Setup.get()
-        if 'company' in setup.fields and self.company_name:
+        if ('company' in setup.fields
+                and (self.company_name or self.company_vat)):
             company = setup.cache.companies.get(self.company_name)
+            if not company and self.company_vat:
+                company = setup.cache.companies_by_vat.get(
+                    self.company_vat.upper())
             if company:
                 res['company'] = company.id
         return res
@@ -612,6 +623,9 @@ class ImporterFiscalYear(ImporterModel):
                 continue
 
             company = cache.companies.get(record.company_name)
+            if not company and record.company_vat:
+                company = cache.companies_by_vat.get(
+                    record.company_vat.upper())
             if not company:
                 continue
             key = cls.cache_key(record.name, company.id)
