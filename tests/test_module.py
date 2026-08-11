@@ -544,6 +544,7 @@ class ImporterTestCase(ModuleTestCase):
         importer = self.import_('account_fiscalyear', [{
                 'name': '2026',
                 'company_name': company1.party.name,
+                'company_vat': None,
                 'start_date': '2026-01-01',
                 'end_date': '2026-12-31',
                 'move_sequence_name': 'Account Move A',
@@ -565,17 +566,21 @@ class ImporterTestCase(ModuleTestCase):
                 }])
         self.assertEqual([x.message for x in importer.logs], [])
 
-        fiscalyears = FiscalYear.search([], order=[('company.party.name', 'ASC')])
-        self.assertEqual([(x.company.party.name, x.name) for x in fiscalyears], [
-                (company1.party.name, '2026'),
-                (company2.party.name, '2026'),
-                ])
-        self.assertEqual([len(x.periods) for x in fiscalyears], [12, 12])
-        self.assertEqual(Period.search_count([]), 24)
+        with Transaction().set_context(_check_access=False):
+            fiscalyears = FiscalYear.search(
+                [], order=[('company.party.name', 'ASC')])
+            self.assertEqual(
+                [(x.company.party.name, x.name) for x in fiscalyears], [
+                    (company1.party.name, '2026'),
+                    (company2.party.name, '2026'),
+                    ])
+            self.assertEqual([len(x.periods) for x in fiscalyears], [12, 12])
+            self.assertEqual(Period.search_count([]), 24)
 
         importer.data_to_records()
-        self.assertEqual([len(x.periods) for x in fiscalyears], [12, 12])
-        self.assertEqual(Period.search_count([]), 24)
+        with Transaction().set_context(_check_access=False):
+            self.assertEqual([len(x.periods) for x in fiscalyears], [12, 12])
+            self.assertEqual(Period.search_count([]), 24)
 
     @with_transaction()
     def test_location_warehouse(self):
