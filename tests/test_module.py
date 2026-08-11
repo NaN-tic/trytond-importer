@@ -558,6 +558,10 @@ class ImporterTestCase(ModuleTestCase):
         self.assertEqual([len(x.periods) for x in fiscalyears], [12, 12])
         self.assertEqual(Period.search_count([]), 24)
 
+        importer.data_to_records()
+        self.assertEqual([len(x.periods) for x in fiscalyears], [12, 12])
+        self.assertEqual(Period.search_count([]), 24)
+
     @with_transaction()
     def test_location_warehouse(self):
         pool = Pool()

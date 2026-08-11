@@ -557,6 +557,7 @@ class ImporterFiscalYear(ImporterModel):
         FiscalYear = pool.get('account.fiscalyear')
         Sequence = pool.get('ir.sequence.strict')
         ModelData = pool.get('ir.model.data')
+        PartyIdentifier = pool.get('party.identifier')
 
         super().importer_start()
         setup = Setup.get()
@@ -568,14 +569,20 @@ class ImporterFiscalYear(ImporterModel):
             'sequence_type_account_move')
 
         cache.companies = Cache('company.company',
-            key=lambda x: x.party.name.lower())
+            key=lambda x: x.party.name.lower(), required=False)
         with Transaction().set_context(_check_access=False):
+            companies_by_party = {
+                company.party.id: company
+                for company in cache.companies.values()
+                }
             cache.companies_by_vat = {}
-            for company in cache.companies.values():
-                for identifier in company.party.identifiers:
-                    if identifier.type == 'eu_vat' and identifier.code:
-                        cache.companies_by_vat[
-                            identifier.code.upper()] = company
+            for identifier in PartyIdentifier.search([
+                    ('type', '=', 'eu_vat'),
+                    ('code', '!=', None),
+                    ]):
+                company = companies_by_party.get(identifier.party.id)
+                if company:
+                    cache.companies_by_vat[identifier.code.upper()] = company
             cache.invoice_sequences = {
                 cls.cache_key(x.name, x.company and x.company.id): x
                 for x in Sequence.search([
@@ -676,7 +683,7 @@ class ImporterFiscalYear(ImporterModel):
             cls.importer_save([item])
 
         for fiscalyear, _ in saved:
-            if fiscalyear.id:
+            if fiscalyear.id and not fiscalyear.periods:
                 FiscalYear.create_period([fiscalyear])
 
         return [x[0] for x in saved]
