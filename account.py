@@ -93,6 +93,10 @@ class ImporterAccountMove(ImporterModel):
         return party
 
     @classmethod
+    def importer_party_not_found_hook(cls, record, party_code):
+        pass
+
+    @classmethod
     def importer_import(cls, records):
         pool = Pool()
         Move = pool.get('account.move')
@@ -274,25 +278,29 @@ class ImporterAccountMove(ImporterModel):
                 if party:
                     break
             if account.party_required and not party:
-                if not create_party:
-                    setup.error(gettext(
-                        'importer.party_required_for_account',
-                        account=record.account_code, move=record.number))
-                    continue
-                party_name = record.party_name
-                if party_name in created_parties:
-                    party = created_parties[party_name]
-                else:
-                    parties = Party.search([
-                        ('name', '=', party_name)
-                    ], limit=1)
-
-                    if parties:
-                        party, = parties
+                party = cls.importer_party_not_found_hook(record, party_code)
+                if party:
+                    cache.parties.add(party)
+                if not party:
+                    if not create_party:
+                        setup.error(gettext(
+                            'importer.party_required_for_account',
+                            account=record.account_code, move=record.number))
+                        continue
+                    party_name = record.party_name
+                    if party_name in created_parties:
+                        party = created_parties[party_name]
                     else:
-                        party = record.get_new_party(party_code, party_name)
-                        created_parties[party_name] = party
-                        parties_to_save.append((party, record))
+                        parties = Party.search([
+                            ('name', '=', party_name)
+                        ], limit=1)
+
+                        if parties:
+                            party, = parties
+                        else:
+                            party = record.get_new_party(party_code, party_name)
+                            created_parties[party_name] = party
+                            parties_to_save.append((party, record))
 
             line = Line()
             lines_to_save.append((line, record))
