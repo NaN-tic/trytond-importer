@@ -224,16 +224,15 @@ class ImporterAccountMove(ImporterModel):
             if not account_codes:
                 continue
             acc_code = account_codes[0]
-            if not create_account:
-                account = None
-                for account_code in account_codes:
-                    account = cache.accounts.get(
-                        (company.id, str(account_code)))
-                    if account:
-                        break
-            else:
-                if (company.id, str(acc_code)) in cache.accounts:
-                    account = cache.accounts[(company.id, str(acc_code))]
+            account = None
+            for account_code in account_codes:
+                key = (company.id, str(account_code))
+                if key in cache.accounts:
+                    account = cache.accounts[key]
+                    break
+            if not account:
+                if not create_account:
+                    cache.accounts.get((company.id, str(acc_code)))
                 else:
                     account = Chart.create_account(acc_code,
                         record.account_name, charts[company.id])
@@ -274,9 +273,10 @@ class ImporterAccountMove(ImporterModel):
             party_code = record.get_party_code()
             party = None
             for candidate in record.get_party_codes(account.code):
-                party = cache.parties.get(candidate)
-                if party:
-                    break
+                if candidate in cache.parties:
+                    party = cache.parties[candidate]
+                    if party:
+                        break
             if account.party_required and not party:
                 party = cls.importer_party_not_found_hook(record, party_code)
                 if party:

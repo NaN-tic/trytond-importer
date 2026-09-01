@@ -242,10 +242,30 @@ class DataExtractor:
             rows = []
             sniffer = csv.Sniffer()
             chunk = data.read(2048)
-            dialect = sniffer.sniff(chunk)
-            has_header = sniffer.has_header(chunk)
+            first_row = next(
+                (row for row in chunk.splitlines() if row.strip()), '')
+            candidates = (';', ',', '\t', '|')
+            header_delimiter = max(candidates, key=first_row.count)
+            delimiter = None
+            try:
+                dialect = sniffer.sniff(chunk)
+                has_header = sniffer.has_header(chunk)
+                if (first_row.count(header_delimiter)
+                        and (dialect.delimiter not in candidates
+                            or first_row.count(dialect.delimiter)
+                            < first_row.count(header_delimiter))):
+                    delimiter = header_delimiter
+            except csv.Error:
+                if not first_row.count(header_delimiter):
+                    raise
+                delimiter = header_delimiter
+                dialect = csv.excel
+                has_header = False
             data.seek(0)
-            reader = csv.reader(data, dialect)
+            if delimiter:
+                reader = csv.reader(data, dialect, delimiter=delimiter)
+            else:
+                reader = csv.reader(data, dialect)
             row_number = 0
             for row in reader:
                 row_number += 1
