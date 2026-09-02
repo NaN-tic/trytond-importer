@@ -98,10 +98,6 @@ msgctxt "field:importer,data_start_row:"
 msgid "Data Start Row"
 msgstr "Fila de inicio de los datos"
 
-msgctxt "field:importer,agent_sample_data:"
-msgid "Sample Data"
-msgstr "Datos de muestra"
-
 msgctxt "field:importer,schema:"
 msgid "Schema"
 msgstr "Esquema"
