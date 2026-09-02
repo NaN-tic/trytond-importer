@@ -400,7 +400,6 @@ class Importer(ModelSQL, ModelView):
     data_start_row = fields.Integer('Data Start Row',
         help='Spreadsheet row number where actual data starts. If headers '
         'are used, the header is assumed to be on the previous row.')
-    agent_sample_data = fields.Text('Sample Data', readonly=True)
     elapsed = fields.TimeDelta('Elapsed Time', readonly=True)
     deletes = fields.Text('Deletes', readonly=True, states={
             'invisible': ~Bool(Eval('deletes')),
@@ -489,11 +488,6 @@ class Importer(ModelSQL, ModelView):
                     'icon': 'tryton-cancel',
                     'invisible': ~Bool(Eval('deletes')),
                     },
-                'update_agent_sample': {
-                    'icon': 'tryton-refresh',
-                    'invisible': ~Bool(Eval('data_source')),
-                    'depends': ['data_source'],
-                    },
                 })
         cls.sql_source.selection.append(('psql', 'PSQL'))
 
@@ -561,7 +555,6 @@ class Importer(ModelSQL, ModelView):
         default.setdefault('logs')
         default.setdefault('deletes')
         default.setdefault('elapsed')
-        default.setdefault('agent_sample_data')
         return super().copy(importers, default=default)
 
     @classmethod
@@ -624,39 +617,6 @@ class Importer(ModelSQL, ModelView):
         if include_header and self.has_header and start_row > 1:
             return start_row - 1
         return start_row
-
-    @classmethod
-    @ModelView.button
-    def update_agent_sample(cls, importers):
-        def to_json(value):
-            if isinstance(value, (datetime.datetime, datetime.date,
-                    datetime.time, datetime.timedelta, Decimal)):
-                return str(value)
-            return value
-
-        for importer in importers:
-            rows_to_read = 20
-            conn = importer.get_connection()
-            sql = importer.get_sql()
-            Data = cls.extractor()
-            data = Data(importer.data_source, importer.binary_data,
-                importer.text_data, importer.url_data, conn, sql,
-                sheet_number=importer.sheet_number,
-                row_limit=rows_to_read + (1 if importer.has_header else 0),
-                start_row=(importer.get_data_start_row(include_header=True)
-                    if importer.data_start_row else None))
-            data.filename = importer.binary_file_name
-            data.load()
-            payload = {
-                'filename': data.filename,
-                'type': data.type,
-                'sheet_name': data.selected_sheet_name,
-                'available_sheets': data.sheet_names,
-                'rows': data.rows,
-                }
-            importer.agent_sample_data = json.dumps(payload,
-                ensure_ascii=False, indent=2, default=to_json)
-        cls.save(importers)
 
     @classmethod
     @ModelView.button
