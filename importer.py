@@ -609,7 +609,7 @@ class Importer(ModelSQL, ModelView):
 
 
     @classmethod
-    def extractor(cls):
+    def extractor(cls, method=None):
         return DataExtractor
 
     def get_data_start_row(self, include_header=False):
@@ -729,7 +729,7 @@ class Importer(ModelSQL, ModelView):
 
             conn = importer.get_connection()
             sql = importer.get_sql()
-            Data = cls.extractor()
+            Data = cls.extractor(importer.method)
             data = Data(importer.data_source, importer.binary_data,
                 importer.text_data, importer.url_data, conn, sql,
                 sheet_number=importer.sheet_number,
@@ -764,7 +764,7 @@ class Importer(ModelSQL, ModelView):
         for importer in importers:
             conn = importer.get_connection()
             sql = importer.get_sql()
-            Data = cls.extractor()
+            Data = cls.extractor(importer.method)
             data = Data(importer.data_source, importer.binary_data,
                 importer.text_data, importer.url_data, conn, sql,
                 sheet_number=importer.sheet_number,
@@ -1132,7 +1132,7 @@ class Importer(ModelSQL, ModelView):
         if data is None:
             conn = self.get_connection()
             sql = self.get_sql()
-            Data = self.extractor()
+            Data = self.extractor(self.method)
             data = Data(self.data_source, self.binary_data, self.text_data,
                 self.url_data, conn, sql, sheet_number=self.sheet_number,
                 start_row=self.get_data_start_row(include_header=True))
@@ -1514,7 +1514,7 @@ class ImporterSourceColumn(ModelSQL, ModelView):
                 continue
             conn = importer.get_connection()
             sql = importer.get_sql()
-            Data = importer.extractor()
+            Data = importer.extractor(importer.method)
             data = Data(importer.data_source, importer.binary_data,
                 importer.text_data, importer.url_data, conn, sql,
                 sheet_number=importer.sheet_number,
@@ -1646,7 +1646,7 @@ class AskAndImport(Wizard):
         conn = self.ask.importer.get_connection()
         sql = self.ask.importer.get_sql()
 
-        Data = Importer.extractor()
+        Data = Importer.extractor(self.ask.importer.method)
         data = Data(self.ask.data_source, self.ask.binary_data,
             self.ask.text_data, self.ask.url_data, conn, sql,
             sheet_number=self.ask.importer.sheet_number,
