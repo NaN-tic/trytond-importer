@@ -10,6 +10,7 @@ from . import bank
 from . import bank_es
 from . import carrier
 from . import company
+from . import contract
 from . import country
 from . import crop
 from . import currency
@@ -372,4 +373,9 @@ def register():
         activity.ImporterActivityType,
         activity.Importer,
         depends=['activity'],
+        module='importer', type_='model')
+    Pool.register(
+        contract.ImporterContract,
+        contract.Importer,
+        depends=['contract'],
         module='importer', type_='model')
