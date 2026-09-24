@@ -46,9 +46,8 @@ class ImporterUser(ImporterModel):
         langs = Language.search([('translatable', '=', True)])
         langs = {x.code: x for x in langs}
 
-        groups = Group.search([])
-        groups = {x.name: x for x in groups}
-        admin_groups = list(User(1).groups)
+        all_groups = Group.search([])
+        groups = {x.name: x for x in all_groups}
 
         if Role:
             roles = Role.search([])
@@ -93,7 +92,7 @@ class ImporterUser(ImporterModel):
                 groups_to_add = []
                 record_groups = [x.strip() for x in record.groups.split(',')]
                 if 'all' in record_groups:
-                    groups_to_add = admin_groups
+                    groups_to_add = all_groups
                 else:
                     for group in record_groups:
                         if group.strip() not in groups:

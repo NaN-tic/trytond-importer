@@ -17,11 +17,8 @@ class ImporterRole(ImporterModel):
         pool = Pool()
         Group = pool.get('res.group')
         Role = pool.get('res.role')
-        User = pool.get('res.user')
-
-        groups = Group.search([])
-        groups = {x.name: x for x in groups}
-        admin_groups = list(User(1).groups)
+        all_groups = Group.search([])
+        groups = {x.name: x for x in all_groups}
 
         to_save = []
         for record in records:
@@ -36,7 +33,7 @@ class ImporterRole(ImporterModel):
                 groups_to_add = []
                 record_groups = [x.strip() for x in record.groups.split(',')]
                 if 'all' in record_groups:
-                    groups_to_add = admin_groups
+                    groups_to_add = all_groups
                 else:
                     for group in record_groups:
                         if group.strip() not in groups:

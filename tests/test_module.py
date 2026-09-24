@@ -21,6 +21,30 @@ class ImporterTestCase(ModuleTestCase):
         'product_price_list', 'user_role', 'bank', 'bank_es',
         'company_bank']
 
+    @with_transaction()
+    def test_import_all_groups_without_admin_memberships(self):
+        pool = Pool()
+        User = pool.get('res.user')
+        Group = pool.get('res.group')
+        ImportUser = pool.get('importer.user')
+        ImportRole = pool.get('importer.role')
+        admin = User(Transaction().user)
+        admin.groups = []
+        admin.save()
+        self.assertTrue(admin.administrator)
+        expected = {group.id for group in Group.search([])}
+
+        user, = ImportUser.importer_import([
+            ImportUser(name='All groups', login='all-groups', groups='all',
+                password=None, signature=None, email=None, language_code=None,
+                roles=None, companies=None, company=None, employees=None,
+                employee=None)])
+        self.assertEqual({group.id for group in user.groups}, expected)
+        self.assertFalse(user.administrator)
+        role, = ImportRole.importer_import([
+            ImportRole(name='All groups', groups='all')])
+        self.assertEqual({group.id for group in role.groups}, expected)
+
     def import_(self, method, records):
         pool = Pool()
         Importer = pool.get('importer')
@@ -193,7 +217,7 @@ class ImporterTestCase(ModuleTestCase):
                 'email': 'user@nan-tic.com',
                 'password': '0123456789',
                 'language_code': 'ca',
-                'groups': 'Administration',
+                'groups': 'Sales,Purchase',
                 'roles': 'Test',
                 'companies': company.party.name,
                 'company': company.party.name,
