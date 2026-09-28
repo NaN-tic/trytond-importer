@@ -58,6 +58,86 @@ msgctxt "field:importer,method:"
 msgid "Format"
 msgstr "Format"
 
+msgctxt "selection:importer,method:"
+msgid "Contract"
+msgstr "Contracte"
+
+msgctxt "field:importer.contract,number:"
+msgid "Contract Number"
+msgstr "Número de contracte"
+
+msgctxt "field:importer.contract,reference:"
+msgid "Contract Reference"
+msgstr "Referència de contracte"
+
+msgctxt "field:importer.contract,company:"
+msgid "Company"
+msgstr "Empresa"
+
+msgctxt "field:importer.contract,currency:"
+msgid "Currency"
+msgstr "Moneda"
+
+msgctxt "field:importer.contract,party:"
+msgid "Party"
+msgstr "Tercer"
+
+msgctxt "field:importer.contract,party_code:"
+msgid "Party Code"
+msgstr "Codi de tercer"
+
+msgctxt "field:importer.contract,start_period_date:"
+msgid "Start Period Date"
+msgstr "Data d'inici del període"
+
+msgctxt "field:importer.contract,first_invoice_date:"
+msgid "First Invoice Date"
+msgstr "Data de la primera factura"
+
+msgctxt "field:importer.contract,payment_term:"
+msgid "Payment Term"
+msgstr "Termini de pagament"
+
+msgctxt "field:importer.contract,freq:"
+msgid "Frequency"
+msgstr "Freqüència"
+
+msgctxt "field:importer.contract,interval:"
+msgid "Interval"
+msgstr "Interval"
+
+msgctxt "field:importer.contract,service:"
+msgid "Service"
+msgstr "Servei"
+
+msgctxt "field:importer.contract,description:"
+msgid "Line Description"
+msgstr "Descripció de línia"
+
+msgctxt "field:importer.contract,unit_price:"
+msgid "Line Unit Price"
+msgstr "Preu unitari de línia"
+
+msgctxt "field:importer.contract,quantity:"
+msgid "Line Quantity"
+msgstr "Quantitat de línia"
+
+msgctxt "field:importer.contract,start_date:"
+msgid "Line Start Date"
+msgstr "Data d'inici de línia"
+
+msgctxt "field:importer.contract,end_date:"
+msgid "Line End Date"
+msgstr "Data de finalització de línia"
+
+msgctxt "field:importer.contract,sequence:"
+msgid "Line Sequence"
+msgstr "Seqüència de línia"
+
+msgctxt "field:importer.contract,line_type:"
+msgid "Line Type"
+msgstr "Tipus de línia"
+
 msgctxt "field:importer,model:"
 msgid "Model"
 msgstr "Model"
