@@ -27,6 +27,10 @@ class ImporterPurchase(ImporterModel):
     discount = fields.Numeric('Discount')
     state = fields.Char('State')
 
+    def importer_header(self, importing=True):
+        return (self.purchase_number, self.reference, self.date,
+            self.party_code, self.party_name, self.currency)
+
     @classmethod
     def importer_import(cls, records):
         pool = Pool()
@@ -51,7 +55,7 @@ class ImporterPurchase(ImporterModel):
         to_process = []
 
         for record in records:
-            header = (record.reference, record.date, record.party_name)
+            header = record.importer_header()
             if any(header) and header != previous_header:
                 previous_header = header
                 values = Purchase.default_get(

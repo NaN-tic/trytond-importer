@@ -19,9 +19,8 @@ class ImporterRoute(ImporterModel):
     notes=fields.Char('Notes')
     subcontracted_product = fields.Char('Subcontract Product')
 
-    @classmethod
-    def importer_header(cls, record):
-        return (record.name,)
+    def importer_header(self, importing=True):
+        return (self.name,)
 
     @classmethod
     def importer_operation_hook(cls, record, operation):
@@ -61,7 +60,7 @@ class ImporterRoute(ImporterModel):
         to_save = []
         lines_to_save = []
         for record in records:
-            header = cls.importer_header(record)
+            header = record.importer_header()
             if any(header) and header != previous_header:
                 previous_header = header
                 values = Route.default_get(list(Route._fields.keys()),

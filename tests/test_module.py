@@ -236,10 +236,17 @@ class ImporterTestCase(ModuleTestCase):
         banks = Bank.search([])
         self.assertGreater(len(banks), 10)
 
+        Account = pool.get('account.account')
+        account_expense, = Account.search([
+                ('closed', '!=', True),
+                ('type.expense', '=', True),
+                ], limit=1)
+
         Category = pool.get('product.category')
         category = Category()
         category.name = 'Actiu Leasing'
         category.accounting = True
+        category.account_expense = account_expense
         category.save()
 
         self.import_('product', [{
@@ -264,7 +271,7 @@ class ImporterTestCase(ModuleTestCase):
         Identifier = pool.get('product.identifier')
         self.assertEqual(len(Identifier.search([])), 1)
 
-        self.import_('price_list', [{
+        price_list_records = [{
                 'name': "Price List",
                 'company_name': company.rec_name,
                 'tax_included': True,
@@ -272,19 +279,36 @@ class ImporterTestCase(ModuleTestCase):
                 'product_code': '0001A',
                 'quantity': 100,
                 'formula': '5.12',
-                }])
+                }]
+        price_list_records.extend({
+                'product_code': '0001A',
+                'quantity': 100,
+                'formula': '5.12',
+                } for _ in range(100))
+        self.import_('price_list', price_list_records)
         PriceList = pool.get('product.price_list')
-        self.assertEqual(len(PriceList.search([])), 1)
+        price_list, = PriceList.search([])
+        self.assertEqual(len(price_list.lines), 101)
 
-        self.import_('invoice', [{
+        invoice_records = [{
                 'party_name': company.party.name,
                 'invoice_type': 'in',
                 'journal': 'EXP',
                 'currency': company.currency.name,
-                }])
+                'product_code': '0001A',
+                'quantity': 1,
+                'unit_price': 5,
+                }]
+        invoice_records.extend({
+                'product_code': '0001A',
+                'quantity': 1,
+                'unit_price': 5,
+                } for _ in range(100))
+        self.import_('invoice', invoice_records)
 
         Invoice = pool.get('account.invoice')
-        self.assertEqual(len(Invoice.search([])), 1)
+        invoice, = Invoice.search([])
+        self.assertEqual(len(invoice.lines), 101)
 
         # Current year
         self.import_('sequence', [{
@@ -390,7 +414,7 @@ class ImporterTestCase(ModuleTestCase):
                 }])
         supplier1, supplier2, supplier3 = Party.search([], limit=3, order=[('id', 'desc')])
 
-        self.import_('purchase', [{
+        purchase_records = [{
                 'party_name': supplier1.name,
                 'date': today.strftime('%Y-%m-%d'),
                 'state': 'draft',
@@ -399,7 +423,13 @@ class ImporterTestCase(ModuleTestCase):
                 'quantity': 5,
                 'unit_price': 0.75,
                 'purchase_number': '164643-A'
-                }, {
+                }]
+        purchase_records.extend({
+                'product_code': '0001A',
+                'quantity': 5,
+                'unit_price': 0.75,
+                } for _ in range(100))
+        purchase_records.extend([{
                 'party_name': supplier2.name,
                 'date': today.strftime('%Y-%m-%d'),
                 'state': 'quote',
@@ -418,12 +448,15 @@ class ImporterTestCase(ModuleTestCase):
                 'unit_price': 0.75,
                 'purchase_number': '164643-C'
                 }])
+        self.import_('purchase', purchase_records)
 
         Purchase = pool.get('purchase.purchase')
         purchases = Purchase.search([])
         self.assertEqual(len(purchases), 3)
         purchase1, purchase2, purchase3 = purchases
-        self.assertEqual(len(purchase1.lines), 1)
+        self.assertEqual(
+            sorted(len(purchase.lines) for purchase in purchases),
+            [1, 1, 101])
         self.assertEqual(
             sorted([purchase1.state, purchase2.state, purchase3.state]),
             ['confirmed', 'draft', 'quotation'])
