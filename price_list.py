@@ -18,6 +18,9 @@ class ImporterPriceList(ImporterModel):
     quantity = fields.Float('Quantity')
     formula = fields.Char('Formula')
 
+    def importer_header(self, importing=True):
+        return (self.name,)
+
     @classmethod
     def importer_line_hook(cls, record, line):
         Pool().get('importer')._import_price_list_line_hook(record, line)
@@ -47,12 +50,13 @@ class ImporterPriceList(ImporterModel):
         price_list = None
         lists_to_save = []
         lines_to_save = []
-        previous_name = None
+        previous_header = None
         products_to_save = []
         templates_to_save = []
         for record in records:
-            if record.name and record.name != previous_name:
-                previous_name = record.name
+            header = record.importer_header()
+            if any(header) and header != previous_header:
+                previous_header = header
                 price_list = PriceList()
                 price_list.name = record.name
                 price_list.tax_included = record.tax_included

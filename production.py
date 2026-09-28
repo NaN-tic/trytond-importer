@@ -27,7 +27,7 @@ class ImporterProductionBom(ImporterModel):
         cache.boms = Cache('production.bom', 'name')
 
     def importer_header(self, importing=True):
-        return (self.name)
+        return (self.name,)
 
     @classmethod
     def _import_production_bom_input_hook(cls, record, input):

@@ -27,6 +27,9 @@ class ImporterInvoice(ImporterModel):
     journal = fields.Char('Journal')
     account_move_number = fields.Char('Account Move number')
 
+    def importer_header(self, importing=True):
+        return (self.invoice_number, self.journal)
+
     @classmethod
     def importer_import(cls, records):
         pool = Pool()
@@ -66,7 +69,7 @@ class ImporterInvoice(ImporterModel):
             return [party]
 
         for record in records:
-            header = (record.invoice_number, record.journal)
+            header = record.importer_header()
             if any(header) and header != previous_header:
                 previous_header = header
                 values = Invoice.default_get(
