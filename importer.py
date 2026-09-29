@@ -27,7 +27,7 @@ from trytond.model import ModelSQL, ModelView, fields
 from trytond.wizard import Wizard, StateView, StateAction, Button
 from trytond.pool import Pool
 from trytond.pyson import PYSONEncoder, Eval, Bool
-from trytond.transaction import Transaction
+from trytond.transaction import Transaction, without_check_access
 from trytond.exceptions import UserError, UserWarning
 from trytond.model.exceptions import ValidationError
 from trytond.i18n import gettext
@@ -1121,7 +1121,8 @@ class Importer(ModelSQL, ModelView):
 
         self.elapsed = datetime.timedelta(seconds=time.time() - start)
         self.deletes = setup.deletes()
-        self.save()
+        with without_check_access():
+            self.save()
         return new_records
 
     def get_records(self, raise_errors=True, data=None):
