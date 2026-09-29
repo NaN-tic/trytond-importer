@@ -36,7 +36,10 @@ class ImporterOrderPoint(ImporterModel):
         to_save = []
         for record in records:
             values = OrderPoint.default_get(
-                    list(OrderPoint._fields.keys()), with_rec_name=False)
+                    [
+                            name for name, field in OrderPoint._fields.items()
+                            if not field.readonly
+                            ], with_rec_name=False)
             order_point = OrderPoint(**values)
             order_point.company = company
             warehouse = locations.get(record.warehouse_location)
@@ -78,7 +81,5 @@ class Importer(metaclass=PoolMeta):
                     },
                 })
         return methods
-
-
 
 

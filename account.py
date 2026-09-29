@@ -251,7 +251,10 @@ class ImporterAccountMove(ImporterModel):
             header = record.importer_header()
             if any(header) and header != previous_header:
                 previous_header = header
-                values = Move.default_get(list(Move._fields.keys()),
+                values = Move.default_get([
+                        name for name, field in Move._fields.items()
+                        if not field.readonly
+                        ],
                     with_rec_name=False)
 
                 date = record.effective_date

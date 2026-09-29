@@ -67,7 +67,10 @@ class ImporterProductionBom(ImporterModel):
                 if 'name' in setup.fields:
                     bom = cache.boms.get(record.name)
                     if not bom:
-                        values = Bom.default_get(Bom._fields.keys(),
+                        values = Bom.default_get([
+                                name for name, field in Bom._fields.items()
+                                if not field.readonly
+                                ],
                             with_rec_name=False)
                         bom = Bom(**values)
                         bom.name = record.name
@@ -88,10 +91,16 @@ class ImporterProductionBom(ImporterModel):
                         to_save_products.append((product.template, record))
 
                     if type_ == 'input':
-                        values = BomInput.default_get(BomInput._fields.keys(), with_rec_name=False)
+                        values = BomInput.default_get([
+                                name for name, field in BomInput._fields.items()
+                                if not field.readonly
+                                ], with_rec_name=False)
                         line = BomInput(**values)
                     else:
-                        values = BomOutput.default_get(BomOutput._fields.keys(), with_rec_name=False)
+                        values = BomOutput.default_get([
+                                name for name, field in BomOutput._fields.items()
+                                if not field.readonly
+                                ], with_rec_name=False)
                         line = BomOutput(**values)
                     line.bom = bom
                     line.product = product

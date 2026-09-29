@@ -62,7 +62,10 @@ class ImporterSale(ImporterModel):
         Party = Pool().get('party.party')
 
         values = Party.default_get(
-                list(Party._fields.keys()), with_rec_name=False)
+                [
+                        name for name, field in Party._fields.items()
+                        if not field.readonly
+                        ], with_rec_name=False)
         party = Party(**values)
         party.name = self.name or self.code
         party.code = self.code
@@ -95,7 +98,10 @@ class ImporterSale(ImporterModel):
         to_process = []
 
         default_line_values = Line.default_get(
-            list(Line._fields.keys()), with_rec_name=False)
+            [
+                    name for name, field in Line._fields.items()
+                    if not field.readonly
+                    ], with_rec_name=False)
 
         for record in records:
             setup.current_record = record
@@ -104,7 +110,10 @@ class ImporterSale(ImporterModel):
             if any(header) and header != previous_header:
                 previous_header = header
                 values = Sale.default_get(
-                    list(Sale._fields.keys()), with_rec_name=False)
+                    [
+                            name for name, field in Sale._fields.items()
+                            if not field.readonly
+                            ], with_rec_name=False)
 
                 if record.sale_number:
                     domain = [('number', '=', record.sale_number)]

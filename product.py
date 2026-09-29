@@ -174,9 +174,15 @@ class ImporterProduct(ImporterModel):
         except KeyError:
             pass
 
-        template_default_values = Template.default_get(Template._fields.keys(),
+        template_default_values = Template.default_get([
+                name for name, field in Template._fields.items()
+                if not field.readonly
+                ],
                 with_rec_name=False)
-        product_default_values = Product.default_get(Product._fields.keys(),
+        product_default_values = Product.default_get([
+                name for name, field in Product._fields.items()
+                if not field.readonly
+                ],
                 with_rec_name=False)
         cost_price_methods = ProductCostPriceMethod.get_cost_price_methods()
 
@@ -487,7 +493,10 @@ class ImporterProductCustomer(ImporterModel):
             lambda x: (x.party.id, x.template.id, x.product and x.product.id),
             context={'active_test': False}, required=False)
         cache.default_product_customer_values = ProductCustomer.default_get(
-            list(ProductCustomer._fields.keys()), with_rec_name=False)
+            [
+                    name for name, field in ProductCustomer._fields.items()
+                    if not field.readonly
+                    ], with_rec_name=False)
 
     @classmethod
     def importer_import(cls, records):

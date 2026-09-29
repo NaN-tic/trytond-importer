@@ -63,7 +63,10 @@ class ImporterRoute(ImporterModel):
             header = record.importer_header()
             if any(header) and header != previous_header:
                 previous_header = header
-                values = Route.default_get(list(Route._fields.keys()),
+                values = Route.default_get([
+                        name for name, field in Route._fields.items()
+                        if not field.readonly
+                        ],
                     with_rec_name=False)
                 route = routes.get(record.name)
                 if not route:
@@ -75,8 +78,10 @@ class ImporterRoute(ImporterModel):
                     to_save.append(route)
                     routes[record.name] = route
 
-            values = RouteOperation.default_get(list(
-                RouteOperation._fields.keys()),with_rec_name=False)
+            values = RouteOperation.default_get([
+                    name for name, field in RouteOperation._fields.items()
+                    if not field.readonly
+                    ], with_rec_name=False)
             operation = RouteOperation(**values)
             operation.route = route
             operation.sequence = record.sequence or None

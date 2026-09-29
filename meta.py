@@ -64,7 +64,10 @@ class ImporterMeta(ImporterModel):
                 importer = cache.importers.get(record.name)
                 if not importer:
                     values = Importer.default_get(
-                        list(Importer._fields.keys()), with_rec_name=False)
+                        [
+                                name for name, field in Importer._fields.items()
+                                if not field.readonly
+                                ], with_rec_name=False)
                     importer = Importer(**values)
                     cache.importers[record.name] = importer
                 record.importer_assign(importer)

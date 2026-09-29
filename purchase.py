@@ -59,7 +59,10 @@ class ImporterPurchase(ImporterModel):
             if any(header) and header != previous_header:
                 previous_header = header
                 values = Purchase.default_get(
-                    list(Purchase._fields.keys()), with_rec_name=False)
+                    [
+                            name for name, field in Purchase._fields.items()
+                            if not field.readonly
+                            ], with_rec_name=False)
                 if record.invoice_method:
                     values['invoice_method'] = record.invoice_method
 
@@ -136,7 +139,10 @@ class ImporterPurchase(ImporterModel):
                             product=record.product_code))
 
                 values = Line.default_get(
-                    list(Line._fields.keys()), with_rec_name=False)
+                    [
+                            name for name, field in Line._fields.items()
+                            if not field.readonly
+                            ], with_rec_name=False)
                 line = Line(**values)
                 product = products[0]
                 template = product.template
@@ -270,9 +276,15 @@ class ImporterProductSupplier(ImporterModel):
             lambda x: (x.party.id, x.template.id, x.product and x.product.id),
             context={'active_test': False}, required=False)
         cache.default_product_supplier_values = ProductSupplier.default_get(
-            list(ProductSupplier._fields.keys()), with_rec_name=False)
+            [
+                    name for name, field in ProductSupplier._fields.items()
+                    if not field.readonly
+                    ], with_rec_name=False)
         cache.default_price_values = Price.default_get(
-            list(Price._fields.keys()), with_rec_name=False)
+            [
+                    name for name, field in Price._fields.items()
+                    if not field.readonly
+                    ], with_rec_name=False)
 
     def importer_context(self):
         res = super().importer_context()

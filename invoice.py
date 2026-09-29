@@ -59,7 +59,10 @@ class ImporterInvoice(ImporterModel):
 
         def create_party(name, code):
             values = Party.default_get(
-                    list(Party._fields.keys()), with_rec_name=False)
+                    [
+                            name for name, field in Party._fields.items()
+                            if not field.readonly
+                            ], with_rec_name=False)
             party = Party(**values)
             party.name = name or code
             party.code = code
@@ -73,7 +76,10 @@ class ImporterInvoice(ImporterModel):
             if any(header) and header != previous_header:
                 previous_header = header
                 values = Invoice.default_get(
-                    list(Invoice._fields.keys()), with_rec_name=False)
+                    [
+                            name for name, field in Invoice._fields.items()
+                            if not field.readonly
+                            ], with_rec_name=False)
                 if invoice:
                     invoice.on_change_lines()
                 if invoice and 'payment_type' in Invoice._fields:
@@ -168,7 +174,10 @@ class ImporterInvoice(ImporterModel):
                             product=record.product_code))
 
                 values = Line.default_get(
-                    list(Line._fields.keys()), with_rec_name=False)
+                    [
+                            name for name, field in Line._fields.items()
+                            if not field.readonly
+                            ], with_rec_name=False)
                 line = Line(**values)
                 line.invoice = invoice
                 if (force and invoice.type == 'out'):

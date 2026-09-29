@@ -75,9 +75,15 @@ class ImporterProductAgronomics(ImporterModel):
                     ('code', '!=', ''),
                     ]))
 
-        template_default_values = Template.default_get(Template._fields.keys(),
+        template_default_values = Template.default_get([
+                name for name, field in Template._fields.items()
+                if not field.readonly
+                ],
                 with_rec_name=False)
-        product_default_values = Product.default_get(Product._fields.keys(),
+        product_default_values = Product.default_get([
+                name for name, field in Product._fields.items()
+                if not field.readonly
+                ],
                 with_rec_name=False)
         cost_price_methods = ProductCostPriceMethod.get_cost_price_methods()
 
