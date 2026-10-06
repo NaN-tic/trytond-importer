@@ -551,6 +551,24 @@ class ImporterTestCase(ModuleTestCase):
         self.assertEqual(len(moves), 1)
         move, = moves
         self.assertEqual(move.company, company)
+        self.assertEqual(move.post_date, move.date)
+
+        self.import_('account_move_account_party', [{
+                'company_name': company.party.name,
+                'account_name': 'Test Expense',
+                'party_name': company.party.name,
+                'account_code': '5.1.5000',
+                'debit': 100,
+                'credit': 0,
+                'effective_date': fiscalyear.start_date.strftime('%Y-%m-%d'),
+                'post_date': today.strftime('%Y-%m-%d'),
+                'number': 'CTX-002',
+                'journal_code': 'EXP',
+                }])
+
+        move, = Move.search([('number', '=', 'CTX-002')])
+        self.assertEqual(move.date, fiscalyear.start_date)
+        self.assertEqual(move.post_date, today)
 
     @with_transaction()
     def test_account_fiscalyear_multi_company(self):
