@@ -20,6 +20,7 @@ class ImporterAccountMove(ImporterModel):
     number = fields.Char('Move Number')
     journal_code = fields.Char('Journal Code')
     effective_date = fields.Date('Effecive Date')
+    post_date = fields.Date('Post Date')
     account_code = fields.Char('Account Code')
     account_name = fields.Char('Account Name')
     party_code = fields.Char('Party Code')
@@ -258,6 +259,8 @@ class ImporterAccountMove(ImporterModel):
                 move = Move(**values)
                 move.date = date
                 move.number = record.number
+                if move.number:
+                    move.post_date = record.post_date or date
                 move.period = period
                 move.journal = None
                 for journal_code in record.get_journal_codes():
