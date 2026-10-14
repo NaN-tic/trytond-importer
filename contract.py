@@ -33,8 +33,12 @@ class ImporterContract(ImporterModel):
     def importer_start(cls):
         super().importer_start()
         cache = Setup.get().cache
-        cache.contracts = Cache('contract', ['number', 'reference'],
+        cache.contracts_by_number = Cache('contract', 'number',
             required=False, duplicates='abort-on-use')
+        cache.contracts_by_normalized_number = Cache(
+            'contract', key=lambda contract:
+                cls._normalize_contract_number(contract.number),
+            required=False, duplicates='all')
         cache.services = Cache('contract.service', 'name',
             required=False, duplicates='abort-on-use')
         cache.product_templates = Cache('product.template', 'name',
@@ -61,19 +65,25 @@ class ImporterContract(ImporterModel):
 
     @classmethod
     def _get_contract(cls, record, cache):
-        keys = [record.number, record.reference]
-        keys = [key for key in keys if key]
-        key = keys[0] if keys else None
         contract = None
-        for key in keys:
-            contract = cache.contracts.get(key)
-            if contract:
-                break
+        if record.number:
+            contract = cache.contracts_by_number.get(record.number)
+            if not contract:
+                contracts = cache.contracts_by_normalized_number.get(
+                    cls._normalize_contract_number(record.number))
+                if contracts and len(contracts) > 1:
+                    record.importer_error(
+                        'More than one contract matches number "%s".'
+                        % record.number)
+                    return
+                if contracts:
+                    contract = contracts[0]
         if contract:
             return contract
+        key = record.number
         if not key:
             record.importer_error(
-                'A contract number or reference is required.')
+                'A contract number is required.')
             return
 
         Contract = Pool().get('contract')
@@ -114,10 +124,20 @@ class ImporterContract(ImporterModel):
             payment_term = cls._get_payment_term(record, cache)
             if payment_term:
                 contract.payment_term = payment_term
-        cache.contracts[key] = contract
-        for key in keys:
-            cache.contracts[key] = contract
+        if contract.number:
+            cache.contracts_by_number[contract.number] = contract
+            cache.contracts_by_normalized_number[
+                cls._normalize_contract_number(contract.number)] = contract
         return contract
+
+    @staticmethod
+    def _normalize_contract_number(number):
+        if not number:
+            return number
+        number = number.strip()
+        if number.isdigit():
+            return number.lstrip('0') or '0'
+        return number.lower()
 
     @classmethod
     def _get_payment_term(cls, record, cache):
@@ -242,12 +262,13 @@ class ImporterContract(ImporterModel):
             if not contract:
                 continue
 
-            for field in ('reference', 'start_period_date',
+            for field in ('start_period_date',
                     'first_invoice_date', 'freq', 'interval'):
                 if field in setup.fields and getattr(record, field) is not None:
                     setattr(contract, field, getattr(record, field))
 
             line = cls._find_line(record, contract)
+            new_line = line is None
             if not line:
                 values = Line.default_get(Line._fields.keys(),
                     with_rec_name=False)
@@ -273,51 +294,32 @@ class ImporterContract(ImporterModel):
                 line.sequence = record.sequence
             if 'line_type' in setup.fields and record.line_type:
                 line_type = cls._get_line_type(record, cache)
-                if line_type and hasattr(line, 'line_type'):
+                if line_type and 'line_type' in Line._fields:
                     line.line_type = line_type
 
             cls.importer_contract_hook(record, contract, line)
-            print(
-                'Contract importer line ready: contract=%r, line_id=%r, '
-                'asset=%r, service=%r, description=%r, unit_price=%r, '
-                'quantity=%r, sequence=%r' % (
-                    contract.number or contract.reference, line.id,
-                    (line.asset.rec_name if getattr(line, 'asset', None)
-                        else None),
-                    (line.service.rec_name if getattr(line, 'service', None)
-                        else None),
-                    getattr(line, 'description', None),
-                    getattr(line, 'unit_price', None),
-                    getattr(line, 'quantity', None),
-                    getattr(line, 'sequence', None)))
+            if new_line and hasattr(line, 'asset') and not line.asset:
+                record.importer_error(
+                    'Asset is required for contract "%s" (asset code: '
+                    '"%s", asset name: "%s").' % (
+                        contract.number or contract.reference,
+                        getattr(record, 'asset_code', None),
+                        getattr(record, 'asset_name', None)))
+                continue
             if id(contract) not in saved_contracts:
                 contracts_to_save.append((contract, record))
                 saved_contracts.add(id(contract))
             lines_to_save.append((line, record))
 
         parties_to_save = [(party, None) for party in cache.parties_to_save]
-        print('Contract importer saving: parties=%d, contracts=%d, lines=%d'
-            % (len(parties_to_save), len(contracts_to_save),
-                len(lines_to_save)))
         cls.importer_save(parties_to_save)
         cls.importer_save(contracts_to_save)
         cls.importer_save(lines_to_save)
-        return [record for record, _ in parties_to_save + contracts_to_save
-            + lines_to_save]
+        return [record for record, _ in contracts_to_save]
 
     @staticmethod
     def _find_line(record, contract):
         contract_lines = getattr(contract, 'lines', ())
-        if record.sequence is not None:
-            lines = [line for line in contract_lines
-                if line.sequence == record.sequence]
-            if len(lines) == 1:
-                return lines[0]
-            if len(lines) > 1:
-                record.importer_error(
-                    'More than one contract line has sequence %s.'
-                    % record.sequence)
-                return None
         if record.service:
             lines = [line for line in contract_lines
                 if line.service and line.service.name == record.service]
