@@ -102,5 +102,6 @@ class Test(unittest.TestCase):
         self.assertEqual(new_contract.payment_term.name, 'New Payment Term')
         self.assertEqual(new_contract.payment_term.lines[0].type, 'remainder')
         self.assertEqual(new_contract.lines[0].description, 'New line')
+        self.assertEqual(new_contract.lines[0].line_type.name, 'Rent')
         Service = Model.get('contract.service')
         self.assertEqual(len(Service.find([('name', '=', 'New Service')])), 1)
