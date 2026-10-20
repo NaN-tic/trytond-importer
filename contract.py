@@ -262,12 +262,13 @@ class ImporterContract(ImporterModel):
             if not contract:
                 continue
 
+            line = cls._find_line(record, contract)
+            if line is False:
+                continue
             for field in ('start_period_date',
                     'first_invoice_date', 'freq', 'interval'):
                 if field in setup.fields and getattr(record, field) is not None:
                     setattr(contract, field, getattr(record, field))
-
-            line = cls._find_line(record, contract)
             new_line = line is None
             if not line:
                 values = Line.default_get(Line._fields.keys(),
@@ -325,6 +326,13 @@ class ImporterContract(ImporterModel):
                 if line.service and line.service.name == record.service]
             if len(lines) == 1:
                 return lines[0]
+            if len(lines) > 1:
+                record.importer_error(
+                    'More than one contract line in contract "%s" matches '
+                    'service "%s".' % (
+                        contract.number or contract.reference,
+                        record.service))
+                return False
         return None
 
 
