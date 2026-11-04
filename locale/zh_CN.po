@@ -1,0 +1,3627 @@
+#
+msgid ""
+msgstr ""
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "field:importer,binary_data:"
+msgid "Data"
+msgstr "数据"
+
+msgctxt "field:importer,binary_file_name:"
+msgid "Binary File Name"
+msgstr "二进制文件名"
+
+msgctxt "field:importer,columns:"
+msgid "Columns"
+msgstr "列"
+
+msgctxt "field:importer,data_source:"
+msgid "Data Source"
+msgstr "数据源"
+
+msgctxt "field:importer,data_source_visible:"
+msgid "Data Source Visible"
+msgstr "数据源可见"
+
+msgctxt "field:importer,database:"
+msgid "Database"
+msgstr "数据库"
+
+msgctxt "field:importer,deletes:"
+msgid "Deletes"
+msgstr "删除次数"
+
+msgctxt "field:importer,use_subtransactions:"
+msgid "Use Subtransactions"
+msgstr "使用子事务"
+
+msgctxt "field:importer,commit_chunks:"
+msgid "Commit Chunks"
+msgstr "分块提交"
+
+msgctxt "field:importer,elapsed:"
+msgid "Elapsed Time"
+msgstr "耗时"
+
+msgctxt "field:importer,errors:"
+msgid "Errors"
+msgstr "错误"
+
+msgctxt "field:importer,has_header:"
+msgid "Has Header?"
+msgstr "包含表头？"
+
+msgctxt "field:importer,language:"
+msgid "Language"
+msgstr "语言"
+
+msgctxt "field:importer,log_success:"
+msgid "Log Success"
+msgstr "记录成功日志"
+
+msgctxt "field:importer,logs:"
+msgid "Log"
+msgstr "日志"
+
+msgctxt "field:importer,method:"
+msgid "Format"
+msgstr "格式"
+
+msgctxt "field:importer,model:"
+msgid "Model"
+msgstr "模型"
+
+msgctxt "field:importer,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer,on_error:"
+msgid "On Error"
+msgstr "出错时"
+
+msgctxt "field:importer,password:"
+msgid "Password"
+msgstr "密码"
+
+msgctxt "field:importer,requires_records:"
+msgid "Requires Records"
+msgstr "需要记录"
+
+msgctxt "field:importer,sample_size:"
+msgid "Sample Size"
+msgstr "样本大小"
+
+msgctxt "field:importer,sample_offset:"
+msgid "Sample Offset"
+msgstr "样本偏移"
+
+msgctxt "field:importer,data_start_row:"
+msgid "Data Start Row"
+msgstr "数据起始行"
+
+msgctxt "field:importer,schema:"
+msgid "Schema"
+msgstr "模式"
+
+msgctxt "field:importer,server:"
+msgid "Server"
+msgstr "服务器"
+
+msgctxt "field:importer,source_columns:"
+msgid "Source Columns"
+msgstr "源列"
+
+msgctxt "field:importer,sql_data:"
+msgid "SQL Queries"
+msgstr "SQL 查询"
+
+msgctxt "field:importer,sql_source:"
+msgid "SQL Source"
+msgstr "SQL 数据源"
+
+msgctxt "field:importer,template:"
+msgid "Template"
+msgstr "模板"
+
+msgctxt "field:importer,text_data:"
+msgid "Data"
+msgstr "数据"
+
+msgctxt "field:importer,url_data:"
+msgid "Data URL"
+msgstr "数据 URL"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_url_data"
+msgid "Could not load data from URL \"%(url)s\": %(error)s."
+msgstr "无法从 URL“%(url)s”加载数据：%(error)s。"
+
+msgctxt "field:importer,sheet_number:"
+msgid "Sheet Number"
+msgstr "工作表编号"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_sheet_not_found"
+msgid "Sheet \"%(sheet)s\" not found in the selected file."
+msgstr "在所选文件中找不到工作表“%(sheet)s”。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_google_drive_quota_exceeded"
+msgid ""
+"Google Drive returned a quota exceeded page instead of the file for URL "
+"\"%(url)s\"."
+msgstr "对于 URL“%(url)s”，Google Drive 返回了超出配额的页面，而不是文件。"
+
+msgctxt "field:importer,use_header:"
+msgid "Use Header?"
+msgstr "使用表头？"
+
+msgctxt "field:importer,user:"
+msgid "User"
+msgstr "用户"
+
+msgctxt "field:importer,where:"
+msgid "Where"
+msgstr "条件"
+
+msgctxt "field:importer.account.asset,analytic_account:"
+msgid "Analytic Account"
+msgstr "分析科目"
+
+msgctxt "field:importer.account.asset,comment:"
+msgid "Comment"
+msgstr "备注"
+
+msgctxt "field:importer.account.asset,current_value:"
+msgid "Current Value"
+msgstr "本期金额"
+
+msgctxt "field:importer.account.asset,depreciated_amount:"
+msgid "Depreciated Amount"
+msgstr "已折旧金额"
+
+msgctxt "field:importer.account.asset,end_date:"
+msgid "End Date"
+msgstr "结账日期"
+
+msgctxt "field:importer.account.asset,number:"
+msgid "Number"
+msgstr "编号"
+
+msgctxt "field:importer.account.asset,product_code:"
+msgid "Product Code"
+msgstr "产品代码"
+
+msgctxt "field:importer.account.asset,product_name:"
+msgid "Product Name"
+msgstr "产品名称"
+
+msgctxt "field:importer.account.asset,purchase_date:"
+msgid "Purchase Date"
+msgstr "采购日期"
+
+msgctxt "field:importer.account.asset,residual_value:"
+msgid "Residual Value"
+msgstr "残值"
+
+msgctxt "field:importer.account.asset,start_date:"
+msgid "Start Date"
+msgstr "启用日期"
+
+msgctxt "field:importer.account.asset,value:"
+msgid "Value"
+msgstr "取值"
+
+msgctxt "field:importer.account.chart,chart_name:"
+msgid "Chart Name"
+msgstr "科目表名称"
+
+msgctxt "field:importer.account.chart,company_name:"
+msgid "Company Name"
+msgstr "公司名称"
+
+msgctxt "field:importer.account.chart,digits:"
+msgid "Digits"
+msgstr "数字"
+
+msgctxt "field:importer.account.chart,payable_code:"
+msgid "Payable Code"
+msgstr "应付科目代码"
+
+msgctxt "field:importer.account.chart,receivable_code:"
+msgid "Receivable Code"
+msgstr "应收科目代码"
+
+msgctxt "field:importer.account.fiscalyear,company_name:"
+msgid "Company Name"
+msgstr "公司名称"
+
+msgctxt "field:importer.account.fiscalyear,end_date:"
+msgid "End Date"
+msgstr "结账日期"
+
+msgctxt "field:importer.account.fiscalyear,in_credit_note_sequence_name:"
+msgid "In Credit Note Sequence Name"
+msgstr "供应商贷项通知单编号序列名称"
+
+msgctxt "field:importer.account.fiscalyear,in_invoice_sequence_name:"
+msgid "In Invoice Sequence Name"
+msgstr "供应商发票编号序列名称"
+
+msgctxt "field:importer.account.fiscalyear,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.account.fiscalyear,out_credit_note_sequence_name:"
+msgid "Out Credit Note Sequence Name"
+msgstr "客户贷项通知单编号序列名称"
+
+msgctxt "field:importer.account.fiscalyear,out_invoice_sequence_name:"
+msgid "Out Invoice Sequence Name"
+msgstr "客户发票编号序列名称"
+
+msgctxt "field:importer.account.fiscalyear,post_move_sequence_name:"
+msgid "Post Move Sequence Name"
+msgstr "过账凭证编号序列名称"
+
+msgctxt "field:importer.account.fiscalyear,start_date:"
+msgid "Start Date"
+msgstr "启用日期"
+
+msgctxt "field:importer.account.move,account_code:"
+msgid "Account Code"
+msgstr "科目代码"
+
+msgctxt "field:importer.account.move,account_name:"
+msgid "Account Name"
+msgstr "科目名称"
+
+msgctxt "field:importer.account.move,analytic_account:"
+msgid "Analytic Account"
+msgstr "分析科目"
+
+msgctxt "field:importer.account.move,company_name:"
+msgid "Company Name"
+msgstr "公司名称"
+
+msgctxt "field:importer.account.move,credit:"
+msgid "Credit"
+msgstr "贷方"
+
+msgctxt "field:importer.account.move,debit:"
+msgid "Debit"
+msgstr "借方"
+
+msgctxt "field:importer.account.move,description:"
+msgid "Description"
+msgstr "描述"
+
+msgctxt "field:importer.account.move,effective_date:"
+msgid "Effecive Date"
+msgstr "生效日期"
+
+msgctxt "field:importer.account.move,journal_code:"
+msgid "Journal Code"
+msgstr "日记账代码"
+
+msgctxt "field:importer.account.move,maturity_date:"
+msgid "Maturity Date"
+msgstr "到期日"
+
+msgctxt "field:importer.account.move,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.account.move,number:"
+msgid "Move Number"
+msgstr "凭证编号"
+
+msgctxt "field:importer.account.move,party_code:"
+msgid "Party Code"
+msgstr "往来单位代码"
+
+msgctxt "field:importer.account.move,party_name:"
+msgid "Party Name"
+msgstr "参与者名称"
+
+msgctxt "field:importer.account.move,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.address.facturae,facturae_person_type:"
+msgid "Facturae Person Type"
+msgstr "Facturae 人员类型"
+
+msgctxt "field:importer.address.facturae,facturae_residence_type:"
+msgid "Facturae Residence Type"
+msgstr "Facturae 居住地类型"
+
+msgctxt "field:importer.address.facturae,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.address.facturae,oficina_contable:"
+msgid "Oficina Contable"
+msgstr "会计办公室"
+
+msgctxt "field:importer.address.facturae,organo_gestor:"
+msgid "Organo Gestor"
+msgstr "管理机构"
+
+msgctxt "field:importer.address.facturae,party:"
+msgid "Party"
+msgstr "参与者"
+
+msgctxt "field:importer.address.facturae,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.address.facturae,unidad_tramitadora:"
+msgid "Unidad Tramitadora"
+msgstr "处理单位"
+
+msgctxt "field:importer.carrier,carrier_cost_method:"
+msgid "Carrier Cost Method"
+msgstr "承运商成本计算方法"
+
+msgctxt "field:importer.carrier,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.carrier,party:"
+msgid "Party"
+msgstr "参与者"
+
+msgctxt "field:importer.carrier,product:"
+msgid "Product"
+msgstr "产品"
+
+msgctxt "field:importer.carrier,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.carrier,shipment_cost_allocation_method:"
+msgid "Shipment Cost Allocation Method"
+msgstr "运费分摊方法"
+
+msgctxt "field:importer.column,examples:"
+msgid "Examples"
+msgstr "示例"
+
+msgctxt "field:importer.column,field:"
+msgid "Field"
+msgstr "字段"
+
+msgctxt "field:importer.column,format:"
+msgid "Format"
+msgstr "格式"
+
+msgctxt "field:importer.column,importer:"
+msgid "Importation"
+msgstr "导入"
+
+msgctxt "field:importer.column,model:"
+msgid "Model"
+msgstr "模型"
+
+msgctxt "field:importer.column,name:"
+msgid "Column Name"
+msgstr "列名"
+
+msgctxt "field:importer.column,value:"
+msgid "Value"
+msgstr "取值"
+
+msgctxt "field:importer.company,currency:"
+msgid "Currency"
+msgstr "货币"
+
+msgctxt "field:importer.company,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.company,timezone:"
+msgid "timezone"
+msgstr "时区"
+
+msgctxt "field:importer.employee,company:"
+msgid "Company"
+msgstr "公司"
+
+msgctxt "field:importer.employee,end_date:"
+msgid "End Date"
+msgstr "结账日期"
+
+msgctxt "field:importer.employee,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.employee,start_date:"
+msgid "Start Date"
+msgstr "启用日期"
+
+msgctxt "field:importer.employee,supervisor:"
+msgid "Supervisor"
+msgstr "监督者"
+
+msgctxt "field:importer.farm.abort.event,animal:"
+msgid "Animal"
+msgstr "动物"
+
+msgctxt "field:importer.farm.abort.event,farm:"
+msgid "Farm"
+msgstr "农场"
+
+msgctxt "field:importer.farm.abort.event,notes:"
+msgid "Notes"
+msgstr "注释"
+
+msgctxt "field:importer.farm.abort.event,timestamp:"
+msgid "Timestamp"
+msgstr "时间戳"
+
+msgctxt "field:importer.farm.animal,animal_type:"
+msgid "Animal Type"
+msgstr "动物类型"
+
+msgctxt "field:importer.farm.animal,arrival_date:"
+msgid "Arrival Date"
+msgstr "到达日期"
+
+msgctxt "field:importer.farm.animal,breed:"
+msgid "Breed"
+msgstr "品种"
+
+msgctxt "field:importer.farm.animal,initial_location:"
+msgid "Initial Location"
+msgstr "初始位置"
+
+msgctxt "field:importer.farm.animal,number:"
+msgid "Number"
+msgstr "编号"
+
+msgctxt "field:importer.farm.animal,origin:"
+msgid "Origin"
+msgstr "依据"
+
+msgctxt "field:importer.farm.animal,sex:"
+msgid "Sex"
+msgstr "性别"
+
+msgctxt "field:importer.farm.farrowing.event,animal:"
+msgid "Animal"
+msgstr "动物"
+
+msgctxt "field:importer.farm.farrowing.event,child_birthdate:"
+msgid "Child Birthdate"
+msgstr "幼畜出生日期"
+
+msgctxt "field:importer.farm.farrowing.event,child_number:"
+msgid "Child Number"
+msgstr "幼畜编号"
+
+msgctxt "field:importer.farm.farrowing.event,child_sex:"
+msgid "Child Sex"
+msgstr "幼畜性别"
+
+msgctxt "field:importer.farm.farrowing.event,child_tags:"
+msgid "Child Tags"
+msgstr "幼畜标签"
+
+msgctxt "field:importer.farm.farrowing.event,child_weight:"
+msgid "Child Weight"
+msgstr "幼畜重量"
+
+msgctxt "field:importer.farm.farrowing.event,farm:"
+msgid "Farm"
+msgstr "农场"
+
+msgctxt "field:importer.farm.farrowing.event,live:"
+msgid "Live"
+msgstr "存活"
+
+msgctxt "field:importer.farm.farrowing.event,problem:"
+msgid "Problem"
+msgstr "问题"
+
+msgctxt "field:importer.farm.farrowing.event,timestamp:"
+msgid "Timestamp"
+msgstr "时间戳"
+
+msgctxt "field:importer.farm.insemination.event,animal:"
+msgid "Animal"
+msgstr "动物"
+
+msgctxt "field:importer.farm.insemination.event,dose_bom:"
+msgid "Dose BOM"
+msgstr "剂量物料清单"
+
+msgctxt "field:importer.farm.insemination.event,farm:"
+msgid "Farm"
+msgstr "农场"
+
+msgctxt "field:importer.farm.insemination.event,timestamp:"
+msgid "Timestamp"
+msgstr "时间戳"
+
+msgctxt "field:importer.farm.medication.event,animal:"
+msgid "Animal"
+msgstr "动物"
+
+msgctxt "field:importer.farm.medication.event,end_date:"
+msgid "End Date"
+msgstr "结账日期"
+
+msgctxt "field:importer.farm.medication.event,feed_location:"
+msgid "Feed Location"
+msgstr "饲料库位"
+
+msgctxt "field:importer.farm.medication.event,feed_lot:"
+msgid "Feed Lot"
+msgstr "饲料批次"
+
+msgctxt "field:importer.farm.medication.event,feed_product:"
+msgid "Feed Product"
+msgstr "饲料产品"
+
+msgctxt "field:importer.farm.medication.event,feed_quantity:"
+msgid "Feed Quantity"
+msgstr "饲料数量"
+
+msgctxt "field:importer.farm.medication.event,timestamp:"
+msgid "Timestamp"
+msgstr "时间戳"
+
+msgctxt "field:importer.farm.move.event,animal:"
+msgid "Animal"
+msgstr "动物"
+
+msgctxt "field:importer.farm.move.event,farm:"
+msgid "Farm"
+msgstr "农场"
+
+msgctxt "field:importer.farm.move.event,notes:"
+msgid "Notes"
+msgstr "注释"
+
+msgctxt "field:importer.farm.move.event,timestamp:"
+msgid "Date & Time"
+msgstr "日期和时间"
+
+msgctxt "field:importer.farm.move.event,to_location:"
+msgid "To Location"
+msgstr "到位置"
+
+msgctxt "field:importer.farm.move.event,weight:"
+msgid "Weight"
+msgstr "重量"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,animal:"
+msgid "Animal"
+msgstr "动物"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,farm:"
+msgid "Farm"
+msgstr "农场"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,notes:"
+msgid "Notes"
+msgstr "注释"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,result:"
+msgid "Result"
+msgstr "结果"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,timestamp:"
+msgid "Timestamp"
+msgstr "时间戳"
+
+msgctxt "field:importer.farm.reclassification.event,animal:"
+msgid "Animal"
+msgstr "动物"
+
+msgctxt "field:importer.farm.reclassification.event,farm:"
+msgid "Farm"
+msgstr "农场"
+
+msgctxt "field:importer.farm.reclassification.event,reclassification_product:"
+msgid "Reclasification Product"
+msgstr "重新分类产品"
+
+msgctxt "field:importer.farm.reclassification.event,timestamp:"
+msgid "Timestamp"
+msgstr "时间戳"
+
+msgctxt "field:importer.farm.reclassification.event,to_location:"
+msgid "To Location"
+msgstr "到位置"
+
+msgctxt "field:importer.farm.reclassification.event,weight:"
+msgid "Weight"
+msgstr "重量"
+
+msgctxt "field:importer.farm.removal.event,animal:"
+msgid "Animal"
+msgstr "动物"
+
+msgctxt "field:importer.farm.removal.event,farm:"
+msgid "Farm"
+msgstr "农场"
+
+msgctxt "field:importer.farm.removal.event,removal_reason:"
+msgid "Reason"
+msgstr "原因"
+
+msgctxt "field:importer.farm.removal.event,removal_type:"
+msgid "Type"
+msgstr "科目"
+
+msgctxt "field:importer.farm.removal.event,timestamp:"
+msgid "Date & Time"
+msgstr "日期和时间"
+
+msgctxt "field:importer.farm.transformation.event,animal:"
+msgid "Animal"
+msgstr "动物"
+
+msgctxt "field:importer.farm.transformation.event,farm:"
+msgid "Farm"
+msgstr "农场"
+
+msgctxt "field:importer.farm.transformation.event,from_location:"
+msgid "From Location"
+msgstr "从位置"
+
+msgctxt "field:importer.farm.transformation.event,timestamp:"
+msgid "Timestamp"
+msgstr "时间戳"
+
+msgctxt "field:importer.farm.transformation.event,to_animal_type:"
+msgid "To Animal Type"
+msgstr "目标动物类型"
+
+msgctxt "field:importer.farm.transformation.event,to_location:"
+msgid "To Location"
+msgstr "到位置"
+
+msgctxt "field:importer.farm.weaning.event,animal:"
+msgid "Animal"
+msgstr "动物"
+
+msgctxt "field:importer.farm.weaning.event,farm:"
+msgid "Farm"
+msgstr "农场"
+
+msgctxt "field:importer.farm.weaning.event,female_to_location:"
+msgid "Female To Location"
+msgstr "母畜目标位置"
+
+msgctxt "field:importer.farm.weaning.event,quantity:"
+msgid "Quantity"
+msgstr "数量"
+
+msgctxt "field:importer.farm.weaning.event,timestamp:"
+msgid "Timestamp"
+msgstr "时间戳"
+
+msgctxt "field:importer.farm.weaning.event,weaned_to_location:"
+msgid "Weaned To Location"
+msgstr "断奶幼畜目标位置"
+
+msgctxt "field:importer.import.ask,binary_data:"
+msgid "Data"
+msgstr "数据"
+
+msgctxt "field:importer.import.ask,data_source:"
+msgid "Data Source"
+msgstr "数据源"
+
+msgctxt "field:importer.import.ask,filename:"
+msgid "Filename"
+msgstr "文件名"
+
+msgctxt "field:importer.import.ask,importer:"
+msgid "Importer"
+msgstr "导入器"
+
+msgctxt "field:importer.import.ask,text_data:"
+msgid "Data"
+msgstr "数据"
+
+msgctxt "field:importer.import.ask,url_data:"
+msgid "Data URL"
+msgstr "数据 URL"
+
+msgctxt "field:importer.invoice,account_move_number:"
+msgid "Account Move number"
+msgstr "会计凭证编号"
+
+msgctxt "field:importer.invoice,currency:"
+msgid "Currency"
+msgstr "货币"
+
+msgctxt "field:importer.invoice,discount:"
+msgid "Discount"
+msgstr "折扣"
+
+msgctxt "field:importer.invoice,invoice_date:"
+msgid "Date"
+msgstr "日期"
+
+msgctxt "field:importer.invoice,invoice_number:"
+msgid "Invoice Number"
+msgstr "发票编号"
+
+msgctxt "field:importer.invoice,invoice_type:"
+msgid "Invoice Type"
+msgstr "原始凭证类型"
+
+msgctxt "field:importer.invoice,journal:"
+msgid "Journal"
+msgstr "日记账"
+
+msgctxt "field:importer.invoice,party_code:"
+msgid "Party Code"
+msgstr "往来单位代码"
+
+msgctxt "field:importer.invoice,party_name:"
+msgid "Party Name"
+msgstr "参与者名称"
+
+msgctxt "field:importer.invoice,product_code:"
+msgid "Product Code"
+msgstr "产品代码"
+
+msgctxt "field:importer.invoice,quantity:"
+msgid "Product Quantity"
+msgstr "产品数量"
+
+msgctxt "field:importer.invoice,reference:"
+msgid "Reference"
+msgstr "参考"
+
+msgctxt "field:importer.invoice,unit_price:"
+msgid "Unit Price"
+msgstr "单价"
+
+msgctxt "field:importer.language,code:"
+msgid "Code"
+msgstr "代码"
+
+msgctxt "field:importer.language,date:"
+msgid "Date Format"
+msgstr "日期格式"
+
+msgctxt "field:importer.language,decimal_point:"
+msgid "Decimal Point"
+msgstr "小数点"
+
+msgctxt "field:importer.language,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.language,parent:"
+msgid "Parent"
+msgstr "上级"
+
+msgctxt "field:importer.language,translatable:"
+msgid "Translatable"
+msgstr "可翻译"
+
+msgctxt "field:importer.location,code:"
+msgid "Code"
+msgstr "代码"
+
+msgctxt "field:importer.location,input_location:"
+msgid "Input Location"
+msgstr "入库库位"
+
+msgctxt "field:importer.location,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.location,output_location:"
+msgid "Output Location"
+msgstr "出库库位"
+
+msgctxt "field:importer.location,parent:"
+msgid "Parent"
+msgstr "上级"
+
+msgctxt "field:importer.location,picking_location:"
+msgid "Picking Location"
+msgstr "拣货库位"
+
+msgctxt "field:importer.location,storage_location:"
+msgid "Storage Location"
+msgstr "存储库位"
+
+msgctxt "field:importer.location,type:"
+msgid "Type"
+msgstr "科目"
+
+msgctxt "field:importer.log,importer:"
+msgid "Importer"
+msgstr "导入器"
+
+msgctxt "field:importer.log,message:"
+msgid "Message"
+msgstr "消息"
+
+msgctxt "field:importer.log,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.log,on_error:"
+msgid "On Error"
+msgstr "出错时"
+
+msgctxt "field:importer.log,record:"
+msgid "Record"
+msgstr "记录"
+
+msgctxt "field:importer.log,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.log,source_record:"
+msgid "Source Record"
+msgstr "源记录"
+
+msgctxt "field:importer.log,type:"
+msgid "Type"
+msgstr "科目"
+
+msgctxt "field:importer.lot,date:"
+msgid "Date"
+msgstr "日期"
+
+msgctxt "field:importer.lot,expiration_date:"
+msgid "Expiry Date"
+msgstr "失效日期"
+
+msgctxt "field:importer.lot,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.lot,number:"
+msgid "Number"
+msgstr "编号"
+
+msgctxt "field:importer.lot,product_code:"
+msgid "Product Code"
+msgstr "产品代码"
+
+msgctxt "field:importer.lot,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.lot,shelf_life_expiration_date:"
+msgid "Shelf Life Expiration Date"
+msgstr "保质期截止日期"
+
+msgctxt "field:importer.marketing.email,active:"
+msgid "Active"
+msgstr "启用"
+
+msgctxt "field:importer.marketing.email,email:"
+msgid "Email"
+msgstr "电子邮件"
+
+msgctxt "field:importer.marketing.email,mailing_list:"
+msgid "Mailing List"
+msgstr "邮件列表"
+
+msgctxt "field:importer.meta,binary_data:"
+msgid "Binary"
+msgstr "二进制"
+
+msgctxt "field:importer.meta,column_field:"
+msgid "Column Field"
+msgstr "列字段"
+
+msgctxt "field:importer.meta,column_format:"
+msgid "Column Format"
+msgstr "列格式"
+
+msgctxt "field:importer.meta,column_name:"
+msgid "Column Name"
+msgstr "列名"
+
+msgctxt "field:importer.meta,column_value:"
+msgid "Column Value"
+msgstr "列值"
+
+msgctxt "field:importer.meta,data_source:"
+msgid "Data Source"
+msgstr "数据源"
+
+msgctxt "field:importer.meta,database:"
+msgid "Database"
+msgstr "数据库"
+
+msgctxt "field:importer.meta,has_header:"
+msgid "Has Header"
+msgstr "包含表头"
+
+msgctxt "field:importer.meta,language:"
+msgid "Language"
+msgstr "语言"
+
+msgctxt "field:importer.meta,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.meta,method:"
+msgid "Method"
+msgstr "方法"
+
+msgctxt "field:importer.meta,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.meta,on_error:"
+msgid "On Error"
+msgstr "出错时"
+
+msgctxt "field:importer.meta,password:"
+msgid "Password"
+msgstr "密码"
+
+msgctxt "field:importer.meta,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.meta,schema:"
+msgid "Schema"
+msgstr "模式"
+
+msgctxt "field:importer.meta,server:"
+msgid "Server"
+msgstr "服务器"
+
+msgctxt "field:importer.meta,sql_data:"
+msgid "Sql Data"
+msgstr "SQL 数据"
+
+msgctxt "field:importer.meta,sql_source:"
+msgid "SQL Source"
+msgstr "SQL 数据源"
+
+msgctxt "field:importer.meta,text_data:"
+msgid "Text"
+msgstr "文本"
+
+msgctxt "field:importer.meta,url_data:"
+msgid "URL"
+msgstr "网址"
+
+msgctxt "field:importer.meta,sheet_number:"
+msgid "Sheet Number"
+msgstr "工作表编号"
+
+msgctxt "field:importer.meta,data_start_row:"
+msgid "Data Start Row"
+msgstr "数据起始行"
+
+msgctxt "field:importer.meta,use_header:"
+msgid "Use Header"
+msgstr "使用表头"
+
+msgctxt "field:importer.meta,user:"
+msgid "User"
+msgstr "用户"
+
+msgctxt "field:importer.meta,where:"
+msgid "Where"
+msgstr "条件"
+
+msgctxt "field:importer.meta,use_subtransactions:"
+msgid "Use Subtransactions"
+msgstr "使用子事务"
+
+msgctxt "field:importer.meta,commit_chunks:"
+msgid "Commit Chunks"
+msgstr "分块提交"
+
+msgctxt "field:importer.order_point,min_quantity:"
+msgid "Minimum Quantity"
+msgstr "最小数量"
+
+msgctxt "field:importer.order_point,product_code:"
+msgid "Product Code"
+msgstr "产品代码"
+
+msgctxt "field:importer.order_point,target_quantity:"
+msgid "Target Quantity"
+msgstr "目标数量"
+
+msgctxt "field:importer.order_point,type_:"
+msgid "Type"
+msgstr "科目"
+
+msgctxt "field:importer.order_point,warehouse_location:"
+msgid "Warehouse Location"
+msgstr "仓库库位"
+
+msgctxt "field:importer.parcel,crop:"
+msgid "Crop"
+msgstr "作物"
+
+msgctxt "field:importer.parcel,plant_number:"
+msgid "Plant Number"
+msgstr "植株数量"
+
+msgctxt "field:importer.parcel,plantation_code:"
+msgid "Plantation Code"
+msgstr "种植地编码"
+
+msgctxt "field:importer.parcel,species:"
+msgid "Species"
+msgstr "物种"
+
+msgctxt "field:importer.parcel,surface:"
+msgid "Surface"
+msgstr "面积"
+
+msgctxt "field:importer.parcel,variety:"
+msgid "Variety"
+msgstr "品种"
+
+msgctxt "field:importer.party,bank_account:"
+msgid "Iban"
+msgstr "IBAN"
+
+msgctxt "field:importer.party,carrier:"
+msgid "Carrier"
+msgstr "承运商"
+
+msgctxt "field:importer.party,categories:"
+msgid "Categories"
+msgstr "类别"
+
+msgctxt "field:importer.party,city:"
+msgid "City"
+msgstr "城市"
+
+msgctxt "field:importer.party,code:"
+msgid "Code"
+msgstr "代码"
+
+msgctxt "field:importer.party,company:"
+msgid "Company"
+msgstr "公司"
+
+msgctxt "field:importer.party,country:"
+msgid "Country"
+msgstr "国家"
+
+msgctxt "field:importer.party,customer_payment_days:"
+msgid "Customer Payment days"
+msgstr "客户付款日"
+
+msgctxt "field:importer.party,account_payable:"
+msgid "Account Payable"
+msgstr "应付账款账户"
+
+msgctxt "field:importer.party,account_receivable:"
+msgid "Account Receivable"
+msgstr "应收账款账户"
+
+msgctxt "field:importer.party,customer_payment_term:"
+msgid "Customer Payment Term"
+msgstr "客户付款条件"
+
+msgctxt "field:importer.party,customer_payment_type:"
+msgid "Customer Payment Type"
+msgstr "客户付款类型"
+
+msgctxt "field:importer.party,customer_tax_rule:"
+msgid "Customer Tax Rule"
+msgstr "客户税规则"
+
+msgctxt "field:importer.party,delivery_address:"
+msgid "Delivery Address"
+msgstr "交货地址"
+
+msgctxt "field:importer.party,email:"
+msgid "E-Mail"
+msgstr "电子邮件"
+
+msgctxt "field:importer.party,fax:"
+msgid "Fax"
+msgstr "传真"
+
+msgctxt "field:importer.party,invoice_address:"
+msgid "Invoice Address"
+msgstr "原始凭证地址"
+
+msgctxt "field:importer.party,language:"
+msgid "Language"
+msgstr "语言"
+
+msgctxt "field:importer.party,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.party,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.party,note:"
+msgid "Note"
+msgstr "备注"
+
+msgctxt "field:importer.party,party_relation:"
+msgid "Party Relation"
+msgstr "往来单位关系"
+
+msgctxt "field:importer.party,phone:"
+msgid "Phone"
+msgstr "电话"
+
+msgctxt "field:importer.party,postal_code:"
+msgid "Postal Code"
+msgstr "邮政编码"
+
+msgctxt "field:importer.party,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.party,shipment_city:"
+msgid "Shipment City"
+msgstr "发货城市"
+
+msgctxt "field:importer.party,shipment_country:"
+msgid "Shipment Country"
+msgstr "发货国家"
+
+msgctxt "field:importer.party,shipment_postal_code:"
+msgid "Shipment Postal Code"
+msgstr "发货邮政编码"
+
+msgctxt "field:importer.party,shipment_street:"
+msgid "Shipment Street"
+msgstr "发货街道"
+
+msgctxt "field:importer.party,shipment_subdivision:"
+msgid "Shipment Subdivision"
+msgstr "发货行政区划"
+
+msgctxt "field:importer.party,street:"
+msgid "Street"
+msgstr "街道"
+
+msgctxt "field:importer.party,subdivision:"
+msgid "Subdivision"
+msgstr "行政区划"
+
+msgctxt "field:importer.party,supplier_lead_time:"
+msgid "Supplier Lead Time (days)"
+msgstr "供应商交货提前期（天）"
+
+msgctxt "field:importer.party,supplier_payment_days:"
+msgid "Supplier Payment days"
+msgstr "供应商付款日"
+
+msgctxt "field:importer.party,supplier_payment_term:"
+msgid "Supplier Payment Term"
+msgstr "供应商付款条件"
+
+msgctxt "field:importer.party,supplier_payment_type:"
+msgid "Supplier Payment Type"
+msgstr "供应商付款类型"
+
+msgctxt "field:importer.party,supplier_tax_rule:"
+msgid "Supplier Tax Rule"
+msgstr "供应商税规则"
+
+msgctxt "field:importer.party,trade_name:"
+msgid "Trade Name"
+msgstr "商号"
+
+msgctxt "field:importer.party,type_of_relation:"
+msgid "Type of relation"
+msgstr "关系类型"
+
+msgctxt "field:importer.party,vat:"
+msgid "Vat"
+msgstr "增值税号"
+
+msgctxt "field:importer.party,website:"
+msgid "Website"
+msgstr "网站"
+
+msgctxt "field:importer.party.address,city:"
+msgid "City"
+msgstr "城市"
+
+msgctxt "field:importer.party.address,contact_type:"
+msgid "Type"
+msgstr "科目"
+
+msgctxt "field:importer.party.address,contact_value:"
+msgid "Value"
+msgstr "取值"
+
+msgctxt "field:importer.party.address,country_name:"
+msgid "Country"
+msgstr "国家"
+
+msgctxt "field:importer.party.address,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.party.address,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.party.address,party_code:"
+msgid "Party Code"
+msgstr "往来单位代码"
+
+msgctxt "field:importer.party.address,postal_code:"
+msgid "Postal Code"
+msgstr "邮政编码"
+
+msgctxt "field:importer.party.address,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.party.address,sequence:"
+msgid "Sequence"
+msgstr "序列"
+
+msgctxt "field:importer.party.address,street:"
+msgid "Street Address"
+msgstr "街道地址"
+
+msgctxt "field:importer.party.address,subdivision:"
+msgid "Address Subdivision"
+msgstr "地址行政区划"
+
+msgctxt "field:importer.party.configuration,language_code:"
+msgid "Language Code"
+msgstr "语言代码"
+
+msgctxt "field:importer.party.configuration,sequence_number_next:"
+msgid "Sequence Number Next"
+msgstr "序列下一个编号"
+
+msgctxt "field:importer.party.configuration,sequence_padding:"
+msgid "Sequence Padding"
+msgstr "序列补零位数"
+
+msgctxt "field:importer.party.configuration,sequence_prefix:"
+msgid "Sequence prefix"
+msgstr "序列前缀"
+
+msgctxt "field:importer.party.configuration,sequence_suffix:"
+msgid "Sequence suffix"
+msgstr "序列后缀"
+
+msgctxt "field:importer.party.contact_mechanism,comment:"
+msgid "Comment"
+msgstr "备注"
+
+msgctxt "field:importer.party.contact_mechanism,delivery:"
+msgid "Delivery"
+msgstr "交付"
+
+msgctxt "field:importer.party.contact_mechanism,invoice:"
+msgid "Invoice"
+msgstr "原始凭证"
+
+msgctxt "field:importer.party.contact_mechanism,language:"
+msgid "Language"
+msgstr "语言"
+
+msgctxt "field:importer.party.contact_mechanism,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.party.contact_mechanism,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.party.contact_mechanism,party:"
+msgid "Party"
+msgstr "参与者"
+
+msgctxt "field:importer.party.contact_mechanism,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.party.contact_mechanism,type:"
+msgid "Type"
+msgstr "科目"
+
+msgctxt "field:importer.party.contact_mechanism,value:"
+msgid "Value"
+msgstr "取值"
+
+msgctxt "field:importer.party.credit,date:"
+msgid "Date"
+msgstr "日期"
+
+msgctxt "field:importer.party.credit,end_date:"
+msgid "End Date"
+msgstr "结账日期"
+
+msgctxt "field:importer.party.credit,first_approved_credit_limit:"
+msgid "First Approved Credit Limit"
+msgstr "首次批准的信用额度"
+
+msgctxt "field:importer.party.credit,party:"
+msgid "Party"
+msgstr "参与者"
+
+msgctxt "field:importer.party.credit,requested_credit_limit:"
+msgid "Requested Credit Limit"
+msgstr "申请信用额度"
+
+msgctxt "field:importer.party.credit,start_date:"
+msgid "Start Date"
+msgstr "启用日期"
+
+msgctxt "field:importer.plantation,parcel_sigpac:"
+msgid "Parcel Sigpac"
+msgstr "SIGPAC 地块"
+
+msgctxt "field:importer.plantation,party:"
+msgid "Party"
+msgstr "参与者"
+
+msgctxt "field:importer.plantation,plantation_code:"
+msgid "Plantation Code"
+msgstr "种植地编码"
+
+msgctxt "field:importer.plantation,polygon_sigpac:"
+msgid "Polygon Sigpac"
+msgstr "SIGPAC 地块组"
+
+msgctxt "field:importer.plantation,province_sigpac:"
+msgid "Province Sigpac"
+msgstr "SIGPAC 省"
+
+msgctxt "field:importer.plantation,recinte_sigpac:"
+msgid "Recinte Sigpac"
+msgstr "SIGPAC 子地块"
+
+msgctxt "field:importer.plantation,zone_sigpac:"
+msgid "Zone Sigpac"
+msgstr "SIGPAC 区域"
+
+msgctxt "field:importer.price_list,base_price_formula:"
+msgid "Base Price Formula"
+msgstr "基价公式"
+
+msgctxt "field:importer.price_list,category:"
+msgid "Category"
+msgstr "类别"
+
+msgctxt "field:importer.price_list,company_name:"
+msgid "Company Name"
+msgstr "公司名称"
+
+msgctxt "field:importer.price_list,formula:"
+msgid "Formula"
+msgstr "公式"
+
+msgctxt "field:importer.price_list,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.price_list,product_code:"
+msgid "Product Code"
+msgstr "产品代码"
+
+msgctxt "field:importer.price_list,quantity:"
+msgid "Quantity"
+msgstr "数量"
+
+msgctxt "field:importer.price_list,tax_included:"
+msgid "Tax Included"
+msgstr "含税"
+
+msgctxt "field:importer.product,account_asset:"
+msgid "Account Asset"
+msgstr "资产科目"
+
+msgctxt "field:importer.product,account_category:"
+msgid "Account Category"
+msgstr "账户类别"
+
+msgctxt "field:importer.product,account_depreciation:"
+msgid "Account Depreciation"
+msgstr "折旧科目"
+
+msgctxt "field:importer.product,account_expense:"
+msgid "Account Expense"
+msgstr "账户支出"
+
+msgctxt "field:importer.product,account_revenue:"
+msgid "Account Revenue"
+msgstr "账户收入"
+
+msgctxt "field:importer.product,aranzel:"
+msgid "Aranzel"
+msgstr "关税"
+
+msgctxt "field:importer.product,bom_name:"
+msgid "BOM Name"
+msgstr "物料清单名称"
+
+msgctxt "field:importer.product,brand:"
+msgid "Brand"
+msgstr "品牌"
+
+msgctxt "field:importer.product,categories:"
+msgid "Categories"
+msgstr "类别"
+
+msgctxt "field:importer.product,company:"
+msgid "Company"
+msgstr "公司"
+
+msgctxt "field:importer.product,consumable:"
+msgid "Consumable"
+msgstr "消耗品"
+
+msgctxt "field:importer.product,cost_price:"
+msgid "Cost Price"
+msgstr "成本价"
+
+msgctxt "field:importer.product,cost_price_method:"
+msgid "Cost Price Method"
+msgstr "成本价法"
+
+msgctxt "field:importer.product,customer:"
+msgid "Customer"
+msgstr "客户"
+
+msgctxt "field:importer.product,customer_code:"
+msgid "Customer Code"
+msgstr "客户代码"
+
+msgctxt "field:importer.product,depreciation_duration:"
+msgid "Depreciation Duration"
+msgstr "折旧期限"
+
+msgctxt "field:importer.product,depreciation_percentatge:"
+msgid "Depreciation Percentatge"
+msgstr "减值百分比"
+
+msgctxt "field:importer.product,description:"
+msgid "Description"
+msgstr "描述"
+
+msgctxt "field:importer.product,location:"
+msgid "Location"
+msgstr "库位"
+
+msgctxt "field:importer.product,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.product,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.product,producible:"
+msgid "Producible"
+msgstr "可生产"
+
+msgctxt "field:importer.product,product_note:"
+msgid "Product Note"
+msgstr "产品备注"
+
+msgctxt "field:importer.product,purchasable:"
+msgid "Purchasable"
+msgstr "可采购"
+
+msgctxt "field:importer.product,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.product,salable:"
+msgid "Salable"
+msgstr "可销售"
+
+msgctxt "field:importer.product,sale_price:"
+msgid "Sale Price"
+msgstr "销售价格"
+
+msgctxt "field:importer.product,supplier:"
+msgid "Supplier"
+msgstr "供应商"
+
+msgctxt "field:importer.product,supplier_code:"
+msgid "Supplier Code"
+msgstr "供应商编码"
+
+msgctxt "field:importer.product,supplier_currency:"
+msgid "Supplier Currency"
+msgstr "供应商货币"
+
+msgctxt "field:importer.product,supplier_minimum_quantity:"
+msgid "Supplier Minimum Quantity"
+msgstr "供应商最小数量"
+
+msgctxt "field:importer.product,supplier_multiple_quantity:"
+msgid "Supplier Multiple Quantity"
+msgstr "供应商数量倍数"
+
+msgctxt "field:importer.product,supplier_unit_price:"
+msgid "Supplier Unit Price"
+msgstr "供应商单价"
+
+msgctxt "field:importer.product,template_code:"
+msgid "Template Code"
+msgstr "模板编码"
+
+msgctxt "field:importer.product,template_note:"
+msgid "Template Note"
+msgstr "模板备注"
+
+msgctxt "field:importer.product,type_:"
+msgid "Type"
+msgstr "科目"
+
+msgctxt "field:importer.product,uom:"
+msgid "UoM"
+msgstr "计量单位"
+
+msgctxt "field:importer.product,variant_code:"
+msgid "Variant Code"
+msgstr "变体编码"
+
+msgctxt "field:importer.product,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "变体后缀编码"
+
+msgctxt "field:importer.product.agronomics,account_category:"
+msgid "Account Category"
+msgstr "账户类别"
+
+msgctxt "field:importer.product.agronomics,alcohol_content:"
+msgid "Alcohol Content"
+msgstr "酒精含量"
+
+msgctxt "field:importer.product.agronomics,aranzel:"
+msgid "Aranzel"
+msgstr "关税"
+
+msgctxt "field:importer.product.agronomics,brand:"
+msgid "Brand"
+msgstr "品牌"
+
+msgctxt "field:importer.product.agronomics,categories:"
+msgid "Categories"
+msgstr "类别"
+
+msgctxt "field:importer.product.agronomics,cost_price:"
+msgid "Cost Price"
+msgstr "成本价"
+
+msgctxt "field:importer.product.agronomics,cost_price_method:"
+msgid "Cost Price Method"
+msgstr "成本价法"
+
+msgctxt "field:importer.product.agronomics,description:"
+msgid "Description"
+msgstr "描述"
+
+msgctxt "field:importer.product.agronomics,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.product.agronomics,purchasable:"
+msgid "Purchasable"
+msgstr "可采购"
+
+msgctxt "field:importer.product.agronomics,salable:"
+msgid "Salable"
+msgstr "可销售"
+
+msgctxt "field:importer.product.agronomics,sale_price:"
+msgid "Sale Price"
+msgstr "销售价格"
+
+msgctxt "field:importer.product.agronomics,supplier:"
+msgid "Supplier"
+msgstr "供应商"
+
+msgctxt "field:importer.product.agronomics,supplier_code:"
+msgid "Supplier Code"
+msgstr "供应商编码"
+
+msgctxt "field:importer.product.agronomics,template_code:"
+msgid "Template Code"
+msgstr "模板编码"
+
+msgctxt "field:importer.product.agronomics,type_:"
+msgid "Type"
+msgstr "科目"
+
+msgctxt "field:importer.product.agronomics,uom:"
+msgid "UoM"
+msgstr "计量单位"
+
+msgctxt "field:importer.product.agronomics,variant_code:"
+msgid "Variant Code"
+msgstr "变体编码"
+
+msgctxt "field:importer.product.agronomics,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "变体后缀编码"
+
+msgctxt "field:importer.product.agronomics,volume:"
+msgid "Volume (m3)"
+msgstr "体积（立方米）"
+
+msgctxt "field:importer.product.agronomics,weight:"
+msgid "Weight (kg)"
+msgstr "重量（千克）"
+
+msgctxt "field:importer.product.attributes,attribute:"
+msgid "Attribute"
+msgstr "属性"
+
+msgctxt "field:importer.product.attributes,attribute_set:"
+msgid "Attribute Set"
+msgstr "属性集"
+
+msgctxt "field:importer.product.attributes,attribute_value:"
+msgid "Attribute Value"
+msgstr "属性值"
+
+msgctxt "field:importer.product.attributes,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.product.attributes,product_code:"
+msgid "Product Code"
+msgstr "产品代码"
+
+msgctxt "field:importer.product.attributes,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.product.configuration,cost_price_method:"
+msgid "Cost price method"
+msgstr "成本计算方法"
+
+msgctxt "field:importer.product.configuration,product_sequence_number_next:"
+msgid "Variant Sequence number next"
+msgstr "变体序列下一个编号"
+
+msgctxt "field:importer.product.configuration,product_sequence_padding:"
+msgid "Variant Sequence padding"
+msgstr "变体序列补零位数"
+
+msgctxt "field:importer.product.configuration,product_sequence_prefix:"
+msgid "Variant Sequence prefix"
+msgstr "变体序列前缀"
+
+msgctxt "field:importer.product.configuration,product_sequence_suffix:"
+msgid "Variant Sequence suffix"
+msgstr "变体序列后缀"
+
+msgctxt "field:importer.product.configuration,template_sequence_number_next:"
+msgid "Template Sequence number next"
+msgstr "模板序列下一个编号"
+
+msgctxt "field:importer.product.configuration,template_sequence_padding:"
+msgid "Template Sequence padding"
+msgstr "模板序列补零位数"
+
+msgctxt "field:importer.product.configuration,template_sequence_prefix:"
+msgid "Template Sequence prefix"
+msgstr "模板序列前缀"
+
+msgctxt "field:importer.product.configuration,template_sequence_suffix:"
+msgid "Template Sequence suffix"
+msgstr "模板序列后缀"
+
+msgctxt "field:importer.product.supplier,base_price:"
+msgid "Base Price"
+msgstr "基准价格"
+
+msgctxt "field:importer.product.supplier,code:"
+msgid "Code"
+msgstr "代码"
+
+msgctxt "field:importer.product.supplier,currency:"
+msgid "Currency"
+msgstr "货币"
+
+msgctxt "field:importer.product.supplier,discount_formula:"
+msgid "Discount Formula"
+msgstr "折扣公式"
+
+msgctxt "field:importer.product.supplier,end_date:"
+msgid "End Date"
+msgstr "结账日期"
+
+msgctxt "field:importer.product.supplier,lead_time:"
+msgid "Lead Time (days)"
+msgstr "提前期（天）"
+
+msgctxt "field:importer.product.supplier,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.product.supplier,minimum_quantity:"
+msgid "Minimum Quantity"
+msgstr "最小数量"
+
+msgctxt "field:importer.product.supplier,multiple_quantity:"
+msgid "Multiple Quantity"
+msgstr "数量倍数"
+
+msgctxt "field:importer.product.supplier,party_code:"
+msgid "Party Code"
+msgstr "往来单位代码"
+
+msgctxt "field:importer.product.supplier,party_name:"
+msgid "Party Name"
+msgstr "参与者名称"
+
+msgctxt "field:importer.product.supplier,product_code:"
+msgid "Product Code"
+msgstr "产品代码"
+
+msgctxt "field:importer.product.supplier,quantity:"
+msgid "Product Quantity"
+msgstr "产品数量"
+
+msgctxt "field:importer.product.supplier,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.product.supplier,start_date:"
+msgid "Start Date"
+msgstr "启用日期"
+
+msgctxt "field:importer.product.supplier,template_code:"
+msgid "Template Code"
+msgstr "模板编码"
+
+msgctxt "field:importer.product.supplier,unit_price:"
+msgid "Unit Price"
+msgstr "单价"
+
+msgctxt "field:importer.product_codes,code:"
+msgid "Code"
+msgstr "代码"
+
+msgctxt "field:importer.product_codes,template_code:"
+msgid "Template Code"
+msgstr "模板编码"
+
+msgctxt "field:importer.product_codes,type_:"
+msgid "type"
+msgstr "类型"
+
+msgctxt "field:importer.product_codes,variant_code:"
+msgid "Variant Code"
+msgstr "变体编码"
+
+msgctxt "field:importer.product_codes,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "变体后缀编码"
+
+msgctxt "field:importer.production.bom,input_product:"
+msgid "Product Input"
+msgstr "投入产品"
+
+msgctxt "field:importer.production.bom,input_quantity:"
+msgid "Product Input Quantity"
+msgstr "投入产品数量"
+
+msgctxt "field:importer.production.bom,input_uom:"
+msgid "Product Input UoM"
+msgstr "投入产品计量单位"
+
+msgctxt "field:importer.production.bom,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.production.bom,output_product:"
+msgid "Product Output"
+msgstr "产出产品"
+
+msgctxt "field:importer.production.bom,output_quantity:"
+msgid "Product Output Quantity"
+msgstr "产出产品数量"
+
+msgctxt "field:importer.production.bom,output_uom:"
+msgid "Product Output UoM"
+msgstr "产出产品计量单位"
+
+msgctxt "field:importer.production.configuration,sequence_number_next:"
+msgid "Sequence number next"
+msgstr "序列下一个编号"
+
+msgctxt "field:importer.production.configuration,sequence_padding:"
+msgid "Sequence padding"
+msgstr "序列补零位数"
+
+msgctxt "field:importer.production.configuration,sequence_prefix:"
+msgid "Sequence prefix"
+msgstr "序列前缀"
+
+msgctxt "field:importer.production.configuration,sequence_suffix:"
+msgid "Sequence suffix"
+msgstr "序列后缀"
+
+msgctxt "field:importer.purchase,currency:"
+msgid "Currency"
+msgstr "货币"
+
+msgctxt "field:importer.purchase,date:"
+msgid "Date"
+msgstr "日期"
+
+msgctxt "field:importer.purchase,discount:"
+msgid "Discount"
+msgstr "折扣"
+
+msgctxt "field:importer.purchase,invoice_method:"
+msgid "Invoice Method"
+msgstr "开票方法"
+
+msgctxt "field:importer.purchase,party_code:"
+msgid "Party Code"
+msgstr "往来单位代码"
+
+msgctxt "field:importer.purchase,party_name:"
+msgid "Party Name"
+msgstr "参与者名称"
+
+msgctxt "field:importer.purchase,product_code:"
+msgid "Product Code"
+msgstr "产品代码"
+
+msgctxt "field:importer.purchase,purchase_number:"
+msgid "Purchase Number"
+msgstr "采购编号"
+
+msgctxt "field:importer.purchase,quantity:"
+msgid "Product Quantity"
+msgstr "产品数量"
+
+msgctxt "field:importer.purchase,reference:"
+msgid "Reference"
+msgstr "参考"
+
+msgctxt "field:importer.purchase,state:"
+msgid "State"
+msgstr "状态"
+
+msgctxt "field:importer.purchase,unit_price:"
+msgid "Unit Price"
+msgstr "单价"
+
+msgctxt "field:importer.purchase.configuration,company:"
+msgid "Company"
+msgstr "公司"
+
+msgctxt "field:importer.purchase.configuration,invoice_method:"
+msgid "Purchase invoice method"
+msgstr "采购开票方式"
+
+msgctxt "field:importer.purchase.configuration,process_after:"
+msgid "Purchase process after"
+msgstr "采购处理延迟"
+
+msgctxt "field:importer.purchase.configuration,sequence_number_next:"
+msgid "Purchase sequence number next"
+msgstr "采购序列下一个编号"
+
+msgctxt "field:importer.purchase.configuration,sequence_padding:"
+msgid "Purchase sequence padding"
+msgstr "采购序列补零位数"
+
+msgctxt "field:importer.purchase.configuration,sequence_prefix:"
+msgid "Purchase sequence prefix"
+msgstr "采购序列前缀"
+
+msgctxt "field:importer.purchase.configuration,sequence_suffix:"
+msgid "Purchase sequence suffix"
+msgstr "采购序列后缀"
+
+msgctxt "field:importer.sale,base_price:"
+msgid "Base Price"
+msgstr "基准价格"
+
+msgctxt "field:importer.sale,currency:"
+msgid "Currency"
+msgstr "货币"
+
+msgctxt "field:importer.sale,date:"
+msgid "Date"
+msgstr "日期"
+
+msgctxt "field:importer.sale,discount_amount:"
+msgid "Discount Amount"
+msgstr "折扣金额"
+
+msgctxt "field:importer.sale,discount_formula:"
+msgid "Discount Formula"
+msgstr "折扣公式"
+
+msgctxt "field:importer.sale,discount_rate:"
+msgid "Discount Rate"
+msgstr "折扣率"
+
+msgctxt "field:importer.sale,invoice_method:"
+msgid "Invoice Method"
+msgstr "开票方法"
+
+msgctxt "field:importer.sale,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.sale,party_code:"
+msgid "Party Code"
+msgstr "往来单位代码"
+
+msgctxt "field:importer.sale,party_name:"
+msgid "Party Name"
+msgstr "参与者名称"
+
+msgctxt "field:importer.sale,product_code:"
+msgid "Product Code"
+msgstr "产品代码"
+
+msgctxt "field:importer.sale,quantity:"
+msgid "Product Quantity"
+msgstr "产品数量"
+
+msgctxt "field:importer.sale,reference:"
+msgid "Reference"
+msgstr "参考"
+
+msgctxt "field:importer.sale,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.sale,sale_number:"
+msgid "Sale Number"
+msgstr "销售编号"
+
+msgctxt "field:importer.sale,shipment_address:"
+msgid "Shipment Address Name"
+msgstr "发货地址名称"
+
+msgctxt "field:importer.sale,shipment_method:"
+msgid "Shipment Method"
+msgstr "发货方式"
+
+msgctxt "field:importer.sale,shipment_party_name:"
+msgid "Shipment Party Name"
+msgstr "收货往来单位名称"
+
+msgctxt "field:importer.sale,state:"
+msgid "State"
+msgstr "状态"
+
+msgctxt "field:importer.sale,unit_price:"
+msgid "Unit Price"
+msgstr "单价"
+
+msgctxt "field:importer.sale.configuration,company:"
+msgid "Company"
+msgstr "公司"
+
+msgctxt "field:importer.sale.configuration,sale_invoice_method:"
+msgid "Sale invoice method"
+msgstr "销售开票方式"
+
+msgctxt "field:importer.sale.configuration,sale_process_after:"
+msgid "Sale process after"
+msgstr "销售处理延迟"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_number_next:"
+msgid "Sale sequence number next"
+msgstr "销售序列下一个编号"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_padding:"
+msgid "Sale sequence padding"
+msgstr "销售序列补零位数"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_prefix:"
+msgid "Sale sequence prefix"
+msgstr "销售序列前缀"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_suffix:"
+msgid "Sale sequence suffix"
+msgstr "销售序列后缀"
+
+msgctxt "field:importer.sale.configuration,sale_shipment_method:"
+msgid "Sale shipment method"
+msgstr "销售发货方式"
+
+msgctxt "field:importer.sequence,company_name:"
+msgid "Company Name"
+msgstr "公司名称"
+
+msgctxt "field:importer.sequence,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.sequence,number_next:"
+msgid "Sequence Number Next"
+msgstr "序列下一个编号"
+
+msgctxt "field:importer.sequence,padding:"
+msgid "Sequence Padding"
+msgstr "序列补零位数"
+
+msgctxt "field:importer.sequence,prefix:"
+msgid "Sequence prefix"
+msgstr "序列前缀"
+
+msgctxt "field:importer.sequence,sequence_type:"
+msgid "Sequence Type"
+msgstr "序列类型"
+
+msgctxt "field:importer.sequence,strict:"
+msgid "Strict"
+msgstr "严格"
+
+msgctxt "field:importer.sequence,suffix:"
+msgid "Sequence suffix"
+msgstr "序列后缀"
+
+msgctxt "field:importer.source_column,examples:"
+msgid "Examples"
+msgstr "示例"
+
+msgctxt "field:importer.source_column,field:"
+msgid "Field"
+msgstr "字段"
+
+msgctxt "field:importer.source_column,format:"
+msgid "Format"
+msgstr "格式"
+
+msgctxt "field:importer.source_column,importer:"
+msgid "Importation"
+msgstr "导入"
+
+msgctxt "field:importer.source_column,model:"
+msgid "Model"
+msgstr "模型"
+
+msgctxt "field:importer.source_column,name:"
+msgid "Column Name"
+msgstr "列名"
+
+msgctxt "field:importer.stock.move,cost_price:"
+msgid "Cost Price"
+msgstr "成本价"
+
+msgctxt "field:importer.stock.move,currency:"
+msgid "Currency"
+msgstr "货币"
+
+msgctxt "field:importer.stock.move,effective_date:"
+msgid "Effective Date"
+msgstr "生效日期"
+
+msgctxt "field:importer.stock.move,from_location:"
+msgid "From Location"
+msgstr "从位置"
+
+msgctxt "field:importer.stock.move,lot:"
+msgid "Lot"
+msgstr "批次"
+
+msgctxt "field:importer.stock.move,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.stock.move,planned_date:"
+msgid "Planned Date"
+msgstr "计划日期"
+
+msgctxt "field:importer.stock.move,product_code:"
+msgid "Product Code"
+msgstr "产品代码"
+
+msgctxt "field:importer.stock.move,quantity:"
+msgid "Quantity"
+msgstr "数量"
+
+msgctxt "field:importer.stock.move,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.stock.move,to_location:"
+msgid "To Location"
+msgstr "到位置"
+
+msgctxt "field:importer.stock.move,unit_price:"
+msgid "Unit Price"
+msgstr "单价"
+
+msgctxt "field:importer.user,companies:"
+msgid "Companies"
+msgstr "公司"
+
+msgctxt "field:importer.user,company:"
+msgid "Company"
+msgstr "公司"
+
+msgctxt "field:importer.user,email:"
+msgid "Email"
+msgstr "电子邮件"
+
+msgctxt "field:importer.user,employee:"
+msgid "Employee"
+msgstr "雇员"
+
+msgctxt "field:importer.user,employees:"
+msgid "Employees"
+msgstr "雇员"
+
+msgctxt "field:importer.user,groups:"
+msgid "Groups"
+msgstr "组"
+
+msgctxt "field:importer.user,language_code:"
+msgid "Language Code"
+msgstr "语言代码"
+
+msgctxt "field:importer.user,login:"
+msgid "Login"
+msgstr "登录"
+
+msgctxt "field:importer.user,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.user,password:"
+msgid "Password"
+msgstr "密码"
+
+msgctxt "field:importer.user,roles:"
+msgid "Roles"
+msgstr "角色"
+
+msgctxt "field:importer.user,signature:"
+msgid "Signature"
+msgstr "签名"
+
+msgctxt "help:importer,language:"
+msgid "Language to use, if different from the one of the user."
+msgstr "要使用的语言（若与用户语言不同）。"
+
+msgctxt "help:importer,sample_size:"
+msgid "Number of records to import with the sample button."
+msgstr "点击样本按钮时导入的记录数。"
+
+msgctxt "help:importer,sample_offset:"
+msgid "Number of records to skip before importing with the sample button."
+msgstr "点击样本按钮导入时跳过的记录数。"
+
+msgctxt "help:importer,template:"
+msgid ""
+"Check to indicate that this importer is a template and thus should appear in"
+" the import wizard."
+msgstr "勾选表示此导入器为模板，应显示在导入向导中。"
+
+msgctxt "help:importer,use_header:"
+msgid ""
+"If checked, the names of the columns will be used for the mapping. "
+"Otherwise, the number of the column will be used."
+msgstr "勾选后，将使用列名进行映射；否则使用列号。"
+
+msgctxt "help:importer.account.move,company_name:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort "
+"records by company prior to import for better performance."
+msgstr "公司字段可用于设置依赖公司的字段。为提高性能，建议导入前按公司对记录排序。"
+
+msgctxt "help:importer.column,value:"
+msgid "Value to be used if no column is specified or the value found is None."
+msgstr "未指定列或找到的值为 None 时使用的值。"
+
+msgctxt "help:importer.party,company:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort "
+"records by company prior to import for better performance."
+msgstr "公司字段可用于设置依赖公司的字段。为提高性能，建议导入前按公司对记录排序。"
+
+msgctxt "help:importer.product,company:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort "
+"records by company prior to import for better performance."
+msgstr "公司字段可用于设置依赖公司的字段。为提高性能，建议导入前按公司对记录排序。"
+
+msgctxt "help:importer.sale.configuration,sale_invoice_method:"
+msgid "selection|sale.sale|invoice_method"
+msgstr "selection|sale.sale|invoice_method"
+
+msgctxt "help:importer.sale.configuration,sale_shipment_method:"
+msgid "selection|sale.sale|shipment_method"
+msgstr "selection|sale.sale|shipment_method"
+
+msgctxt "help:importer.user,companies:"
+msgid "Comma separated list of company names"
+msgstr "以逗号分隔的公司名称列表"
+
+msgctxt "help:importer.user,employees:"
+msgid "Comma separated list of employee names"
+msgstr "以逗号分隔的员工姓名列表"
+
+msgctxt "help:importer.user,groups:"
+msgid "Comma separated list of group names"
+msgstr "以逗号分隔的用户组名称列表"
+
+msgctxt "help:importer.user,roles:"
+msgid "Comma separated list of role names"
+msgstr "以逗号分隔的角色名称列表"
+
+msgctxt "model:importer,name:"
+msgid "Importer"
+msgstr "导入器"
+
+msgctxt "model:importer.account.asset,name:"
+msgid "Importer Account Asset"
+msgstr "资产导入器"
+
+msgctxt "model:importer.account.chart,name:"
+msgid "Importer Chart"
+msgstr "科目表导入器"
+
+msgctxt "model:importer.account.fiscalyear,name:"
+msgid "Importer Fiscal Year"
+msgstr "会计年度导入器"
+
+msgctxt "model:importer.account.move,name:"
+msgid "Importer Account Move"
+msgstr "会计凭证导入器"
+
+msgctxt "model:importer.address.facturae,name:"
+msgid "Importer Address Factura-e"
+msgstr "Factura-e 地址导入器"
+
+msgctxt "model:importer.carrier,name:"
+msgid "Importer Carrier"
+msgstr "承运商导入器"
+
+msgctxt "model:importer.column,name:"
+msgid "Importer Column"
+msgstr "导入器列"
+
+msgctxt "model:importer.company,name:"
+msgid "Importer Company"
+msgstr "公司导入器"
+
+msgctxt "model:importer.country,name:"
+msgid "Importer Country"
+msgstr "国家导入器"
+
+msgctxt "model:importer.country.postal_codes,name:"
+msgid "Importer Postal Codes"
+msgstr "邮政编码导入器"
+
+msgctxt "model:importer.currency,name:"
+msgid "Importer Currency"
+msgstr "货币导入器"
+
+msgctxt "model:importer.employee,name:"
+msgid "Importer Employoee"
+msgstr "员工导入器"
+
+msgctxt "model:importer.farm.abort.event,name:"
+msgid "Importer Farm Abort Event"
+msgstr "农场流产事件导入器"
+
+msgctxt "model:importer.farm.animal,name:"
+msgid "Importer Farm Animal"
+msgstr "农场动物导入器"
+
+msgctxt "model:importer.farm.farrowing.event,name:"
+msgid "Importer Farm Farrowing Event"
+msgstr "农场分娩事件导入器"
+
+msgctxt "model:importer.farm.insemination.event,name:"
+msgid "Importer Farm Insemination Event"
+msgstr "农场授精事件导入器"
+
+msgctxt "model:importer.farm.medication.event,name:"
+msgid "Importer Farm Medication Event"
+msgstr "农场用药事件导入器"
+
+msgctxt "model:importer.farm.move.event,name:"
+msgid "Importer Event Move"
+msgstr "移动事件导入器"
+
+msgctxt "model:importer.farm.pregnancy_diagnosis.event,name:"
+msgid "Importer Farm Pregnancy Diagnosis Event"
+msgstr "农场妊娠诊断事件导入器"
+
+msgctxt "model:importer.farm.reclassification.event,name:"
+msgid "Importer Farm reclassification Event"
+msgstr "农场重新分类事件导入器"
+
+msgctxt "model:importer.farm.removal.event,name:"
+msgid "Importer Removal Event"
+msgstr "移除事件导入器"
+
+msgctxt "model:importer.farm.transformation.event,name:"
+msgid "Importer Farm Transformation Event"
+msgstr "农场转化事件导入器"
+
+msgctxt "model:importer.farm.weaning.event,name:"
+msgid "Importer Farm Weaning Event"
+msgstr "农场断奶事件导入器"
+
+msgctxt "model:importer.import.ask,name:"
+msgid "Import Ask"
+msgstr "导入询问"
+
+msgctxt "model:importer.import.ask.error,name:"
+msgid "Import Ask and Import Error"
+msgstr "导入询问及错误"
+
+msgctxt "model:importer.invoice,name:"
+msgid "Importer Invoice"
+msgstr "发票导入器"
+
+msgctxt "model:importer.language,name:"
+msgid "Importer Language"
+msgstr "语言导入器"
+
+msgctxt "model:importer.location,name:"
+msgid "Importer Location"
+msgstr "库位导入器"
+
+msgctxt "model:importer.log,name:"
+msgid "Importer Log"
+msgstr "导入器日志"
+
+msgctxt "model:importer.lot,name:"
+msgid "Importer Lot"
+msgstr "批次导入器"
+
+msgctxt "model:importer.marketing.email,name:"
+msgid "Importer Marketing Email"
+msgstr "营销邮件导入器"
+
+msgctxt "model:importer.meta,name:"
+msgid "Importer Meta"
+msgstr "导入器元数据"
+
+msgctxt "model:importer.order_point,name:"
+msgid "Importer Stock Move"
+msgstr "库存移动导入器"
+
+msgctxt "model:importer.parcel,name:"
+msgid "Importer Parcel"
+msgstr "地块导入器"
+
+msgctxt "model:importer.party,name:"
+msgid "Importer Party"
+msgstr "往来单位导入器"
+
+msgctxt "model:importer.party.address,name:"
+msgid "Importer Address"
+msgstr "地址导入器"
+
+msgctxt "model:importer.party.configuration,name:"
+msgid "Importer Party Configuration"
+msgstr "往来单位配置导入器"
+
+msgctxt "model:importer.party.contact_mechanism,name:"
+msgid "Importer Contact Method"
+msgstr "联系方式导入器"
+
+msgctxt "model:importer.party.credit,name:"
+msgid "Importer Party Credit"
+msgstr "往来单位信用额度导入器"
+
+msgctxt "model:importer.plantation,name:"
+msgid "Importer Plantation"
+msgstr "种植地导入器"
+
+msgctxt "model:importer.price_list,name:"
+msgid "Importer Price List"
+msgstr "价格表导入器"
+
+msgctxt "model:importer.product,name:"
+msgid "Importer Product"
+msgstr "产品导入器"
+
+msgctxt "model:importer.product.agronomics,name:"
+msgid "Importer Product Agronomics"
+msgstr "农艺产品导入器"
+
+msgctxt "model:importer.product.attributes,name:"
+msgid "Importer Product Attributes"
+msgstr "产品属性导入器"
+
+msgctxt "model:importer.product.configuration,name:"
+msgid "Importer Product Configuration"
+msgstr "产品配置导入器"
+
+msgctxt "model:importer.product.supplier,name:"
+msgid "Importer Product Supplier"
+msgstr "产品供应商导入器"
+
+msgctxt "model:importer.product_codes,name:"
+msgid "Importer Product"
+msgstr "产品导入器"
+
+msgctxt "model:importer.production.bom,name:"
+msgid "Importer Production Bom"
+msgstr "生产物料清单导入器"
+
+msgctxt "model:importer.production.configuration,name:"
+msgid "Importer Production Configuration"
+msgstr "生产配置导入器"
+
+msgctxt "model:importer.purchase,name:"
+msgid "Importer Purchase"
+msgstr "采购导入器"
+
+msgctxt "model:importer.purchase.configuration,name:"
+msgid "Importer Purchase Configuration"
+msgstr "采购配置导入器"
+
+msgctxt "model:importer.sale,name:"
+msgid "Importer Sale"
+msgstr "销售导入器"
+
+msgctxt "model:importer.sale.configuration,name:"
+msgid "Importer Sale Configuration"
+msgstr "销售配置导入器"
+
+msgctxt "model:importer.sequence,name:"
+msgid "Importer Party Configuration"
+msgstr "往来单位配置导入器"
+
+msgctxt "model:importer.source_column,name:"
+msgid "Importer Source Column"
+msgstr "导入器源列"
+
+msgctxt "model:importer.stock.move,name:"
+msgid "Importer Stock Move"
+msgstr "库存移动导入器"
+
+msgctxt "model:importer.user,name:"
+msgid "Importer User"
+msgstr "用户导入器"
+
+msgctxt "model:ir.action,name:"
+msgid "Import Errors"
+msgstr "导入错误"
+
+msgctxt "model:ir.action,name:act_ask_and_import_wizard"
+msgid "Import"
+msgstr "导入"
+
+msgctxt "model:ir.action,name:act_import_log"
+msgid "Import Log"
+msgstr "导入日志"
+
+msgctxt "model:ir.action,name:act_import_open"
+msgid "Imported Records"
+msgstr "已导入记录"
+
+msgctxt "model:ir.action,name:act_import_sample_wizard"
+msgid "Import Sample"
+msgstr "导入样本"
+
+msgctxt "model:ir.action,name:act_import_wizard"
+msgid "Import"
+msgstr "导入"
+
+msgctxt "model:ir.action,name:act_importer"
+msgid "Importers"
+msgstr "导入器"
+
+msgctxt "model:ir.action,name:act_log"
+msgid "Log"
+msgstr "日志"
+
+msgctxt "model:ir.action,name:report_excel_template"
+msgid "Excel Template"
+msgstr "Excel 模板"
+
+msgctxt "model:ir.action,name:report_importer_export"
+msgid "Export"
+msgstr "导出"
+
+#, python-format
+msgctxt "model:ir.message,text:animal_not_found"
+msgid "Animal %(animal)s not found."
+msgstr "找不到动物 %(animal)s。"
+
+#, python-format
+msgctxt "model:ir.message,text:change_method_warning"
+msgid ""
+"Changing the format on importer \"%(name)s\" may cause your settings to be "
+"lost. Are you sure to proceed?"
+msgstr "更改导入器“%(name)s”的格式可能导致设置丢失。确定要继续吗？"
+
+#, python-format
+msgctxt "model:ir.message,text:farm_not_found"
+msgid "Farm %(farm)s not found."
+msgstr "找不到农场 %(farm)s。"
+
+#, python-format
+msgctxt "model:ir.message,text:invalid_column_name"
+msgid ""
+"Name \"%(name)s\" is not valid for column \"%(column)s\" in importer "
+"\"%(importer)s\"."
+msgstr "导入器“%(importer)s”的列“%(column)s”不能使用名称“%(name)s”。"
+
+#, python-format
+msgctxt "model:ir.message,text:invalid_index"
+msgid ""
+"Column \"%(column)s\" does not exist importing data with importer "
+"\"%(importer)s\"."
+msgstr "使用导入器“%(importer)s”导入数据时，列“%(column)s”不存在。"
+
+#, python-format
+msgctxt "model:ir.message,text:location_not_found"
+msgid "Location %(location)s not found."
+msgstr "找不到库位 %(location)s。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_account_not_found"
+msgid "Account %(account)s not found."
+msgstr "找不到科目 %(account)s。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_asset_product_not_found"
+msgid ""
+"Asset product \"%(product)s\" does not exist on the database or it could not"
+" be found."
+msgstr "资产产品“%(product)s”在数据库中不存在或无法找到。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_carrier_party_not_found"
+msgid "Party code %(party)s not found."
+msgstr "找不到往来单位代码 %(party)s。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_carrier_product_not_found"
+msgid "Product code %(product)s not found."
+msgstr "找不到产品代码 %(product)s。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_chart_not_found"
+msgid "Chart \"%(chart)s\" not found."
+msgstr "找不到科目表“%(chart)s”。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_company_not_found"
+msgid "Company %(company)s not found."
+msgstr "找不到公司 %(company)s。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_account_move_line_without_amount"
+msgid ""
+"Accounting entry line was not imported because debit and credit are both "
+"empty or zero."
+msgstr "此会计分录未导入，因为借方和贷方均为空或零。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_currency_not_found"
+msgid "Currency %(currency)s not found."
+msgstr "找不到货币 %(currency)s。"
+
+msgctxt "model:ir.message,text:msg_deletes_disabled"
+msgid "Deletion of records is disabled."
+msgstr "已禁用记录删除功能。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_employee_not_found"
+msgid "Employee %(employee)s not found."
+msgstr "找不到员工 %(employee)s。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_group_not_found"
+msgid "Group with name \"%(name)s\" not found."
+msgstr "找不到名为“%(name)s”的用户组。"
+
+msgctxt "model:ir.message,text:msg_import_company_not_found"
+msgid "Company not found."
+msgstr "找不到公司。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_connection"
+msgid "Could not establish connection using importer \"%(importer)s\"."
+msgstr "无法使用导入器“%(importer)s”建立连接。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_invoice_type"
+msgid "Invoice type must be 'out' or 'in' but \"%(type)s\" was found."
+msgstr "发票类型必须为 'out' 或 'in'，但找到的是“%(type)s”。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_value"
+msgid ""
+"Invalid value \"%(value)s\" for column \"%(column)s\" in row \"%(row)s\" importing data with importer \"%(importer)s\":\n"
+"\n"
+"%(error)s."
+msgstr ""
+"使用导入器“%(importer)s”导入数据时，第“%(row)s”行的列“%(column)s”的值“%(value)s”无效：\n"
+"\n"
+"%(error)s。"
+
+msgctxt "model:ir.message,text:msg_name_required"
+msgid "Missing company name."
+msgstr "缺少公司名称。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_product_attribute_incorrect_cast"
+msgid ""
+"Value %(value)s is incorrect for attribute %(attribute)s expected type "
+"%(type)s, with product code %(code)s"
+msgstr "产品代码 %(code)s 的属性 %(attribute)s 的值 %(value)s 不正确，预期类型为 %(type)s"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_product_attribute_not_found"
+msgid ""
+"Attribute %(attribute)s for product of code %(code)s could not be found."
+msgstr "找不到产品代码 %(code)s 的属性 %(attribute)s。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_product_attribute_selection_not_found"
+msgid ""
+"Attribute set %(set)s attribute %(attribute)s of type \"Selection\" has no "
+"selection option value %(selection)s."
+msgstr "属性集 %(set)s 中类型为“选择”的属性 %(attribute)s 没有选项值 %(selection)s。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_product_attribute_set_not_found"
+msgid "Attribute set %(set)s for product of code %(code)s could not be found."
+msgstr "找不到产品代码 %(code)s 的属性集 %(set)s。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_role_not_found"
+msgid "Role with name \"%(name)s\" not found."
+msgstr "找不到名为“%(name)s”的角色。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_sequence_type_not_found"
+msgid "Sequence Type \"%(type)s\" not found."
+msgstr "找不到编号序列类型“%(type)s”。"
+
+msgctxt "model:ir.message,text:msg_sequence_type_required"
+msgid "Sequence Type is required"
+msgstr "必须填写编号序列类型"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_subdivision_not_found"
+msgid "Subdivision \"%(subdivision)s\" not found in country \"%(country)s\"."
+msgstr "在国家“%(country)s”中找不到行政区划“%(subdivision)s”。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_subdivision_type_not_allowed"
+msgid "Subdivision type \"%(type)s\" of subdivision \"%(subdivision)s\" not allowed."
+msgstr "行政区划“%(subdivision)s”不允许使用类型“%(type)s”。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_wrong_iban"
+msgid ""
+"The bank account \"%(iban)s\" is not a valid IBAN. Check the source value "
+"before importing it."
+msgstr "银行账户“%(iban)s”不是有效的 IBAN。请在导入前检查源值。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_successful_connection"
+msgid "Successful connection using importer \"%(importer)s\"."
+msgstr "使用导入器“%(importer)s”连接成功。"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_supervisor_not_found"
+msgid "Supervisor \"%(supervisor)s\" not found."
+msgstr "找不到主管“%(supervisor)s”。"
+
+#, python-format
+msgctxt "model:ir.message,text:no_records_imported"
+msgid "No records where imported using importer \"%(importer)s\"."
+msgstr "使用导入器“%(importer)s”未导入任何记录。"
+
+#, python-format
+msgctxt "model:ir.message,text:order_point_not_value"
+msgid ""
+"Order point not fount a value for Warehouse:  %(warehouse)s or Product "
+"%(product)s ."
+msgstr "订货点找不到仓库 %(warehouse)s 或产品 %(product)s 的值。"
+
+#, python-format
+msgctxt "model:ir.message,text:order_point_type_not_supported"
+msgid "Type %(type_)s not supported for orderpoint."
+msgstr "订货点不支持类型 %(type_)s。"
+
+#, python-format
+msgctxt "model:ir.message,text:party_not_found"
+msgid "Party \"%(party)s\" not found."
+msgstr "找不到往来单位“%(party)s”。"
+
+#, python-format
+msgctxt "model:ir.message,text:party_required_for_account"
+msgid ""
+"Account \"%(account)s\" requires a party but no party was supplied in move "
+"\"%(move)s\"."
+msgstr "科目“%(account)s”要求填写往来单位，但凭证“%(move)s”中未提供。"
+
+msgctxt "model:ir.message,text:produced_animals_not_found"
+msgid "No produced animals found."
+msgstr "找不到产出的动物。"
+
+#, python-format
+msgctxt "model:ir.message,text:product_category_not_found"
+msgid "Product category \"%(category)s\" not found."
+msgstr "找不到产品类别“%(category)s”。"
+
+#, python-format
+msgctxt "model:ir.message,text:single_party_error"
+msgid "There must be one and only one party with \"%(party)s\"."
+msgstr "必须存在且仅存在一个与“%(party)s”对应的往来单位。"
+
+#, python-format
+msgctxt "model:ir.message,text:single_product_error"
+msgid "There must be one and only one product with \"%(product)s\"."
+msgstr "必须存在且仅存在一个与“%(product)s”对应的产品。"
+
+#, python-format
+msgctxt "model:ir.message,text:stock_move_error"
+msgid ""
+"Coud not create move, could not find some info: from_location: "
+"\"%(from_location)s\", to_location: \"%(to_location)s\", product: "
+"\"%(product)s\"."
+msgstr ""
+"无法创建库存移动，找不到部分信息：来源库位：“%(from_location)s”，目标库位：“%(to_location)s”，产品：“%(product)s”。"
+
+#, python-format
+msgctxt "model:ir.message,text:tag_not_found"
+msgid "Can't find tag \"%(tag)s\"."
+msgstr "找不到标签“%(tag)s”。"
+
+#, python-format
+msgctxt "model:ir.message,text:value_not_in_selection"
+msgid "Could not find this value in the field selection \"%(field)%\""
+msgstr "在选择字段“%(field)%”中找不到此值"
+
+msgctxt "model:ir.model.button,confirm:importer_delete_imported_button"
+msgid "Are you sure you want to delete all imported records?"
+msgstr "确定要删除所有已导入的记录吗？"
+
+msgctxt "model:ir.model.button,string:importer_check_connection_button"
+msgid "Check Connection"
+msgstr "检查连接"
+
+msgctxt "model:ir.model.button,string:importer_clean_deletes_button"
+msgid "Clean Deletes"
+msgstr "清理删除记录"
+
+msgctxt "model:ir.model.button,string:importer_clean_log_button"
+msgid "Clean Log"
+msgstr "清理日志"
+
+msgctxt "model:ir.model.button,string:importer_delete_imported_button"
+msgid "Delete Imported Records"
+msgstr "删除已导入记录"
+
+msgctxt "model:ir.model.button,string:importer_detect_button"
+msgid "Detect"
+msgstr "检测"
+
+msgctxt "model:ir.model.button,string:importer_import_button"
+msgid "Import"
+msgstr "导入"
+
+msgctxt "model:ir.model.button,string:importer_import_sample_button"
+msgid "Import Sample"
+msgstr "导入样本"
+
+msgctxt "model:ir.model.button,string:importer_update_columns_button"
+msgid "Update Columns"
+msgstr "更新列"
+
+msgctxt "model:ir.model.button,string:importer_update_source_columns_button"
+msgid "Update Source Columns"
+msgstr "更新源列"
+
+msgctxt "model:ir.ui.menu,name:menu_import_wizard"
+msgid "Import"
+msgstr "导入"
+
+msgctxt "model:ir.ui.menu,name:menu_importer"
+msgid "Importer"
+msgstr "导入器"
+
+msgctxt "model:ir.ui.menu,name:menu_importers"
+msgid "Importers"
+msgstr "导入器"
+
+msgctxt "model:res.group,name:group_importer"
+msgid "Importer"
+msgstr "导入器"
+
+msgctxt "selection:importer,data_source:"
+msgid "Copy & Paste"
+msgstr "复制和粘贴"
+
+msgctxt "selection:importer,data_source:"
+msgid "File"
+msgstr "文件"
+
+msgctxt "selection:importer,data_source:"
+msgid "SQL"
+msgstr "SQL"
+
+msgctxt "selection:importer,data_source:"
+msgid "URL"
+msgstr "网址"
+
+msgctxt "selection:importer,on_error:"
+msgid "Log"
+msgstr "日志"
+
+msgctxt "selection:importer,on_error:"
+msgid "Raise Error"
+msgstr "抛出错误"
+
+msgctxt "selection:importer,on_error:"
+msgid "Skip"
+msgstr "跳过"
+
+msgctxt "selection:importer,sql_source:"
+msgid "PSQL"
+msgstr "PSQL"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "Copy & Paste"
+msgstr "复制和粘贴"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "File"
+msgstr "文件"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "SQL"
+msgstr "SQL"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "URL"
+msgstr "网址"
+
+msgctxt "selection:importer.log,on_error:"
+msgid "Log"
+msgstr "日志"
+
+msgctxt "selection:importer.log,on_error:"
+msgid "Raise Error"
+msgstr "抛出错误"
+
+msgctxt "selection:importer.log,on_error:"
+msgid "Skip"
+msgstr "跳过"
+
+msgctxt "selection:importer.log,type:"
+msgid "Generic"
+msgstr "通用"
+
+msgctxt "selection:importer.log,type:"
+msgid "Specific"
+msgstr "特定"
+
+msgctxt "selection:importer.log,type:"
+msgid "Success"
+msgstr "成功"
+
+msgctxt "view:importer.import.ask.error:"
+msgid ""
+"Some records may have been imported but several errors occurred. See the "
+"\"Import Errors\" window for details."
+msgstr "部分记录可能已导入，但发生了多个错误。详情请查看“导入错误”窗口。"
+
+msgctxt "view:importer:"
+msgid "File columns"
+msgstr "文件列"
+
+msgctxt "view:importer:"
+msgid "Importer columns"
+msgstr "导入器列"
+
+msgctxt "wizard_button:importer.ask_and_import,ask,end:"
+msgid "Cancel"
+msgstr "取消"
+
+msgctxt "wizard_button:importer.ask_and_import,ask,import_:"
+msgid "Import"
+msgstr "导入"
+
+msgctxt "wizard_button:importer.ask_and_import,error_form,end:"
+msgid "Ok"
+msgstr "确定"
+
+msgctxt "field:importer.account.asset,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.account.asset,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.account.chart,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.account.chart,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.account.fiscalyear,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.account.fiscalyear,move_sequence_name:"
+msgid "Move Sequence Name"
+msgstr "凭证编号序列名称"
+
+msgctxt "field:importer.account.fiscalyear,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.account.journal,code:"
+msgid "Code"
+msgstr "代码"
+
+msgctxt "field:importer.account.journal,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.account.journal,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.account.journal,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.account.journal,type:"
+msgid "Type"
+msgstr "科目"
+
+msgctxt "field:importer.account.move,post_date:"
+msgid "Post Date"
+msgstr "入账日期"
+
+msgctxt "field:importer.bank.account,iban:"
+msgid "IBAN"
+msgstr "IBAN"
+
+msgctxt "field:importer.bank.account,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.bank.account,owner_codes:"
+msgid "Owner Codes"
+msgstr "所有者代码"
+
+msgctxt "field:importer.bank.account,owner_names:"
+msgid "Owner Names"
+msgstr "所有者名称"
+
+msgctxt "field:importer.bank.account,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.bank,bic:"
+msgid "BIC"
+msgstr "BIC"
+
+msgctxt "field:importer.bank,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.bank,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.bank,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.company,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.company,party_code:"
+msgid "Party code"
+msgstr "往来单位代码"
+
+msgctxt "field:importer.company,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.country,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.country,name:"
+msgid "name"
+msgstr "名称"
+
+msgctxt "field:importer.country.postal_codes,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.country.postal_codes,name:"
+msgid "name"
+msgstr "名称"
+
+msgctxt "field:importer.country.postal_codes,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.country,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.currency,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.currency,name:"
+msgid "name"
+msgstr "名称"
+
+msgctxt "field:importer.currency,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.employee,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.employee,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.invoice,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.invoice,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.language,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.language,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.location,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.location,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.order_point,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.order_point,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.party,active:"
+msgid "Active"
+msgstr "启用"
+
+msgctxt "field:importer.party,agent:"
+msgid "Agent (code)"
+msgstr "代理人（代码）"
+
+msgctxt "field:importer.party.configuration,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.party.configuration,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.party.credit,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.party.credit,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.party,customer:"
+msgid "Customer"
+msgstr "客户"
+
+msgctxt "field:importer.party,default_payable_bank_account:"
+msgid "Default payable bank account"
+msgstr "默认应付银行账户"
+
+msgctxt "field:importer.party,default_payable_company_bank_account:"
+msgid "Default payable company  Bank Account"
+msgstr "默认公司应付银行账户"
+
+msgctxt "field:importer.party,default_receivable_bank_account:"
+msgid "Default receivable bank account"
+msgstr "默认应收银行账户"
+
+msgctxt "field:importer.party,default_receivable_company_bank_account:"
+msgid "Default receivable company Bank Account"
+msgstr "默认公司应收银行账户"
+
+msgctxt "field:importer.party,incoterm_name:"
+msgid "Incoterm Name"
+msgstr "国际贸易术语名称"
+
+msgctxt "field:importer.party,incoterm_place:"
+msgid "Incoterm Place"
+msgstr "国际贸易术语地点"
+
+msgctxt "field:importer.party,incoterm_purchase_name:"
+msgid "Incoterm Purchase Name"
+msgstr "采购国际贸易术语名称"
+
+msgctxt "field:importer.party,incoterm_purchase_place:"
+msgid "Incoterm Purchase Place"
+msgstr "采购国际贸易术语地点"
+
+msgctxt "field:importer.party,sii_identifier_type:"
+msgid "SII Identification Type"
+msgstr "SII 识别类型"
+
+msgctxt "field:importer.party,supplier:"
+msgid "Supplier"
+msgstr "供应商"
+
+msgctxt "field:importer.price_list,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.price_list,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.product,alcohol_content:"
+msgid "Alcohol Content"
+msgstr "酒精含量"
+
+msgctxt "field:importer.product,bom_route:"
+msgid "BOM Route"
+msgstr "物料清单工艺路线"
+
+msgctxt "field:importer.product,brand_product_identifier:"
+msgid "Brand Product Identifier"
+msgstr "品牌产品标识符"
+
+msgctxt "field:importer.product_codes,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.product_codes,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.product.configuration,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.product.configuration,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.product.customer,code:"
+msgid "Code"
+msgstr "代码"
+
+msgctxt "field:importer.product.customer,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.product.customer,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.product.customer,party:"
+msgid "Party"
+msgstr "参与者"
+
+msgctxt "field:importer.product.customer,product:"
+msgid "Product"
+msgstr "产品"
+
+msgctxt "field:importer.product.customer,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.product.customer,template:"
+msgid "Template"
+msgstr "模板"
+
+msgctxt "field:importer.product,ean:"
+msgid "EAN"
+msgstr "EAN"
+
+msgctxt "field:importer.production.bom,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.production.bom,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.production.configuration,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.production.configuration,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.production_routes,calculation:"
+msgid "Calculation"
+msgstr "计算"
+
+msgctxt "field:importer.production_routes,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.production_routes,name:"
+msgid "Route name"
+msgstr "工艺路线名称"
+
+msgctxt "field:importer.production_routes,notes:"
+msgid "Notes"
+msgstr "注释"
+
+msgctxt "field:importer.production_routes,operation_type:"
+msgid "Operation Type"
+msgstr "交易类型"
+
+msgctxt "field:importer.production_routes,quantity:"
+msgid "Quantity"
+msgstr "数量"
+
+msgctxt "field:importer.production_routes,quantity_uom:"
+msgid "Quantity Uom"
+msgstr "数量计量单位"
+
+msgctxt "field:importer.production_routes,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.production_routes,sequence:"
+msgid "Sequence"
+msgstr "序列"
+
+msgctxt "field:importer.production_routes,subcontracted_product:"
+msgid "Subcontract Product"
+msgstr "外包产品"
+
+msgctxt "field:importer.production_routes,time_:"
+msgid "Time (minutes)"
+msgstr "时间（分钟）"
+
+msgctxt "field:importer.production_routes,uom:"
+msgid "Uom"
+msgstr "计量单位"
+
+msgctxt "field:importer.production_routes,workcenter_category:"
+msgid "Work Center Category"
+msgstr "工作中心类别"
+
+msgctxt "field:importer.product,manufacturer_part_identifier:"
+msgid "Manufacturer Part Identifier"
+msgstr "制造商零件标识符"
+
+msgctxt "field:importer.product,packages:"
+msgid "Packages"
+msgstr "包装"
+
+msgctxt "field:importer.product.supplier,company:"
+msgid "Company"
+msgstr "公司"
+
+msgctxt "field:importer.product,volume:"
+msgid "Volume (m3)"
+msgstr "体积（立方米）"
+
+msgctxt "field:importer.product,weight:"
+msgid "Weight (kg)"
+msgstr "重量（千克）"
+
+msgctxt "field:importer.purchase.configuration,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.purchase.configuration,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.purchase,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.purchase,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.role,groups:"
+msgid "Groups"
+msgstr "组"
+
+msgctxt "field:importer.role,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.role,name:"
+msgid "Name"
+msgstr "名称"
+
+msgctxt "field:importer.role,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.sale.configuration,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.sale.configuration,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.sale,discount:"
+msgid "Discount"
+msgstr "折扣"
+
+msgctxt "field:importer.sequence,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.sequence,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.spanish_bank,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.spanish_bank,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "field:importer.user,metadata:"
+msgid "Metadata"
+msgstr "元数据"
+
+msgctxt "field:importer.user,row_number:"
+msgid "Row Number"
+msgstr "行号"
+
+msgctxt "help:importer,commit_chunks:"
+msgid ""
+"By default, data is committed at the very end of the process. However, for "
+"very large imports, committing can improve performance."
+msgstr "默认在处理结束时提交数据。但对于超大规模导入，分批提交可提高性能。"
+
+msgctxt "help:importer,data_start_row:"
+msgid ""
+"Spreadsheet row number where actual data starts. If headers are used, the "
+"header is assumed to be on the previous row."
+msgstr "电子表格中实际数据开始的行号。若使用表头，则假定表头位于前一行。"
+
+msgctxt "help:importer.production_routes,calculation:"
+msgid "standard/fixed"
+msgstr "标准/固定"
+
+msgctxt "help:importer.production_routes,time_:"
+msgid "In minutes"
+msgstr "以分钟为单位"
+
+msgctxt "help:importer.product.supplier,company:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort "
+"records by company prior to import for better performance."
+msgstr "公司字段可用于设置依赖公司的字段。为提高性能，建议导入前按公司对记录排序。"
+
+msgctxt "help:importer.role,groups:"
+msgid "Comma separated list of group names"
+msgstr "以逗号分隔的用户组名称列表"
+
+msgctxt "help:importer,use_subtransactions:"
+msgid ""
+"Subtransactions make the import process more robust, allowing it to recover "
+"from database errors but can be slower when importing many thousands of "
+"records."
+msgstr "子事务使导入过程更稳健，可从数据库错误中恢复，但导入数千条记录时可能较慢。"
+
+msgctxt "model:importer.account.asset,string:"
+msgid "Importer Account Asset"
+msgstr "资产导入器"
+
+msgctxt "model:importer.account.journal,string:"
+msgid "Importer Account Journal"
+msgstr "会计日记账导入器"
+
+msgctxt "model:importer.account.move,string:"
+msgid "Importer Account Move"
+msgstr "会计凭证导入器"
+
+msgctxt "model:importer.bank.account,string:"
+msgid "Importer Bank Account"
+msgstr "银行账户导入器"
+
+msgctxt "model:importer.bank,name:"
+msgid "Importer Bank"
+msgstr "银行导入器"
+
+msgctxt "model:importer.bank,string:"
+msgid "Importer Bank"
+msgstr "银行导入器"
+
+msgctxt "model:importer.carrier,string:"
+msgid "Importer Carrier"
+msgstr "承运商导入器"
+
+msgctxt "model:importer.column,string:"
+msgid "Importer Column"
+msgstr "导入器列"
+
+msgctxt "model:importer.company,string:"
+msgid "Importer Company"
+msgstr "公司导入器"
+
+msgctxt "model:importer.country,string:"
+msgid "Importer Country"
+msgstr "国家导入器"
+
+msgctxt "model:importer.currency,string:"
+msgid "Importer Currency"
+msgstr "货币导入器"
+
+msgctxt "model:importer.invoice,string:"
+msgid "Importer Invoice"
+msgstr "发票导入器"
+
+msgctxt "model:importer.language,string:"
+msgid "Importer Language"
+msgstr "语言导入器"
+
+msgctxt "model:importer.location,string:"
+msgid "Importer Location"
+msgstr "库位导入器"
+
+msgctxt "model:importer.log,string:"
+msgid "Importer Log"
+msgstr "导入器日志"
+
+msgctxt "model:importer.lot,string:"
+msgid "Importer Lot"
+msgstr "批次导入器"
+
+msgctxt "model:importer.meta,string:"
+msgid "Importer Meta"
+msgstr "导入器元数据"
+
+msgctxt "model:importer.party.configuration,string:"
+msgid "Importer Party Configuration"
+msgstr "往来单位配置导入器"
+
+msgctxt "model:importer.party.credit,string:"
+msgid "Importer Party Credit"
+msgstr "往来单位信用额度导入器"
+
+msgctxt "model:importer.party,string:"
+msgid "Importer Party"
+msgstr "往来单位导入器"
+
+msgctxt "model:importer.price_list,string:"
+msgid "Importer Price List"
+msgstr "价格表导入器"
+
+msgctxt "model:importer.product.configuration,string:"
+msgid "Importer Product Configuration"
+msgstr "产品配置导入器"
+
+msgctxt "model:importer.product.customer,string:"
+msgid "Importer Product Customer"
+msgstr "产品客户导入器"
+
+msgctxt "model:importer.production.bom,string:"
+msgid "Importer Production Bom"
+msgstr "生产物料清单导入器"
+
+msgctxt "model:importer.production.configuration,string:"
+msgid "Importer Production Configuration"
+msgstr "生产配置导入器"
+
+msgctxt "model:importer.production_routes,name:"
+msgid "Importer Stock Move"
+msgstr "库存移动导入器"
+
+msgctxt "model:importer.product,string:"
+msgid "Importer Product"
+msgstr "产品导入器"
+
+msgctxt "model:importer.product.supplier,string:"
+msgid "Importer Product Supplier"
+msgstr "产品供应商导入器"
+
+msgctxt "model:importer.purchase.configuration,string:"
+msgid "Importer Purchase Configuration"
+msgstr "采购配置导入器"
+
+msgctxt "model:importer.purchase,string:"
+msgid "Importer Purchase"
+msgstr "采购导入器"
+
+msgctxt "model:importer.role,name:"
+msgid "Importer Role"
+msgstr "角色导入器"
+
+msgctxt "model:importer.role,string:"
+msgid "Importer Role"
+msgstr "角色导入器"
+
+msgctxt "model:importer.sale.configuration,string:"
+msgid "Importer Sale Configuration"
+msgstr "销售配置导入器"
+
+msgctxt "model:importer.sale,string:"
+msgid "Importer Sale"
+msgstr "销售导入器"
+
+msgctxt "model:importer.source_column,string:"
+msgid "Importer Source Column"
+msgstr "导入器源列"
+
+msgctxt "model:importer.spanish_bank,name:"
+msgid "Importer Spanish Bank"
+msgstr "西班牙银行导入器"
+
+msgctxt "model:importer.spanish_bank,string:"
+msgid "Importer Spanish Bank"
+msgstr "西班牙银行导入器"
+
+msgctxt "model:importer.stock.move,string:"
+msgid "Importer Stock Move"
+msgstr "库存移动导入器"
+
+msgctxt "model:importer,string:"
+msgid "Importer"
+msgstr "导入器"
+
+msgctxt "model:importer.user,string:"
+msgid "Importer User"
+msgstr "用户导入器"
+
+#, python-format
+msgctxt "model:ir.message,text:agent_not_found"
+msgid "Agent not found for Agent %(agent)s and plan %(plan)s."
+msgstr "找不到与代理人 %(agent)s 和方案 %(plan)s 对应的代理人记录。"
+
+msgctxt "model:ir.message,text:msg_bank_name_required"
+msgid "The bank name is required."
+msgstr "必须填写银行名称。"
