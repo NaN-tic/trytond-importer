@@ -1,0 +1,3682 @@
+#
+msgid ""
+msgstr ""
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "field:importer,binary_data:"
+msgid "Data"
+msgstr "Adat"
+
+msgctxt "field:importer,binary_file_name:"
+msgid "Binary File Name"
+msgstr "Bináris fájl neve"
+
+msgctxt "field:importer,columns:"
+msgid "Columns"
+msgstr "Oszlopok"
+
+msgctxt "field:importer,data_source:"
+msgid "Data Source"
+msgstr "Adatforrás"
+
+msgctxt "field:importer,data_source_visible:"
+msgid "Data Source Visible"
+msgstr "Adatforrás látható"
+
+msgctxt "field:importer,database:"
+msgid "Database"
+msgstr "Adatbázis"
+
+msgctxt "field:importer,deletes:"
+msgid "Deletes"
+msgstr "Törlések"
+
+msgctxt "field:importer,use_subtransactions:"
+msgid "Use Subtransactions"
+msgstr "Altranzakciók használata"
+
+msgctxt "field:importer,commit_chunks:"
+msgid "Commit Chunks"
+msgstr "Kötegek véglegesítése"
+
+msgctxt "field:importer,elapsed:"
+msgid "Elapsed Time"
+msgstr "Eltelt idő"
+
+msgctxt "field:importer,errors:"
+msgid "Errors"
+msgstr "Hibák"
+
+msgctxt "field:importer,has_header:"
+msgid "Has Header?"
+msgstr "Van fejléc?"
+
+msgctxt "field:importer,language:"
+msgid "Language"
+msgstr "Nyelv"
+
+msgctxt "field:importer,log_success:"
+msgid "Log Success"
+msgstr "Siker naplózása"
+
+msgctxt "field:importer,logs:"
+msgid "Log"
+msgstr "Napló"
+
+msgctxt "field:importer,method:"
+msgid "Format"
+msgstr "Formátum"
+
+msgctxt "field:importer,model:"
+msgid "Model"
+msgstr "Minta"
+
+msgctxt "field:importer,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer,on_error:"
+msgid "On Error"
+msgstr "Hiba esetén"
+
+msgctxt "field:importer,password:"
+msgid "Password"
+msgstr "Jelszó"
+
+msgctxt "field:importer,requires_records:"
+msgid "Requires Records"
+msgstr "Rekordokat igényel"
+
+msgctxt "field:importer,sample_size:"
+msgid "Sample Size"
+msgstr "Minta mérete"
+
+msgctxt "field:importer,sample_offset:"
+msgid "Sample Offset"
+msgstr "Minta eltolása"
+
+msgctxt "field:importer,data_start_row:"
+msgid "Data Start Row"
+msgstr "Adatok kezdősora"
+
+msgctxt "field:importer,schema:"
+msgid "Schema"
+msgstr "Séma"
+
+msgctxt "field:importer,server:"
+msgid "Server"
+msgstr "Kiszolgáló"
+
+msgctxt "field:importer,source_columns:"
+msgid "Source Columns"
+msgstr "Forrásoszlopok"
+
+msgctxt "field:importer,sql_data:"
+msgid "SQL Queries"
+msgstr "SQL-lekérdezések"
+
+msgctxt "field:importer,sql_source:"
+msgid "SQL Source"
+msgstr "SQL-forrás"
+
+msgctxt "field:importer,template:"
+msgid "Template"
+msgstr "Sablon"
+
+msgctxt "field:importer,text_data:"
+msgid "Data"
+msgstr "Adat"
+
+msgctxt "field:importer,url_data:"
+msgid "Data URL"
+msgstr "Adatok URL-je"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_url_data"
+msgid "Could not load data from URL \"%(url)s\": %(error)s."
+msgstr "Nem sikerült betölteni az adatokat a(z) „%(url)s” URL-ről: %(error)s."
+
+msgctxt "field:importer,sheet_number:"
+msgid "Sheet Number"
+msgstr "Munkalap száma"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_sheet_not_found"
+msgid "Sheet \"%(sheet)s\" not found in the selected file."
+msgstr "A(z) „%(sheet)s” munkalap nem található a kiválasztott fájlban."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_google_drive_quota_exceeded"
+msgid ""
+"Google Drive returned a quota exceeded page instead of the file for URL "
+"\"%(url)s\"."
+msgstr ""
+"A Google Drive a(z) „%(url)s” URL-hez a fájl helyett kvótatúllépést jelző "
+"oldalt adott vissza."
+
+msgctxt "field:importer,use_header:"
+msgid "Use Header?"
+msgstr "Fejléc használata?"
+
+msgctxt "field:importer,user:"
+msgid "User"
+msgstr "Felhasználó"
+
+msgctxt "field:importer,where:"
+msgid "Where"
+msgstr "Feltétel"
+
+msgctxt "field:importer.account.asset,analytic_account:"
+msgid "Analytic Account"
+msgstr "Analitikus számla"
+
+msgctxt "field:importer.account.asset,comment:"
+msgid "Comment"
+msgstr "Megjegyzés"
+
+msgctxt "field:importer.account.asset,current_value:"
+msgid "Current Value"
+msgstr "Aktuális érték"
+
+msgctxt "field:importer.account.asset,depreciated_amount:"
+msgid "Depreciated Amount"
+msgstr "Elszámolt értékcsökkenés"
+
+msgctxt "field:importer.account.asset,end_date:"
+msgid "End Date"
+msgstr "Befejező dátum"
+
+msgctxt "field:importer.account.asset,number:"
+msgid "Number"
+msgstr "Szám"
+
+msgctxt "field:importer.account.asset,product_code:"
+msgid "Product Code"
+msgstr "Termékkód"
+
+msgctxt "field:importer.account.asset,product_name:"
+msgid "Product Name"
+msgstr "Terméknév"
+
+msgctxt "field:importer.account.asset,purchase_date:"
+msgid "Purchase Date"
+msgstr "Rendelés dátuma"
+
+msgctxt "field:importer.account.asset,residual_value:"
+msgid "Residual Value"
+msgstr "Maradványérték"
+
+msgctxt "field:importer.account.asset,start_date:"
+msgid "Start Date"
+msgstr "Kezdődátum"
+
+msgctxt "field:importer.account.asset,value:"
+msgid "Value"
+msgstr "Érték"
+
+msgctxt "field:importer.account.chart,chart_name:"
+msgid "Chart Name"
+msgstr "Számlatükör neve"
+
+msgctxt "field:importer.account.chart,company_name:"
+msgid "Company Name"
+msgstr "Vállalat neve"
+
+msgctxt "field:importer.account.chart,digits:"
+msgid "Digits"
+msgstr "Tizedesjegyek"
+
+msgctxt "field:importer.account.chart,payable_code:"
+msgid "Payable Code"
+msgstr "Szállítói főkönyvi számla kódja"
+
+msgctxt "field:importer.account.chart,receivable_code:"
+msgid "Receivable Code"
+msgstr "Vevői főkönyvi számla kódja"
+
+msgctxt "field:importer.account.fiscalyear,company_name:"
+msgid "Company Name"
+msgstr "Vállalat neve"
+
+msgctxt "field:importer.account.fiscalyear,end_date:"
+msgid "End Date"
+msgstr "Befejező dátum"
+
+msgctxt "field:importer.account.fiscalyear,in_credit_note_sequence_name:"
+msgid "In Credit Note Sequence Name"
+msgstr "Bejövő jóváíró számla számsorozatának neve"
+
+msgctxt "field:importer.account.fiscalyear,in_invoice_sequence_name:"
+msgid "In Invoice Sequence Name"
+msgstr "Bejövő számla számsorozatának neve"
+
+msgctxt "field:importer.account.fiscalyear,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.account.fiscalyear,out_credit_note_sequence_name:"
+msgid "Out Credit Note Sequence Name"
+msgstr "Kimenő jóváíró számla számsorozatának neve"
+
+msgctxt "field:importer.account.fiscalyear,out_invoice_sequence_name:"
+msgid "Out Invoice Sequence Name"
+msgstr "Kimenő számla számsorozatának neve"
+
+msgctxt "field:importer.account.fiscalyear,post_move_sequence_name:"
+msgid "Post Move Sequence Name"
+msgstr "Könyvelési tétel végleges számsorozatának neve"
+
+msgctxt "field:importer.account.fiscalyear,start_date:"
+msgid "Start Date"
+msgstr "Kezdődátum"
+
+msgctxt "field:importer.account.move,account_code:"
+msgid "Account Code"
+msgstr "Főkönyvi számla kódja"
+
+msgctxt "field:importer.account.move,account_name:"
+msgid "Account Name"
+msgstr "Főkönyvi számla neve"
+
+msgctxt "field:importer.account.move,analytic_account:"
+msgid "Analytic Account"
+msgstr "Analitikus számla"
+
+msgctxt "field:importer.account.move,company_name:"
+msgid "Company Name"
+msgstr "Vállalat neve"
+
+msgctxt "field:importer.account.move,credit:"
+msgid "Credit"
+msgstr "Követel"
+
+msgctxt "field:importer.account.move,debit:"
+msgid "Debit"
+msgstr "Tartozik"
+
+msgctxt "field:importer.account.move,description:"
+msgid "Description"
+msgstr "Leírás"
+
+msgctxt "field:importer.account.move,effective_date:"
+msgid "Effecive Date"
+msgstr "Tényleges dátum"
+
+msgctxt "field:importer.account.move,journal_code:"
+msgid "Journal Code"
+msgstr "Napló kódja"
+
+msgctxt "field:importer.account.move,maturity_date:"
+msgid "Maturity Date"
+msgstr "Esedékesség"
+
+msgctxt "field:importer.account.move,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.account.move,number:"
+msgid "Move Number"
+msgstr "Könyvelési bizonylat száma"
+
+msgctxt "field:importer.account.move,party_code:"
+msgid "Party Code"
+msgstr "Partner kódja"
+
+msgctxt "field:importer.account.move,party_name:"
+msgid "Party Name"
+msgstr "Ügyfél neve"
+
+msgctxt "field:importer.account.move,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.address.facturae,facturae_person_type:"
+msgid "Facturae Person Type"
+msgstr "Facturae személytípus"
+
+msgctxt "field:importer.address.facturae,facturae_residence_type:"
+msgid "Facturae Residence Type"
+msgstr "Facturae illetőségtípus"
+
+msgctxt "field:importer.address.facturae,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.address.facturae,oficina_contable:"
+msgid "Oficina Contable"
+msgstr "Számviteli iroda"
+
+msgctxt "field:importer.address.facturae,organo_gestor:"
+msgid "Organo Gestor"
+msgstr "Irányító szerv"
+
+msgctxt "field:importer.address.facturae,party:"
+msgid "Party"
+msgstr "Ügyfél"
+
+msgctxt "field:importer.address.facturae,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.address.facturae,unidad_tramitadora:"
+msgid "Unidad Tramitadora"
+msgstr "Ügyintéző egység"
+
+msgctxt "field:importer.carrier,carrier_cost_method:"
+msgid "Carrier Cost Method"
+msgstr "Árszámítás módja"
+
+msgctxt "field:importer.carrier,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.carrier,party:"
+msgid "Party"
+msgstr "Ügyfél"
+
+msgctxt "field:importer.carrier,product:"
+msgid "Product"
+msgstr "Termék"
+
+msgctxt "field:importer.carrier,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.carrier,shipment_cost_allocation_method:"
+msgid "Shipment Cost Allocation Method"
+msgstr "Szállítási költség felosztási módja"
+
+msgctxt "field:importer.column,examples:"
+msgid "Examples"
+msgstr "Példák"
+
+msgctxt "field:importer.column,field:"
+msgid "Field"
+msgstr "Mező"
+
+msgctxt "field:importer.column,format:"
+msgid "Format"
+msgstr "Formátum"
+
+msgctxt "field:importer.column,importer:"
+msgid "Importation"
+msgstr "Importálás"
+
+msgctxt "field:importer.column,model:"
+msgid "Model"
+msgstr "Minta"
+
+msgctxt "field:importer.column,name:"
+msgid "Column Name"
+msgstr "Oszlop neve"
+
+msgctxt "field:importer.column,value:"
+msgid "Value"
+msgstr "Érték"
+
+msgctxt "field:importer.company,currency:"
+msgid "Currency"
+msgstr "Pénznem"
+
+msgctxt "field:importer.company,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.company,timezone:"
+msgid "timezone"
+msgstr "időzóna"
+
+msgctxt "field:importer.employee,company:"
+msgid "Company"
+msgstr "Cég"
+
+msgctxt "field:importer.employee,end_date:"
+msgid "End Date"
+msgstr "Befejező dátum"
+
+msgctxt "field:importer.employee,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.employee,start_date:"
+msgid "Start Date"
+msgstr "Kezdődátum"
+
+msgctxt "field:importer.employee,supervisor:"
+msgid "Supervisor"
+msgstr "Felettes"
+
+msgctxt "field:importer.farm.abort.event,animal:"
+msgid "Animal"
+msgstr "Állat"
+
+msgctxt "field:importer.farm.abort.event,farm:"
+msgid "Farm"
+msgstr "Telep"
+
+msgctxt "field:importer.farm.abort.event,notes:"
+msgid "Notes"
+msgstr "Jegyzetek"
+
+msgctxt "field:importer.farm.abort.event,timestamp:"
+msgid "Timestamp"
+msgstr "Időbélyeg"
+
+msgctxt "field:importer.farm.animal,animal_type:"
+msgid "Animal Type"
+msgstr "Állattípus"
+
+msgctxt "field:importer.farm.animal,arrival_date:"
+msgid "Arrival Date"
+msgstr "Érkezés dátuma"
+
+msgctxt "field:importer.farm.animal,breed:"
+msgid "Breed"
+msgstr "Fajta"
+
+msgctxt "field:importer.farm.animal,initial_location:"
+msgid "Initial Location"
+msgstr "Kezdeti hely"
+
+msgctxt "field:importer.farm.animal,number:"
+msgid "Number"
+msgstr "Szám"
+
+msgctxt "field:importer.farm.animal,origin:"
+msgid "Origin"
+msgstr "Eredet"
+
+msgctxt "field:importer.farm.animal,sex:"
+msgid "Sex"
+msgstr "Ivar"
+
+msgctxt "field:importer.farm.farrowing.event,animal:"
+msgid "Animal"
+msgstr "Állat"
+
+msgctxt "field:importer.farm.farrowing.event,child_birthdate:"
+msgid "Child Birthdate"
+msgstr "Utód születési dátuma"
+
+msgctxt "field:importer.farm.farrowing.event,child_number:"
+msgid "Child Number"
+msgstr "Utód száma"
+
+msgctxt "field:importer.farm.farrowing.event,child_sex:"
+msgid "Child Sex"
+msgstr "Utód ivara"
+
+msgctxt "field:importer.farm.farrowing.event,child_tags:"
+msgid "Child Tags"
+msgstr "Utód jelölései"
+
+msgctxt "field:importer.farm.farrowing.event,child_weight:"
+msgid "Child Weight"
+msgstr "Utód tömege"
+
+msgctxt "field:importer.farm.farrowing.event,farm:"
+msgid "Farm"
+msgstr "Telep"
+
+msgctxt "field:importer.farm.farrowing.event,live:"
+msgid "Live"
+msgstr "Élő"
+
+msgctxt "field:importer.farm.farrowing.event,problem:"
+msgid "Problem"
+msgstr "Probléma"
+
+msgctxt "field:importer.farm.farrowing.event,timestamp:"
+msgid "Timestamp"
+msgstr "Időbélyeg"
+
+msgctxt "field:importer.farm.insemination.event,animal:"
+msgid "Animal"
+msgstr "Állat"
+
+msgctxt "field:importer.farm.insemination.event,dose_bom:"
+msgid "Dose BOM"
+msgstr "Adag darabjegyzéke"
+
+msgctxt "field:importer.farm.insemination.event,farm:"
+msgid "Farm"
+msgstr "Telep"
+
+msgctxt "field:importer.farm.insemination.event,timestamp:"
+msgid "Timestamp"
+msgstr "Időbélyeg"
+
+msgctxt "field:importer.farm.medication.event,animal:"
+msgid "Animal"
+msgstr "Állat"
+
+msgctxt "field:importer.farm.medication.event,end_date:"
+msgid "End Date"
+msgstr "Befejező dátum"
+
+msgctxt "field:importer.farm.medication.event,feed_location:"
+msgid "Feed Location"
+msgstr "Takarmány helye"
+
+msgctxt "field:importer.farm.medication.event,feed_lot:"
+msgid "Feed Lot"
+msgstr "Takarmánytétele"
+
+msgctxt "field:importer.farm.medication.event,feed_product:"
+msgid "Feed Product"
+msgstr "Takarmánytermék"
+
+msgctxt "field:importer.farm.medication.event,feed_quantity:"
+msgid "Feed Quantity"
+msgstr "Takarmánymennyiség"
+
+msgctxt "field:importer.farm.medication.event,timestamp:"
+msgid "Timestamp"
+msgstr "Időbélyeg"
+
+msgctxt "field:importer.farm.move.event,animal:"
+msgid "Animal"
+msgstr "Állat"
+
+msgctxt "field:importer.farm.move.event,farm:"
+msgid "Farm"
+msgstr "Telep"
+
+msgctxt "field:importer.farm.move.event,notes:"
+msgid "Notes"
+msgstr "Jegyzetek"
+
+msgctxt "field:importer.farm.move.event,timestamp:"
+msgid "Date & Time"
+msgstr "Dátum és idő"
+
+msgctxt "field:importer.farm.move.event,to_location:"
+msgid "To Location"
+msgstr "Cél tárhely"
+
+msgctxt "field:importer.farm.move.event,weight:"
+msgid "Weight"
+msgstr "Súly"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,animal:"
+msgid "Animal"
+msgstr "Állat"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,farm:"
+msgid "Farm"
+msgstr "Telep"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,notes:"
+msgid "Notes"
+msgstr "Jegyzetek"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,result:"
+msgid "Result"
+msgstr "Eredmény"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,timestamp:"
+msgid "Timestamp"
+msgstr "Időbélyeg"
+
+msgctxt "field:importer.farm.reclassification.event,animal:"
+msgid "Animal"
+msgstr "Állat"
+
+msgctxt "field:importer.farm.reclassification.event,farm:"
+msgid "Farm"
+msgstr "Telep"
+
+msgctxt "field:importer.farm.reclassification.event,reclassification_product:"
+msgid "Reclasification Product"
+msgstr "Átsorolási termék"
+
+msgctxt "field:importer.farm.reclassification.event,timestamp:"
+msgid "Timestamp"
+msgstr "Időbélyeg"
+
+msgctxt "field:importer.farm.reclassification.event,to_location:"
+msgid "To Location"
+msgstr "Cél tárhely"
+
+msgctxt "field:importer.farm.reclassification.event,weight:"
+msgid "Weight"
+msgstr "Súly"
+
+msgctxt "field:importer.farm.removal.event,animal:"
+msgid "Animal"
+msgstr "Állat"
+
+msgctxt "field:importer.farm.removal.event,farm:"
+msgid "Farm"
+msgstr "Telep"
+
+msgctxt "field:importer.farm.removal.event,removal_reason:"
+msgid "Reason"
+msgstr "Ok"
+
+msgctxt "field:importer.farm.removal.event,removal_type:"
+msgid "Type"
+msgstr "Típus"
+
+msgctxt "field:importer.farm.removal.event,timestamp:"
+msgid "Date & Time"
+msgstr "Dátum és idő"
+
+msgctxt "field:importer.farm.transformation.event,animal:"
+msgid "Animal"
+msgstr "Állat"
+
+msgctxt "field:importer.farm.transformation.event,farm:"
+msgid "Farm"
+msgstr "Telep"
+
+msgctxt "field:importer.farm.transformation.event,from_location:"
+msgid "From Location"
+msgstr "Induló tárhely"
+
+msgctxt "field:importer.farm.transformation.event,timestamp:"
+msgid "Timestamp"
+msgstr "Időbélyeg"
+
+msgctxt "field:importer.farm.transformation.event,to_animal_type:"
+msgid "To Animal Type"
+msgstr "Célállattípus"
+
+msgctxt "field:importer.farm.transformation.event,to_location:"
+msgid "To Location"
+msgstr "Cél tárhely"
+
+msgctxt "field:importer.farm.weaning.event,animal:"
+msgid "Animal"
+msgstr "Állat"
+
+msgctxt "field:importer.farm.weaning.event,farm:"
+msgid "Farm"
+msgstr "Telep"
+
+msgctxt "field:importer.farm.weaning.event,female_to_location:"
+msgid "Female To Location"
+msgstr "Nőstény célhelye"
+
+msgctxt "field:importer.farm.weaning.event,quantity:"
+msgid "Quantity"
+msgstr "Mennyiség"
+
+msgctxt "field:importer.farm.weaning.event,timestamp:"
+msgid "Timestamp"
+msgstr "Időbélyeg"
+
+msgctxt "field:importer.farm.weaning.event,weaned_to_location:"
+msgid "Weaned To Location"
+msgstr "Elválasztott utódok célhelye"
+
+msgctxt "field:importer.import.ask,binary_data:"
+msgid "Data"
+msgstr "Adat"
+
+msgctxt "field:importer.import.ask,data_source:"
+msgid "Data Source"
+msgstr "Adatforrás"
+
+msgctxt "field:importer.import.ask,filename:"
+msgid "Filename"
+msgstr "Fájlnév"
+
+msgctxt "field:importer.import.ask,importer:"
+msgid "Importer"
+msgstr "Importáló"
+
+msgctxt "field:importer.import.ask,text_data:"
+msgid "Data"
+msgstr "Adat"
+
+msgctxt "field:importer.import.ask,url_data:"
+msgid "Data URL"
+msgstr "Adatok URL-je"
+
+msgctxt "field:importer.invoice,account_move_number:"
+msgid "Account Move number"
+msgstr "Könyvelési tétel száma"
+
+msgctxt "field:importer.invoice,currency:"
+msgid "Currency"
+msgstr "Pénznem"
+
+msgctxt "field:importer.invoice,discount:"
+msgid "Discount"
+msgstr "Engedmény"
+
+msgctxt "field:importer.invoice,invoice_date:"
+msgid "Date"
+msgstr "Dátum"
+
+msgctxt "field:importer.invoice,invoice_number:"
+msgid "Invoice Number"
+msgstr "Számlaszám"
+
+msgctxt "field:importer.invoice,invoice_type:"
+msgid "Invoice Type"
+msgstr "Számla típusa"
+
+msgctxt "field:importer.invoice,journal:"
+msgid "Journal"
+msgstr "Napló"
+
+msgctxt "field:importer.invoice,party_code:"
+msgid "Party Code"
+msgstr "Partner kódja"
+
+msgctxt "field:importer.invoice,party_name:"
+msgid "Party Name"
+msgstr "Ügyfél neve"
+
+msgctxt "field:importer.invoice,product_code:"
+msgid "Product Code"
+msgstr "Termékkód"
+
+msgctxt "field:importer.invoice,quantity:"
+msgid "Product Quantity"
+msgstr "Termékmennyiség"
+
+msgctxt "field:importer.invoice,reference:"
+msgid "Reference"
+msgstr "Hivatkozás"
+
+msgctxt "field:importer.invoice,unit_price:"
+msgid "Unit Price"
+msgstr "Egységár"
+
+msgctxt "field:importer.language,code:"
+msgid "Code"
+msgstr "Kód"
+
+msgctxt "field:importer.language,date:"
+msgid "Date Format"
+msgstr "Dátumformátum"
+
+msgctxt "field:importer.language,decimal_point:"
+msgid "Decimal Point"
+msgstr "Tizedesjel"
+
+msgctxt "field:importer.language,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.language,parent:"
+msgid "Parent"
+msgstr "Fölérendelt"
+
+msgctxt "field:importer.language,translatable:"
+msgid "Translatable"
+msgstr "Fordítható"
+
+msgctxt "field:importer.location,code:"
+msgid "Code"
+msgstr "Kód"
+
+msgctxt "field:importer.location,input_location:"
+msgid "Input Location"
+msgstr "Beérkezési hely"
+
+msgctxt "field:importer.location,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.location,output_location:"
+msgid "Output Location"
+msgstr "Kimeneti hely"
+
+msgctxt "field:importer.location,parent:"
+msgid "Parent"
+msgstr "Fölérendelt"
+
+msgctxt "field:importer.location,picking_location:"
+msgid "Picking Location"
+msgstr "Komissiózási hely"
+
+msgctxt "field:importer.location,storage_location:"
+msgid "Storage Location"
+msgstr "Tárolási hely"
+
+msgctxt "field:importer.location,type:"
+msgid "Type"
+msgstr "Típus"
+
+msgctxt "field:importer.log,importer:"
+msgid "Importer"
+msgstr "Importáló"
+
+msgctxt "field:importer.log,message:"
+msgid "Message"
+msgstr "Üzenet"
+
+msgctxt "field:importer.log,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.log,on_error:"
+msgid "On Error"
+msgstr "Hiba esetén"
+
+msgctxt "field:importer.log,record:"
+msgid "Record"
+msgstr "Rekord"
+
+msgctxt "field:importer.log,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.log,source_record:"
+msgid "Source Record"
+msgstr "Forrásrekord"
+
+msgctxt "field:importer.log,type:"
+msgid "Type"
+msgstr "Típus"
+
+msgctxt "field:importer.lot,date:"
+msgid "Date"
+msgstr "Dátum"
+
+msgctxt "field:importer.lot,expiration_date:"
+msgid "Expiry Date"
+msgstr "Lejárati dátum"
+
+msgctxt "field:importer.lot,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.lot,number:"
+msgid "Number"
+msgstr "Szám"
+
+msgctxt "field:importer.lot,product_code:"
+msgid "Product Code"
+msgstr "Termékkód"
+
+msgctxt "field:importer.lot,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.lot,shelf_life_expiration_date:"
+msgid "Shelf Life Expiration Date"
+msgstr "Eltarthatóság lejárati dátuma"
+
+msgctxt "field:importer.marketing.email,active:"
+msgid "Active"
+msgstr "Aktív"
+
+msgctxt "field:importer.marketing.email,email:"
+msgid "Email"
+msgstr "E-mail"
+
+msgctxt "field:importer.marketing.email,mailing_list:"
+msgid "Mailing List"
+msgstr "Levelezőlista"
+
+msgctxt "field:importer.meta,binary_data:"
+msgid "Binary"
+msgstr "Bináris"
+
+msgctxt "field:importer.meta,column_field:"
+msgid "Column Field"
+msgstr "Oszlop mezője"
+
+msgctxt "field:importer.meta,column_format:"
+msgid "Column Format"
+msgstr "Oszlop formátuma"
+
+msgctxt "field:importer.meta,column_name:"
+msgid "Column Name"
+msgstr "Oszlop neve"
+
+msgctxt "field:importer.meta,column_value:"
+msgid "Column Value"
+msgstr "Oszlop értéke"
+
+msgctxt "field:importer.meta,data_source:"
+msgid "Data Source"
+msgstr "Adatforrás"
+
+msgctxt "field:importer.meta,database:"
+msgid "Database"
+msgstr "Adatbázis"
+
+msgctxt "field:importer.meta,has_header:"
+msgid "Has Header"
+msgstr "Van fejléc"
+
+msgctxt "field:importer.meta,language:"
+msgid "Language"
+msgstr "Nyelv"
+
+msgctxt "field:importer.meta,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.meta,method:"
+msgid "Method"
+msgstr "Módszer"
+
+msgctxt "field:importer.meta,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.meta,on_error:"
+msgid "On Error"
+msgstr "Hiba esetén"
+
+msgctxt "field:importer.meta,password:"
+msgid "Password"
+msgstr "Jelszó"
+
+msgctxt "field:importer.meta,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.meta,schema:"
+msgid "Schema"
+msgstr "Séma"
+
+msgctxt "field:importer.meta,server:"
+msgid "Server"
+msgstr "Kiszolgáló"
+
+msgctxt "field:importer.meta,sql_data:"
+msgid "Sql Data"
+msgstr "SQL-adatok"
+
+msgctxt "field:importer.meta,sql_source:"
+msgid "SQL Source"
+msgstr "SQL-forrás"
+
+msgctxt "field:importer.meta,text_data:"
+msgid "Text"
+msgstr "Szöveg"
+
+msgctxt "field:importer.meta,url_data:"
+msgid "URL"
+msgstr "URL"
+
+msgctxt "field:importer.meta,sheet_number:"
+msgid "Sheet Number"
+msgstr "Munkalap száma"
+
+msgctxt "field:importer.meta,data_start_row:"
+msgid "Data Start Row"
+msgstr "Adatok kezdősora"
+
+msgctxt "field:importer.meta,use_header:"
+msgid "Use Header"
+msgstr "Fejléc használata"
+
+msgctxt "field:importer.meta,user:"
+msgid "User"
+msgstr "Felhasználó"
+
+msgctxt "field:importer.meta,where:"
+msgid "Where"
+msgstr "Feltétel"
+
+msgctxt "field:importer.meta,use_subtransactions:"
+msgid "Use Subtransactions"
+msgstr "Altranzakciók használata"
+
+msgctxt "field:importer.meta,commit_chunks:"
+msgid "Commit Chunks"
+msgstr "Kötegek véglegesítése"
+
+msgctxt "field:importer.order_point,min_quantity:"
+msgid "Minimum Quantity"
+msgstr "Minimális mennyiség"
+
+msgctxt "field:importer.order_point,product_code:"
+msgid "Product Code"
+msgstr "Termékkód"
+
+msgctxt "field:importer.order_point,target_quantity:"
+msgid "Target Quantity"
+msgstr "Cél készletszint"
+
+msgctxt "field:importer.order_point,type_:"
+msgid "Type"
+msgstr "Típus"
+
+msgctxt "field:importer.order_point,warehouse_location:"
+msgid "Warehouse Location"
+msgstr "Raktár helye"
+
+msgctxt "field:importer.parcel,crop:"
+msgid "Crop"
+msgstr "Növénykultúra"
+
+msgctxt "field:importer.parcel,plant_number:"
+msgid "Plant Number"
+msgstr "Növények száma"
+
+msgctxt "field:importer.parcel,plantation_code:"
+msgid "Plantation Code"
+msgstr "Ültetvény kódja"
+
+msgctxt "field:importer.parcel,species:"
+msgid "Species"
+msgstr "Faj"
+
+msgctxt "field:importer.parcel,surface:"
+msgid "Surface"
+msgstr "Terület"
+
+msgctxt "field:importer.parcel,variety:"
+msgid "Variety"
+msgstr "Változat"
+
+msgctxt "field:importer.party,bank_account:"
+msgid "Iban"
+msgstr "IBAN"
+
+msgctxt "field:importer.party,carrier:"
+msgid "Carrier"
+msgstr "Fuvarozó"
+
+msgctxt "field:importer.party,categories:"
+msgid "Categories"
+msgstr "Kategóriák"
+
+msgctxt "field:importer.party,city:"
+msgid "City"
+msgstr "Város"
+
+msgctxt "field:importer.party,code:"
+msgid "Code"
+msgstr "Kód"
+
+msgctxt "field:importer.party,company:"
+msgid "Company"
+msgstr "Cég"
+
+msgctxt "field:importer.party,country:"
+msgid "Country"
+msgstr "Ország"
+
+msgctxt "field:importer.party,customer_payment_days:"
+msgid "Customer Payment days"
+msgstr "Vevő fizetési napjai"
+
+msgctxt "field:importer.party,account_payable:"
+msgid "Account Payable"
+msgstr "Szállítói számla"
+
+msgctxt "field:importer.party,account_receivable:"
+msgid "Account Receivable"
+msgstr "Vevői számla"
+
+msgctxt "field:importer.party,customer_payment_term:"
+msgid "Customer Payment Term"
+msgstr "Vevői fizetési feltétel"
+
+msgctxt "field:importer.party,customer_payment_type:"
+msgid "Customer Payment Type"
+msgstr "Vevő fizetési típusa"
+
+msgctxt "field:importer.party,customer_tax_rule:"
+msgid "Customer Tax Rule"
+msgstr "Vevői adószabály"
+
+msgctxt "field:importer.party,delivery_address:"
+msgid "Delivery Address"
+msgstr "Szállítási cím"
+
+msgctxt "field:importer.party,email:"
+msgid "E-Mail"
+msgstr "E-mail"
+
+msgctxt "field:importer.party,fax:"
+msgid "Fax"
+msgstr "Fax"
+
+msgctxt "field:importer.party,invoice_address:"
+msgid "Invoice Address"
+msgstr "Számlázási cím"
+
+msgctxt "field:importer.party,language:"
+msgid "Language"
+msgstr "Nyelv"
+
+msgctxt "field:importer.party,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.party,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.party,note:"
+msgid "Note"
+msgstr "Jegyzetek"
+
+msgctxt "field:importer.party,party_relation:"
+msgid "Party Relation"
+msgstr "Partnerkapcsolat"
+
+msgctxt "field:importer.party,phone:"
+msgid "Phone"
+msgstr "Telefon"
+
+msgctxt "field:importer.party,postal_code:"
+msgid "Postal Code"
+msgstr "Irányítószám"
+
+msgctxt "field:importer.party,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.party,shipment_city:"
+msgid "Shipment City"
+msgstr "Szállítási város"
+
+msgctxt "field:importer.party,shipment_country:"
+msgid "Shipment Country"
+msgstr "Szállítási ország"
+
+msgctxt "field:importer.party,shipment_postal_code:"
+msgid "Shipment Postal Code"
+msgstr "Szállítási irányítószám"
+
+msgctxt "field:importer.party,shipment_street:"
+msgid "Shipment Street"
+msgstr "Szállítási utca"
+
+msgctxt "field:importer.party,shipment_subdivision:"
+msgid "Shipment Subdivision"
+msgstr "Szállítási közigazgatási egység"
+
+msgctxt "field:importer.party,street:"
+msgid "Street"
+msgstr "Utca"
+
+msgctxt "field:importer.party,subdivision:"
+msgid "Subdivision"
+msgstr "Közigazgatási egység"
+
+msgctxt "field:importer.party,supplier_lead_time:"
+msgid "Supplier Lead Time (days)"
+msgstr "Szállítói átfutási idő (nap)"
+
+msgctxt "field:importer.party,supplier_payment_days:"
+msgid "Supplier Payment days"
+msgstr "Szállító fizetési napjai"
+
+msgctxt "field:importer.party,supplier_payment_term:"
+msgid "Supplier Payment Term"
+msgstr "Szállítói fizetési feltétel"
+
+msgctxt "field:importer.party,supplier_payment_type:"
+msgid "Supplier Payment Type"
+msgstr "Szállító fizetési típusa"
+
+msgctxt "field:importer.party,supplier_tax_rule:"
+msgid "Supplier Tax Rule"
+msgstr "Szállítói adószabály"
+
+msgctxt "field:importer.party,trade_name:"
+msgid "Trade Name"
+msgstr "Kereskedelmi név"
+
+msgctxt "field:importer.party,type_of_relation:"
+msgid "Type of relation"
+msgstr "Kapcsolat típusa"
+
+msgctxt "field:importer.party,vat:"
+msgid "Vat"
+msgstr "Áfaazonosító"
+
+msgctxt "field:importer.party,website:"
+msgid "Website"
+msgstr "Weboldal"
+
+msgctxt "field:importer.party.address,city:"
+msgid "City"
+msgstr "Város"
+
+msgctxt "field:importer.party.address,contact_type:"
+msgid "Type"
+msgstr "Típus"
+
+msgctxt "field:importer.party.address,contact_value:"
+msgid "Value"
+msgstr "Érték"
+
+msgctxt "field:importer.party.address,country_name:"
+msgid "Country"
+msgstr "Ország"
+
+msgctxt "field:importer.party.address,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.party.address,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.party.address,party_code:"
+msgid "Party Code"
+msgstr "Partner kódja"
+
+msgctxt "field:importer.party.address,postal_code:"
+msgid "Postal Code"
+msgstr "Irányítószám"
+
+msgctxt "field:importer.party.address,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.party.address,sequence:"
+msgid "Sequence"
+msgstr "Sorszám"
+
+msgctxt "field:importer.party.address,street:"
+msgid "Street Address"
+msgstr "Utca, házszám"
+
+msgctxt "field:importer.party.address,subdivision:"
+msgid "Address Subdivision"
+msgstr "Cím közigazgatási egysége"
+
+msgctxt "field:importer.party.configuration,language_code:"
+msgid "Language Code"
+msgstr "Nyelvkód"
+
+msgctxt "field:importer.party.configuration,sequence_number_next:"
+msgid "Sequence Number Next"
+msgstr "Számsorozat következő száma"
+
+msgctxt "field:importer.party.configuration,sequence_padding:"
+msgid "Sequence Padding"
+msgstr "Számsorozat kitöltési hossza"
+
+msgctxt "field:importer.party.configuration,sequence_prefix:"
+msgid "Sequence prefix"
+msgstr "Számsorozat előtagja"
+
+msgctxt "field:importer.party.configuration,sequence_suffix:"
+msgid "Sequence suffix"
+msgstr "Számsorozat utótagja"
+
+msgctxt "field:importer.party.contact_mechanism,comment:"
+msgid "Comment"
+msgstr "Megjegyzés"
+
+msgctxt "field:importer.party.contact_mechanism,delivery:"
+msgid "Delivery"
+msgstr "Szállítási"
+
+msgctxt "field:importer.party.contact_mechanism,invoice:"
+msgid "Invoice"
+msgstr "Számla"
+
+msgctxt "field:importer.party.contact_mechanism,language:"
+msgid "Language"
+msgstr "Nyelv"
+
+msgctxt "field:importer.party.contact_mechanism,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.party.contact_mechanism,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.party.contact_mechanism,party:"
+msgid "Party"
+msgstr "Ügyfél"
+
+msgctxt "field:importer.party.contact_mechanism,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.party.contact_mechanism,type:"
+msgid "Type"
+msgstr "Típus"
+
+msgctxt "field:importer.party.contact_mechanism,value:"
+msgid "Value"
+msgstr "Érték"
+
+msgctxt "field:importer.party.credit,date:"
+msgid "Date"
+msgstr "Dátum"
+
+msgctxt "field:importer.party.credit,end_date:"
+msgid "End Date"
+msgstr "Befejező dátum"
+
+msgctxt "field:importer.party.credit,first_approved_credit_limit:"
+msgid "First Approved Credit Limit"
+msgstr "Első jóváhagyott hitelkeret"
+
+msgctxt "field:importer.party.credit,party:"
+msgid "Party"
+msgstr "Ügyfél"
+
+msgctxt "field:importer.party.credit,requested_credit_limit:"
+msgid "Requested Credit Limit"
+msgstr "Igényelt hitelkeret"
+
+msgctxt "field:importer.party.credit,start_date:"
+msgid "Start Date"
+msgstr "Kezdődátum"
+
+msgctxt "field:importer.plantation,parcel_sigpac:"
+msgid "Parcel Sigpac"
+msgstr "SIGPAC-parcella"
+
+msgctxt "field:importer.plantation,party:"
+msgid "Party"
+msgstr "Ügyfél"
+
+msgctxt "field:importer.plantation,plantation_code:"
+msgid "Plantation Code"
+msgstr "Ültetvény kódja"
+
+msgctxt "field:importer.plantation,polygon_sigpac:"
+msgid "Polygon Sigpac"
+msgstr "SIGPAC-poligon"
+
+msgctxt "field:importer.plantation,province_sigpac:"
+msgid "Province Sigpac"
+msgstr "SIGPAC-tartomány"
+
+msgctxt "field:importer.plantation,recinte_sigpac:"
+msgid "Recinte Sigpac"
+msgstr "SIGPAC-alparcella"
+
+msgctxt "field:importer.plantation,zone_sigpac:"
+msgid "Zone Sigpac"
+msgstr "SIGPAC-zóna"
+
+msgctxt "field:importer.price_list,base_price_formula:"
+msgid "Base Price Formula"
+msgstr "Alapár képlete"
+
+msgctxt "field:importer.price_list,category:"
+msgid "Category"
+msgstr "Kategória"
+
+msgctxt "field:importer.price_list,company_name:"
+msgid "Company Name"
+msgstr "Vállalat neve"
+
+msgctxt "field:importer.price_list,formula:"
+msgid "Formula"
+msgstr "Képlet"
+
+msgctxt "field:importer.price_list,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.price_list,product_code:"
+msgid "Product Code"
+msgstr "Termékkód"
+
+msgctxt "field:importer.price_list,quantity:"
+msgid "Quantity"
+msgstr "Mennyiség"
+
+msgctxt "field:importer.price_list,tax_included:"
+msgid "Tax Included"
+msgstr "Az ár adót tartalmaz"
+
+msgctxt "field:importer.product,account_asset:"
+msgid "Account Asset"
+msgstr "Eszközszámla"
+
+msgctxt "field:importer.product,account_category:"
+msgid "Account Category"
+msgstr "Számviteli kategória"
+
+msgctxt "field:importer.product,account_depreciation:"
+msgid "Account Depreciation"
+msgstr "Értékcsökkenési számla"
+
+msgctxt "field:importer.product,account_expense:"
+msgid "Account Expense"
+msgstr "Költségszámla"
+
+msgctxt "field:importer.product,account_revenue:"
+msgid "Account Revenue"
+msgstr "Árbevétel számla"
+
+msgctxt "field:importer.product,aranzel:"
+msgid "Aranzel"
+msgstr "Vámtarifa"
+
+msgctxt "field:importer.product,bom_name:"
+msgid "BOM Name"
+msgstr "Darabjegyzék neve"
+
+msgctxt "field:importer.product,brand:"
+msgid "Brand"
+msgstr "Márka"
+
+msgctxt "field:importer.product,categories:"
+msgid "Categories"
+msgstr "Kategóriák"
+
+msgctxt "field:importer.product,company:"
+msgid "Company"
+msgstr "Cég"
+
+msgctxt "field:importer.product,consumable:"
+msgid "Consumable"
+msgstr "Fogyóeszköz"
+
+msgctxt "field:importer.product,cost_price:"
+msgid "Cost Price"
+msgstr "Költségár"
+
+msgctxt "field:importer.product,cost_price_method:"
+msgid "Cost Price Method"
+msgstr "Költségár számítás módja"
+
+msgctxt "field:importer.product,customer:"
+msgid "Customer"
+msgstr "Vevő"
+
+msgctxt "field:importer.product,customer_code:"
+msgid "Customer Code"
+msgstr "Szállító vevői száma"
+
+msgctxt "field:importer.product,depreciation_duration:"
+msgid "Depreciation Duration"
+msgstr "Értékcsökkenés időtartama"
+
+msgctxt "field:importer.product,depreciation_percentatge:"
+msgid "Depreciation Percentatge"
+msgstr "Leértékelés százaléka"
+
+msgctxt "field:importer.product,description:"
+msgid "Description"
+msgstr "Leírás"
+
+msgctxt "field:importer.product,location:"
+msgid "Location"
+msgstr "Tárhely"
+
+msgctxt "field:importer.product,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.product,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.product,producible:"
+msgid "Producible"
+msgstr "Gyártható"
+
+msgctxt "field:importer.product,product_note:"
+msgid "Product Note"
+msgstr "Termék megjegyzése"
+
+msgctxt "field:importer.product,purchasable:"
+msgid "Purchasable"
+msgstr "Beszerezhető"
+
+msgctxt "field:importer.product,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.product,salable:"
+msgid "Salable"
+msgstr "Eladható"
+
+msgctxt "field:importer.product,sale_price:"
+msgid "Sale Price"
+msgstr "Listaár"
+
+msgctxt "field:importer.product,supplier:"
+msgid "Supplier"
+msgstr "Szállító"
+
+msgctxt "field:importer.product,supplier_code:"
+msgid "Supplier Code"
+msgstr "Szállító kódja"
+
+msgctxt "field:importer.product,supplier_currency:"
+msgid "Supplier Currency"
+msgstr "Szállító pénzneme"
+
+msgctxt "field:importer.product,supplier_minimum_quantity:"
+msgid "Supplier Minimum Quantity"
+msgstr "Szállítói minimális mennyiség"
+
+msgctxt "field:importer.product,supplier_multiple_quantity:"
+msgid "Supplier Multiple Quantity"
+msgstr "Szállítói mennyiségi többszörös"
+
+msgctxt "field:importer.product,supplier_unit_price:"
+msgid "Supplier Unit Price"
+msgstr "Szállítói egységár"
+
+msgctxt "field:importer.product,template_code:"
+msgid "Template Code"
+msgstr "Sablon kódja"
+
+msgctxt "field:importer.product,template_note:"
+msgid "Template Note"
+msgstr "Sablon megjegyzése"
+
+msgctxt "field:importer.product,type_:"
+msgid "Type"
+msgstr "Típus"
+
+msgctxt "field:importer.product,uom:"
+msgid "UoM"
+msgstr "Mértékegység"
+
+msgctxt "field:importer.product,variant_code:"
+msgid "Variant Code"
+msgstr "Változat kódja"
+
+msgctxt "field:importer.product,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "Változat utótagkódja"
+
+msgctxt "field:importer.product.agronomics,account_category:"
+msgid "Account Category"
+msgstr "Számviteli kategória"
+
+msgctxt "field:importer.product.agronomics,alcohol_content:"
+msgid "Alcohol Content"
+msgstr "Alkoholtartalom"
+
+msgctxt "field:importer.product.agronomics,aranzel:"
+msgid "Aranzel"
+msgstr "Vámtarifa"
+
+msgctxt "field:importer.product.agronomics,brand:"
+msgid "Brand"
+msgstr "Márka"
+
+msgctxt "field:importer.product.agronomics,categories:"
+msgid "Categories"
+msgstr "Kategóriák"
+
+msgctxt "field:importer.product.agronomics,cost_price:"
+msgid "Cost Price"
+msgstr "Költségár"
+
+msgctxt "field:importer.product.agronomics,cost_price_method:"
+msgid "Cost Price Method"
+msgstr "Költségár számítás módja"
+
+msgctxt "field:importer.product.agronomics,description:"
+msgid "Description"
+msgstr "Leírás"
+
+msgctxt "field:importer.product.agronomics,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.product.agronomics,purchasable:"
+msgid "Purchasable"
+msgstr "Beszerezhető"
+
+msgctxt "field:importer.product.agronomics,salable:"
+msgid "Salable"
+msgstr "Eladható"
+
+msgctxt "field:importer.product.agronomics,sale_price:"
+msgid "Sale Price"
+msgstr "Listaár"
+
+msgctxt "field:importer.product.agronomics,supplier:"
+msgid "Supplier"
+msgstr "Szállító"
+
+msgctxt "field:importer.product.agronomics,supplier_code:"
+msgid "Supplier Code"
+msgstr "Szállító kódja"
+
+msgctxt "field:importer.product.agronomics,template_code:"
+msgid "Template Code"
+msgstr "Sablon kódja"
+
+msgctxt "field:importer.product.agronomics,type_:"
+msgid "Type"
+msgstr "Típus"
+
+msgctxt "field:importer.product.agronomics,uom:"
+msgid "UoM"
+msgstr "Mértékegység"
+
+msgctxt "field:importer.product.agronomics,variant_code:"
+msgid "Variant Code"
+msgstr "Változat kódja"
+
+msgctxt "field:importer.product.agronomics,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "Változat utótagkódja"
+
+msgctxt "field:importer.product.agronomics,volume:"
+msgid "Volume (m3)"
+msgstr "Térfogat (m3)"
+
+msgctxt "field:importer.product.agronomics,weight:"
+msgid "Weight (kg)"
+msgstr "Tömeg (kg)"
+
+msgctxt "field:importer.product.attributes,attribute:"
+msgid "Attribute"
+msgstr "Tulajdonság"
+
+msgctxt "field:importer.product.attributes,attribute_set:"
+msgid "Attribute Set"
+msgstr "Tulajdonságkészlet"
+
+msgctxt "field:importer.product.attributes,attribute_value:"
+msgid "Attribute Value"
+msgstr "Tulajdonság értéke"
+
+msgctxt "field:importer.product.attributes,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.product.attributes,product_code:"
+msgid "Product Code"
+msgstr "Termékkód"
+
+msgctxt "field:importer.product.attributes,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.product.configuration,cost_price_method:"
+msgid "Cost price method"
+msgstr "Önköltségszámítási módszer"
+
+msgctxt "field:importer.product.configuration,product_sequence_number_next:"
+msgid "Variant Sequence number next"
+msgstr "Változat számsorozatának következő száma"
+
+msgctxt "field:importer.product.configuration,product_sequence_padding:"
+msgid "Variant Sequence padding"
+msgstr "Változat számsorozatának kitöltési hossza"
+
+msgctxt "field:importer.product.configuration,product_sequence_prefix:"
+msgid "Variant Sequence prefix"
+msgstr "Változat számsorozatának előtagja"
+
+msgctxt "field:importer.product.configuration,product_sequence_suffix:"
+msgid "Variant Sequence suffix"
+msgstr "Változat számsorozatának utótagja"
+
+msgctxt "field:importer.product.configuration,template_sequence_number_next:"
+msgid "Template Sequence number next"
+msgstr "Sablon számsorozatának következő száma"
+
+msgctxt "field:importer.product.configuration,template_sequence_padding:"
+msgid "Template Sequence padding"
+msgstr "Sablon számsorozatának kitöltési hossza"
+
+msgctxt "field:importer.product.configuration,template_sequence_prefix:"
+msgid "Template Sequence prefix"
+msgstr "Sablon számsorozatának előtagja"
+
+msgctxt "field:importer.product.configuration,template_sequence_suffix:"
+msgid "Template Sequence suffix"
+msgstr "Sablon számsorozatának utótagja"
+
+msgctxt "field:importer.product.supplier,base_price:"
+msgid "Base Price"
+msgstr "Alapár"
+
+msgctxt "field:importer.product.supplier,code:"
+msgid "Code"
+msgstr "Kód"
+
+msgctxt "field:importer.product.supplier,currency:"
+msgid "Currency"
+msgstr "Pénznem"
+
+msgctxt "field:importer.product.supplier,discount_formula:"
+msgid "Discount Formula"
+msgstr "Engedmény képlete"
+
+msgctxt "field:importer.product.supplier,end_date:"
+msgid "End Date"
+msgstr "Befejező dátum"
+
+msgctxt "field:importer.product.supplier,lead_time:"
+msgid "Lead Time (days)"
+msgstr "Átfutási idő (nap)"
+
+msgctxt "field:importer.product.supplier,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.product.supplier,minimum_quantity:"
+msgid "Minimum Quantity"
+msgstr "Minimális mennyiség"
+
+msgctxt "field:importer.product.supplier,multiple_quantity:"
+msgid "Multiple Quantity"
+msgstr "Mennyiségi többszörös"
+
+msgctxt "field:importer.product.supplier,party_code:"
+msgid "Party Code"
+msgstr "Partner kódja"
+
+msgctxt "field:importer.product.supplier,party_name:"
+msgid "Party Name"
+msgstr "Ügyfél neve"
+
+msgctxt "field:importer.product.supplier,product_code:"
+msgid "Product Code"
+msgstr "Termékkód"
+
+msgctxt "field:importer.product.supplier,quantity:"
+msgid "Product Quantity"
+msgstr "Termékmennyiség"
+
+msgctxt "field:importer.product.supplier,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.product.supplier,start_date:"
+msgid "Start Date"
+msgstr "Kezdődátum"
+
+msgctxt "field:importer.product.supplier,template_code:"
+msgid "Template Code"
+msgstr "Sablon kódja"
+
+msgctxt "field:importer.product.supplier,unit_price:"
+msgid "Unit Price"
+msgstr "Egységár"
+
+msgctxt "field:importer.product_codes,code:"
+msgid "Code"
+msgstr "Kód"
+
+msgctxt "field:importer.product_codes,template_code:"
+msgid "Template Code"
+msgstr "Sablon kódja"
+
+msgctxt "field:importer.product_codes,type_:"
+msgid "type"
+msgstr "típus"
+
+msgctxt "field:importer.product_codes,variant_code:"
+msgid "Variant Code"
+msgstr "Változat kódja"
+
+msgctxt "field:importer.product_codes,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "Változat utótagkódja"
+
+msgctxt "field:importer.production.bom,input_product:"
+msgid "Product Input"
+msgstr "Bemeneti termék"
+
+msgctxt "field:importer.production.bom,input_quantity:"
+msgid "Product Input Quantity"
+msgstr "Bemeneti termékmennyiség"
+
+msgctxt "field:importer.production.bom,input_uom:"
+msgid "Product Input UoM"
+msgstr "Bemeneti termék mértékegysége"
+
+msgctxt "field:importer.production.bom,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.production.bom,output_product:"
+msgid "Product Output"
+msgstr "Kimeneti termék"
+
+msgctxt "field:importer.production.bom,output_quantity:"
+msgid "Product Output Quantity"
+msgstr "Kimeneti termékmennyiség"
+
+msgctxt "field:importer.production.bom,output_uom:"
+msgid "Product Output UoM"
+msgstr "Kimeneti termék mértékegysége"
+
+msgctxt "field:importer.production.configuration,sequence_number_next:"
+msgid "Sequence number next"
+msgstr "Számsorozat következő száma"
+
+msgctxt "field:importer.production.configuration,sequence_padding:"
+msgid "Sequence padding"
+msgstr "Számsorozat kitöltési hossza"
+
+msgctxt "field:importer.production.configuration,sequence_prefix:"
+msgid "Sequence prefix"
+msgstr "Számsorozat előtagja"
+
+msgctxt "field:importer.production.configuration,sequence_suffix:"
+msgid "Sequence suffix"
+msgstr "Számsorozat utótagja"
+
+msgctxt "field:importer.purchase,currency:"
+msgid "Currency"
+msgstr "Pénznem"
+
+msgctxt "field:importer.purchase,date:"
+msgid "Date"
+msgstr "Dátum"
+
+msgctxt "field:importer.purchase,discount:"
+msgid "Discount"
+msgstr "Engedmény"
+
+msgctxt "field:importer.purchase,invoice_method:"
+msgid "Invoice Method"
+msgstr "Számlázás módja"
+
+msgctxt "field:importer.purchase,party_code:"
+msgid "Party Code"
+msgstr "Partner kódja"
+
+msgctxt "field:importer.purchase,party_name:"
+msgid "Party Name"
+msgstr "Ügyfél neve"
+
+msgctxt "field:importer.purchase,product_code:"
+msgid "Product Code"
+msgstr "Termékkód"
+
+msgctxt "field:importer.purchase,purchase_number:"
+msgid "Purchase Number"
+msgstr "Beszerzés száma"
+
+msgctxt "field:importer.purchase,quantity:"
+msgid "Product Quantity"
+msgstr "Termékmennyiség"
+
+msgctxt "field:importer.purchase,reference:"
+msgid "Reference"
+msgstr "Hivatkozás"
+
+msgctxt "field:importer.purchase,state:"
+msgid "State"
+msgstr "Állapot"
+
+msgctxt "field:importer.purchase,unit_price:"
+msgid "Unit Price"
+msgstr "Egységár"
+
+msgctxt "field:importer.purchase.configuration,company:"
+msgid "Company"
+msgstr "Cég"
+
+msgctxt "field:importer.purchase.configuration,invoice_method:"
+msgid "Purchase invoice method"
+msgstr "Beszerzés számlázási módja"
+
+msgctxt "field:importer.purchase.configuration,process_after:"
+msgid "Purchase process after"
+msgstr "Beszerzés feldolgozási késleltetése"
+
+msgctxt "field:importer.purchase.configuration,sequence_number_next:"
+msgid "Purchase sequence number next"
+msgstr "Beszerzési számsorozat következő száma"
+
+msgctxt "field:importer.purchase.configuration,sequence_padding:"
+msgid "Purchase sequence padding"
+msgstr "Beszerzési számsorozat kitöltési hossza"
+
+msgctxt "field:importer.purchase.configuration,sequence_prefix:"
+msgid "Purchase sequence prefix"
+msgstr "Beszerzési számsorozat előtagja"
+
+msgctxt "field:importer.purchase.configuration,sequence_suffix:"
+msgid "Purchase sequence suffix"
+msgstr "Beszerzési számsorozat utótagja"
+
+msgctxt "field:importer.sale,base_price:"
+msgid "Base Price"
+msgstr "Alapár"
+
+msgctxt "field:importer.sale,currency:"
+msgid "Currency"
+msgstr "Pénznem"
+
+msgctxt "field:importer.sale,date:"
+msgid "Date"
+msgstr "Dátum"
+
+msgctxt "field:importer.sale,discount_amount:"
+msgid "Discount Amount"
+msgstr "Engedmény (összeg)"
+
+msgctxt "field:importer.sale,discount_formula:"
+msgid "Discount Formula"
+msgstr "Engedmény képlete"
+
+msgctxt "field:importer.sale,discount_rate:"
+msgid "Discount Rate"
+msgstr "Engedmény (%)"
+
+msgctxt "field:importer.sale,invoice_method:"
+msgid "Invoice Method"
+msgstr "Számlázás módja"
+
+msgctxt "field:importer.sale,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.sale,party_code:"
+msgid "Party Code"
+msgstr "Partner kódja"
+
+msgctxt "field:importer.sale,party_name:"
+msgid "Party Name"
+msgstr "Ügyfél neve"
+
+msgctxt "field:importer.sale,product_code:"
+msgid "Product Code"
+msgstr "Termékkód"
+
+msgctxt "field:importer.sale,quantity:"
+msgid "Product Quantity"
+msgstr "Termékmennyiség"
+
+msgctxt "field:importer.sale,reference:"
+msgid "Reference"
+msgstr "Hivatkozás"
+
+msgctxt "field:importer.sale,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.sale,sale_number:"
+msgid "Sale Number"
+msgstr "Értékesítés száma"
+
+msgctxt "field:importer.sale,shipment_address:"
+msgid "Shipment Address Name"
+msgstr "Szállítási cím neve"
+
+msgctxt "field:importer.sale,shipment_method:"
+msgid "Shipment Method"
+msgstr "Kiszállítás módja"
+
+msgctxt "field:importer.sale,shipment_party_name:"
+msgid "Shipment Party Name"
+msgstr "Szállítási partner neve"
+
+msgctxt "field:importer.sale,state:"
+msgid "State"
+msgstr "Állapot"
+
+msgctxt "field:importer.sale,unit_price:"
+msgid "Unit Price"
+msgstr "Egységár"
+
+msgctxt "field:importer.sale.configuration,company:"
+msgid "Company"
+msgstr "Cég"
+
+msgctxt "field:importer.sale.configuration,sale_invoice_method:"
+msgid "Sale invoice method"
+msgstr "Értékesítés számlázási módja"
+
+msgctxt "field:importer.sale.configuration,sale_process_after:"
+msgid "Sale process after"
+msgstr "Értékesítés feldolgozási késleltetése"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_number_next:"
+msgid "Sale sequence number next"
+msgstr "Értékesítési számsorozat következő száma"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_padding:"
+msgid "Sale sequence padding"
+msgstr "Értékesítési számsorozat kitöltési hossza"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_prefix:"
+msgid "Sale sequence prefix"
+msgstr "Értékesítési számsorozat előtagja"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_suffix:"
+msgid "Sale sequence suffix"
+msgstr "Értékesítési számsorozat utótagja"
+
+msgctxt "field:importer.sale.configuration,sale_shipment_method:"
+msgid "Sale shipment method"
+msgstr "Értékesítés szállítási módja"
+
+msgctxt "field:importer.sequence,company_name:"
+msgid "Company Name"
+msgstr "Vállalat neve"
+
+msgctxt "field:importer.sequence,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.sequence,number_next:"
+msgid "Sequence Number Next"
+msgstr "Számsorozat következő száma"
+
+msgctxt "field:importer.sequence,padding:"
+msgid "Sequence Padding"
+msgstr "Számsorozat kitöltési hossza"
+
+msgctxt "field:importer.sequence,prefix:"
+msgid "Sequence prefix"
+msgstr "Számsorozat előtagja"
+
+msgctxt "field:importer.sequence,sequence_type:"
+msgid "Sequence Type"
+msgstr "Számsorozat típusa"
+
+msgctxt "field:importer.sequence,strict:"
+msgid "Strict"
+msgstr "Szigorú"
+
+msgctxt "field:importer.sequence,suffix:"
+msgid "Sequence suffix"
+msgstr "Számsorozat utótagja"
+
+msgctxt "field:importer.source_column,examples:"
+msgid "Examples"
+msgstr "Példák"
+
+msgctxt "field:importer.source_column,field:"
+msgid "Field"
+msgstr "Mező"
+
+msgctxt "field:importer.source_column,format:"
+msgid "Format"
+msgstr "Formátum"
+
+msgctxt "field:importer.source_column,importer:"
+msgid "Importation"
+msgstr "Importálás"
+
+msgctxt "field:importer.source_column,model:"
+msgid "Model"
+msgstr "Minta"
+
+msgctxt "field:importer.source_column,name:"
+msgid "Column Name"
+msgstr "Oszlop neve"
+
+msgctxt "field:importer.stock.move,cost_price:"
+msgid "Cost Price"
+msgstr "Költségár"
+
+msgctxt "field:importer.stock.move,currency:"
+msgid "Currency"
+msgstr "Pénznem"
+
+msgctxt "field:importer.stock.move,effective_date:"
+msgid "Effective Date"
+msgstr "Befejezés dátuma"
+
+msgctxt "field:importer.stock.move,from_location:"
+msgid "From Location"
+msgstr "Induló tárhely"
+
+msgctxt "field:importer.stock.move,lot:"
+msgid "Lot"
+msgstr "Gyártási tétel"
+
+msgctxt "field:importer.stock.move,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.stock.move,planned_date:"
+msgid "Planned Date"
+msgstr "Tervezett dátum"
+
+msgctxt "field:importer.stock.move,product_code:"
+msgid "Product Code"
+msgstr "Termékkód"
+
+msgctxt "field:importer.stock.move,quantity:"
+msgid "Quantity"
+msgstr "Mennyiség"
+
+msgctxt "field:importer.stock.move,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.stock.move,to_location:"
+msgid "To Location"
+msgstr "Cél tárhely"
+
+msgctxt "field:importer.stock.move,unit_price:"
+msgid "Unit Price"
+msgstr "Egységár"
+
+msgctxt "field:importer.user,companies:"
+msgid "Companies"
+msgstr "Cégek"
+
+msgctxt "field:importer.user,company:"
+msgid "Company"
+msgstr "Cég"
+
+msgctxt "field:importer.user,email:"
+msgid "Email"
+msgstr "E-mail"
+
+msgctxt "field:importer.user,employee:"
+msgid "Employee"
+msgstr "Alkalmazott"
+
+msgctxt "field:importer.user,employees:"
+msgid "Employees"
+msgstr "Alkalmazottak"
+
+msgctxt "field:importer.user,groups:"
+msgid "Groups"
+msgstr "Csoportok"
+
+msgctxt "field:importer.user,language_code:"
+msgid "Language Code"
+msgstr "Nyelvkód"
+
+msgctxt "field:importer.user,login:"
+msgid "Login"
+msgstr "Bejelentkezés"
+
+msgctxt "field:importer.user,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.user,password:"
+msgid "Password"
+msgstr "Jelszó"
+
+msgctxt "field:importer.user,roles:"
+msgid "Roles"
+msgstr "Szerepkörök"
+
+msgctxt "field:importer.user,signature:"
+msgid "Signature"
+msgstr "Aláírás"
+
+msgctxt "help:importer,language:"
+msgid "Language to use, if different from the one of the user."
+msgstr "A használandó nyelv, ha eltér a felhasználó nyelvétől."
+
+msgctxt "help:importer,sample_size:"
+msgid "Number of records to import with the sample button."
+msgstr "A mintagombbal importálandó rekordok száma."
+
+msgctxt "help:importer,sample_offset:"
+msgid "Number of records to skip before importing with the sample button."
+msgstr "A mintagombbal történő importálás előtt kihagyandó rekordok száma."
+
+msgctxt "help:importer,template:"
+msgid ""
+"Check to indicate that this importer is a template and thus should appear in"
+" the import wizard."
+msgstr ""
+"Jelölje be, ha ez az importáló sablon, ezért meg kell jelennie az "
+"importálási varázslóban."
+
+msgctxt "help:importer,use_header:"
+msgid ""
+"If checked, the names of the columns will be used for the mapping. "
+"Otherwise, the number of the column will be used."
+msgstr ""
+"Ha be van jelölve, a megfeleltetés az oszlopnevek alapján történik. "
+"Egyébként az oszlop sorszámát használja."
+
+msgctxt "help:importer.account.move,company_name:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort "
+"records by company prior to import for better performance."
+msgstr ""
+"A vállalatmezővel vállalatfüggő mezők állíthatók be. A jobb teljesítmény "
+"érdekében importálás előtt rendezze a rekordokat vállalat szerint."
+
+msgctxt "help:importer.column,value:"
+msgid "Value to be used if no column is specified or the value found is None."
+msgstr ""
+"A használandó érték, ha nincs megadva oszlop, vagy a talált érték None."
+
+msgctxt "help:importer.party,company:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort "
+"records by company prior to import for better performance."
+msgstr ""
+"A vállalatmezővel vállalatfüggő mezők állíthatók be. A jobb teljesítmény "
+"érdekében importálás előtt rendezze a rekordokat vállalat szerint."
+
+msgctxt "help:importer.product,company:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort "
+"records by company prior to import for better performance."
+msgstr ""
+"A vállalatmezővel vállalatfüggő mezők állíthatók be. A jobb teljesítmény "
+"érdekében importálás előtt rendezze a rekordokat vállalat szerint."
+
+msgctxt "help:importer.sale.configuration,sale_invoice_method:"
+msgid "selection|sale.sale|invoice_method"
+msgstr "selection|sale.sale|invoice_method"
+
+msgctxt "help:importer.sale.configuration,sale_shipment_method:"
+msgid "selection|sale.sale|shipment_method"
+msgstr "selection|sale.sale|shipment_method"
+
+msgctxt "help:importer.user,companies:"
+msgid "Comma separated list of company names"
+msgstr "Vállalatnevek vesszővel elválasztott listája"
+
+msgctxt "help:importer.user,employees:"
+msgid "Comma separated list of employee names"
+msgstr "Munkavállalónevek vesszővel elválasztott listája"
+
+msgctxt "help:importer.user,groups:"
+msgid "Comma separated list of group names"
+msgstr "Csoportnevek vesszővel elválasztott listája"
+
+msgctxt "help:importer.user,roles:"
+msgid "Comma separated list of role names"
+msgstr "Szerepkörnevek vesszővel elválasztott listája"
+
+msgctxt "model:importer,name:"
+msgid "Importer"
+msgstr "Importáló"
+
+msgctxt "model:importer.account.asset,name:"
+msgid "Importer Account Asset"
+msgstr "Eszközimportáló"
+
+msgctxt "model:importer.account.chart,name:"
+msgid "Importer Chart"
+msgstr "Számlatükör-importáló"
+
+msgctxt "model:importer.account.fiscalyear,name:"
+msgid "Importer Fiscal Year"
+msgstr "Üzletiév-importáló"
+
+msgctxt "model:importer.account.move,name:"
+msgid "Importer Account Move"
+msgstr "Könyvelésitétel-importáló"
+
+msgctxt "model:importer.address.facturae,name:"
+msgid "Importer Address Factura-e"
+msgstr "Factura-e-cím importálója"
+
+msgctxt "model:importer.carrier,name:"
+msgid "Importer Carrier"
+msgstr "Fuvarozóimportáló"
+
+msgctxt "model:importer.column,name:"
+msgid "Importer Column"
+msgstr "Importáló oszlopa"
+
+msgctxt "model:importer.company,name:"
+msgid "Importer Company"
+msgstr "Vállalatimportáló"
+
+msgctxt "model:importer.country,name:"
+msgid "Importer Country"
+msgstr "Országimportáló"
+
+msgctxt "model:importer.country.postal_codes,name:"
+msgid "Importer Postal Codes"
+msgstr "Irányítószám-importáló"
+
+msgctxt "model:importer.currency,name:"
+msgid "Importer Currency"
+msgstr "Pénznemimportáló"
+
+msgctxt "model:importer.employee,name:"
+msgid "Importer Employoee"
+msgstr "Munkavállaló-importáló"
+
+msgctxt "model:importer.farm.abort.event,name:"
+msgid "Importer Farm Abort Event"
+msgstr "Telepi vetélési esemény importálója"
+
+msgctxt "model:importer.farm.animal,name:"
+msgid "Importer Farm Animal"
+msgstr "Telepi állatimportáló"
+
+msgctxt "model:importer.farm.farrowing.event,name:"
+msgid "Importer Farm Farrowing Event"
+msgstr "Telepi ellési esemény importálója"
+
+msgctxt "model:importer.farm.insemination.event,name:"
+msgid "Importer Farm Insemination Event"
+msgstr "Telepi termékenyítési esemény importálója"
+
+msgctxt "model:importer.farm.medication.event,name:"
+msgid "Importer Farm Medication Event"
+msgstr "Telepi gyógyszerezési esemény importálója"
+
+msgctxt "model:importer.farm.move.event,name:"
+msgid "Importer Event Move"
+msgstr "Mozgatási esemény importálója"
+
+msgctxt "model:importer.farm.pregnancy_diagnosis.event,name:"
+msgid "Importer Farm Pregnancy Diagnosis Event"
+msgstr "Telepi vemhességvizsgálati esemény importálója"
+
+msgctxt "model:importer.farm.reclassification.event,name:"
+msgid "Importer Farm reclassification Event"
+msgstr "Telepi átsorolási esemény importálója"
+
+msgctxt "model:importer.farm.removal.event,name:"
+msgid "Importer Removal Event"
+msgstr "Eltávolítási esemény importálója"
+
+msgctxt "model:importer.farm.transformation.event,name:"
+msgid "Importer Farm Transformation Event"
+msgstr "Telepi átalakulási esemény importálója"
+
+msgctxt "model:importer.farm.weaning.event,name:"
+msgid "Importer Farm Weaning Event"
+msgstr "Telepi elválasztási esemény importálója"
+
+msgctxt "model:importer.import.ask,name:"
+msgid "Import Ask"
+msgstr "Importálási kérdés"
+
+msgctxt "model:importer.import.ask.error,name:"
+msgid "Import Ask and Import Error"
+msgstr "Importálási kérdés és hiba"
+
+msgctxt "model:importer.invoice,name:"
+msgid "Importer Invoice"
+msgstr "Számlaimportáló"
+
+msgctxt "model:importer.language,name:"
+msgid "Importer Language"
+msgstr "Nyelvimportáló"
+
+msgctxt "model:importer.location,name:"
+msgid "Importer Location"
+msgstr "Helyimportáló"
+
+msgctxt "model:importer.log,name:"
+msgid "Importer Log"
+msgstr "Importáló naplója"
+
+msgctxt "model:importer.lot,name:"
+msgid "Importer Lot"
+msgstr "Tételimportáló"
+
+msgctxt "model:importer.marketing.email,name:"
+msgid "Importer Marketing Email"
+msgstr "Marketing-e-mail-importáló"
+
+msgctxt "model:importer.meta,name:"
+msgid "Importer Meta"
+msgstr "Importáló metaadatai"
+
+msgctxt "model:importer.order_point,name:"
+msgid "Importer Stock Move"
+msgstr "Készletmozgás-importáló"
+
+msgctxt "model:importer.parcel,name:"
+msgid "Importer Parcel"
+msgstr "Parcellaimportáló"
+
+msgctxt "model:importer.party,name:"
+msgid "Importer Party"
+msgstr "Partnerimportáló"
+
+msgctxt "model:importer.party.address,name:"
+msgid "Importer Address"
+msgstr "Címimportáló"
+
+msgctxt "model:importer.party.configuration,name:"
+msgid "Importer Party Configuration"
+msgstr "Partnerbeállítások importálója"
+
+msgctxt "model:importer.party.contact_mechanism,name:"
+msgid "Importer Contact Method"
+msgstr "Kapcsolattartási mód importálója"
+
+msgctxt "model:importer.party.credit,name:"
+msgid "Importer Party Credit"
+msgstr "Partnerhitel-importáló"
+
+msgctxt "model:importer.plantation,name:"
+msgid "Importer Plantation"
+msgstr "Ültetvényimportáló"
+
+msgctxt "model:importer.price_list,name:"
+msgid "Importer Price List"
+msgstr "Árlista-importáló"
+
+msgctxt "model:importer.product,name:"
+msgid "Importer Product"
+msgstr "Termékimportáló"
+
+msgctxt "model:importer.product.agronomics,name:"
+msgid "Importer Product Agronomics"
+msgstr "Agronómiai termékimportáló"
+
+msgctxt "model:importer.product.attributes,name:"
+msgid "Importer Product Attributes"
+msgstr "Terméktulajdonságok importálója"
+
+msgctxt "model:importer.product.configuration,name:"
+msgid "Importer Product Configuration"
+msgstr "Termékbeállítások importálója"
+
+msgctxt "model:importer.product.supplier,name:"
+msgid "Importer Product Supplier"
+msgstr "Termékszállító-importáló"
+
+msgctxt "model:importer.product_codes,name:"
+msgid "Importer Product"
+msgstr "Termékimportáló"
+
+msgctxt "model:importer.production.bom,name:"
+msgid "Importer Production Bom"
+msgstr "Gyártási darabjegyzék importálója"
+
+msgctxt "model:importer.production.configuration,name:"
+msgid "Importer Production Configuration"
+msgstr "Gyártási beállítások importálója"
+
+msgctxt "model:importer.purchase,name:"
+msgid "Importer Purchase"
+msgstr "Beszerzésimportáló"
+
+msgctxt "model:importer.purchase.configuration,name:"
+msgid "Importer Purchase Configuration"
+msgstr "Beszerzési beállítások importálója"
+
+msgctxt "model:importer.sale,name:"
+msgid "Importer Sale"
+msgstr "Értékesítésimportáló"
+
+msgctxt "model:importer.sale.configuration,name:"
+msgid "Importer Sale Configuration"
+msgstr "Értékesítési beállítások importálója"
+
+msgctxt "model:importer.sequence,name:"
+msgid "Importer Party Configuration"
+msgstr "Partnerbeállítások importálója"
+
+msgctxt "model:importer.source_column,name:"
+msgid "Importer Source Column"
+msgstr "Importáló forrásoszlopa"
+
+msgctxt "model:importer.stock.move,name:"
+msgid "Importer Stock Move"
+msgstr "Készletmozgás-importáló"
+
+msgctxt "model:importer.user,name:"
+msgid "Importer User"
+msgstr "Felhasználó-importáló"
+
+msgctxt "model:ir.action,name:"
+msgid "Import Errors"
+msgstr "Importálási hibák"
+
+msgctxt "model:ir.action,name:act_ask_and_import_wizard"
+msgid "Import"
+msgstr "Beolvasás"
+
+msgctxt "model:ir.action,name:act_import_log"
+msgid "Import Log"
+msgstr "Importálási napló"
+
+msgctxt "model:ir.action,name:act_import_open"
+msgid "Imported Records"
+msgstr "Importált rekordok"
+
+msgctxt "model:ir.action,name:act_import_sample_wizard"
+msgid "Import Sample"
+msgstr "Minta importálása"
+
+msgctxt "model:ir.action,name:act_import_wizard"
+msgid "Import"
+msgstr "Beolvasás"
+
+msgctxt "model:ir.action,name:act_importer"
+msgid "Importers"
+msgstr "Importálók"
+
+msgctxt "model:ir.action,name:act_log"
+msgid "Log"
+msgstr "Napló"
+
+msgctxt "model:ir.action,name:report_excel_template"
+msgid "Excel Template"
+msgstr "Excel-sablon"
+
+msgctxt "model:ir.action,name:report_importer_export"
+msgid "Export"
+msgstr "Exportálás"
+
+#, python-format
+msgctxt "model:ir.message,text:animal_not_found"
+msgid "Animal %(animal)s not found."
+msgstr "A(z) %(animal)s állat nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:change_method_warning"
+msgid ""
+"Changing the format on importer \"%(name)s\" may cause your settings to be "
+"lost. Are you sure to proceed?"
+msgstr ""
+"A(z) „%(name)s” importáló formátumának módosítása a beállítások elvesztését "
+"okozhatja. Biztosan folytatja?"
+
+#, python-format
+msgctxt "model:ir.message,text:farm_not_found"
+msgid "Farm %(farm)s not found."
+msgstr "A(z) %(farm)s telep nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:invalid_column_name"
+msgid ""
+"Name \"%(name)s\" is not valid for column \"%(column)s\" in importer "
+"\"%(importer)s\"."
+msgstr ""
+"A(z) „%(name)s” név érvénytelen a(z) „%(importer)s” importáló „%(column)s” "
+"oszlopához."
+
+#, python-format
+msgctxt "model:ir.message,text:invalid_index"
+msgid ""
+"Column \"%(column)s\" does not exist importing data with importer "
+"\"%(importer)s\"."
+msgstr ""
+"A(z) „%(column)s” oszlop nem létezik a(z) „%(importer)s” importálóval "
+"történő importáláskor."
+
+#, python-format
+msgctxt "model:ir.message,text:location_not_found"
+msgid "Location %(location)s not found."
+msgstr "A(z) %(location)s hely nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_account_not_found"
+msgid "Account %(account)s not found."
+msgstr "A(z) %(account)s főkönyvi számla nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_asset_product_not_found"
+msgid ""
+"Asset product \"%(product)s\" does not exist on the database or it could not"
+" be found."
+msgstr ""
+"A(z) „%(product)s” eszköztermék nem létezik az adatbázisban, vagy nem "
+"található."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_carrier_party_not_found"
+msgid "Party code %(party)s not found."
+msgstr "A(z) %(party)s partnerkód nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_carrier_product_not_found"
+msgid "Product code %(product)s not found."
+msgstr "A(z) %(product)s termékkód nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_chart_not_found"
+msgid "Chart \"%(chart)s\" not found."
+msgstr "A(z) „%(chart)s” számlatükör nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_company_not_found"
+msgid "Company %(company)s not found."
+msgstr "A(z) %(company)s vállalat nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_account_move_line_without_amount"
+msgid ""
+"Accounting entry line was not imported because debit and credit are both "
+"empty or zero."
+msgstr ""
+"A könyvelési sor nem lett importálva, mert a tartozik és a követel érték is "
+"üres vagy nulla."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_currency_not_found"
+msgid "Currency %(currency)s not found."
+msgstr "A(z) %(currency)s pénznem nem található."
+
+msgctxt "model:ir.message,text:msg_deletes_disabled"
+msgid "Deletion of records is disabled."
+msgstr "A rekordok törlése le van tiltva."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_employee_not_found"
+msgid "Employee %(employee)s not found."
+msgstr "A(z) %(employee)s munkavállaló nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_group_not_found"
+msgid "Group with name \"%(name)s\" not found."
+msgstr "Nem található „%(name)s” nevű csoport."
+
+msgctxt "model:ir.message,text:msg_import_company_not_found"
+msgid "Company not found."
+msgstr "A vállalat nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_connection"
+msgid "Could not establish connection using importer \"%(importer)s\"."
+msgstr "Nem sikerült kapcsolatot létesíteni a(z) „%(importer)s” importálóval."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_invoice_type"
+msgid "Invoice type must be 'out' or 'in' but \"%(type)s\" was found."
+msgstr ""
+"A számla típusa csak 'out' vagy 'in' lehet, de a kapott érték „%(type)s”."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_value"
+msgid ""
+"Invalid value \"%(value)s\" for column \"%(column)s\" in row \"%(row)s\" importing data with importer \"%(importer)s\":\n"
+"\n"
+"%(error)s."
+msgstr ""
+"Érvénytelen „%(value)s” érték a(z) „%(row)s” sor „%(column)s” oszlopában a(z) „%(importer)s” importáló használatakor:\n"
+"\n"
+"%(error)s."
+
+msgctxt "model:ir.message,text:msg_name_required"
+msgid "Missing company name."
+msgstr "Hiányzik a vállalat neve."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_product_attribute_incorrect_cast"
+msgid ""
+"Value %(value)s is incorrect for attribute %(attribute)s expected type "
+"%(type)s, with product code %(code)s"
+msgstr ""
+"A(z) %(code)s termékkód %(attribute)s tulajdonságának %(value)s értéke "
+"hibás, az elvárt típus %(type)s"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_product_attribute_not_found"
+msgid ""
+"Attribute %(attribute)s for product of code %(code)s could not be found."
+msgstr "A(z) %(code)s kódú termék %(attribute)s tulajdonsága nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_product_attribute_selection_not_found"
+msgid ""
+"Attribute set %(set)s attribute %(attribute)s of type \"Selection\" has no "
+"selection option value %(selection)s."
+msgstr ""
+"A(z) %(set)s tulajdonságkészlet „Kiválasztás” típusú %(attribute)s "
+"tulajdonságánál nincs %(selection)s választási lehetőség."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_product_attribute_set_not_found"
+msgid "Attribute set %(set)s for product of code %(code)s could not be found."
+msgstr "A(z) %(code)s kódú termék %(set)s tulajdonságkészlete nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_role_not_found"
+msgid "Role with name \"%(name)s\" not found."
+msgstr "Nem található „%(name)s” nevű szerepkör."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_sequence_type_not_found"
+msgid "Sequence Type \"%(type)s\" not found."
+msgstr "A(z) „%(type)s” számsorozattípus nem található."
+
+msgctxt "model:ir.message,text:msg_sequence_type_required"
+msgid "Sequence Type is required"
+msgstr "A számsorozat típusa kötelező"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_subdivision_not_found"
+msgid "Subdivision \"%(subdivision)s\" not found in country \"%(country)s\"."
+msgstr ""
+"A(z) „%(subdivision)s” közigazgatási egység nem található a(z) „%(country)s”"
+" országban."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_subdivision_type_not_allowed"
+msgid "Subdivision type \"%(type)s\" of subdivision \"%(subdivision)s\" not allowed."
+msgstr ""
+"A(z) „%(subdivision)s” közigazgatási egység „%(type)s” típusa nem "
+"engedélyezett."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_wrong_iban"
+msgid ""
+"The bank account \"%(iban)s\" is not a valid IBAN. Check the source value "
+"before importing it."
+msgstr ""
+"A(z) „%(iban)s” bankszámlaszám nem érvényes IBAN. Importálás előtt "
+"ellenőrizze a forrásértéket."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_successful_connection"
+msgid "Successful connection using importer \"%(importer)s\"."
+msgstr "Sikeres kapcsolat a(z) „%(importer)s” importálóval."
+
+#, python-format
+msgctxt "model:ir.message,text:msg_supervisor_not_found"
+msgid "Supervisor \"%(supervisor)s\" not found."
+msgstr "A(z) „%(supervisor)s” felettes nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:no_records_imported"
+msgid "No records where imported using importer \"%(importer)s\"."
+msgstr "A(z) „%(importer)s” importálóval egyetlen rekord sem lett importálva."
+
+#, python-format
+msgctxt "model:ir.message,text:order_point_not_value"
+msgid ""
+"Order point not fount a value for Warehouse:  %(warehouse)s or Product "
+"%(product)s ."
+msgstr ""
+"Az utánrendelési pontnál nem található érték a(z) %(warehouse)s raktárhoz "
+"vagy a(z) %(product)s termékhez."
+
+#, python-format
+msgctxt "model:ir.message,text:order_point_type_not_supported"
+msgid "Type %(type_)s not supported for orderpoint."
+msgstr "A(z) %(type_)s típus nem támogatott az utánrendelési pontnál."
+
+#, python-format
+msgctxt "model:ir.message,text:party_not_found"
+msgid "Party \"%(party)s\" not found."
+msgstr "A(z) „%(party)s” partner nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:party_required_for_account"
+msgid ""
+"Account \"%(account)s\" requires a party but no party was supplied in move "
+"\"%(move)s\"."
+msgstr ""
+"A(z) „%(account)s” főkönyvi számlához partner szükséges, de a(z) „%(move)s” "
+"könyvelési tételnél nincs megadva."
+
+msgctxt "model:ir.message,text:produced_animals_not_found"
+msgid "No produced animals found."
+msgstr "Nem találhatók előállított állatok."
+
+#, python-format
+msgctxt "model:ir.message,text:product_category_not_found"
+msgid "Product category \"%(category)s\" not found."
+msgstr "A(z) „%(category)s” termékkategória nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:single_party_error"
+msgid "There must be one and only one party with \"%(party)s\"."
+msgstr "Pontosan egy partnernek kell megfelelnie ennek: „%(party)s”."
+
+#, python-format
+msgctxt "model:ir.message,text:single_product_error"
+msgid "There must be one and only one product with \"%(product)s\"."
+msgstr "Pontosan egy terméknek kell megfelelnie ennek: „%(product)s”."
+
+#, python-format
+msgctxt "model:ir.message,text:stock_move_error"
+msgid ""
+"Coud not create move, could not find some info: from_location: "
+"\"%(from_location)s\", to_location: \"%(to_location)s\", product: "
+"\"%(product)s\"."
+msgstr ""
+"Nem sikerült létrehozni a készletmozgást, mert egyes adatok nem találhatók: "
+"forráshely: „%(from_location)s”, célhely: „%(to_location)s”, termék: "
+"„%(product)s”."
+
+#, python-format
+msgctxt "model:ir.message,text:tag_not_found"
+msgid "Can't find tag \"%(tag)s\"."
+msgstr "A(z) „%(tag)s” jelölés nem található."
+
+#, python-format
+msgctxt "model:ir.message,text:value_not_in_selection"
+msgid "Could not find this value in the field selection \"%(field)%\""
+msgstr ""
+"Ez az érték nem található a(z) „%(field)%” mező választási lehetőségei "
+"között"
+
+msgctxt "model:ir.model.button,confirm:importer_delete_imported_button"
+msgid "Are you sure you want to delete all imported records?"
+msgstr "Biztosan törli az összes importált rekordot?"
+
+msgctxt "model:ir.model.button,string:importer_check_connection_button"
+msgid "Check Connection"
+msgstr "Kapcsolat ellenőrzése"
+
+msgctxt "model:ir.model.button,string:importer_clean_deletes_button"
+msgid "Clean Deletes"
+msgstr "Törlések tisztítása"
+
+msgctxt "model:ir.model.button,string:importer_clean_log_button"
+msgid "Clean Log"
+msgstr "Napló törlése"
+
+msgctxt "model:ir.model.button,string:importer_delete_imported_button"
+msgid "Delete Imported Records"
+msgstr "Importált rekordok törlése"
+
+msgctxt "model:ir.model.button,string:importer_detect_button"
+msgid "Detect"
+msgstr "Felismerés"
+
+msgctxt "model:ir.model.button,string:importer_import_button"
+msgid "Import"
+msgstr "Beolvasás"
+
+msgctxt "model:ir.model.button,string:importer_import_sample_button"
+msgid "Import Sample"
+msgstr "Minta importálása"
+
+msgctxt "model:ir.model.button,string:importer_update_columns_button"
+msgid "Update Columns"
+msgstr "Oszlopok frissítése"
+
+msgctxt "model:ir.model.button,string:importer_update_source_columns_button"
+msgid "Update Source Columns"
+msgstr "Forrásoszlopok frissítése"
+
+msgctxt "model:ir.ui.menu,name:menu_import_wizard"
+msgid "Import"
+msgstr "Beolvasás"
+
+msgctxt "model:ir.ui.menu,name:menu_importer"
+msgid "Importer"
+msgstr "Importáló"
+
+msgctxt "model:ir.ui.menu,name:menu_importers"
+msgid "Importers"
+msgstr "Importálók"
+
+msgctxt "model:res.group,name:group_importer"
+msgid "Importer"
+msgstr "Importáló"
+
+msgctxt "selection:importer,data_source:"
+msgid "Copy & Paste"
+msgstr "Másolás és beillesztés"
+
+msgctxt "selection:importer,data_source:"
+msgid "File"
+msgstr "Fájl"
+
+msgctxt "selection:importer,data_source:"
+msgid "SQL"
+msgstr "SQL"
+
+msgctxt "selection:importer,data_source:"
+msgid "URL"
+msgstr "URL"
+
+msgctxt "selection:importer,on_error:"
+msgid "Log"
+msgstr "Napló"
+
+msgctxt "selection:importer,on_error:"
+msgid "Raise Error"
+msgstr "Hiba jelzése"
+
+msgctxt "selection:importer,on_error:"
+msgid "Skip"
+msgstr "Kihagyás"
+
+msgctxt "selection:importer,sql_source:"
+msgid "PSQL"
+msgstr "PSQL"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "Copy & Paste"
+msgstr "Másolás és beillesztés"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "File"
+msgstr "Fájl"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "SQL"
+msgstr "SQL"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "URL"
+msgstr "URL"
+
+msgctxt "selection:importer.log,on_error:"
+msgid "Log"
+msgstr "Napló"
+
+msgctxt "selection:importer.log,on_error:"
+msgid "Raise Error"
+msgstr "Hiba jelzése"
+
+msgctxt "selection:importer.log,on_error:"
+msgid "Skip"
+msgstr "Kihagyás"
+
+msgctxt "selection:importer.log,type:"
+msgid "Generic"
+msgstr "Általános"
+
+msgctxt "selection:importer.log,type:"
+msgid "Specific"
+msgstr "Specifikus"
+
+msgctxt "selection:importer.log,type:"
+msgid "Success"
+msgstr "Sikeres"
+
+msgctxt "view:importer.import.ask.error:"
+msgid ""
+"Some records may have been imported but several errors occurred. See the "
+"\"Import Errors\" window for details."
+msgstr ""
+"Lehetséges, hogy egyes rekordok importálva lettek, de több hiba történt. A "
+"részletek az „Importálási hibák” ablakban találhatók."
+
+msgctxt "view:importer:"
+msgid "File columns"
+msgstr "Fájl oszlopai"
+
+msgctxt "view:importer:"
+msgid "Importer columns"
+msgstr "Importáló oszlopai"
+
+msgctxt "wizard_button:importer.ask_and_import,ask,end:"
+msgid "Cancel"
+msgstr "Mégse"
+
+msgctxt "wizard_button:importer.ask_and_import,ask,import_:"
+msgid "Import"
+msgstr "Beolvasás"
+
+msgctxt "wizard_button:importer.ask_and_import,error_form,end:"
+msgid "Ok"
+msgstr "Rendben"
+
+msgctxt "field:importer.account.asset,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.account.asset,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.account.chart,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.account.chart,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.account.fiscalyear,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.account.fiscalyear,move_sequence_name:"
+msgid "Move Sequence Name"
+msgstr "Könyvelési tétel számsorozatának neve"
+
+msgctxt "field:importer.account.fiscalyear,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.account.journal,code:"
+msgid "Code"
+msgstr "Kód"
+
+msgctxt "field:importer.account.journal,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.account.journal,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.account.journal,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.account.journal,type:"
+msgid "Type"
+msgstr "Típus"
+
+msgctxt "field:importer.account.move,post_date:"
+msgid "Post Date"
+msgstr "Teljesítés dátuma"
+
+msgctxt "field:importer.bank.account,iban:"
+msgid "IBAN"
+msgstr "IBAN"
+
+msgctxt "field:importer.bank.account,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.bank.account,owner_codes:"
+msgid "Owner Codes"
+msgstr "Tulajdonosok kódjai"
+
+msgctxt "field:importer.bank.account,owner_names:"
+msgid "Owner Names"
+msgstr "Tulajdonosok nevei"
+
+msgctxt "field:importer.bank.account,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.bank,bic:"
+msgid "BIC"
+msgstr "BIC"
+
+msgctxt "field:importer.bank,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.bank,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.bank,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.company,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.company,party_code:"
+msgid "Party code"
+msgstr "Partner kódja"
+
+msgctxt "field:importer.company,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.country,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.country,name:"
+msgid "name"
+msgstr "név"
+
+msgctxt "field:importer.country.postal_codes,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.country.postal_codes,name:"
+msgid "name"
+msgstr "név"
+
+msgctxt "field:importer.country.postal_codes,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.country,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.currency,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.currency,name:"
+msgid "name"
+msgstr "név"
+
+msgctxt "field:importer.currency,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.employee,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.employee,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.invoice,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.invoice,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.language,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.language,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.location,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.location,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.order_point,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.order_point,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.party,active:"
+msgid "Active"
+msgstr "Aktív"
+
+msgctxt "field:importer.party,agent:"
+msgid "Agent (code)"
+msgstr "Ügynök (kód)"
+
+msgctxt "field:importer.party.configuration,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.party.configuration,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.party.credit,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.party.credit,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.party,customer:"
+msgid "Customer"
+msgstr "Vevő"
+
+msgctxt "field:importer.party,default_payable_bank_account:"
+msgid "Default payable bank account"
+msgstr "Alapértelmezett kifizetési bankszámla"
+
+msgctxt "field:importer.party,default_payable_company_bank_account:"
+msgid "Default payable company  Bank Account"
+msgstr "Alapértelmezett vállalati kifizetési bankszámla"
+
+msgctxt "field:importer.party,default_receivable_bank_account:"
+msgid "Default receivable bank account"
+msgstr "Alapértelmezett beszedési bankszámla"
+
+msgctxt "field:importer.party,default_receivable_company_bank_account:"
+msgid "Default receivable company Bank Account"
+msgstr "Alapértelmezett vállalati beszedési bankszámla"
+
+msgctxt "field:importer.party,incoterm_name:"
+msgid "Incoterm Name"
+msgstr "Incoterm neve"
+
+msgctxt "field:importer.party,incoterm_place:"
+msgid "Incoterm Place"
+msgstr "Incoterm helye"
+
+msgctxt "field:importer.party,incoterm_purchase_name:"
+msgid "Incoterm Purchase Name"
+msgstr "Beszerzési Incoterm neve"
+
+msgctxt "field:importer.party,incoterm_purchase_place:"
+msgid "Incoterm Purchase Place"
+msgstr "Beszerzési Incoterm helye"
+
+msgctxt "field:importer.party,sii_identifier_type:"
+msgid "SII Identification Type"
+msgstr "SII-azonosítás típusa"
+
+msgctxt "field:importer.party,supplier:"
+msgid "Supplier"
+msgstr "Szállító"
+
+msgctxt "field:importer.price_list,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.price_list,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.product,alcohol_content:"
+msgid "Alcohol Content"
+msgstr "Alkoholtartalom"
+
+msgctxt "field:importer.product,bom_route:"
+msgid "BOM Route"
+msgstr "Darabjegyzék műveletterve"
+
+msgctxt "field:importer.product,brand_product_identifier:"
+msgid "Brand Product Identifier"
+msgstr "Márka termékazonosítója"
+
+msgctxt "field:importer.product_codes,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.product_codes,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.product.configuration,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.product.configuration,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.product.customer,code:"
+msgid "Code"
+msgstr "Kód"
+
+msgctxt "field:importer.product.customer,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.product.customer,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.product.customer,party:"
+msgid "Party"
+msgstr "Ügyfél"
+
+msgctxt "field:importer.product.customer,product:"
+msgid "Product"
+msgstr "Termék"
+
+msgctxt "field:importer.product.customer,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.product.customer,template:"
+msgid "Template"
+msgstr "Sablon"
+
+msgctxt "field:importer.product,ean:"
+msgid "EAN"
+msgstr "EAN"
+
+msgctxt "field:importer.production.bom,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.production.bom,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.production.configuration,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.production.configuration,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.production_routes,calculation:"
+msgid "Calculation"
+msgstr "Számítás"
+
+msgctxt "field:importer.production_routes,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.production_routes,name:"
+msgid "Route name"
+msgstr "Műveletterv neve"
+
+msgctxt "field:importer.production_routes,notes:"
+msgid "Notes"
+msgstr "Jegyzetek"
+
+msgctxt "field:importer.production_routes,operation_type:"
+msgid "Operation Type"
+msgstr "Ügylet típusa"
+
+msgctxt "field:importer.production_routes,quantity:"
+msgid "Quantity"
+msgstr "Mennyiség"
+
+msgctxt "field:importer.production_routes,quantity_uom:"
+msgid "Quantity Uom"
+msgstr "Mennyiség mértékegysége"
+
+msgctxt "field:importer.production_routes,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.production_routes,sequence:"
+msgid "Sequence"
+msgstr "Sorszám"
+
+msgctxt "field:importer.production_routes,subcontracted_product:"
+msgid "Subcontract Product"
+msgstr "Alvállalkozói termék"
+
+msgctxt "field:importer.production_routes,time_:"
+msgid "Time (minutes)"
+msgstr "Idő (perc)"
+
+msgctxt "field:importer.production_routes,uom:"
+msgid "Uom"
+msgstr "Mértékegység"
+
+msgctxt "field:importer.production_routes,workcenter_category:"
+msgid "Work Center Category"
+msgstr "Munkahelyközpont kategóriája"
+
+msgctxt "field:importer.product,manufacturer_part_identifier:"
+msgid "Manufacturer Part Identifier"
+msgstr "Gyártói alkatrészazonosító"
+
+msgctxt "field:importer.product,packages:"
+msgid "Packages"
+msgstr "Csomagok"
+
+msgctxt "field:importer.product.supplier,company:"
+msgid "Company"
+msgstr "Cég"
+
+msgctxt "field:importer.product,volume:"
+msgid "Volume (m3)"
+msgstr "Térfogat (m3)"
+
+msgctxt "field:importer.product,weight:"
+msgid "Weight (kg)"
+msgstr "Tömeg (kg)"
+
+msgctxt "field:importer.purchase.configuration,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.purchase.configuration,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.purchase,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.purchase,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.role,groups:"
+msgid "Groups"
+msgstr "Csoportok"
+
+msgctxt "field:importer.role,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.role,name:"
+msgid "Name"
+msgstr "Név"
+
+msgctxt "field:importer.role,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.sale.configuration,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.sale.configuration,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.sale,discount:"
+msgid "Discount"
+msgstr "Engedmény"
+
+msgctxt "field:importer.sequence,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.sequence,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.spanish_bank,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.spanish_bank,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "field:importer.user,metadata:"
+msgid "Metadata"
+msgstr "Metaadatok"
+
+msgctxt "field:importer.user,row_number:"
+msgid "Row Number"
+msgstr "Sorszám"
+
+msgctxt "help:importer,commit_chunks:"
+msgid ""
+"By default, data is committed at the very end of the process. However, for "
+"very large imports, committing can improve performance."
+msgstr ""
+"Alapértelmezés szerint az adatok véglegesítése a folyamat legvégén történik."
+" Nagyon nagy importálásoknál azonban a köztes véglegesítés javíthatja a "
+"teljesítményt."
+
+msgctxt "help:importer,data_start_row:"
+msgid ""
+"Spreadsheet row number where actual data starts. If headers are used, the "
+"header is assumed to be on the previous row."
+msgstr ""
+"A tényleges adatokat kezdő táblázatsor száma. Fejléc használatakor a "
+"fejlécet az előző sorban feltételezi."
+
+msgctxt "help:importer.production_routes,calculation:"
+msgid "standard/fixed"
+msgstr "standard/fixed"
+
+msgctxt "help:importer.production_routes,time_:"
+msgid "In minutes"
+msgstr "Percben"
+
+msgctxt "help:importer.product.supplier,company:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort "
+"records by company prior to import for better performance."
+msgstr ""
+"A vállalatmezővel vállalatfüggő mezők állíthatók be. A jobb teljesítmény "
+"érdekében importálás előtt rendezze a rekordokat vállalat szerint."
+
+msgctxt "help:importer.role,groups:"
+msgid "Comma separated list of group names"
+msgstr "Csoportnevek vesszővel elválasztott listája"
+
+msgctxt "help:importer,use_subtransactions:"
+msgid ""
+"Subtransactions make the import process more robust, allowing it to recover "
+"from database errors but can be slower when importing many thousands of "
+"records."
+msgstr ""
+"Az altranzakciók megbízhatóbbá teszik az importálást, lehetővé téve az "
+"adatbázishibák utáni helyreállítást, de több ezer rekord importálásakor "
+"lassabbak lehetnek."
+
+msgctxt "model:importer.account.asset,string:"
+msgid "Importer Account Asset"
+msgstr "Eszközimportáló"
+
+msgctxt "model:importer.account.journal,string:"
+msgid "Importer Account Journal"
+msgstr "Könyvelési napló importálója"
+
+msgctxt "model:importer.account.move,string:"
+msgid "Importer Account Move"
+msgstr "Könyvelésitétel-importáló"
+
+msgctxt "model:importer.bank.account,string:"
+msgid "Importer Bank Account"
+msgstr "Bankszámla-importáló"
+
+msgctxt "model:importer.bank,name:"
+msgid "Importer Bank"
+msgstr "Bankimportáló"
+
+msgctxt "model:importer.bank,string:"
+msgid "Importer Bank"
+msgstr "Bankimportáló"
+
+msgctxt "model:importer.carrier,string:"
+msgid "Importer Carrier"
+msgstr "Fuvarozóimportáló"
+
+msgctxt "model:importer.column,string:"
+msgid "Importer Column"
+msgstr "Importáló oszlopa"
+
+msgctxt "model:importer.company,string:"
+msgid "Importer Company"
+msgstr "Vállalatimportáló"
+
+msgctxt "model:importer.country,string:"
+msgid "Importer Country"
+msgstr "Országimportáló"
+
+msgctxt "model:importer.currency,string:"
+msgid "Importer Currency"
+msgstr "Pénznemimportáló"
+
+msgctxt "model:importer.invoice,string:"
+msgid "Importer Invoice"
+msgstr "Számlaimportáló"
+
+msgctxt "model:importer.language,string:"
+msgid "Importer Language"
+msgstr "Nyelvimportáló"
+
+msgctxt "model:importer.location,string:"
+msgid "Importer Location"
+msgstr "Helyimportáló"
+
+msgctxt "model:importer.log,string:"
+msgid "Importer Log"
+msgstr "Importáló naplója"
+
+msgctxt "model:importer.lot,string:"
+msgid "Importer Lot"
+msgstr "Tételimportáló"
+
+msgctxt "model:importer.meta,string:"
+msgid "Importer Meta"
+msgstr "Importáló metaadatai"
+
+msgctxt "model:importer.party.configuration,string:"
+msgid "Importer Party Configuration"
+msgstr "Partnerbeállítások importálója"
+
+msgctxt "model:importer.party.credit,string:"
+msgid "Importer Party Credit"
+msgstr "Partnerhitel-importáló"
+
+msgctxt "model:importer.party,string:"
+msgid "Importer Party"
+msgstr "Partnerimportáló"
+
+msgctxt "model:importer.price_list,string:"
+msgid "Importer Price List"
+msgstr "Árlista-importáló"
+
+msgctxt "model:importer.product.configuration,string:"
+msgid "Importer Product Configuration"
+msgstr "Termékbeállítások importálója"
+
+msgctxt "model:importer.product.customer,string:"
+msgid "Importer Product Customer"
+msgstr "Termékvevő-importáló"
+
+msgctxt "model:importer.production.bom,string:"
+msgid "Importer Production Bom"
+msgstr "Gyártási darabjegyzék importálója"
+
+msgctxt "model:importer.production.configuration,string:"
+msgid "Importer Production Configuration"
+msgstr "Gyártási beállítások importálója"
+
+msgctxt "model:importer.production_routes,name:"
+msgid "Importer Stock Move"
+msgstr "Készletmozgás-importáló"
+
+msgctxt "model:importer.product,string:"
+msgid "Importer Product"
+msgstr "Termékimportáló"
+
+msgctxt "model:importer.product.supplier,string:"
+msgid "Importer Product Supplier"
+msgstr "Termékszállító-importáló"
+
+msgctxt "model:importer.purchase.configuration,string:"
+msgid "Importer Purchase Configuration"
+msgstr "Beszerzési beállítások importálója"
+
+msgctxt "model:importer.purchase,string:"
+msgid "Importer Purchase"
+msgstr "Beszerzésimportáló"
+
+msgctxt "model:importer.role,name:"
+msgid "Importer Role"
+msgstr "Szerepkör-importáló"
+
+msgctxt "model:importer.role,string:"
+msgid "Importer Role"
+msgstr "Szerepkör-importáló"
+
+msgctxt "model:importer.sale.configuration,string:"
+msgid "Importer Sale Configuration"
+msgstr "Értékesítési beállítások importálója"
+
+msgctxt "model:importer.sale,string:"
+msgid "Importer Sale"
+msgstr "Értékesítésimportáló"
+
+msgctxt "model:importer.source_column,string:"
+msgid "Importer Source Column"
+msgstr "Importáló forrásoszlopa"
+
+msgctxt "model:importer.spanish_bank,name:"
+msgid "Importer Spanish Bank"
+msgstr "Spanyol bank importálója"
+
+msgctxt "model:importer.spanish_bank,string:"
+msgid "Importer Spanish Bank"
+msgstr "Spanyol bank importálója"
+
+msgctxt "model:importer.stock.move,string:"
+msgid "Importer Stock Move"
+msgstr "Készletmozgás-importáló"
+
+msgctxt "model:importer,string:"
+msgid "Importer"
+msgstr "Importáló"
+
+msgctxt "model:importer.user,string:"
+msgid "Importer User"
+msgstr "Felhasználó-importáló"
+
+#, python-format
+msgctxt "model:ir.message,text:agent_not_found"
+msgid "Agent not found for Agent %(agent)s and plan %(plan)s."
+msgstr ""
+"Nem található ügynök a(z) %(agent)s ügynökhöz és a(z) %(plan)s tervhez."
+
+msgctxt "model:ir.message,text:msg_bank_name_required"
+msgid "The bank name is required."
+msgstr "A bank neve kötelező."
