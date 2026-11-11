@@ -260,4 +260,18 @@
         </record>
 
     </data>
+    <data>
+        <record model="ir.action-res.group" id="ask_and_import_group_importer">
+            <field name="action" ref="act_ask_and_import_wizard"/>
+            <field name="group" ref="group_importer"/>
+        </record>
+        <record model="ir.action-res.group" id="import_sample_group_importer">
+            <field name="action" ref="act_import_sample_wizard"/>
+            <field name="group" ref="group_importer"/>
+        </record>
+        <record model="ir.action-res.group" id="import_group_importer">
+            <field name="action" ref="act_import_wizard"/>
+            <field name="group" ref="group_importer"/>
+        </record>
+    </data>
 </tryton>
