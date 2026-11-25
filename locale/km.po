@@ -1,0 +1,3671 @@
+#
+msgid ""
+msgstr ""
+"Language: km\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "field:importer,binary_data:"
+msgid "Data"
+msgstr "ទិន្នន័យ"
+
+msgctxt "field:importer,binary_file_name:"
+msgid "Binary File Name"
+msgstr "ឈ្មោះឯកសារទិន្នន័យគោលពីរ"
+
+msgctxt "field:importer,columns:"
+msgid "Columns"
+msgstr "ជួរឈរ"
+
+msgctxt "field:importer,data_source:"
+msgid "Data Source"
+msgstr "ប្រភពទិន្នន័យ"
+
+msgctxt "field:importer,data_source_visible:"
+msgid "Data Source Visible"
+msgstr "បង្ហាញប្រភពទិន្នន័យ"
+
+msgctxt "field:importer,database:"
+msgid "Database"
+msgstr "មូលដ្ឋានទិន្នន័យ"
+
+msgctxt "field:importer,deletes:"
+msgid "Deletes"
+msgstr "កំណត់ត្រាលុប"
+
+msgctxt "field:importer,use_subtransactions:"
+msgid "Use Subtransactions"
+msgstr "ប្រើប្រតិបត្តិការរង"
+
+msgctxt "field:importer,commit_chunks:"
+msgid "Commit Chunks"
+msgstr "រក្សាទុកជាបណ្ដុំ"
+
+msgctxt "field:importer,elapsed:"
+msgid "Elapsed Time"
+msgstr "រយៈពេលដែលបានកន្លងផុត"
+
+msgctxt "field:importer,errors:"
+msgid "Errors"
+msgstr "កំហុស"
+
+msgctxt "field:importer,has_header:"
+msgid "Has Header?"
+msgstr "មានបឋមកថាឬ?"
+
+msgctxt "field:importer,language:"
+msgid "Language"
+msgstr "ភាសា"
+
+msgctxt "field:importer,log_success:"
+msgid "Log Success"
+msgstr "កត់ត្រាប្រតិបត្តិការជោគជ័យ"
+
+msgctxt "field:importer,logs:"
+msgid "Log"
+msgstr "កំណត់ហេតុ"
+
+msgctxt "field:importer,method:"
+msgid "Format"
+msgstr "ទម្រង់"
+
+msgctxt "field:importer,model:"
+msgid "Model"
+msgstr "ម៉ូដែល"
+
+msgctxt "field:importer,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer,on_error:"
+msgid "On Error"
+msgstr "នៅពេលមានកំហុស"
+
+msgctxt "field:importer,password:"
+msgid "Password"
+msgstr "ពាក្យសម្ងាត់"
+
+msgctxt "field:importer,requires_records:"
+msgid "Requires Records"
+msgstr "តម្រូវឱ្យមានកំណត់ត្រា"
+
+msgctxt "field:importer,sample_size:"
+msgid "Sample Size"
+msgstr "ចំនួនកំណត់ត្រាគំរូ"
+
+msgctxt "field:importer,sample_offset:"
+msgid "Sample Offset"
+msgstr "ចំនួនកំណត់ត្រាដែលត្រូវរំលងពេលសាកល្បង"
+
+msgctxt "field:importer,data_start_row:"
+msgid "Data Start Row"
+msgstr "ជួរដេកចាប់ផ្ដើមទិន្នន័យ"
+
+msgctxt "field:importer,schema:"
+msgid "Schema"
+msgstr "គ្រោងទិន្នន័យ"
+
+msgctxt "field:importer,server:"
+msgid "Server"
+msgstr "ម៉ាស៊ីនមេ"
+
+msgctxt "field:importer,source_columns:"
+msgid "Source Columns"
+msgstr "ជួរឈរប្រភព"
+
+msgctxt "field:importer,sql_data:"
+msgid "SQL Queries"
+msgstr "សំណួរ SQL"
+
+msgctxt "field:importer,sql_source:"
+msgid "SQL Source"
+msgstr "ប្រភព SQL"
+
+msgctxt "field:importer,template:"
+msgid "Template"
+msgstr "គំរូ"
+
+msgctxt "field:importer,text_data:"
+msgid "Data"
+msgstr "ទិន្នន័យ"
+
+msgctxt "field:importer,url_data:"
+msgid "Data URL"
+msgstr "URL ទិន្នន័យ"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_url_data"
+msgid "Could not load data from URL \"%(url)s\": %(error)s."
+msgstr "មិនអាចផ្ទុកទិន្នន័យពី URL «%(url)s» បានទេ៖ %(error)s។"
+
+msgctxt "field:importer,sheet_number:"
+msgid "Sheet Number"
+msgstr "លេខសន្លឹក"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_sheet_not_found"
+msgid "Sheet \"%(sheet)s\" not found in the selected file."
+msgstr "រកមិនឃើញសន្លឹក «%(sheet)s» ក្នុងឯកសារដែលបានជ្រើសទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_google_drive_quota_exceeded"
+msgid ""
+"Google Drive returned a quota exceeded page instead of the file for URL "
+"\"%(url)s\"."
+msgstr ""
+"សម្រាប់ URL «%(url)s» Google Drive បានផ្ដល់ទំព័រជូនដំណឹងថាប្រើលើសកូតា "
+"ជំនួសឱ្យឯកសារ។"
+
+msgctxt "field:importer,use_header:"
+msgid "Use Header?"
+msgstr "តើប្រើបឋមកថាឬ?"
+
+msgctxt "field:importer,user:"
+msgid "User"
+msgstr "អ្នកប្រើប្រាស់"
+
+msgctxt "field:importer,where:"
+msgid "Where"
+msgstr "លក្ខខណ្ឌចម្រោះ"
+
+msgctxt "field:importer.account.asset,analytic_account:"
+msgid "Analytic Account"
+msgstr "គណនីវិភាគ"
+
+msgctxt "field:importer.account.asset,comment:"
+msgid "Comment"
+msgstr "មតិយោបល់"
+
+msgctxt "field:importer.account.asset,current_value:"
+msgid "Current Value"
+msgstr "តម្លៃបច្ចុប្បន្ន"
+
+msgctxt "field:importer.account.asset,depreciated_amount:"
+msgid "Depreciated Amount"
+msgstr "ចំនួនទឹកប្រាក់ដែលបានរំលស់"
+
+msgctxt "field:importer.account.asset,end_date:"
+msgid "End Date"
+msgstr "កាលបរិច្ឆេទបញ្ចប់"
+
+msgctxt "field:importer.account.asset,number:"
+msgid "Number"
+msgstr "លេខ"
+
+msgctxt "field:importer.account.asset,product_code:"
+msgid "Product Code"
+msgstr "កូដផលិតផល"
+
+msgctxt "field:importer.account.asset,product_name:"
+msgid "Product Name"
+msgstr "ឈ្មោះផលិតផល"
+
+msgctxt "field:importer.account.asset,purchase_date:"
+msgid "Purchase Date"
+msgstr "កាលបរិច្ឆេទទិញ"
+
+msgctxt "field:importer.account.asset,residual_value:"
+msgid "Residual Value"
+msgstr "តម្លៃសំណល់"
+
+msgctxt "field:importer.account.asset,start_date:"
+msgid "Start Date"
+msgstr "កាលបរិច្ឆេទចាប់ផ្តើម"
+
+msgctxt "field:importer.account.asset,value:"
+msgid "Value"
+msgstr "តម្លៃ"
+
+msgctxt "field:importer.account.chart,chart_name:"
+msgid "Chart Name"
+msgstr "ឈ្មោះប្លង់គណនី"
+
+msgctxt "field:importer.account.chart,company_name:"
+msgid "Company Name"
+msgstr "ឈ្មោះក្រុមហ៊ុន"
+
+msgctxt "field:importer.account.chart,digits:"
+msgid "Digits"
+msgstr "ខ្ទង់"
+
+msgctxt "field:importer.account.chart,payable_code:"
+msgid "Payable Code"
+msgstr "លេខកូដគណនីត្រូវបង់"
+
+msgctxt "field:importer.account.chart,receivable_code:"
+msgid "Receivable Code"
+msgstr "លេខកូដគណនីត្រូវទទួល"
+
+msgctxt "field:importer.account.fiscalyear,company_name:"
+msgid "Company Name"
+msgstr "ឈ្មោះក្រុមហ៊ុន"
+
+msgctxt "field:importer.account.fiscalyear,end_date:"
+msgid "End Date"
+msgstr "កាលបរិច្ឆេទបញ្ចប់"
+
+msgctxt "field:importer.account.fiscalyear,in_credit_note_sequence_name:"
+msgid "In Credit Note Sequence Name"
+msgstr "ឈ្មោះលំដាប់លេខប័ណ្ណឥណទានទទួល"
+
+msgctxt "field:importer.account.fiscalyear,in_invoice_sequence_name:"
+msgid "In Invoice Sequence Name"
+msgstr "ឈ្មោះលំដាប់លេខវិក្កយបត្រទទួល"
+
+msgctxt "field:importer.account.fiscalyear,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.account.fiscalyear,out_credit_note_sequence_name:"
+msgid "Out Credit Note Sequence Name"
+msgstr "ឈ្មោះលំដាប់លេខប័ណ្ណឥណទានចេញ"
+
+msgctxt "field:importer.account.fiscalyear,out_invoice_sequence_name:"
+msgid "Out Invoice Sequence Name"
+msgstr "ឈ្មោះលំដាប់លេខវិក្កយបត្រចេញ"
+
+msgctxt "field:importer.account.fiscalyear,post_move_sequence_name:"
+msgid "Post Move Sequence Name"
+msgstr "ឈ្មោះលំដាប់លេខបញ្ជីកត់ត្រាដែលបានកត់ចូលគណនី"
+
+msgctxt "field:importer.account.fiscalyear,start_date:"
+msgid "Start Date"
+msgstr "កាលបរិច្ឆេទចាប់ផ្តើម"
+
+msgctxt "field:importer.account.move,account_code:"
+msgid "Account Code"
+msgstr "កូដគណនី"
+
+msgctxt "field:importer.account.move,account_name:"
+msgid "Account Name"
+msgstr "ឈ្មោះគណនី"
+
+msgctxt "field:importer.account.move,analytic_account:"
+msgid "Analytic Account"
+msgstr "គណនីវិភាគ"
+
+msgctxt "field:importer.account.move,company_name:"
+msgid "Company Name"
+msgstr "ឈ្មោះក្រុមហ៊ុន"
+
+msgctxt "field:importer.account.move,credit:"
+msgid "Credit"
+msgstr "ឥណទាន"
+
+msgctxt "field:importer.account.move,debit:"
+msgid "Debit"
+msgstr "ឥណពន្ធ"
+
+msgctxt "field:importer.account.move,description:"
+msgid "Description"
+msgstr "សេចក្តីពិពណ៌នា"
+
+msgctxt "field:importer.account.move,effective_date:"
+msgid "Effecive Date"
+msgstr "កាលបរិច្ឆេទមានប្រសិទ្ធភាព"
+
+msgctxt "field:importer.account.move,journal_code:"
+msgid "Journal Code"
+msgstr "លេខកូដទិនានុប្បវត្តិ"
+
+msgctxt "field:importer.account.move,maturity_date:"
+msgid "Maturity Date"
+msgstr "កាលបរិច្ឆេទដល់កំណត់"
+
+msgctxt "field:importer.account.move,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.account.move,number:"
+msgid "Move Number"
+msgstr "លេខកំណត់ត្រាគណនេយ្យ"
+
+msgctxt "field:importer.account.move,party_code:"
+msgid "Party Code"
+msgstr "កូដភាគី"
+
+msgctxt "field:importer.account.move,party_name:"
+msgid "Party Name"
+msgstr "ឈ្មោះភាគី"
+
+msgctxt "field:importer.account.move,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.address.facturae,facturae_person_type:"
+msgid "Facturae Person Type"
+msgstr "ប្រភេទបុគ្គលក្នុង Facturae"
+
+msgctxt "field:importer.address.facturae,facturae_residence_type:"
+msgid "Facturae Residence Type"
+msgstr "ប្រភេទទីលំនៅក្នុង Facturae"
+
+msgctxt "field:importer.address.facturae,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.address.facturae,oficina_contable:"
+msgid "Oficina Contable"
+msgstr "ការិយាល័យគណនេយ្យ"
+
+msgctxt "field:importer.address.facturae,organo_gestor:"
+msgid "Organo Gestor"
+msgstr "អង្គភាពគ្រប់គ្រង"
+
+msgctxt "field:importer.address.facturae,party:"
+msgid "Party"
+msgstr "ភាគី"
+
+msgctxt "field:importer.address.facturae,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.address.facturae,unidad_tramitadora:"
+msgid "Unidad Tramitadora"
+msgstr "អង្គភាពដំណើរការឯកសារ"
+
+msgctxt "field:importer.carrier,carrier_cost_method:"
+msgid "Carrier Cost Method"
+msgstr "វិធីគណនាថ្លៃដឹកជញ្ជូន"
+
+msgctxt "field:importer.carrier,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.carrier,party:"
+msgid "Party"
+msgstr "ភាគី"
+
+msgctxt "field:importer.carrier,product:"
+msgid "Product"
+msgstr "ផលិតផល"
+
+msgctxt "field:importer.carrier,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.carrier,shipment_cost_allocation_method:"
+msgid "Shipment Cost Allocation Method"
+msgstr "វិធីបែងចែកថ្លៃដឹកជញ្ជូន"
+
+msgctxt "field:importer.column,examples:"
+msgid "Examples"
+msgstr "ឧទាហរណ៍"
+
+msgctxt "field:importer.column,field:"
+msgid "Field"
+msgstr "វាល"
+
+msgctxt "field:importer.column,format:"
+msgid "Format"
+msgstr "ទម្រង់"
+
+msgctxt "field:importer.column,importer:"
+msgid "Importation"
+msgstr "ការនាំចូល"
+
+msgctxt "field:importer.column,model:"
+msgid "Model"
+msgstr "ម៉ូដែល"
+
+msgctxt "field:importer.column,name:"
+msgid "Column Name"
+msgstr "ឈ្មោះជួរឈរ"
+
+msgctxt "field:importer.column,value:"
+msgid "Value"
+msgstr "តម្លៃ"
+
+msgctxt "field:importer.company,currency:"
+msgid "Currency"
+msgstr "រូបិយប័ណ្ណ"
+
+msgctxt "field:importer.company,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.company,timezone:"
+msgid "timezone"
+msgstr "តំបន់ម៉ោង"
+
+msgctxt "field:importer.employee,company:"
+msgid "Company"
+msgstr "ក្រុមហ៊ុន"
+
+msgctxt "field:importer.employee,end_date:"
+msgid "End Date"
+msgstr "កាលបរិច្ឆេទបញ្ចប់"
+
+msgctxt "field:importer.employee,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.employee,start_date:"
+msgid "Start Date"
+msgstr "កាលបរិច្ឆេទចាប់ផ្តើម"
+
+msgctxt "field:importer.employee,supervisor:"
+msgid "Supervisor"
+msgstr "អ្នកគ្រប់គ្រង"
+
+msgctxt "field:importer.farm.abort.event,animal:"
+msgid "Animal"
+msgstr "សត្វ"
+
+msgctxt "field:importer.farm.abort.event,farm:"
+msgid "Farm"
+msgstr "កសិដ្ឋាន"
+
+msgctxt "field:importer.farm.abort.event,notes:"
+msgid "Notes"
+msgstr "កំណត់ចំណាំ"
+
+msgctxt "field:importer.farm.abort.event,timestamp:"
+msgid "Timestamp"
+msgstr "ត្រាពេលវេលា"
+
+msgctxt "field:importer.farm.animal,animal_type:"
+msgid "Animal Type"
+msgstr "ប្រភេទសត្វ"
+
+msgctxt "field:importer.farm.animal,arrival_date:"
+msgid "Arrival Date"
+msgstr "កាលបរិច្ឆេទមកដល់"
+
+msgctxt "field:importer.farm.animal,breed:"
+msgid "Breed"
+msgstr "ពូជ"
+
+msgctxt "field:importer.farm.animal,initial_location:"
+msgid "Initial Location"
+msgstr "ទីតាំងដំបូង"
+
+msgctxt "field:importer.farm.animal,number:"
+msgid "Number"
+msgstr "លេខ"
+
+msgctxt "field:importer.farm.animal,origin:"
+msgid "Origin"
+msgstr "ប្រភពដើម"
+
+msgctxt "field:importer.farm.animal,sex:"
+msgid "Sex"
+msgstr "ភេទ"
+
+msgctxt "field:importer.farm.farrowing.event,animal:"
+msgid "Animal"
+msgstr "សត្វ"
+
+msgctxt "field:importer.farm.farrowing.event,child_birthdate:"
+msgid "Child Birthdate"
+msgstr "ថ្ងៃកំណើតកូនសត្វ"
+
+msgctxt "field:importer.farm.farrowing.event,child_number:"
+msgid "Child Number"
+msgstr "លេខសម្គាល់កូនសត្វ"
+
+msgctxt "field:importer.farm.farrowing.event,child_sex:"
+msgid "Child Sex"
+msgstr "ភេទកូនសត្វ"
+
+msgctxt "field:importer.farm.farrowing.event,child_tags:"
+msgid "Child Tags"
+msgstr "ស្លាកកូនសត្វ"
+
+msgctxt "field:importer.farm.farrowing.event,child_weight:"
+msgid "Child Weight"
+msgstr "ទម្ងន់កូនសត្វ"
+
+msgctxt "field:importer.farm.farrowing.event,farm:"
+msgid "Farm"
+msgstr "កសិដ្ឋាន"
+
+msgctxt "field:importer.farm.farrowing.event,live:"
+msgid "Live"
+msgstr "កើតរស់"
+
+msgctxt "field:importer.farm.farrowing.event,problem:"
+msgid "Problem"
+msgstr "បញ្ហា"
+
+msgctxt "field:importer.farm.farrowing.event,timestamp:"
+msgid "Timestamp"
+msgstr "ត្រាពេលវេលា"
+
+msgctxt "field:importer.farm.insemination.event,animal:"
+msgid "Animal"
+msgstr "សត្វ"
+
+msgctxt "field:importer.farm.insemination.event,dose_bom:"
+msgid "Dose BOM"
+msgstr "បញ្ជីសម្ភារៈ (BOM) សម្រាប់ដូស"
+
+msgctxt "field:importer.farm.insemination.event,farm:"
+msgid "Farm"
+msgstr "កសិដ្ឋាន"
+
+msgctxt "field:importer.farm.insemination.event,timestamp:"
+msgid "Timestamp"
+msgstr "ត្រាពេលវេលា"
+
+msgctxt "field:importer.farm.medication.event,animal:"
+msgid "Animal"
+msgstr "សត្វ"
+
+msgctxt "field:importer.farm.medication.event,end_date:"
+msgid "End Date"
+msgstr "កាលបរិច្ឆេទបញ្ចប់"
+
+msgctxt "field:importer.farm.medication.event,feed_location:"
+msgid "Feed Location"
+msgstr "ទីតាំងចំណីសត្វ"
+
+msgctxt "field:importer.farm.medication.event,feed_lot:"
+msgid "Feed Lot"
+msgstr "ឡូត៍ចំណីសត្វ"
+
+msgctxt "field:importer.farm.medication.event,feed_product:"
+msgid "Feed Product"
+msgstr "ផលិតផលចំណីសត្វ"
+
+msgctxt "field:importer.farm.medication.event,feed_quantity:"
+msgid "Feed Quantity"
+msgstr "បរិមាណចំណីសត្វ"
+
+msgctxt "field:importer.farm.medication.event,timestamp:"
+msgid "Timestamp"
+msgstr "ត្រាពេលវេលា"
+
+msgctxt "field:importer.farm.move.event,animal:"
+msgid "Animal"
+msgstr "សត្វ"
+
+msgctxt "field:importer.farm.move.event,farm:"
+msgid "Farm"
+msgstr "កសិដ្ឋាន"
+
+msgctxt "field:importer.farm.move.event,notes:"
+msgid "Notes"
+msgstr "កំណត់ចំណាំ"
+
+msgctxt "field:importer.farm.move.event,timestamp:"
+msgid "Date & Time"
+msgstr "កាលបរិច្ឆេទ និងពេលវេលា"
+
+msgctxt "field:importer.farm.move.event,to_location:"
+msgid "To Location"
+msgstr "ទីតាំងគោលដៅ"
+
+msgctxt "field:importer.farm.move.event,weight:"
+msgid "Weight"
+msgstr "ទម្ងន់"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,animal:"
+msgid "Animal"
+msgstr "សត្វ"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,farm:"
+msgid "Farm"
+msgstr "កសិដ្ឋាន"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,notes:"
+msgid "Notes"
+msgstr "កំណត់ចំណាំ"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,result:"
+msgid "Result"
+msgstr "លទ្ធផល"
+
+msgctxt "field:importer.farm.pregnancy_diagnosis.event,timestamp:"
+msgid "Timestamp"
+msgstr "ត្រាពេលវេលា"
+
+msgctxt "field:importer.farm.reclassification.event,animal:"
+msgid "Animal"
+msgstr "សត្វ"
+
+msgctxt "field:importer.farm.reclassification.event,farm:"
+msgid "Farm"
+msgstr "កសិដ្ឋាន"
+
+msgctxt "field:importer.farm.reclassification.event,reclassification_product:"
+msgid "Reclasification Product"
+msgstr "ផលិតផលបន្ទាប់ពីចាត់ថ្នាក់ឡើងវិញ"
+
+msgctxt "field:importer.farm.reclassification.event,timestamp:"
+msgid "Timestamp"
+msgstr "ត្រាពេលវេលា"
+
+msgctxt "field:importer.farm.reclassification.event,to_location:"
+msgid "To Location"
+msgstr "ទីតាំងគោលដៅ"
+
+msgctxt "field:importer.farm.reclassification.event,weight:"
+msgid "Weight"
+msgstr "ទម្ងន់"
+
+msgctxt "field:importer.farm.removal.event,animal:"
+msgid "Animal"
+msgstr "សត្វ"
+
+msgctxt "field:importer.farm.removal.event,farm:"
+msgid "Farm"
+msgstr "កសិដ្ឋាន"
+
+msgctxt "field:importer.farm.removal.event,removal_reason:"
+msgid "Reason"
+msgstr "មូលហេតុ"
+
+msgctxt "field:importer.farm.removal.event,removal_type:"
+msgid "Type"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.farm.removal.event,timestamp:"
+msgid "Date & Time"
+msgstr "កាលបរិច្ឆេទ និងពេលវេលា"
+
+msgctxt "field:importer.farm.transformation.event,animal:"
+msgid "Animal"
+msgstr "សត្វ"
+
+msgctxt "field:importer.farm.transformation.event,farm:"
+msgid "Farm"
+msgstr "កសិដ្ឋាន"
+
+msgctxt "field:importer.farm.transformation.event,from_location:"
+msgid "From Location"
+msgstr "ទីតាំងដើម"
+
+msgctxt "field:importer.farm.transformation.event,timestamp:"
+msgid "Timestamp"
+msgstr "ត្រាពេលវេលា"
+
+msgctxt "field:importer.farm.transformation.event,to_animal_type:"
+msgid "To Animal Type"
+msgstr "ទៅប្រភេទសត្វ"
+
+msgctxt "field:importer.farm.transformation.event,to_location:"
+msgid "To Location"
+msgstr "ទីតាំងគោលដៅ"
+
+msgctxt "field:importer.farm.weaning.event,animal:"
+msgid "Animal"
+msgstr "សត្វ"
+
+msgctxt "field:importer.farm.weaning.event,farm:"
+msgid "Farm"
+msgstr "កសិដ្ឋាន"
+
+msgctxt "field:importer.farm.weaning.event,female_to_location:"
+msgid "Female To Location"
+msgstr "ទីតាំងគោលដៅសម្រាប់មេសត្វ"
+
+msgctxt "field:importer.farm.weaning.event,quantity:"
+msgid "Quantity"
+msgstr "បរិមាណ"
+
+msgctxt "field:importer.farm.weaning.event,timestamp:"
+msgid "Timestamp"
+msgstr "ត្រាពេលវេលា"
+
+msgctxt "field:importer.farm.weaning.event,weaned_to_location:"
+msgid "Weaned To Location"
+msgstr "ទីតាំងបន្ទាប់ពីផ្ដាច់ដោះ"
+
+msgctxt "field:importer.import.ask,binary_data:"
+msgid "Data"
+msgstr "ទិន្នន័យ"
+
+msgctxt "field:importer.import.ask,data_source:"
+msgid "Data Source"
+msgstr "ប្រភពទិន្នន័យ"
+
+msgctxt "field:importer.import.ask,filename:"
+msgid "Filename"
+msgstr "ឈ្មោះឯកសារ"
+
+msgctxt "field:importer.import.ask,importer:"
+msgid "Importer"
+msgstr "កម្មវិធីនាំចូល"
+
+msgctxt "field:importer.import.ask,text_data:"
+msgid "Data"
+msgstr "ទិន្នន័យ"
+
+msgctxt "field:importer.import.ask,url_data:"
+msgid "Data URL"
+msgstr "URL ទិន្នន័យ"
+
+msgctxt "field:importer.invoice,account_move_number:"
+msgid "Account Move number"
+msgstr "លេខបញ្ជីកត់ត្រាគណនេយ្យ"
+
+msgctxt "field:importer.invoice,currency:"
+msgid "Currency"
+msgstr "រូបិយប័ណ្ណ"
+
+msgctxt "field:importer.invoice,discount:"
+msgid "Discount"
+msgstr "ការបញ្ចុះតម្លៃ"
+
+msgctxt "field:importer.invoice,invoice_date:"
+msgid "Date"
+msgstr "កាលបរិច្ឆេទ"
+
+msgctxt "field:importer.invoice,invoice_number:"
+msgid "Invoice Number"
+msgstr "លេខវិក្កយបត្រ"
+
+msgctxt "field:importer.invoice,invoice_type:"
+msgid "Invoice Type"
+msgstr "ប្រភេទវិក្កយបត្រ"
+
+msgctxt "field:importer.invoice,journal:"
+msgid "Journal"
+msgstr "ទិនានុប្បវត្តិ"
+
+msgctxt "field:importer.invoice,party_code:"
+msgid "Party Code"
+msgstr "កូដភាគី"
+
+msgctxt "field:importer.invoice,party_name:"
+msgid "Party Name"
+msgstr "ឈ្មោះភាគី"
+
+msgctxt "field:importer.invoice,product_code:"
+msgid "Product Code"
+msgstr "កូដផលិតផល"
+
+msgctxt "field:importer.invoice,quantity:"
+msgid "Product Quantity"
+msgstr "បរិមាណផលិតផល"
+
+msgctxt "field:importer.invoice,reference:"
+msgid "Reference"
+msgstr "ឯកសារយោង"
+
+msgctxt "field:importer.invoice,unit_price:"
+msgid "Unit Price"
+msgstr "តម្លៃឯកតា"
+
+msgctxt "field:importer.language,code:"
+msgid "Code"
+msgstr "កូដ"
+
+msgctxt "field:importer.language,date:"
+msgid "Date Format"
+msgstr "ទម្រង់កាលបរិច្ឆេទ"
+
+msgctxt "field:importer.language,decimal_point:"
+msgid "Decimal Point"
+msgstr "សញ្ញាទសភាគ"
+
+msgctxt "field:importer.language,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.language,parent:"
+msgid "Parent"
+msgstr "គំរូមេ"
+
+msgctxt "field:importer.language,translatable:"
+msgid "Translatable"
+msgstr "អាចផ្ទុកការបកប្រែ"
+
+msgctxt "field:importer.location,code:"
+msgid "Code"
+msgstr "កូដ"
+
+msgctxt "field:importer.location,input_location:"
+msgid "Input Location"
+msgstr "ទីតាំងទទួលចូល"
+
+msgctxt "field:importer.location,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.location,output_location:"
+msgid "Output Location"
+msgstr "ទីតាំងចេញ"
+
+msgctxt "field:importer.location,parent:"
+msgid "Parent"
+msgstr "គំរូមេ"
+
+msgctxt "field:importer.location,picking_location:"
+msgid "Picking Location"
+msgstr "ទីតាំងរៀបចំទំនិញ"
+
+msgctxt "field:importer.location,storage_location:"
+msgid "Storage Location"
+msgstr "ទីតាំងផ្ទុក"
+
+msgctxt "field:importer.location,type:"
+msgid "Type"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.log,importer:"
+msgid "Importer"
+msgstr "កម្មវិធីនាំចូល"
+
+msgctxt "field:importer.log,message:"
+msgid "Message"
+msgstr "សារ"
+
+msgctxt "field:importer.log,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.log,on_error:"
+msgid "On Error"
+msgstr "នៅពេលមានកំហុស"
+
+msgctxt "field:importer.log,record:"
+msgid "Record"
+msgstr "កំណត់ត្រា"
+
+msgctxt "field:importer.log,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.log,source_record:"
+msgid "Source Record"
+msgstr "កំណត់ត្រាប្រភព"
+
+msgctxt "field:importer.log,type:"
+msgid "Type"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.lot,date:"
+msgid "Date"
+msgstr "កាលបរិច្ឆេទ"
+
+msgctxt "field:importer.lot,expiration_date:"
+msgid "Expiry Date"
+msgstr "កាលបរិច្ឆេទផុតកំណត់"
+
+msgctxt "field:importer.lot,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.lot,number:"
+msgid "Number"
+msgstr "លេខ"
+
+msgctxt "field:importer.lot,product_code:"
+msgid "Product Code"
+msgstr "កូដផលិតផល"
+
+msgctxt "field:importer.lot,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.lot,shelf_life_expiration_date:"
+msgid "Shelf Life Expiration Date"
+msgstr "កាលបរិច្ឆេទផុតអាយុកាលរក្សាទុក"
+
+msgctxt "field:importer.marketing.email,active:"
+msgid "Active"
+msgstr "សកម្ម"
+
+msgctxt "field:importer.marketing.email,email:"
+msgid "Email"
+msgstr "អ៊ីមែល"
+
+msgctxt "field:importer.marketing.email,mailing_list:"
+msgid "Mailing List"
+msgstr "បញ្ជីអ្នកទទួលអ៊ីមែល"
+
+msgctxt "field:importer.meta,binary_data:"
+msgid "Binary"
+msgstr "ទិន្នន័យគោលពីរ"
+
+msgctxt "field:importer.meta,column_field:"
+msgid "Column Field"
+msgstr "វាលជួរឈរ"
+
+msgctxt "field:importer.meta,column_format:"
+msgid "Column Format"
+msgstr "ទម្រង់ជួរឈរ"
+
+msgctxt "field:importer.meta,column_name:"
+msgid "Column Name"
+msgstr "ឈ្មោះជួរឈរ"
+
+msgctxt "field:importer.meta,column_value:"
+msgid "Column Value"
+msgstr "តម្លៃជួរឈរ"
+
+msgctxt "field:importer.meta,data_source:"
+msgid "Data Source"
+msgstr "ប្រភពទិន្នន័យ"
+
+msgctxt "field:importer.meta,database:"
+msgid "Database"
+msgstr "មូលដ្ឋានទិន្នន័យ"
+
+msgctxt "field:importer.meta,has_header:"
+msgid "Has Header"
+msgstr "មានបឋមកថា"
+
+msgctxt "field:importer.meta,language:"
+msgid "Language"
+msgstr "ភាសា"
+
+msgctxt "field:importer.meta,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.meta,method:"
+msgid "Method"
+msgstr "វិធីសាស្ត្រ"
+
+msgctxt "field:importer.meta,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.meta,on_error:"
+msgid "On Error"
+msgstr "នៅពេលមានកំហុស"
+
+msgctxt "field:importer.meta,password:"
+msgid "Password"
+msgstr "ពាក្យសម្ងាត់"
+
+msgctxt "field:importer.meta,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.meta,schema:"
+msgid "Schema"
+msgstr "គ្រោងទិន្នន័យ"
+
+msgctxt "field:importer.meta,server:"
+msgid "Server"
+msgstr "ម៉ាស៊ីនមេ"
+
+msgctxt "field:importer.meta,sql_data:"
+msgid "Sql Data"
+msgstr "ទិន្នន័យ SQL"
+
+msgctxt "field:importer.meta,sql_source:"
+msgid "SQL Source"
+msgstr "ប្រភព SQL"
+
+msgctxt "field:importer.meta,text_data:"
+msgid "Text"
+msgstr "អត្ថបទ"
+
+msgctxt "field:importer.meta,url_data:"
+msgid "URL"
+msgstr "URL"
+
+msgctxt "field:importer.meta,sheet_number:"
+msgid "Sheet Number"
+msgstr "លេខសន្លឹក"
+
+msgctxt "field:importer.meta,data_start_row:"
+msgid "Data Start Row"
+msgstr "ជួរដេកចាប់ផ្ដើមទិន្នន័យ"
+
+msgctxt "field:importer.meta,use_header:"
+msgid "Use Header"
+msgstr "ប្រើបឋមកថា"
+
+msgctxt "field:importer.meta,user:"
+msgid "User"
+msgstr "អ្នកប្រើប្រាស់"
+
+msgctxt "field:importer.meta,where:"
+msgid "Where"
+msgstr "លក្ខខណ្ឌចម្រោះ"
+
+msgctxt "field:importer.meta,use_subtransactions:"
+msgid "Use Subtransactions"
+msgstr "ប្រើប្រតិបត្តិការរង"
+
+msgctxt "field:importer.meta,commit_chunks:"
+msgid "Commit Chunks"
+msgstr "រក្សាទុកជាបណ្ដុំ"
+
+msgctxt "field:importer.order_point,min_quantity:"
+msgid "Minimum Quantity"
+msgstr "បរិមាណអប្បបរមា"
+
+msgctxt "field:importer.order_point,product_code:"
+msgid "Product Code"
+msgstr "កូដផលិតផល"
+
+msgctxt "field:importer.order_point,target_quantity:"
+msgid "Target Quantity"
+msgstr "បរិមាណគោលដៅ"
+
+msgctxt "field:importer.order_point,type_:"
+msgid "Type"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.order_point,warehouse_location:"
+msgid "Warehouse Location"
+msgstr "ទីតាំងឃ្លាំង"
+
+msgctxt "field:importer.parcel,crop:"
+msgid "Crop"
+msgstr "ដំណាំ"
+
+msgctxt "field:importer.parcel,plant_number:"
+msgid "Plant Number"
+msgstr "ចំនួនដើមដំណាំ"
+
+msgctxt "field:importer.parcel,plantation_code:"
+msgid "Plantation Code"
+msgstr "លេខកូដចម្ការ"
+
+msgctxt "field:importer.parcel,species:"
+msgid "Species"
+msgstr "ប្រភេទសត្វ ឬរុក្ខជាតិ"
+
+msgctxt "field:importer.parcel,surface:"
+msgid "Surface"
+msgstr "ផ្ទៃក្រឡា"
+
+msgctxt "field:importer.parcel,variety:"
+msgid "Variety"
+msgstr "ពូជ"
+
+msgctxt "field:importer.party,bank_account:"
+msgid "Iban"
+msgstr "លេខគណនីអន្តរជាតិ (IBAN)"
+
+msgctxt "field:importer.party,carrier:"
+msgid "Carrier"
+msgstr "ក្រុមហ៊ុនដឹកជញ្ជូន"
+
+msgctxt "field:importer.party,categories:"
+msgid "Categories"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.party,city:"
+msgid "City"
+msgstr "ទីក្រុង"
+
+msgctxt "field:importer.party,code:"
+msgid "Code"
+msgstr "កូដ"
+
+msgctxt "field:importer.party,company:"
+msgid "Company"
+msgstr "ក្រុមហ៊ុន"
+
+msgctxt "field:importer.party,country:"
+msgid "Country"
+msgstr "ប្រទេស"
+
+msgctxt "field:importer.party,customer_payment_days:"
+msgid "Customer Payment days"
+msgstr "ថ្ងៃទូទាត់របស់អតិថិជន"
+
+msgctxt "field:importer.party,account_payable:"
+msgid "Account Payable"
+msgstr "គណនីត្រូវបង់"
+
+msgctxt "field:importer.party,account_receivable:"
+msgid "Account Receivable"
+msgstr "គណនីត្រូវទទួល"
+
+msgctxt "field:importer.party,customer_payment_term:"
+msgid "Customer Payment Term"
+msgstr "លក្ខខណ្ឌទូទាត់របស់អតិថិជន"
+
+msgctxt "field:importer.party,customer_payment_type:"
+msgid "Customer Payment Type"
+msgstr "ប្រភេទការទូទាត់របស់អតិថិជន"
+
+msgctxt "field:importer.party,customer_tax_rule:"
+msgid "Customer Tax Rule"
+msgstr "ច្បាប់ពន្ធអតិថិជន"
+
+msgctxt "field:importer.party,delivery_address:"
+msgid "Delivery Address"
+msgstr "អាសយដ្ឋានដឹកជញ្ជូន"
+
+msgctxt "field:importer.party,email:"
+msgid "E-Mail"
+msgstr "អ៊ីមែល"
+
+msgctxt "field:importer.party,fax:"
+msgid "Fax"
+msgstr "ទូរសារ"
+
+msgctxt "field:importer.party,invoice_address:"
+msgid "Invoice Address"
+msgstr "អាសយដ្ឋានវិក្កយបត្រ"
+
+msgctxt "field:importer.party,language:"
+msgid "Language"
+msgstr "ភាសា"
+
+msgctxt "field:importer.party,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.party,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.party,note:"
+msgid "Note"
+msgstr "កំណត់ចំណាំ"
+
+msgctxt "field:importer.party,party_relation:"
+msgid "Party Relation"
+msgstr "ទំនាក់ទំនងរវាងដៃគូ"
+
+msgctxt "field:importer.party,phone:"
+msgid "Phone"
+msgstr "ទូរសព្ទ"
+
+msgctxt "field:importer.party,postal_code:"
+msgid "Postal Code"
+msgstr "លេខកូដប្រៃសណីយ៍"
+
+msgctxt "field:importer.party,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.party,shipment_city:"
+msgid "Shipment City"
+msgstr "ក្រុងគោលដៅដឹកជញ្ជូន"
+
+msgctxt "field:importer.party,shipment_country:"
+msgid "Shipment Country"
+msgstr "ប្រទេសគោលដៅដឹកជញ្ជូន"
+
+msgctxt "field:importer.party,shipment_postal_code:"
+msgid "Shipment Postal Code"
+msgstr "លេខកូដប្រៃសណីយ៍នៃអាសយដ្ឋានដឹកជញ្ជូន"
+
+msgctxt "field:importer.party,shipment_street:"
+msgid "Shipment Street"
+msgstr "ផ្លូវនៃអាសយដ្ឋានដឹកជញ្ជូន"
+
+msgctxt "field:importer.party,shipment_subdivision:"
+msgid "Shipment Subdivision"
+msgstr "តំបន់រដ្ឋបាលនៃអាសយដ្ឋានដឹកជញ្ជូន"
+
+msgctxt "field:importer.party,street:"
+msgid "Street"
+msgstr "ផ្លូវ"
+
+msgctxt "field:importer.party,subdivision:"
+msgid "Subdivision"
+msgstr "តំបន់រដ្ឋបាល"
+
+msgctxt "field:importer.party,supplier_lead_time:"
+msgid "Supplier Lead Time (days)"
+msgstr "រយៈពេលត្រូវការរបស់អ្នកផ្គត់ផ្គង់ (ថ្ងៃ)"
+
+msgctxt "field:importer.party,supplier_payment_days:"
+msgid "Supplier Payment days"
+msgstr "ចំនួនថ្ងៃទូទាត់ឱ្យអ្នកផ្គត់ផ្គង់"
+
+msgctxt "field:importer.party,supplier_payment_term:"
+msgid "Supplier Payment Term"
+msgstr "លក្ខខណ្ឌទូទាត់របស់អ្នកផ្គត់ផ្គង់"
+
+msgctxt "field:importer.party,supplier_payment_type:"
+msgid "Supplier Payment Type"
+msgstr "ប្រភេទទូទាត់ឱ្យអ្នកផ្គត់ផ្គង់"
+
+msgctxt "field:importer.party,supplier_tax_rule:"
+msgid "Supplier Tax Rule"
+msgstr "ច្បាប់ពន្ធអ្នកផ្គត់ផ្គង់"
+
+msgctxt "field:importer.party,trade_name:"
+msgid "Trade Name"
+msgstr "ឈ្មោះពាណិជ្ជកម្ម"
+
+msgctxt "field:importer.party,type_of_relation:"
+msgid "Type of relation"
+msgstr "ប្រភេទទំនាក់ទំនង"
+
+msgctxt "field:importer.party,vat:"
+msgid "Vat"
+msgstr "អាករលើតម្លៃបន្ថែម"
+
+msgctxt "field:importer.party,website:"
+msgid "Website"
+msgstr "គេហទំព័រ"
+
+msgctxt "field:importer.party.address,city:"
+msgid "City"
+msgstr "ទីក្រុង"
+
+msgctxt "field:importer.party.address,contact_type:"
+msgid "Type"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.party.address,contact_value:"
+msgid "Value"
+msgstr "តម្លៃ"
+
+msgctxt "field:importer.party.address,country_name:"
+msgid "Country"
+msgstr "ប្រទេស"
+
+msgctxt "field:importer.party.address,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.party.address,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.party.address,party_code:"
+msgid "Party Code"
+msgstr "កូដភាគី"
+
+msgctxt "field:importer.party.address,postal_code:"
+msgid "Postal Code"
+msgstr "លេខកូដប្រៃសណីយ៍"
+
+msgctxt "field:importer.party.address,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.party.address,sequence:"
+msgid "Sequence"
+msgstr "លំដាប់"
+
+msgctxt "field:importer.party.address,street:"
+msgid "Street Address"
+msgstr "អាសយដ្ឋានផ្លូវ"
+
+msgctxt "field:importer.party.address,subdivision:"
+msgid "Address Subdivision"
+msgstr "តំបន់រដ្ឋបាលនៃអាសយដ្ឋាន"
+
+msgctxt "field:importer.party.configuration,language_code:"
+msgid "Language Code"
+msgstr "កូដភាសា"
+
+msgctxt "field:importer.party.configuration,sequence_number_next:"
+msgid "Sequence Number Next"
+msgstr "លេខលំដាប់បន្ទាប់"
+
+msgctxt "field:importer.party.configuration,sequence_padding:"
+msgid "Sequence Padding"
+msgstr "ចំនួនខ្ទង់នៃលេខលំដាប់"
+
+msgctxt "field:importer.party.configuration,sequence_prefix:"
+msgid "Sequence prefix"
+msgstr "បុព្វបទលំដាប់លេខ"
+
+msgctxt "field:importer.party.configuration,sequence_suffix:"
+msgid "Sequence suffix"
+msgstr "បច្ច័យលំដាប់លេខ"
+
+msgctxt "field:importer.party.contact_mechanism,comment:"
+msgid "Comment"
+msgstr "មតិយោបល់"
+
+msgctxt "field:importer.party.contact_mechanism,delivery:"
+msgid "Delivery"
+msgstr "ការប្រគល់ទំនិញ"
+
+msgctxt "field:importer.party.contact_mechanism,invoice:"
+msgid "Invoice"
+msgstr "វិក្កយបត្រ"
+
+msgctxt "field:importer.party.contact_mechanism,language:"
+msgid "Language"
+msgstr "ភាសា"
+
+msgctxt "field:importer.party.contact_mechanism,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.party.contact_mechanism,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.party.contact_mechanism,party:"
+msgid "Party"
+msgstr "ភាគី"
+
+msgctxt "field:importer.party.contact_mechanism,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.party.contact_mechanism,type:"
+msgid "Type"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.party.contact_mechanism,value:"
+msgid "Value"
+msgstr "តម្លៃ"
+
+msgctxt "field:importer.party.credit,date:"
+msgid "Date"
+msgstr "កាលបរិច្ឆេទ"
+
+msgctxt "field:importer.party.credit,end_date:"
+msgid "End Date"
+msgstr "កាលបរិច្ឆេទបញ្ចប់"
+
+msgctxt "field:importer.party.credit,first_approved_credit_limit:"
+msgid "First Approved Credit Limit"
+msgstr "កម្រិតឥណទានដំបូងដែលបានអនុម័ត"
+
+msgctxt "field:importer.party.credit,party:"
+msgid "Party"
+msgstr "ភាគី"
+
+msgctxt "field:importer.party.credit,requested_credit_limit:"
+msgid "Requested Credit Limit"
+msgstr "កម្រិតឥណទានដែលបានស្នើ"
+
+msgctxt "field:importer.party.credit,start_date:"
+msgid "Start Date"
+msgstr "កាលបរិច្ឆេទចាប់ផ្តើម"
+
+msgctxt "field:importer.plantation,parcel_sigpac:"
+msgid "Parcel Sigpac"
+msgstr "ក្បាលដី SIGPAC"
+
+msgctxt "field:importer.plantation,party:"
+msgid "Party"
+msgstr "ភាគី"
+
+msgctxt "field:importer.plantation,plantation_code:"
+msgid "Plantation Code"
+msgstr "លេខកូដចម្ការ"
+
+msgctxt "field:importer.plantation,polygon_sigpac:"
+msgid "Polygon Sigpac"
+msgstr "តំបន់ពហុកោណ SIGPAC"
+
+msgctxt "field:importer.plantation,province_sigpac:"
+msgid "Province Sigpac"
+msgstr "ខេត្ត SIGPAC"
+
+msgctxt "field:importer.plantation,recinte_sigpac:"
+msgid "Recinte Sigpac"
+msgstr "ផ្នែករងនៃក្បាលដី SIGPAC"
+
+msgctxt "field:importer.plantation,zone_sigpac:"
+msgid "Zone Sigpac"
+msgstr "តំបន់ SIGPAC"
+
+msgctxt "field:importer.price_list,base_price_formula:"
+msgid "Base Price Formula"
+msgstr "រូបមន្តតម្លៃមូលដ្ឋាន"
+
+msgctxt "field:importer.price_list,category:"
+msgid "Category"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.price_list,company_name:"
+msgid "Company Name"
+msgstr "ឈ្មោះក្រុមហ៊ុន"
+
+msgctxt "field:importer.price_list,formula:"
+msgid "Formula"
+msgstr "រូបមន្ត"
+
+msgctxt "field:importer.price_list,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.price_list,product_code:"
+msgid "Product Code"
+msgstr "កូដផលិតផល"
+
+msgctxt "field:importer.price_list,quantity:"
+msgid "Quantity"
+msgstr "បរិមាណ"
+
+msgctxt "field:importer.price_list,tax_included:"
+msgid "Tax Included"
+msgstr "រួមបញ្ចូលពន្ធ"
+
+msgctxt "field:importer.product,account_asset:"
+msgid "Account Asset"
+msgstr "គណនីទ្រព្យសកម្ម"
+
+msgctxt "field:importer.product,account_category:"
+msgid "Account Category"
+msgstr "ប្រភេទគណនី"
+
+msgctxt "field:importer.product,account_depreciation:"
+msgid "Account Depreciation"
+msgstr "គណនីរំលស់"
+
+msgctxt "field:importer.product,account_expense:"
+msgid "Account Expense"
+msgstr "គណនីចំណាយ"
+
+msgctxt "field:importer.product,account_revenue:"
+msgid "Account Revenue"
+msgstr "គណនីចំណូល"
+
+msgctxt "field:importer.product,aranzel:"
+msgid "Aranzel"
+msgstr "អត្រាពន្ធគយ"
+
+msgctxt "field:importer.product,bom_name:"
+msgid "BOM Name"
+msgstr "ឈ្មោះបញ្ជីសម្ភារៈ (BOM)"
+
+msgctxt "field:importer.product,brand:"
+msgid "Brand"
+msgstr "ម៉ាក"
+
+msgctxt "field:importer.product,categories:"
+msgid "Categories"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.product,company:"
+msgid "Company"
+msgstr "ក្រុមហ៊ុន"
+
+msgctxt "field:importer.product,consumable:"
+msgid "Consumable"
+msgstr "សម្ភារៈប្រើអស់"
+
+msgctxt "field:importer.product,cost_price:"
+msgid "Cost Price"
+msgstr "ថ្លៃដើម"
+
+msgctxt "field:importer.product,cost_price_method:"
+msgid "Cost Price Method"
+msgstr "វិធីគណនាថ្លៃដើម"
+
+msgctxt "field:importer.product,customer:"
+msgid "Customer"
+msgstr "អតិថិជន"
+
+msgctxt "field:importer.product,customer_code:"
+msgid "Customer Code"
+msgstr "កូដអតិថិជន"
+
+msgctxt "field:importer.product,depreciation_duration:"
+msgid "Depreciation Duration"
+msgstr "រយៈពេលរំលស់"
+
+msgctxt "field:importer.product,depreciation_percentatge:"
+msgid "Depreciation Percentatge"
+msgstr "ភាគរយរំលស់"
+
+msgctxt "field:importer.product,description:"
+msgid "Description"
+msgstr "សេចក្តីពិពណ៌នា"
+
+msgctxt "field:importer.product,location:"
+msgid "Location"
+msgstr "ទីតាំង"
+
+msgctxt "field:importer.product,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.product,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.product,producible:"
+msgid "Producible"
+msgstr "អាចផលិតបាន"
+
+msgctxt "field:importer.product,product_note:"
+msgid "Product Note"
+msgstr "កំណត់សម្គាល់អំពីផលិតផល"
+
+msgctxt "field:importer.product,purchasable:"
+msgid "Purchasable"
+msgstr "អាចទិញបាន"
+
+msgctxt "field:importer.product,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.product,salable:"
+msgid "Salable"
+msgstr "អាចលក់បាន"
+
+msgctxt "field:importer.product,sale_price:"
+msgid "Sale Price"
+msgstr "តម្លៃលក់"
+
+msgctxt "field:importer.product,supplier:"
+msgid "Supplier"
+msgstr "អ្នកផ្គត់ផ្គង់"
+
+msgctxt "field:importer.product,supplier_code:"
+msgid "Supplier Code"
+msgstr "កូដអ្នកផ្គត់ផ្គង់"
+
+msgctxt "field:importer.product,supplier_currency:"
+msgid "Supplier Currency"
+msgstr "រូបិយប័ណ្ណរបស់អ្នកផ្គត់ផ្គង់"
+
+msgctxt "field:importer.product,supplier_minimum_quantity:"
+msgid "Supplier Minimum Quantity"
+msgstr "បរិមាណអប្បបរមារបស់អ្នកផ្គត់ផ្គង់"
+
+msgctxt "field:importer.product,supplier_multiple_quantity:"
+msgid "Supplier Multiple Quantity"
+msgstr "បរិមាណជាពហុគុណរបស់អ្នកផ្គត់ផ្គង់"
+
+msgctxt "field:importer.product,supplier_unit_price:"
+msgid "Supplier Unit Price"
+msgstr "តម្លៃក្នុងមួយឯកតារបស់អ្នកផ្គត់ផ្គង់"
+
+msgctxt "field:importer.product,template_code:"
+msgid "Template Code"
+msgstr "កូដគំរូ"
+
+msgctxt "field:importer.product,template_note:"
+msgid "Template Note"
+msgstr "កំណត់សម្គាល់គំរូ"
+
+msgctxt "field:importer.product,type_:"
+msgid "Type"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.product,uom:"
+msgid "UoM"
+msgstr "ឯកតារង្វាស់"
+
+msgctxt "field:importer.product,variant_code:"
+msgid "Variant Code"
+msgstr "កូដកំណែផលិតផល"
+
+msgctxt "field:importer.product,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "កូដបច្ច័យកំណែផលិតផល"
+
+msgctxt "field:importer.product.agronomics,account_category:"
+msgid "Account Category"
+msgstr "ប្រភេទគណនី"
+
+msgctxt "field:importer.product.agronomics,alcohol_content:"
+msgid "Alcohol Content"
+msgstr "កម្រិតអាល់កុល"
+
+msgctxt "field:importer.product.agronomics,aranzel:"
+msgid "Aranzel"
+msgstr "អត្រាពន្ធគយ"
+
+msgctxt "field:importer.product.agronomics,brand:"
+msgid "Brand"
+msgstr "ម៉ាក"
+
+msgctxt "field:importer.product.agronomics,categories:"
+msgid "Categories"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.product.agronomics,cost_price:"
+msgid "Cost Price"
+msgstr "ថ្លៃដើម"
+
+msgctxt "field:importer.product.agronomics,cost_price_method:"
+msgid "Cost Price Method"
+msgstr "វិធីគណនាថ្លៃដើម"
+
+msgctxt "field:importer.product.agronomics,description:"
+msgid "Description"
+msgstr "សេចក្តីពិពណ៌នា"
+
+msgctxt "field:importer.product.agronomics,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.product.agronomics,purchasable:"
+msgid "Purchasable"
+msgstr "អាចទិញបាន"
+
+msgctxt "field:importer.product.agronomics,salable:"
+msgid "Salable"
+msgstr "អាចលក់បាន"
+
+msgctxt "field:importer.product.agronomics,sale_price:"
+msgid "Sale Price"
+msgstr "តម្លៃលក់"
+
+msgctxt "field:importer.product.agronomics,supplier:"
+msgid "Supplier"
+msgstr "អ្នកផ្គត់ផ្គង់"
+
+msgctxt "field:importer.product.agronomics,supplier_code:"
+msgid "Supplier Code"
+msgstr "កូដអ្នកផ្គត់ផ្គង់"
+
+msgctxt "field:importer.product.agronomics,template_code:"
+msgid "Template Code"
+msgstr "កូដគំរូ"
+
+msgctxt "field:importer.product.agronomics,type_:"
+msgid "Type"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.product.agronomics,uom:"
+msgid "UoM"
+msgstr "ឯកតារង្វាស់"
+
+msgctxt "field:importer.product.agronomics,variant_code:"
+msgid "Variant Code"
+msgstr "កូដកំណែផលិតផល"
+
+msgctxt "field:importer.product.agronomics,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "កូដបច្ច័យកំណែផលិតផល"
+
+msgctxt "field:importer.product.agronomics,volume:"
+msgid "Volume (m3)"
+msgstr "មាឌ (m3)"
+
+msgctxt "field:importer.product.agronomics,weight:"
+msgid "Weight (kg)"
+msgstr "ទម្ងន់ (kg)"
+
+msgctxt "field:importer.product.attributes,attribute:"
+msgid "Attribute"
+msgstr "គុណលក្ខណៈ"
+
+msgctxt "field:importer.product.attributes,attribute_set:"
+msgid "Attribute Set"
+msgstr "សំណុំគុណលក្ខណៈ"
+
+msgctxt "field:importer.product.attributes,attribute_value:"
+msgid "Attribute Value"
+msgstr "តម្លៃគុណលក្ខណៈ"
+
+msgctxt "field:importer.product.attributes,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.product.attributes,product_code:"
+msgid "Product Code"
+msgstr "កូដផលិតផល"
+
+msgctxt "field:importer.product.attributes,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.product.configuration,cost_price_method:"
+msgid "Cost price method"
+msgstr "វិធីគណនាតម្លៃថ្លៃដើម"
+
+msgctxt "field:importer.product.configuration,product_sequence_number_next:"
+msgid "Variant Sequence number next"
+msgstr "លេខបន្ទាប់ក្នុងលំដាប់កំណែផលិតផល"
+
+msgctxt "field:importer.product.configuration,product_sequence_padding:"
+msgid "Variant Sequence padding"
+msgstr "ការបំពេញខ្ទង់ក្នុងលំដាប់កំណែផលិតផល"
+
+msgctxt "field:importer.product.configuration,product_sequence_prefix:"
+msgid "Variant Sequence prefix"
+msgstr "បុព្វបទលំដាប់កំណែផលិតផល"
+
+msgctxt "field:importer.product.configuration,product_sequence_suffix:"
+msgid "Variant Sequence suffix"
+msgstr "បច្ច័យលំដាប់កំណែផលិតផល"
+
+msgctxt "field:importer.product.configuration,template_sequence_number_next:"
+msgid "Template Sequence number next"
+msgstr "លេខបន្ទាប់ក្នុងលំដាប់គំរូ"
+
+msgctxt "field:importer.product.configuration,template_sequence_padding:"
+msgid "Template Sequence padding"
+msgstr "ការបំពេញខ្ទង់ក្នុងលំដាប់គំរូ"
+
+msgctxt "field:importer.product.configuration,template_sequence_prefix:"
+msgid "Template Sequence prefix"
+msgstr "បុព្វបទលំដាប់គំរូ"
+
+msgctxt "field:importer.product.configuration,template_sequence_suffix:"
+msgid "Template Sequence suffix"
+msgstr "បច្ច័យលំដាប់គំរូ"
+
+msgctxt "field:importer.product.supplier,base_price:"
+msgid "Base Price"
+msgstr "តម្លៃគោល"
+
+msgctxt "field:importer.product.supplier,code:"
+msgid "Code"
+msgstr "កូដ"
+
+msgctxt "field:importer.product.supplier,currency:"
+msgid "Currency"
+msgstr "រូបិយប័ណ្ណ"
+
+msgctxt "field:importer.product.supplier,discount_formula:"
+msgid "Discount Formula"
+msgstr "រូបមន្តបញ្ចុះតម្លៃ"
+
+msgctxt "field:importer.product.supplier,end_date:"
+msgid "End Date"
+msgstr "កាលបរិច្ឆេទបញ្ចប់"
+
+msgctxt "field:importer.product.supplier,lead_time:"
+msgid "Lead Time (days)"
+msgstr "រយៈពេលត្រៀម (គិតជាថ្ងៃ)"
+
+msgctxt "field:importer.product.supplier,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.product.supplier,minimum_quantity:"
+msgid "Minimum Quantity"
+msgstr "បរិមាណអប្បបរមា"
+
+msgctxt "field:importer.product.supplier,multiple_quantity:"
+msgid "Multiple Quantity"
+msgstr "បរិមាណជាពហុគុណ"
+
+msgctxt "field:importer.product.supplier,party_code:"
+msgid "Party Code"
+msgstr "កូដភាគី"
+
+msgctxt "field:importer.product.supplier,party_name:"
+msgid "Party Name"
+msgstr "ឈ្មោះភាគី"
+
+msgctxt "field:importer.product.supplier,product_code:"
+msgid "Product Code"
+msgstr "កូដផលិតផល"
+
+msgctxt "field:importer.product.supplier,quantity:"
+msgid "Product Quantity"
+msgstr "បរិមាណផលិតផល"
+
+msgctxt "field:importer.product.supplier,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.product.supplier,start_date:"
+msgid "Start Date"
+msgstr "កាលបរិច្ឆេទចាប់ផ្តើម"
+
+msgctxt "field:importer.product.supplier,template_code:"
+msgid "Template Code"
+msgstr "កូដគំរូ"
+
+msgctxt "field:importer.product.supplier,unit_price:"
+msgid "Unit Price"
+msgstr "តម្លៃឯកតា"
+
+msgctxt "field:importer.product_codes,code:"
+msgid "Code"
+msgstr "កូដ"
+
+msgctxt "field:importer.product_codes,template_code:"
+msgid "Template Code"
+msgstr "កូដគំរូ"
+
+msgctxt "field:importer.product_codes,type_:"
+msgid "type"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.product_codes,variant_code:"
+msgid "Variant Code"
+msgstr "កូដកំណែផលិតផល"
+
+msgctxt "field:importer.product_codes,variant_suffix_code:"
+msgid "Variant Suffix Code"
+msgstr "កូដបច្ច័យកំណែផលិតផល"
+
+msgctxt "field:importer.production.bom,input_product:"
+msgid "Product Input"
+msgstr "ផលិតផលធាតុចូល"
+
+msgctxt "field:importer.production.bom,input_quantity:"
+msgid "Product Input Quantity"
+msgstr "បរិមាណផលិតផលធាតុចូល"
+
+msgctxt "field:importer.production.bom,input_uom:"
+msgid "Product Input UoM"
+msgstr "ឯកតារង្វាស់ផលិតផលធាតុចូល"
+
+msgctxt "field:importer.production.bom,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.production.bom,output_product:"
+msgid "Product Output"
+msgstr "ផលិតផលធាតុចេញ"
+
+msgctxt "field:importer.production.bom,output_quantity:"
+msgid "Product Output Quantity"
+msgstr "បរិមាណផលិតផលធាតុចេញ"
+
+msgctxt "field:importer.production.bom,output_uom:"
+msgid "Product Output UoM"
+msgstr "ឯកតារង្វាស់ផលិតផលធាតុចេញ"
+
+msgctxt "field:importer.production.configuration,sequence_number_next:"
+msgid "Sequence number next"
+msgstr "លេខលំដាប់បន្ទាប់"
+
+msgctxt "field:importer.production.configuration,sequence_padding:"
+msgid "Sequence padding"
+msgstr "ចំនួនខ្ទង់នៃលេខលំដាប់"
+
+msgctxt "field:importer.production.configuration,sequence_prefix:"
+msgid "Sequence prefix"
+msgstr "បុព្វបទលំដាប់លេខ"
+
+msgctxt "field:importer.production.configuration,sequence_suffix:"
+msgid "Sequence suffix"
+msgstr "បច្ច័យលំដាប់លេខ"
+
+msgctxt "field:importer.purchase,currency:"
+msgid "Currency"
+msgstr "រូបិយប័ណ្ណ"
+
+msgctxt "field:importer.purchase,date:"
+msgid "Date"
+msgstr "កាលបរិច្ឆេទ"
+
+msgctxt "field:importer.purchase,discount:"
+msgid "Discount"
+msgstr "ការបញ្ចុះតម្លៃ"
+
+msgctxt "field:importer.purchase,invoice_method:"
+msgid "Invoice Method"
+msgstr "វិធីចេញវិក្កយបត្រ"
+
+msgctxt "field:importer.purchase,party_code:"
+msgid "Party Code"
+msgstr "កូដភាគី"
+
+msgctxt "field:importer.purchase,party_name:"
+msgid "Party Name"
+msgstr "ឈ្មោះភាគី"
+
+msgctxt "field:importer.purchase,product_code:"
+msgid "Product Code"
+msgstr "កូដផលិតផល"
+
+msgctxt "field:importer.purchase,purchase_number:"
+msgid "Purchase Number"
+msgstr "លេខបញ្ជាទិញ"
+
+msgctxt "field:importer.purchase,quantity:"
+msgid "Product Quantity"
+msgstr "បរិមាណផលិតផល"
+
+msgctxt "field:importer.purchase,reference:"
+msgid "Reference"
+msgstr "ឯកសារយោង"
+
+msgctxt "field:importer.purchase,state:"
+msgid "State"
+msgstr "ស្ថានភាព"
+
+msgctxt "field:importer.purchase,unit_price:"
+msgid "Unit Price"
+msgstr "តម្លៃឯកតា"
+
+msgctxt "field:importer.purchase.configuration,company:"
+msgid "Company"
+msgstr "ក្រុមហ៊ុន"
+
+msgctxt "field:importer.purchase.configuration,invoice_method:"
+msgid "Purchase invoice method"
+msgstr "វិធីចេញវិក្កយបត្រទិញ"
+
+msgctxt "field:importer.purchase.configuration,process_after:"
+msgid "Purchase process after"
+msgstr "រយៈពេលរង់ចាំមុនដំណើរការការទិញ"
+
+msgctxt "field:importer.purchase.configuration,sequence_number_next:"
+msgid "Purchase sequence number next"
+msgstr "លេខលំដាប់បញ្ជាទិញបន្ទាប់"
+
+msgctxt "field:importer.purchase.configuration,sequence_padding:"
+msgid "Purchase sequence padding"
+msgstr "ចំនួនខ្ទង់នៃលេខលំដាប់បញ្ជាទិញ"
+
+msgctxt "field:importer.purchase.configuration,sequence_prefix:"
+msgid "Purchase sequence prefix"
+msgstr "បុព្វបទលេខលំដាប់បញ្ជាទិញ"
+
+msgctxt "field:importer.purchase.configuration,sequence_suffix:"
+msgid "Purchase sequence suffix"
+msgstr "បច្ច័យលេខលំដាប់បញ្ជាទិញ"
+
+msgctxt "field:importer.sale,base_price:"
+msgid "Base Price"
+msgstr "តម្លៃគោល"
+
+msgctxt "field:importer.sale,currency:"
+msgid "Currency"
+msgstr "រូបិយប័ណ្ណ"
+
+msgctxt "field:importer.sale,date:"
+msgid "Date"
+msgstr "កាលបរិច្ឆេទ"
+
+msgctxt "field:importer.sale,discount_amount:"
+msgid "Discount Amount"
+msgstr "ចំនួនទឹកប្រាក់បញ្ចុះតម្លៃ"
+
+msgctxt "field:importer.sale,discount_formula:"
+msgid "Discount Formula"
+msgstr "រូបមន្តបញ្ចុះតម្លៃ"
+
+msgctxt "field:importer.sale,discount_rate:"
+msgid "Discount Rate"
+msgstr "អត្រាបញ្ចុះតម្លៃ"
+
+msgctxt "field:importer.sale,invoice_method:"
+msgid "Invoice Method"
+msgstr "វិធីចេញវិក្កយបត្រ"
+
+msgctxt "field:importer.sale,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.sale,party_code:"
+msgid "Party Code"
+msgstr "កូដភាគី"
+
+msgctxt "field:importer.sale,party_name:"
+msgid "Party Name"
+msgstr "ឈ្មោះភាគី"
+
+msgctxt "field:importer.sale,product_code:"
+msgid "Product Code"
+msgstr "កូដផលិតផល"
+
+msgctxt "field:importer.sale,quantity:"
+msgid "Product Quantity"
+msgstr "បរិមាណផលិតផល"
+
+msgctxt "field:importer.sale,reference:"
+msgid "Reference"
+msgstr "ឯកសារយោង"
+
+msgctxt "field:importer.sale,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.sale,sale_number:"
+msgid "Sale Number"
+msgstr "លេខបញ្ជាលក់"
+
+msgctxt "field:importer.sale,shipment_address:"
+msgid "Shipment Address Name"
+msgstr "ឈ្មោះអាសយដ្ឋានដឹកជញ្ជូន"
+
+msgctxt "field:importer.sale,shipment_method:"
+msgid "Shipment Method"
+msgstr "វិធីដឹកជញ្ជូន"
+
+msgctxt "field:importer.sale,shipment_party_name:"
+msgid "Shipment Party Name"
+msgstr "ឈ្មោះភាគីទទួលទំនិញ"
+
+msgctxt "field:importer.sale,state:"
+msgid "State"
+msgstr "ស្ថានភាព"
+
+msgctxt "field:importer.sale,unit_price:"
+msgid "Unit Price"
+msgstr "តម្លៃឯកតា"
+
+msgctxt "field:importer.sale.configuration,company:"
+msgid "Company"
+msgstr "ក្រុមហ៊ុន"
+
+msgctxt "field:importer.sale.configuration,sale_invoice_method:"
+msgid "Sale invoice method"
+msgstr "វិធីចេញវិក្កយបត្រលក់"
+
+msgctxt "field:importer.sale.configuration,sale_process_after:"
+msgid "Sale process after"
+msgstr "រយៈពេលរង់ចាំមុនដំណើរការការលក់"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_number_next:"
+msgid "Sale sequence number next"
+msgstr "លេខលំដាប់បញ្ជាលក់បន្ទាប់"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_padding:"
+msgid "Sale sequence padding"
+msgstr "ចំនួនខ្ទង់នៃលេខលំដាប់បញ្ជាលក់"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_prefix:"
+msgid "Sale sequence prefix"
+msgstr "បុព្វបទលេខលំដាប់បញ្ជាលក់"
+
+msgctxt "field:importer.sale.configuration,sale_sequence_suffix:"
+msgid "Sale sequence suffix"
+msgstr "បច្ច័យលេខលំដាប់បញ្ជាលក់"
+
+msgctxt "field:importer.sale.configuration,sale_shipment_method:"
+msgid "Sale shipment method"
+msgstr "វិធីដឹកជញ្ជូនសម្រាប់ការលក់"
+
+msgctxt "field:importer.sequence,company_name:"
+msgid "Company Name"
+msgstr "ឈ្មោះក្រុមហ៊ុន"
+
+msgctxt "field:importer.sequence,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.sequence,number_next:"
+msgid "Sequence Number Next"
+msgstr "លេខលំដាប់បន្ទាប់"
+
+msgctxt "field:importer.sequence,padding:"
+msgid "Sequence Padding"
+msgstr "ចំនួនខ្ទង់នៃលេខលំដាប់"
+
+msgctxt "field:importer.sequence,prefix:"
+msgid "Sequence prefix"
+msgstr "បុព្វបទលំដាប់លេខ"
+
+msgctxt "field:importer.sequence,sequence_type:"
+msgid "Sequence Type"
+msgstr "ប្រភេទលំដាប់លេខ"
+
+msgctxt "field:importer.sequence,strict:"
+msgid "Strict"
+msgstr "តឹងរ៉ឹង"
+
+msgctxt "field:importer.sequence,suffix:"
+msgid "Sequence suffix"
+msgstr "បច្ច័យលំដាប់លេខ"
+
+msgctxt "field:importer.source_column,examples:"
+msgid "Examples"
+msgstr "ឧទាហរណ៍"
+
+msgctxt "field:importer.source_column,field:"
+msgid "Field"
+msgstr "វាល"
+
+msgctxt "field:importer.source_column,format:"
+msgid "Format"
+msgstr "ទម្រង់"
+
+msgctxt "field:importer.source_column,importer:"
+msgid "Importation"
+msgstr "ការនាំចូល"
+
+msgctxt "field:importer.source_column,model:"
+msgid "Model"
+msgstr "ម៉ូដែល"
+
+msgctxt "field:importer.source_column,name:"
+msgid "Column Name"
+msgstr "ឈ្មោះជួរឈរ"
+
+msgctxt "field:importer.stock.move,cost_price:"
+msgid "Cost Price"
+msgstr "ថ្លៃដើម"
+
+msgctxt "field:importer.stock.move,currency:"
+msgid "Currency"
+msgstr "រូបិយប័ណ្ណ"
+
+msgctxt "field:importer.stock.move,effective_date:"
+msgid "Effective Date"
+msgstr "កាលបរិច្ឆេទជាក់ស្តែង"
+
+msgctxt "field:importer.stock.move,from_location:"
+msgid "From Location"
+msgstr "ទីតាំងដើម"
+
+msgctxt "field:importer.stock.move,lot:"
+msgid "Lot"
+msgstr "ឡូត៍"
+
+msgctxt "field:importer.stock.move,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.stock.move,planned_date:"
+msgid "Planned Date"
+msgstr "កាលបរិច្ឆេទដែលបានគ្រោង"
+
+msgctxt "field:importer.stock.move,product_code:"
+msgid "Product Code"
+msgstr "កូដផលិតផល"
+
+msgctxt "field:importer.stock.move,quantity:"
+msgid "Quantity"
+msgstr "បរិមាណ"
+
+msgctxt "field:importer.stock.move,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.stock.move,to_location:"
+msgid "To Location"
+msgstr "ទីតាំងគោលដៅ"
+
+msgctxt "field:importer.stock.move,unit_price:"
+msgid "Unit Price"
+msgstr "តម្លៃឯកតា"
+
+msgctxt "field:importer.user,companies:"
+msgid "Companies"
+msgstr "ក្រុមហ៊ុន"
+
+msgctxt "field:importer.user,company:"
+msgid "Company"
+msgstr "ក្រុមហ៊ុន"
+
+msgctxt "field:importer.user,email:"
+msgid "Email"
+msgstr "អ៊ីមែល"
+
+msgctxt "field:importer.user,employee:"
+msgid "Employee"
+msgstr "និយោជិត"
+
+msgctxt "field:importer.user,employees:"
+msgid "Employees"
+msgstr "និយោជិត"
+
+msgctxt "field:importer.user,groups:"
+msgid "Groups"
+msgstr "ក្រុម"
+
+msgctxt "field:importer.user,language_code:"
+msgid "Language Code"
+msgstr "កូដភាសា"
+
+msgctxt "field:importer.user,login:"
+msgid "Login"
+msgstr "ចូលប្រើ"
+
+msgctxt "field:importer.user,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.user,password:"
+msgid "Password"
+msgstr "ពាក្យសម្ងាត់"
+
+msgctxt "field:importer.user,roles:"
+msgid "Roles"
+msgstr "តួនាទី"
+
+msgctxt "field:importer.user,signature:"
+msgid "Signature"
+msgstr "ហត្ថលេខា"
+
+msgctxt "help:importer,language:"
+msgid "Language to use, if different from the one of the user."
+msgstr "ភាសាដែលត្រូវប្រើ បើខុសពីភាសារបស់អ្នកប្រើ។"
+
+msgctxt "help:importer,sample_size:"
+msgid "Number of records to import with the sample button."
+msgstr "ចំនួនកំណត់ត្រាដែលត្រូវនាំចូលដោយប្រើប៊ូតុងគំរូ។"
+
+msgctxt "help:importer,sample_offset:"
+msgid "Number of records to skip before importing with the sample button."
+msgstr "ចំនួនកំណត់ត្រាដែលត្រូវរំលងមុននឹងនាំចូលដោយប្រើប៊ូតុងគំរូ។"
+
+msgctxt "help:importer,template:"
+msgid ""
+"Check to indicate that this importer is a template and thus should appear in "
+"the import wizard."
+msgstr ""
+"ធីកដើម្បីកំណត់កម្មវិធីនាំចូលនេះជាគំរូ និងបង្ហាញវានៅក្នុងកម្មវិធីជំនួយនាំចូល។"
+
+msgctxt "help:importer,use_header:"
+msgid ""
+"If checked, the names of the columns will be used for the mapping. Otherwise,"
+" the number of the column will be used."
+msgstr ""
+"បើបានធីក ប្រព័ន្ធនឹងប្រើឈ្មោះជួរឈរសម្រាប់ផ្គូផ្គង។ បើមិនធីក "
+"ប្រព័ន្ធនឹងប្រើលេខជួរឈរ។"
+
+msgctxt "help:importer.account.move,company_name:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort records"
+" by company prior to import for better performance."
+msgstr ""
+"អាចប្រើវាលក្រុមហ៊ុនសម្រាប់កំណត់វាលដែលអាស្រ័យលើក្រុមហ៊ុន។ "
+"តម្រៀបកំណត់ត្រាតាមក្រុមហ៊ុនមុននាំចូល ដើម្បីឱ្យដំណើរការកាន់តែលឿន។"
+
+msgctxt "help:importer.column,value:"
+msgid "Value to be used if no column is specified or the value found is None."
+msgstr "តម្លៃដែលប្រើបើមិនបានបញ្ជាក់ជួរឈរ ឬតម្លៃដែលរកឃើញគឺ None។"
+
+msgctxt "help:importer.party,company:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort records"
+" by company prior to import for better performance."
+msgstr ""
+"អាចប្រើវាលក្រុមហ៊ុនសម្រាប់កំណត់វាលដែលអាស្រ័យលើក្រុមហ៊ុន។ "
+"តម្រៀបកំណត់ត្រាតាមក្រុមហ៊ុនមុននាំចូល ដើម្បីឱ្យដំណើរការកាន់តែលឿន។"
+
+msgctxt "help:importer.product,company:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort records"
+" by company prior to import for better performance."
+msgstr ""
+"អាចប្រើវាលក្រុមហ៊ុនសម្រាប់កំណត់វាលដែលអាស្រ័យលើក្រុមហ៊ុន។ "
+"តម្រៀបកំណត់ត្រាតាមក្រុមហ៊ុនមុននាំចូល ដើម្បីឱ្យដំណើរការកាន់តែលឿន។"
+
+msgctxt "help:importer.sale.configuration,sale_invoice_method:"
+msgid "selection|sale.sale|invoice_method"
+msgstr "selection|sale.sale|invoice_method"
+
+msgctxt "help:importer.sale.configuration,sale_shipment_method:"
+msgid "selection|sale.sale|shipment_method"
+msgstr "selection|sale.sale|shipment_method"
+
+msgctxt "help:importer.user,companies:"
+msgid "Comma separated list of company names"
+msgstr "បញ្ជីឈ្មោះក្រុមហ៊ុន បំបែកដោយសញ្ញាក្បៀស"
+
+msgctxt "help:importer.user,employees:"
+msgid "Comma separated list of employee names"
+msgstr "បញ្ជីឈ្មោះនិយោជិត បំបែកដោយសញ្ញាក្បៀស"
+
+msgctxt "help:importer.user,groups:"
+msgid "Comma separated list of group names"
+msgstr "បញ្ជីឈ្មោះក្រុម បំបែកដោយសញ្ញាក្បៀស"
+
+msgctxt "help:importer.user,roles:"
+msgid "Comma separated list of role names"
+msgstr "បញ្ជីឈ្មោះតួនាទី បំបែកដោយសញ្ញាក្បៀស"
+
+msgctxt "model:importer,name:"
+msgid "Importer"
+msgstr "កម្មវិធីនាំចូល"
+
+msgctxt "model:importer.account.asset,name:"
+msgid "Importer Account Asset"
+msgstr "នាំចូលទ្រព្យសកម្មគណនេយ្យ"
+
+msgctxt "model:importer.account.chart,name:"
+msgid "Importer Chart"
+msgstr "នាំចូលប្លង់គណនី"
+
+msgctxt "model:importer.account.fiscalyear,name:"
+msgid "Importer Fiscal Year"
+msgstr "នាំចូលឆ្នាំសារពើពន្ធ"
+
+msgctxt "model:importer.account.move,name:"
+msgid "Importer Account Move"
+msgstr "នាំចូលបញ្ជីកត់ត្រាគណនេយ្យ"
+
+msgctxt "model:importer.address.facturae,name:"
+msgid "Importer Address Factura-e"
+msgstr "នាំចូលអាសយដ្ឋាន Factura-e"
+
+msgctxt "model:importer.carrier,name:"
+msgid "Importer Carrier"
+msgstr "នាំចូលអ្នកដឹកជញ្ជូន"
+
+msgctxt "model:importer.column,name:"
+msgid "Importer Column"
+msgstr "ជួរឈរនៃកម្មវិធីនាំចូល"
+
+msgctxt "model:importer.company,name:"
+msgid "Importer Company"
+msgstr "នាំចូលក្រុមហ៊ុន"
+
+msgctxt "model:importer.country,name:"
+msgid "Importer Country"
+msgstr "នាំចូលប្រទេស"
+
+msgctxt "model:importer.country.postal_codes,name:"
+msgid "Importer Postal Codes"
+msgstr "នាំចូលលេខកូដប្រៃសណីយ៍"
+
+msgctxt "model:importer.currency,name:"
+msgid "Importer Currency"
+msgstr "នាំចូលរូបិយប័ណ្ណ"
+
+msgctxt "model:importer.employee,name:"
+msgid "Importer Employoee"
+msgstr "នាំចូលនិយោជិត"
+
+msgctxt "model:importer.farm.abort.event,name:"
+msgid "Importer Farm Abort Event"
+msgstr "នាំចូលព្រឹត្តិការណ៍រលូតកូនសត្វ"
+
+msgctxt "model:importer.farm.animal,name:"
+msgid "Importer Farm Animal"
+msgstr "នាំចូលសត្វកសិដ្ឋាន"
+
+msgctxt "model:importer.farm.farrowing.event,name:"
+msgid "Importer Farm Farrowing Event"
+msgstr "នាំចូលព្រឹត្តិការណ៍សម្រាលកូនសត្វ"
+
+msgctxt "model:importer.farm.insemination.event,name:"
+msgid "Importer Farm Insemination Event"
+msgstr "នាំចូលព្រឹត្តិការណ៍បញ្ចូលមេជីវិតសត្វ"
+
+msgctxt "model:importer.farm.medication.event,name:"
+msgid "Importer Farm Medication Event"
+msgstr "នាំចូលព្រឹត្តិការណ៍ផ្ដល់ថ្នាំដល់សត្វ"
+
+msgctxt "model:importer.farm.move.event,name:"
+msgid "Importer Event Move"
+msgstr "នាំចូលព្រឹត្តិការណ៍ផ្លាស់ទីសត្វ"
+
+msgctxt "model:importer.farm.pregnancy_diagnosis.event,name:"
+msgid "Importer Farm Pregnancy Diagnosis Event"
+msgstr "នាំចូលព្រឹត្តិការណ៍ពិនិត្យការមានផ្ទៃពោះរបស់សត្វ"
+
+msgctxt "model:importer.farm.reclassification.event,name:"
+msgid "Importer Farm reclassification Event"
+msgstr "នាំចូលព្រឹត្តិការណ៍ចាត់ថ្នាក់សត្វឡើងវិញ"
+
+msgctxt "model:importer.farm.removal.event,name:"
+msgid "Importer Removal Event"
+msgstr "នាំចូលព្រឹត្តិការណ៍ដកសត្វចេញ"
+
+msgctxt "model:importer.farm.transformation.event,name:"
+msgid "Importer Farm Transformation Event"
+msgstr "នាំចូលព្រឹត្តិការណ៍បម្លែងសត្វ"
+
+msgctxt "model:importer.farm.weaning.event,name:"
+msgid "Importer Farm Weaning Event"
+msgstr "នាំចូលព្រឹត្តិការណ៍ផ្ដាច់ដោះកូនសត្វ"
+
+msgctxt "model:importer.import.ask,name:"
+msgid "Import Ask"
+msgstr "សំណើនាំចូល"
+
+msgctxt "model:importer.import.ask.error,name:"
+msgid "Import Ask and Import Error"
+msgstr "សំណើនិងកំហុសនាំចូល"
+
+msgctxt "model:importer.invoice,name:"
+msgid "Importer Invoice"
+msgstr "នាំចូលវិក្កយបត្រ"
+
+msgctxt "model:importer.language,name:"
+msgid "Importer Language"
+msgstr "នាំចូលភាសា"
+
+msgctxt "model:importer.location,name:"
+msgid "Importer Location"
+msgstr "នាំចូលទីតាំង"
+
+msgctxt "model:importer.log,name:"
+msgid "Importer Log"
+msgstr "កំណត់ហេតុកម្មវិធីនាំចូល"
+
+msgctxt "model:importer.lot,name:"
+msgid "Importer Lot"
+msgstr "នាំចូលឡូត៍"
+
+msgctxt "model:importer.marketing.email,name:"
+msgid "Importer Marketing Email"
+msgstr "នាំចូលអ៊ីមែលទីផ្សារ"
+
+msgctxt "model:importer.meta,name:"
+msgid "Importer Meta"
+msgstr "ទិន្នន័យពិពណ៌នានៃកម្មវិធីនាំចូល"
+
+msgctxt "model:importer.order_point,name:"
+msgid "Importer Stock Move"
+msgstr "ការនាំចូលចលនាស្តុក"
+
+msgctxt "model:importer.parcel,name:"
+msgid "Importer Parcel"
+msgstr "នាំចូលក្បាលដី"
+
+msgctxt "model:importer.party,name:"
+msgid "Importer Party"
+msgstr "នាំចូលភាគី"
+
+msgctxt "model:importer.party.address,name:"
+msgid "Importer Address"
+msgstr "នាំចូលអាសយដ្ឋាន"
+
+msgctxt "model:importer.party.configuration,name:"
+msgid "Importer Party Configuration"
+msgstr "ការកំណត់ការនាំចូលភាគី"
+
+msgctxt "model:importer.party.contact_mechanism,name:"
+msgid "Importer Contact Method"
+msgstr "នាំចូលមធ្យោបាយទំនាក់ទំនង"
+
+msgctxt "model:importer.party.credit,name:"
+msgid "Importer Party Credit"
+msgstr "នាំចូលព័ត៌មានឥណទានរបស់ភាគី"
+
+msgctxt "model:importer.plantation,name:"
+msgid "Importer Plantation"
+msgstr "នាំចូលចម្ការ"
+
+msgctxt "model:importer.price_list,name:"
+msgid "Importer Price List"
+msgstr "នាំចូលបញ្ជីតម្លៃ"
+
+msgctxt "model:importer.product,name:"
+msgid "Importer Product"
+msgstr "ការនាំចូលផលិតផល"
+
+msgctxt "model:importer.product.agronomics,name:"
+msgid "Importer Product Agronomics"
+msgstr "នាំចូលព័ត៌មានក្សេត្រសាស្ត្ររបស់ផលិតផល"
+
+msgctxt "model:importer.product.attributes,name:"
+msgid "Importer Product Attributes"
+msgstr "នាំចូលគុណលក្ខណៈផលិតផល"
+
+msgctxt "model:importer.product.configuration,name:"
+msgid "Importer Product Configuration"
+msgstr "នាំចូលការកំណត់ផលិតផល"
+
+msgctxt "model:importer.product.supplier,name:"
+msgid "Importer Product Supplier"
+msgstr "នាំចូលផលិតផលតាមអ្នកផ្គត់ផ្គង់"
+
+msgctxt "model:importer.product_codes,name:"
+msgid "Importer Product"
+msgstr "ការនាំចូលផលិតផល"
+
+msgctxt "model:importer.production.bom,name:"
+msgid "Importer Production Bom"
+msgstr "នាំចូលបញ្ជីសម្ភារៈផលិតកម្ម (BOM)"
+
+msgctxt "model:importer.production.configuration,name:"
+msgid "Importer Production Configuration"
+msgstr "នាំចូលការកំណត់ផលិតកម្ម"
+
+msgctxt "model:importer.purchase,name:"
+msgid "Importer Purchase"
+msgstr "នាំចូលការទិញ"
+
+msgctxt "model:importer.purchase.configuration,name:"
+msgid "Importer Purchase Configuration"
+msgstr "នាំចូលការកំណត់ការទិញ"
+
+msgctxt "model:importer.sale,name:"
+msgid "Importer Sale"
+msgstr "នាំចូលការលក់"
+
+msgctxt "model:importer.sale.configuration,name:"
+msgid "Importer Sale Configuration"
+msgstr "នាំចូលការកំណត់ការលក់"
+
+msgctxt "model:importer.sequence,name:"
+msgid "Importer Party Configuration"
+msgstr "ការកំណត់ការនាំចូលភាគី"
+
+msgctxt "model:importer.source_column,name:"
+msgid "Importer Source Column"
+msgstr "ជួរឈរប្រភពនៃកម្មវិធីនាំចូល"
+
+msgctxt "model:importer.stock.move,name:"
+msgid "Importer Stock Move"
+msgstr "ការនាំចូលចលនាស្តុក"
+
+msgctxt "model:importer.user,name:"
+msgid "Importer User"
+msgstr "នាំចូលអ្នកប្រើ"
+
+msgctxt "model:ir.action,name:"
+msgid "Import Errors"
+msgstr "កំហុសនាំចូល"
+
+msgctxt "model:ir.action,name:act_ask_and_import_wizard"
+msgid "Import"
+msgstr "នាំចូល"
+
+msgctxt "model:ir.action,name:act_import_log"
+msgid "Import Log"
+msgstr "កំណត់ហេតុនាំចូល"
+
+msgctxt "model:ir.action,name:act_import_open"
+msgid "Imported Records"
+msgstr "កំណត់ត្រាដែលបាននាំចូល"
+
+msgctxt "model:ir.action,name:act_import_sample_wizard"
+msgid "Import Sample"
+msgstr "នាំចូលគំរូ"
+
+msgctxt "model:ir.action,name:act_import_wizard"
+msgid "Import"
+msgstr "នាំចូល"
+
+msgctxt "model:ir.action,name:act_importer"
+msgid "Importers"
+msgstr "កម្មវិធីនាំចូល"
+
+msgctxt "model:ir.action,name:act_log"
+msgid "Log"
+msgstr "កំណត់ហេតុ"
+
+msgctxt "model:ir.action,name:report_excel_template"
+msgid "Excel Template"
+msgstr "គំរូ Excel"
+
+msgctxt "model:ir.action,name:report_importer_export"
+msgid "Export"
+msgstr "នាំចេញ"
+
+#, python-format
+msgctxt "model:ir.message,text:animal_not_found"
+msgid "Animal %(animal)s not found."
+msgstr "រកមិនឃើញសត្វ %(animal)s ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:change_method_warning"
+msgid ""
+"Changing the format on importer \"%(name)s\" may cause your settings to be "
+"lost. Are you sure to proceed?"
+msgstr ""
+"ការប្ដូរទម្រង់របស់កម្មវិធីនាំចូល «%(name)s» អាចធ្វើឱ្យបាត់ការកំណត់។ "
+"តើអ្នកប្រាកដថាចង់បន្តឬ?"
+
+#, python-format
+msgctxt "model:ir.message,text:farm_not_found"
+msgid "Farm %(farm)s not found."
+msgstr "រកមិនឃើញកសិដ្ឋាន %(farm)s ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:invalid_column_name"
+msgid ""
+"Name \"%(name)s\" is not valid for column \"%(column)s\" in importer "
+"\"%(importer)s\"."
+msgstr ""
+"ឈ្មោះ «%(name)s» មិនត្រឹមត្រូវសម្រាប់ជួរឈរ «%(column)s» ក្នុងកម្មវិធីនាំចូល "
+"«%(importer)s»។"
+
+#, python-format
+msgctxt "model:ir.message,text:invalid_index"
+msgid ""
+"Column \"%(column)s\" does not exist importing data with importer "
+"\"%(importer)s\"."
+msgstr ""
+"រកមិនឃើញជួរឈរ «%(column)s» ពេលនាំចូលទិន្នន័យដោយប្រើកម្មវិធីនាំចូល "
+"«%(importer)s»។"
+
+#, python-format
+msgctxt "model:ir.message,text:location_not_found"
+msgid "Location %(location)s not found."
+msgstr "រកមិនឃើញទីតាំង %(location)s ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_account_not_found"
+msgid "Account %(account)s not found."
+msgstr "រកមិនឃើញគណនី %(account)s ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_asset_product_not_found"
+msgid ""
+"Asset product \"%(product)s\" does not exist on the database or it could not "
+"be found."
+msgstr ""
+"ផលិតផលជាទ្រព្យសកម្ម «%(product)s» មិនមានក្នុងមូលដ្ឋានទិន្នន័យ ឬរកមិនឃើញ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_carrier_party_not_found"
+msgid "Party code %(party)s not found."
+msgstr "រកមិនឃើញលេខកូដភាគី %(party)s ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_carrier_product_not_found"
+msgid "Product code %(product)s not found."
+msgstr "រកមិនឃើញលេខកូដផលិតផល %(product)s ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_chart_not_found"
+msgid "Chart \"%(chart)s\" not found."
+msgstr "រកមិនឃើញប្លង់គណនី «%(chart)s» ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_company_not_found"
+msgid "Company %(company)s not found."
+msgstr "រកមិនឃើញក្រុមហ៊ុន %(company)s ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_account_move_line_without_amount"
+msgid ""
+"Accounting entry line was not imported because debit and credit are both "
+"empty or zero."
+msgstr ""
+"បន្ទាត់កត់ត្រាគណនេយ្យមិនត្រូវបាននាំចូលទេ ព្រោះទាំងឥណពន្ធ និងឥណទានទទេ "
+"ឬស្មើសូន្យ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_currency_not_found"
+msgid "Currency %(currency)s not found."
+msgstr "រកមិនឃើញរូបិយប័ណ្ណ %(currency)s ទេ។"
+
+msgctxt "model:ir.message,text:msg_deletes_disabled"
+msgid "Deletion of records is disabled."
+msgstr "ការលុបកំណត់ត្រាត្រូវបានបិទ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_employee_not_found"
+msgid "Employee %(employee)s not found."
+msgstr "រកមិនឃើញនិយោជិត %(employee)s ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_group_not_found"
+msgid "Group with name \"%(name)s\" not found."
+msgstr "រកមិនឃើញក្រុមដែលមានឈ្មោះ «%(name)s» ទេ។"
+
+msgctxt "model:ir.message,text:msg_import_company_not_found"
+msgid "Company not found."
+msgstr "រកមិនឃើញក្រុមហ៊ុនទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_connection"
+msgid "Could not establish connection using importer \"%(importer)s\"."
+msgstr "មិនអាចបង្កើតការតភ្ជាប់ដោយប្រើកម្មវិធីនាំចូល «%(importer)s» បានទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_invoice_type"
+msgid "Invoice type must be 'out' or 'in' but \"%(type)s\" was found."
+msgstr ""
+"ប្រភេទវិក្កយបត្រត្រូវតែជា 'out' ឬ 'in' ប៉ុន្តែប្រព័ន្ធបានរកឃើញ «%(type)s»។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_invalid_value"
+msgid ""
+"Invalid value \"%(value)s\" for column \"%(column)s\" in row \"%(row)s\" importing data with importer \"%(importer)s\":\n"
+"\n"
+"%(error)s."
+msgstr ""
+"តម្លៃ «%(value)s» មិនត្រឹមត្រូវសម្រាប់ជួរឈរ «%(column)s» ក្នុងជួរដេក «%(row)s» ពេលនាំចូលទិន្នន័យដោយប្រើកម្មវិធីនាំចូល «%(importer)s»៖\n"
+"\n"
+"%(error)s។"
+
+msgctxt "model:ir.message,text:msg_name_required"
+msgid "Missing company name."
+msgstr "បាត់ឈ្មោះក្រុមហ៊ុន។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_product_attribute_incorrect_cast"
+msgid ""
+"Value %(value)s is incorrect for attribute %(attribute)s expected type "
+"%(type)s, with product code %(code)s"
+msgstr ""
+"តម្លៃ %(value)s មិនត្រឹមត្រូវសម្រាប់លក្ខណៈសម្បត្តិ %(attribute)s ទេ។ "
+"ប្រភេទដែលរំពឹងគឺ %(type)s សម្រាប់កូដផលិតផល %(code)s"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_product_attribute_not_found"
+msgid ""
+"Attribute %(attribute)s for product of code %(code)s could not be found."
+msgstr "រកមិនឃើញគុណលក្ខណៈ %(attribute)s សម្រាប់ផលិតផលដែលមានលេខកូដ %(code)s ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_product_attribute_selection_not_found"
+msgid ""
+"Attribute set %(set)s attribute %(attribute)s of type \"Selection\" has no "
+"selection option value %(selection)s."
+msgstr ""
+"គុណលក្ខណៈ %(attribute)s នៃសំណុំគុណលក្ខណៈ %(set)s ដែលមានប្រភេទ «ជម្រើស» "
+"គ្មានតម្លៃជម្រើស %(selection)s ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_product_attribute_set_not_found"
+msgid "Attribute set %(set)s for product of code %(code)s could not be found."
+msgstr "រកមិនឃើញសំណុំគុណលក្ខណៈ %(set)s សម្រាប់ផលិតផលដែលមានលេខកូដ %(code)s ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_role_not_found"
+msgid "Role with name \"%(name)s\" not found."
+msgstr "រកមិនឃើញតួនាទីដែលមានឈ្មោះ «%(name)s» ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_sequence_type_not_found"
+msgid "Sequence Type \"%(type)s\" not found."
+msgstr "រកមិនឃើញប្រភេទលេខលំដាប់ «%(type)s» ទេ។"
+
+msgctxt "model:ir.message,text:msg_sequence_type_required"
+msgid "Sequence Type is required"
+msgstr "ត្រូវកំណត់ប្រភេទលេខលំដាប់។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_subdivision_not_found"
+msgid "Subdivision \"%(subdivision)s\" not found in country \"%(country)s\"."
+msgstr "រកមិនឃើញដែនរដ្ឋបាល «%(subdivision)s» ក្នុងប្រទេស «%(country)s» ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_subdivision_type_not_allowed"
+msgid "Subdivision type \"%(type)s\" of subdivision \"%(subdivision)s\" not allowed."
+msgstr ""
+"ប្រភេទ «%(type)s» នៃដែនរដ្ឋបាល «%(subdivision)s» មិនត្រូវបានអនុញ្ញាតទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_wrong_iban"
+msgid ""
+"The bank account \"%(iban)s\" is not a valid IBAN. Check the source value "
+"before importing it."
+msgstr ""
+"គណនីធនាគារ «%(iban)s» មិនមែនជា IBAN ត្រឹមត្រូវទេ។ "
+"សូមពិនិត្យតម្លៃប្រភពមុនពេលនាំចូល។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_successful_connection"
+msgid "Successful connection using importer \"%(importer)s\"."
+msgstr "បានតភ្ជាប់ដោយជោគជ័យដោយប្រើឧបករណ៍នាំចូល «%(importer)s»។"
+
+#, python-format
+msgctxt "model:ir.message,text:msg_supervisor_not_found"
+msgid "Supervisor \"%(supervisor)s\" not found."
+msgstr "រកមិនឃើញអ្នកត្រួតពិនិត្យ «%(supervisor)s» ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:no_records_imported"
+msgid "No records where imported using importer \"%(importer)s\"."
+msgstr "កម្មវិធីនាំចូល «%(importer)s» មិនបាននាំចូលកំណត់ត្រាណាមួយទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:order_point_not_value"
+msgid ""
+"Order point not fount a value for Warehouse:  %(warehouse)s or Product "
+"%(product)s ."
+msgstr ""
+"រកមិនឃើញតម្លៃសម្រាប់ចំណុចបញ្ជាទិញឡើងវិញ សម្រាប់ឃ្លាំង %(warehouse)s ឬផលិតផល "
+"%(product)s ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:order_point_type_not_supported"
+msgid "Type %(type_)s not supported for orderpoint."
+msgstr "ចំណុចបញ្ជាទិញមិនគាំទ្រប្រភេទ %(type_)s ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:party_not_found"
+msgid "Party \"%(party)s\" not found."
+msgstr "រកមិនឃើញភាគី «%(party)s» ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:party_required_for_account"
+msgid ""
+"Account \"%(account)s\" requires a party but no party was supplied in move "
+"\"%(move)s\"."
+msgstr ""
+"គណនី «%(account)s» តម្រូវឱ្យកំណត់ភាគី ប៉ុន្តែមិនមានភាគីសម្រាប់បញ្ជីកត់ត្រា "
+"«%(move)s» ទេ។"
+
+msgctxt "model:ir.message,text:produced_animals_not_found"
+msgid "No produced animals found."
+msgstr "រកមិនឃើញសត្វដែលបានបង្កើតទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:product_category_not_found"
+msgid "Product category \"%(category)s\" not found."
+msgstr "រកមិនឃើញប្រភេទផលិតផល «%(category)s» ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:single_party_error"
+msgid "There must be one and only one party with \"%(party)s\"."
+msgstr "ត្រូវមានដៃគូតែមួយគត់ដែលត្រូវនឹង «%(party)s»។"
+
+#, python-format
+msgctxt "model:ir.message,text:single_product_error"
+msgid "There must be one and only one product with \"%(product)s\"."
+msgstr "ត្រូវមានផលិតផលតែមួយគត់ដែលត្រូវនឹង «%(product)s»។"
+
+#, python-format
+msgctxt "model:ir.message,text:stock_move_error"
+msgid ""
+"Coud not create move, could not find some info: from_location: "
+"\"%(from_location)s\", to_location: \"%(to_location)s\", product: "
+"\"%(product)s\"."
+msgstr ""
+"មិនអាចបង្កើតការផ្ទេរស្តុកបានទេ ព្រោះរកមិនឃើញព័ត៌មានមួយចំនួន៖ ទីតាំងប្រភព "
+"«%(from_location)s» ទីតាំងគោលដៅ «%(to_location)s» ផលិតផល «%(product)s»។"
+
+#, python-format
+msgctxt "model:ir.message,text:tag_not_found"
+msgid "Can't find tag \"%(tag)s\"."
+msgstr "រកមិនឃើញស្លាក «%(tag)s» ទេ។"
+
+#, python-format
+msgctxt "model:ir.message,text:value_not_in_selection"
+msgid "Could not find this value in the field selection \"%(field)%\""
+msgstr "រកមិនឃើញតម្លៃនេះក្នុងជម្រើសនៃវាល «%(field)%» ទេ។"
+
+msgctxt "model:ir.model.button,confirm:importer_delete_imported_button"
+msgid "Are you sure you want to delete all imported records?"
+msgstr "តើអ្នកប្រាកដថាចង់លុបកំណត់ត្រាទាំងអស់ដែលបាននាំចូលឬ?"
+
+msgctxt "model:ir.model.button,string:importer_check_connection_button"
+msgid "Check Connection"
+msgstr "ពិនិត្យការតភ្ជាប់"
+
+msgctxt "model:ir.model.button,string:importer_clean_deletes_button"
+msgid "Clean Deletes"
+msgstr "សម្អាតកំណត់ត្រាលុប"
+
+msgctxt "model:ir.model.button,string:importer_clean_log_button"
+msgid "Clean Log"
+msgstr "សម្អាតកំណត់ហេតុ"
+
+msgctxt "model:ir.model.button,string:importer_delete_imported_button"
+msgid "Delete Imported Records"
+msgstr "លុបកំណត់ត្រាដែលបាននាំចូល"
+
+msgctxt "model:ir.model.button,string:importer_detect_button"
+msgid "Detect"
+msgstr "រកឃើញដោយស្វ័យប្រវត្តិ"
+
+msgctxt "model:ir.model.button,string:importer_import_button"
+msgid "Import"
+msgstr "នាំចូល"
+
+msgctxt "model:ir.model.button,string:importer_import_sample_button"
+msgid "Import Sample"
+msgstr "នាំចូលគំរូ"
+
+msgctxt "model:ir.model.button,string:importer_update_columns_button"
+msgid "Update Columns"
+msgstr "ធ្វើបច្ចុប្បន្នភាពជួរឈរ"
+
+msgctxt "model:ir.model.button,string:importer_update_source_columns_button"
+msgid "Update Source Columns"
+msgstr "ធ្វើបច្ចុប្បន្នភាពជួរឈរប្រភព"
+
+msgctxt "model:ir.ui.menu,name:menu_import_wizard"
+msgid "Import"
+msgstr "នាំចូល"
+
+msgctxt "model:ir.ui.menu,name:menu_importer"
+msgid "Importer"
+msgstr "កម្មវិធីនាំចូល"
+
+msgctxt "model:ir.ui.menu,name:menu_importers"
+msgid "Importers"
+msgstr "កម្មវិធីនាំចូល"
+
+msgctxt "model:res.group,name:group_importer"
+msgid "Importer"
+msgstr "កម្មវិធីនាំចូល"
+
+msgctxt "selection:importer,data_source:"
+msgid "Copy & Paste"
+msgstr "ចម្លង និងបិទភ្ជាប់"
+
+msgctxt "selection:importer,data_source:"
+msgid "File"
+msgstr "ឯកសារ"
+
+msgctxt "selection:importer,data_source:"
+msgid "SQL"
+msgstr "SQL"
+
+msgctxt "selection:importer,data_source:"
+msgid "URL"
+msgstr "URL"
+
+msgctxt "selection:importer,on_error:"
+msgid "Log"
+msgstr "កំណត់ហេតុ"
+
+msgctxt "selection:importer,on_error:"
+msgid "Raise Error"
+msgstr "បង្ហាញកំហុស"
+
+msgctxt "selection:importer,on_error:"
+msgid "Skip"
+msgstr "រំលង"
+
+msgctxt "selection:importer,sql_source:"
+msgid "PSQL"
+msgstr "PSQL"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "Copy & Paste"
+msgstr "ចម្លង និងបិទភ្ជាប់"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "File"
+msgstr "ឯកសារ"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "SQL"
+msgstr "SQL"
+
+msgctxt "selection:importer.import.ask,data_source:"
+msgid "URL"
+msgstr "URL"
+
+msgctxt "selection:importer.log,on_error:"
+msgid "Log"
+msgstr "កំណត់ហេតុ"
+
+msgctxt "selection:importer.log,on_error:"
+msgid "Raise Error"
+msgstr "បង្ហាញកំហុស"
+
+msgctxt "selection:importer.log,on_error:"
+msgid "Skip"
+msgstr "រំលង"
+
+msgctxt "selection:importer.log,type:"
+msgid "Generic"
+msgstr "ទូទៅ"
+
+msgctxt "selection:importer.log,type:"
+msgid "Specific"
+msgstr "ជាក់លាក់"
+
+msgctxt "selection:importer.log,type:"
+msgid "Success"
+msgstr "ជោគជ័យ"
+
+msgctxt "view:importer.import.ask.error:"
+msgid ""
+"Some records may have been imported but several errors occurred. See the "
+"\"Import Errors\" window for details."
+msgstr ""
+"កំណត់ត្រាខ្លះអាចត្រូវបាននាំចូល ប៉ុន្តែមានកំហុសមួយចំនួន។ មើលបង្អួច "
+"«កំហុសនាំចូល» សម្រាប់ព័ត៌មានលម្អិត។"
+
+msgctxt "view:importer:"
+msgid "File columns"
+msgstr "ជួរឈរឯកសារ"
+
+msgctxt "view:importer:"
+msgid "Importer columns"
+msgstr "ជួរឈរនៃកម្មវិធីនាំចូល"
+
+msgctxt "wizard_button:importer.ask_and_import,ask,end:"
+msgid "Cancel"
+msgstr "បោះបង់"
+
+msgctxt "wizard_button:importer.ask_and_import,ask,import_:"
+msgid "Import"
+msgstr "នាំចូល"
+
+msgctxt "wizard_button:importer.ask_and_import,error_form,end:"
+msgid "Ok"
+msgstr "យល់ព្រម"
+
+msgctxt "field:importer.account.asset,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.account.asset,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.account.chart,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.account.chart,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.account.fiscalyear,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.account.fiscalyear,move_sequence_name:"
+msgid "Move Sequence Name"
+msgstr "ឈ្មោះលំដាប់លេខបញ្ជីកត់ត្រាគណនេយ្យ"
+
+msgctxt "field:importer.account.fiscalyear,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.account.journal,code:"
+msgid "Code"
+msgstr "កូដ"
+
+msgctxt "field:importer.account.journal,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.account.journal,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.account.journal,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.account.journal,type:"
+msgid "Type"
+msgstr "ប្រភេទ"
+
+msgctxt "field:importer.account.move,post_date:"
+msgid "Post Date"
+msgstr "កាលបរិច្ឆេទចុះបញ្ជី"
+
+msgctxt "field:importer.bank.account,iban:"
+msgid "IBAN"
+msgstr "IBAN"
+
+msgctxt "field:importer.bank.account,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.bank.account,owner_codes:"
+msgid "Owner Codes"
+msgstr "លេខកូដម្ចាស់"
+
+msgctxt "field:importer.bank.account,owner_names:"
+msgid "Owner Names"
+msgstr "ឈ្មោះម្ចាស់"
+
+msgctxt "field:importer.bank.account,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.bank,bic:"
+msgid "BIC"
+msgstr "BIC"
+
+msgctxt "field:importer.bank,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.bank,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.bank,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.company,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.company,party_code:"
+msgid "Party code"
+msgstr "លេខកូដភាគី"
+
+msgctxt "field:importer.company,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.country,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.country,name:"
+msgid "name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.country.postal_codes,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.country.postal_codes,name:"
+msgid "name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.country.postal_codes,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.country,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.currency,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.currency,name:"
+msgid "name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.currency,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.employee,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.employee,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.invoice,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.invoice,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.language,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.language,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.location,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.location,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.order_point,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.order_point,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.party,active:"
+msgid "Active"
+msgstr "សកម្ម"
+
+msgctxt "field:importer.party,agent:"
+msgid "Agent (code)"
+msgstr "ភ្នាក់ងារ (លេខកូដ)"
+
+msgctxt "field:importer.party.configuration,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.party.configuration,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.party.credit,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.party.credit,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.party,customer:"
+msgid "Customer"
+msgstr "អតិថិជន"
+
+msgctxt "field:importer.party,default_payable_bank_account:"
+msgid "Default payable bank account"
+msgstr "គណនីធនាគារលំនាំដើមសម្រាប់ទូទាត់ប្រាក់"
+
+msgctxt "field:importer.party,default_payable_company_bank_account:"
+msgid "Default payable company  Bank Account"
+msgstr "គណនីធនាគារក្រុមហ៊ុនលំនាំដើមសម្រាប់ទូទាត់ប្រាក់"
+
+msgctxt "field:importer.party,default_receivable_bank_account:"
+msgid "Default receivable bank account"
+msgstr "គណនីធនាគារលំនាំដើមសម្រាប់ទទួលប្រាក់"
+
+msgctxt "field:importer.party,default_receivable_company_bank_account:"
+msgid "Default receivable company Bank Account"
+msgstr "គណនីធនាគារក្រុមហ៊ុនលំនាំដើមសម្រាប់ទទួលប្រាក់"
+
+msgctxt "field:importer.party,incoterm_name:"
+msgid "Incoterm Name"
+msgstr "ឈ្មោះលក្ខខណ្ឌ Incoterm"
+
+msgctxt "field:importer.party,incoterm_place:"
+msgid "Incoterm Place"
+msgstr "ទីកន្លែងតាមលក្ខខណ្ឌ Incoterm"
+
+msgctxt "field:importer.party,incoterm_purchase_name:"
+msgid "Incoterm Purchase Name"
+msgstr "ឈ្មោះលក្ខខណ្ឌ Incoterm សម្រាប់ការទិញ"
+
+msgctxt "field:importer.party,incoterm_purchase_place:"
+msgid "Incoterm Purchase Place"
+msgstr "ទីកន្លែងតាមលក្ខខណ្ឌ Incoterm សម្រាប់ការទិញ"
+
+msgctxt "field:importer.party,sii_identifier_type:"
+msgid "SII Identification Type"
+msgstr "ប្រភេទអត្តសញ្ញាណ SII"
+
+msgctxt "field:importer.party,supplier:"
+msgid "Supplier"
+msgstr "អ្នកផ្គត់ផ្គង់"
+
+msgctxt "field:importer.price_list,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.price_list,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.product,alcohol_content:"
+msgid "Alcohol Content"
+msgstr "កម្រិតអាល់កុល"
+
+msgctxt "field:importer.product,bom_route:"
+msgid "BOM Route"
+msgstr "លំដាប់ដំណើរការនៃបញ្ជីសម្ភារៈ (BOM)"
+
+msgctxt "field:importer.product,brand_product_identifier:"
+msgid "Brand Product Identifier"
+msgstr "លេខសម្គាល់ផលិតផលតាមម៉ាក"
+
+msgctxt "field:importer.product_codes,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.product_codes,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.product.configuration,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.product.configuration,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.product.customer,code:"
+msgid "Code"
+msgstr "កូដ"
+
+msgctxt "field:importer.product.customer,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.product.customer,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.product.customer,party:"
+msgid "Party"
+msgstr "ភាគី"
+
+msgctxt "field:importer.product.customer,product:"
+msgid "Product"
+msgstr "ផលិតផល"
+
+msgctxt "field:importer.product.customer,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.product.customer,template:"
+msgid "Template"
+msgstr "គំរូ"
+
+msgctxt "field:importer.product,ean:"
+msgid "EAN"
+msgstr "EAN"
+
+msgctxt "field:importer.production.bom,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.production.bom,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.production.configuration,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.production.configuration,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.production_routes,calculation:"
+msgid "Calculation"
+msgstr "ការគណនា"
+
+msgctxt "field:importer.production_routes,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.production_routes,name:"
+msgid "Route name"
+msgstr "ឈ្មោះលំដាប់ដំណើរការ"
+
+msgctxt "field:importer.production_routes,notes:"
+msgid "Notes"
+msgstr "កំណត់ចំណាំ"
+
+msgctxt "field:importer.production_routes,operation_type:"
+msgid "Operation Type"
+msgstr "ប្រភេទប្រតិបត្តិការ"
+
+msgctxt "field:importer.production_routes,quantity:"
+msgid "Quantity"
+msgstr "បរិមាណ"
+
+msgctxt "field:importer.production_routes,quantity_uom:"
+msgid "Quantity Uom"
+msgstr "ឯកតារង្វាស់បរិមាណ"
+
+msgctxt "field:importer.production_routes,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.production_routes,sequence:"
+msgid "Sequence"
+msgstr "លំដាប់"
+
+msgctxt "field:importer.production_routes,subcontracted_product:"
+msgid "Subcontract Product"
+msgstr "ផលិតផលផលិតតាមកិច្ចសន្យាបន្ត"
+
+msgctxt "field:importer.production_routes,time_:"
+msgid "Time (minutes)"
+msgstr "រយៈពេល (នាទី)"
+
+msgctxt "field:importer.production_routes,uom:"
+msgid "Uom"
+msgstr "ឯកតារង្វាស់"
+
+msgctxt "field:importer.production_routes,workcenter_category:"
+msgid "Work Center Category"
+msgstr "ប្រភេទមជ្ឈមណ្ឌលការងារ"
+
+msgctxt "field:importer.product,manufacturer_part_identifier:"
+msgid "Manufacturer Part Identifier"
+msgstr "លេខសម្គាល់គ្រឿងបន្លាស់របស់ក្រុមហ៊ុនផលិត"
+
+msgctxt "field:importer.product,packages:"
+msgid "Packages"
+msgstr "កញ្ចប់"
+
+msgctxt "field:importer.product.supplier,company:"
+msgid "Company"
+msgstr "ក្រុមហ៊ុន"
+
+msgctxt "field:importer.product,volume:"
+msgid "Volume (m3)"
+msgstr "មាឌ (m3)"
+
+msgctxt "field:importer.product,weight:"
+msgid "Weight (kg)"
+msgstr "ទម្ងន់ (kg)"
+
+msgctxt "field:importer.purchase.configuration,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.purchase.configuration,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.purchase,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.purchase,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.role,groups:"
+msgid "Groups"
+msgstr "ក្រុម"
+
+msgctxt "field:importer.role,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.role,name:"
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgctxt "field:importer.role,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.sale.configuration,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.sale.configuration,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.sale,discount:"
+msgid "Discount"
+msgstr "ការបញ្ចុះតម្លៃ"
+
+msgctxt "field:importer.sequence,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.sequence,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.spanish_bank,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.spanish_bank,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "field:importer.user,metadata:"
+msgid "Metadata"
+msgstr "ទិន្នន័យមេតា"
+
+msgctxt "field:importer.user,row_number:"
+msgid "Row Number"
+msgstr "លេខជួរដេក"
+
+msgctxt "help:importer,commit_chunks:"
+msgid ""
+"By default, data is committed at the very end of the process. However, for "
+"very large imports, committing can improve performance."
+msgstr ""
+"តាមលំនាំដើម ប្រព័ន្ធរក្សាទុកទិន្នន័យនៅពេលបញ្ចប់ដំណើរការទាំងស្រុង។ "
+"សម្រាប់ការនាំចូលទិន្នន័យច្រើន ការរក្សាទុកជាបណ្ដុំអាចជួយឱ្យដំណើរការលឿនជាងមុន។"
+
+msgctxt "help:importer,data_start_row:"
+msgid ""
+"Spreadsheet row number where actual data starts. If headers are used, the "
+"header is assumed to be on the previous row."
+msgstr ""
+"លេខជួរដេកក្នុងសៀវភៅបញ្ជីដែលទិន្នន័យពិតចាប់ផ្តើម។ បើប្រើបឋមកថា "
+"បឋមកថាត្រូវស្ថិតនៅជួរដេកមុន។"
+
+msgctxt "help:importer.production_routes,calculation:"
+msgid "standard/fixed"
+msgstr "ស្តង់ដារ/ថេរ"
+
+msgctxt "help:importer.production_routes,time_:"
+msgid "In minutes"
+msgstr "គិតជានាទី"
+
+msgctxt "help:importer.product.supplier,company:"
+msgid ""
+"Company field can be used to set company-dependent fields.Better sort records"
+" by company prior to import for better performance."
+msgstr ""
+"អាចប្រើវាលក្រុមហ៊ុនសម្រាប់កំណត់វាលដែលអាស្រ័យលើក្រុមហ៊ុន។ "
+"តម្រៀបកំណត់ត្រាតាមក្រុមហ៊ុនមុននាំចូល ដើម្បីឱ្យដំណើរការកាន់តែលឿន។"
+
+msgctxt "help:importer.role,groups:"
+msgid "Comma separated list of group names"
+msgstr "បញ្ជីឈ្មោះក្រុម បំបែកដោយសញ្ញាក្បៀស"
+
+msgctxt "help:importer,use_subtransactions:"
+msgid ""
+"Subtransactions make the import process more robust, allowing it to recover "
+"from database errors but can be slower when importing many thousands of "
+"records."
+msgstr ""
+"ប្រតិបត្តិការរងធ្វើឱ្យការនាំចូលកាន់តែធន់ "
+"និងអាចស្ដារឡើងវិញពីកំហុសមូលដ្ឋានទិន្នន័យ "
+"ប៉ុន្តែអាចយឺតជាងមុនពេលនាំចូលកំណត់ត្រារាប់ពាន់។"
+
+msgctxt "model:importer.account.asset,string:"
+msgid "Importer Account Asset"
+msgstr "នាំចូលទ្រព្យសកម្មគណនេយ្យ"
+
+msgctxt "model:importer.account.journal,string:"
+msgid "Importer Account Journal"
+msgstr "នាំចូលទិនានុប្បវត្តិគណនេយ្យ"
+
+msgctxt "model:importer.account.move,string:"
+msgid "Importer Account Move"
+msgstr "នាំចូលបញ្ជីកត់ត្រាគណនេយ្យ"
+
+msgctxt "model:importer.bank.account,string:"
+msgid "Importer Bank Account"
+msgstr "នាំចូលគណនីធនាគារ"
+
+msgctxt "model:importer.bank,name:"
+msgid "Importer Bank"
+msgstr "នាំចូលធនាគារ"
+
+msgctxt "model:importer.bank,string:"
+msgid "Importer Bank"
+msgstr "នាំចូលធនាគារ"
+
+msgctxt "model:importer.carrier,string:"
+msgid "Importer Carrier"
+msgstr "នាំចូលអ្នកដឹកជញ្ជូន"
+
+msgctxt "model:importer.column,string:"
+msgid "Importer Column"
+msgstr "ជួរឈរនៃកម្មវិធីនាំចូល"
+
+msgctxt "model:importer.company,string:"
+msgid "Importer Company"
+msgstr "នាំចូលក្រុមហ៊ុន"
+
+msgctxt "model:importer.country,string:"
+msgid "Importer Country"
+msgstr "នាំចូលប្រទេស"
+
+msgctxt "model:importer.currency,string:"
+msgid "Importer Currency"
+msgstr "នាំចូលរូបិយប័ណ្ណ"
+
+msgctxt "model:importer.invoice,string:"
+msgid "Importer Invoice"
+msgstr "នាំចូលវិក្កយបត្រ"
+
+msgctxt "model:importer.language,string:"
+msgid "Importer Language"
+msgstr "នាំចូលភាសា"
+
+msgctxt "model:importer.location,string:"
+msgid "Importer Location"
+msgstr "នាំចូលទីតាំង"
+
+msgctxt "model:importer.log,string:"
+msgid "Importer Log"
+msgstr "កំណត់ហេតុកម្មវិធីនាំចូល"
+
+msgctxt "model:importer.lot,string:"
+msgid "Importer Lot"
+msgstr "នាំចូលឡូត៍"
+
+msgctxt "model:importer.meta,string:"
+msgid "Importer Meta"
+msgstr "ទិន្នន័យពិពណ៌នានៃកម្មវិធីនាំចូល"
+
+msgctxt "model:importer.party.configuration,string:"
+msgid "Importer Party Configuration"
+msgstr "ការកំណត់ការនាំចូលភាគី"
+
+msgctxt "model:importer.party.credit,string:"
+msgid "Importer Party Credit"
+msgstr "នាំចូលព័ត៌មានឥណទានរបស់ភាគី"
+
+msgctxt "model:importer.party,string:"
+msgid "Importer Party"
+msgstr "នាំចូលភាគី"
+
+msgctxt "model:importer.price_list,string:"
+msgid "Importer Price List"
+msgstr "នាំចូលបញ្ជីតម្លៃ"
+
+msgctxt "model:importer.product.configuration,string:"
+msgid "Importer Product Configuration"
+msgstr "នាំចូលការកំណត់ផលិតផល"
+
+msgctxt "model:importer.product.customer,string:"
+msgid "Importer Product Customer"
+msgstr "នាំចូលផលិតផលតាមអតិថិជន"
+
+msgctxt "model:importer.production.bom,string:"
+msgid "Importer Production Bom"
+msgstr "នាំចូលបញ្ជីសម្ភារៈផលិតកម្ម (BOM)"
+
+msgctxt "model:importer.production.configuration,string:"
+msgid "Importer Production Configuration"
+msgstr "នាំចូលការកំណត់ផលិតកម្ម"
+
+msgctxt "model:importer.production_routes,name:"
+msgid "Importer Stock Move"
+msgstr "ការនាំចូលចលនាស្តុក"
+
+msgctxt "model:importer.product,string:"
+msgid "Importer Product"
+msgstr "ការនាំចូលផលិតផល"
+
+msgctxt "model:importer.product.supplier,string:"
+msgid "Importer Product Supplier"
+msgstr "នាំចូលផលិតផលតាមអ្នកផ្គត់ផ្គង់"
+
+msgctxt "model:importer.purchase.configuration,string:"
+msgid "Importer Purchase Configuration"
+msgstr "នាំចូលការកំណត់ការទិញ"
+
+msgctxt "model:importer.purchase,string:"
+msgid "Importer Purchase"
+msgstr "នាំចូលការទិញ"
+
+msgctxt "model:importer.role,name:"
+msgid "Importer Role"
+msgstr "នាំចូលតួនាទី"
+
+msgctxt "model:importer.role,string:"
+msgid "Importer Role"
+msgstr "នាំចូលតួនាទី"
+
+msgctxt "model:importer.sale.configuration,string:"
+msgid "Importer Sale Configuration"
+msgstr "នាំចូលការកំណត់ការលក់"
+
+msgctxt "model:importer.sale,string:"
+msgid "Importer Sale"
+msgstr "នាំចូលការលក់"
+
+msgctxt "model:importer.source_column,string:"
+msgid "Importer Source Column"
+msgstr "ជួរឈរប្រភពនៃកម្មវិធីនាំចូល"
+
+msgctxt "model:importer.spanish_bank,name:"
+msgid "Importer Spanish Bank"
+msgstr "នាំចូលធនាគារអេស្ប៉ាញ"
+
+msgctxt "model:importer.spanish_bank,string:"
+msgid "Importer Spanish Bank"
+msgstr "នាំចូលធនាគារអេស្ប៉ាញ"
+
+msgctxt "model:importer.stock.move,string:"
+msgid "Importer Stock Move"
+msgstr "ការនាំចូលចលនាស្តុក"
+
+msgctxt "model:importer,string:"
+msgid "Importer"
+msgstr "កម្មវិធីនាំចូល"
+
+msgctxt "model:importer.user,string:"
+msgid "Importer User"
+msgstr "នាំចូលអ្នកប្រើ"
+
+#, python-format
+msgctxt "model:ir.message,text:agent_not_found"
+msgid "Agent not found for Agent %(agent)s and plan %(plan)s."
+msgstr "រកមិនឃើញភ្នាក់ងារសម្រាប់ភ្នាក់ងារ %(agent)s និងផែនការ %(plan)s ទេ។"
+
+msgctxt "model:ir.message,text:msg_bank_name_required"
+msgid "The bank name is required."
+msgstr "ត្រូវការឈ្មោះធនាគារ។"
